@@ -4,16 +4,16 @@ export type NavItem = {
   to: "/" | "/passport" | "/discover" | "/submissions" | "/applications" | "/network" | "/ranking" | "/how-it-works";
   label: string;
   icon: LucideIcon;
-  /** Shown in the mobile bottom tab bar (five slots max). */
-  tab?: boolean;
+  /** Shown as a tab in the floating dock; everything else lives in its More panel. */
+  dock?: boolean;
 };
 
 export const NAV_ITEMS: NavItem[] = [
-  { to: "/", label: "Home", icon: House, tab: true },
-  { to: "/discover", label: "Discover", icon: Compass, tab: true },
-  { to: "/ranking", label: "Ranking", icon: Trophy, tab: true },
-  { to: "/passport", label: "Passport", icon: IdCard, tab: true },
-  { to: "/submissions", label: "Submissions", icon: ScrollText, tab: true },
+  { to: "/", label: "Home", icon: House, dock: true },
+  { to: "/discover", label: "Discover", icon: Compass, dock: true },
+  { to: "/ranking", label: "Ranking", icon: Trophy, dock: true },
+  { to: "/passport", label: "Passport", icon: IdCard, dock: true },
+  { to: "/submissions", label: "Submissions", icon: ScrollText },
   { to: "/applications", label: "Applications", icon: Inbox },
   { to: "/how-it-works", label: "How it works", icon: BookOpen },
   { to: "/network", label: "Network", icon: Activity },

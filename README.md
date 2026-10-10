@@ -41,14 +41,14 @@ Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Gui
 
 ## Getting around
 
-- **Sidebar** on desktop, **bottom tab bar** on phones.
-- **⌘K / Ctrl+K** opens a jump menu for every page and common action (publish, new submission, your listings).
-- Detail and form pages show a **Back** control in the header.
+- A **floating dock** at the bottom of every screen holds the main pages (Home, Discover, Ranking, Passport). Its **More** and **Account** buttons morph it open into panels for the remaining pages, quick actions, what's new, and your passport status.
+- **⌘K / Ctrl+K** opens a jump menu for every page and common action.
+- The header has search, a **light/dark toggle**, and Wallet. Detail pages show a **Back** control.
 
 ## Tech stack
 
 - [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions)
-- Tailwind CSS v4, Radix UI primitives, `cmdk`, `lucide-react`
+- Tailwind CSS v4, Radix UI primitives, Motion, `cmdk`, `lucide-react`; DM Sans and DM Mono
 - `wagmi` + `viem` for wallets and Monad; SIWE for passport sessions
 - Postgres via `pg` when `DATABASE_URL` is set, otherwise an in-memory [PGLite](https://pglite.dev) database
 - Deployed on Vercel through Nitro

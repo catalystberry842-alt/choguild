@@ -2,8 +2,6 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Link, useCanGoBack, useRouter, useRouterState } from "@tanstack/react-router";
 import { ArrowLeft, Search, Wallet } from "lucide-react";
 import { useAccount } from "wagmi";
-import { Logo } from "@/components/brand/logo";
-import { MobileNav } from "@/components/layout/mobile-nav";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { WalletPanel } from "@/components/passport/wallet-panel";
 import { Button } from "@/components/ui/button";
@@ -20,9 +18,11 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
   return (
     <header className="glass sticky top-0 z-30 border-b border-line">
       <div className="h-[env(safe-area-inset-top,0px)]" aria-hidden="true" />
-      <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-2 px-4 sm:gap-3 sm:px-6">
-        <MobileNav />
-        <Logo className="w-9 shrink-0 lg:hidden" />
+      <div className="mx-auto flex h-16 max-w-5xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
+        <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="Choguild home">
+          <img src="/brand/choguild-mark.jpg" alt="" width={36} height={36} className="size-9 rounded-xl" />
+          <span className="hidden text-[17px] font-bold tracking-tight text-ink sm:inline">Choguild</span>
+        </Link>
         {nested ? (
           <Button
             variant="ghost"
@@ -35,7 +35,7 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
             <span className="hidden sm:inline">Back</span>
           </Button>
         ) : null}
-        <p className="hidden min-w-0 flex-1 truncate text-sm font-semibold text-ink lg:block">{title}</p>
+        <span className="sr-only">{title}</span>
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <button
             type="button"
@@ -48,9 +48,6 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
             <kbd className="hidden rounded border border-line px-1 text-[10px] md:inline">⌘K</kbd>
           </button>
           <ThemeToggle />
-          <Button asChild variant="secondary" size="compact" className="hidden sm:inline-flex">
-            <Link to="/passport">Passport</Link>
-          </Button>
           <Dialog.Root>
             <Dialog.Trigger asChild>
               <Button size="compact">
