@@ -25,14 +25,14 @@ function ReviewPage() {
   }
   return (
     <div>
-      <h1 className="text-3xl text-ink">{result.title}</h1>
+      <h1 className="text-3xl font-bold tracking-tight text-ink">{result.title}</h1>
       <p className="mt-2 text-sm text-body">Only you can see these applications. Accepting one is a decision you make here. It is not automatic.</p>
       {result.items.length === 0 ? (
-        <div className="mt-6">
+        <div className="mt-10">
           <EmptyState title="No applications yet" body="When someone with a passport applies, the application will show up here." />
         </div>
       ) : (
-        <ul className="mt-6 grid gap-4">
+        <ul className="mt-10 grid gap-4">
           {result.items.map((item) => <ReviewCard key={item.id} item={item} />)}
         </ul>
       )}
@@ -48,7 +48,7 @@ function ReviewCard({ item }: { item: ApplicationView }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   return (
-    <li className="rounded-2xl border border-line bg-elevated p-4">
+    <li className="rounded-3xl border border-line bg-elevated p-6">
       <div className="flex flex-wrap items-center gap-2">
         <Badge>{APPLICATION_STATUS_LABEL[item.status]}</Badge>
         <span className="text-xs text-muted">{formatStamp(item.createdAt)}</span>
@@ -71,7 +71,7 @@ function ReviewCard({ item }: { item: ApplicationView }) {
       </ul>
       {item.status === "withdrawn" ? <p className="mt-3 text-sm text-muted">The contributor withdrew this application, so the decision can't be changed.</p> : (
         <form
-          className="mt-4 grid gap-3"
+          className="mt-4 grid gap-4"
           onSubmit={(event) => {
             event.preventDefault();
             setPending(true);

@@ -25,8 +25,8 @@ function PassportPage() {
   return (
     <div>
       <header className="max-w-2xl">
-        <h1 className="text-2xl font-semibold tracking-tight text-ink">Contributor Passport</h1>
-        <p className="mt-3 text-base leading-relaxed text-body">
+        <h1 className="text-3xl font-bold tracking-tight text-ink">Contributor Passport</h1>
+        <p className="mt-3 text-base leading-7 text-body">
           A passport is the profile other people can read. A wallet address is only an address until
           you sign a message and save a profile.
         </p>
@@ -39,7 +39,7 @@ function PassportPage() {
         ) : null}
       </header>
 
-      <div className="mt-6">
+      <div className="mt-10 mb-12">
         <Notice title="Wallet and profile are separate">
           Connecting a wallet does not create a passport. Editing requires a signed session for that
           wallet. Choguild does not treat the address as proof of a human identity.
@@ -47,7 +47,7 @@ function PassportPage() {
       </div>
 
       <Section title="Wallet" description="Use a browser wallet, and disconnecting it never deletes a saved passport.">
-        <div className="rounded-2xl border border-line bg-elevated p-5">
+        <div className="rounded-3xl border border-line bg-elevated p-6">
           <WalletPanel />
         </div>
       </Section>
@@ -69,7 +69,7 @@ function PassportPage() {
           />
         ) : null}
         {status === "ready" && verified ? (
-          <div className="rounded-2xl border border-line bg-elevated p-5">
+          <div className="rounded-3xl border border-line bg-elevated p-6">
             <ProfileForm
               key={profile?.updatedAt ?? "new"}
               mode={profile ? "update" : "create"}

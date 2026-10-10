@@ -61,7 +61,7 @@ function HowItWorksPage() {
 
       <section>
         <h2 className="text-xl font-bold text-ink">The loop</h2>
-        <ol className="stagger relative mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="stagger relative mt-6 grid gap-5 sm:grid-cols-2">
           {FLOW.map((step, index) => {
             const Icon = step.icon;
             return (
@@ -122,7 +122,7 @@ function HowItWorksPage() {
 
       <section>
         <h2 className="text-xl font-bold text-ink">Ranks</h2>
-        <ol className="stagger mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
+        <ol className="stagger mt-6 grid gap-4 sm:grid-cols-2">
           {TIERS.map((tier, index) => (
             <li key={tier.name} className="rounded-3xl border border-line bg-elevated p-5">
               <div className="flex items-center justify-between gap-2">
@@ -157,7 +157,7 @@ function HowItWorksPage() {
         </Accordion.Root>
       </section>
 
-      <section className="dot-grid flex flex-col items-start gap-4 rounded-3xl border border-line p-7 sm:flex-row sm:items-center sm:justify-between sm:p-10">
+      <section className="dot-grid flex flex-col items-start gap-6 rounded-3xl border border-line p-7 sm:p-10">
         <div>
           <h2 className="text-2xl font-bold text-ink">Ready to get on the ladder?</h2>
           <p className="mt-1 text-body">It takes one signature and a short bio.</p>

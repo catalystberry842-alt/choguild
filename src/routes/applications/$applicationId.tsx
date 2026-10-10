@@ -37,7 +37,7 @@ function ApplicationPage() {
   const [pending, setPending] = useState(false);
   return (
     <article>
-      <h1 className="text-3xl text-ink">{application.opportunityTitle}</h1>
+      <h1 className="text-3xl font-bold tracking-tight text-ink">{application.opportunityTitle}</h1>
       <p className="mt-1 text-sm text-body">{application.projectName}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         <Badge>{APPLICATION_STATUS_LABEL[application.status]}</Badge>
@@ -51,11 +51,11 @@ function ApplicationPage() {
           </Link>
         </p>
       ) : null}
-      <section className="mt-6 grid gap-4">
-        <p className="text-sm leading-relaxed text-body">{application.introduction}</p>
-        <p className="text-sm leading-relaxed text-body">{application.suitability}</p>
-        {application.experience ? <p className="text-sm leading-relaxed text-body">{application.experience}</p> : null}
-        {application.extraAnswer ? <p className="text-sm leading-relaxed text-body">{application.extraAnswer}</p> : null}
+      <section className="mt-10 grid gap-4">
+        <p className="text-sm leading-7 text-body">{application.introduction}</p>
+        <p className="text-sm leading-7 text-body">{application.suitability}</p>
+        {application.experience ? <p className="text-sm leading-7 text-body">{application.experience}</p> : null}
+        {application.extraAnswer ? <p className="text-sm leading-7 text-body">{application.extraAnswer}</p> : null}
       </section>
       {application.feedback ? <p className="mt-4 text-sm text-body">Message: {application.feedback}</p> : null}
       <ol className="mt-4 grid gap-1 text-sm text-muted">
@@ -86,7 +86,7 @@ function ApplicationPage() {
       ) : null}
       {application.viewer === "creator" && application.status !== "withdrawn" ? (
         <form
-          className="mt-6 grid max-w-xl gap-3"
+          className="mt-10 grid max-w-xl gap-3"
           onSubmit={(event) => {
             event.preventDefault();
             setPending(true);

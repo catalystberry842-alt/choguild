@@ -44,17 +44,17 @@ function SubmissionPage() {
     <article className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
       <div>
         <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">{work.projectName}</p>
-        <h1 className="mt-2 text-3xl text-ink">{latest?.title ?? "Submission"}</h1>
+        <h1 className="mt-3 text-3xl font-bold tracking-tight text-ink">{latest?.title ?? "Submission"}</h1>
         <p className="mt-2 text-sm text-body">{work.opportunityTitle}</p>
         <div className="mt-3"><Badge>{WORK_STATUS_LABEL[work.status]}</Badge></div>
-        <p className="mt-4 max-w-2xl whitespace-pre-wrap text-sm leading-relaxed text-body">{latest?.description}</p>
+        <p className="mt-4 max-w-2xl whitespace-pre-wrap text-sm leading-7 text-body">{latest?.description}</p>
         <Evidence title="Latest evidence" links={latest?.evidenceLinks ?? []} repo={latest?.repoUrl} document={latest?.documentUrl} notes={latest?.notes} />
         {work.versions.length > 1 ? (
-          <section className="mt-8">
+          <section className="mt-12">
             <h2 className="text-lg text-ink">Earlier versions</h2>
-            <ol className="mt-3 grid gap-3">
+            <ol className="mt-3 grid gap-4">
               {work.versions.slice(0, -1).map((version) => (
-                <li key={version.version} className="rounded-2xl border border-line bg-elevated p-4">
+                <li key={version.version} className="rounded-3xl border border-line bg-elevated p-6">
                   <p className="text-xs text-muted">Version {version.version} · {formatStamp(version.createdAt)}</p>
                   <p className="mt-1 text-sm font-semibold text-ink">{version.title}</p>
                   <p className="mt-2 text-sm text-body">{version.description}</p>
@@ -64,16 +64,16 @@ function SubmissionPage() {
           </section>
         ) : null}
         {editable ? (
-          <section className="mt-8">
+          <section className="mt-12">
             <h2 className="text-lg text-ink">{work.status === "draft" ? "Finish the draft" : "Send a revision"}</h2>
             <p className="mt-2 text-sm text-body">A revision is stored as a new version, and the earlier evidence stays.</p>
             <div className="mt-4"><WorkForm work={work} /></div>
           </section>
         ) : null}
       </div>
-      <aside className="rounded-2xl border border-line bg-elevated p-4">
+      <aside className="rounded-3xl border border-line bg-elevated p-6">
         <h2 className="text-sm font-semibold tracking-[0.14em] text-muted uppercase">Review history</h2>
-        <ol className="mt-3 grid gap-3">
+        <ol className="mt-3 grid gap-4">
           {work.history.map((event, index) => (
             <li key={`${event.createdAt}-${index}`}>
               <p className="text-sm text-ink">{WORK_STATUS_LABEL[event.toStatus as keyof typeof WORK_STATUS_LABEL] ?? event.toStatus}</p>
@@ -87,7 +87,7 @@ function SubmissionPage() {
         <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="mt-3 inline-flex text-sm font-semibold text-sand">Opportunity</Link>
         {work.viewer === "reviewer" && (work.status === "submitted" || work.status === "under_review") ? (
           <form
-            className="mt-4 grid gap-3"
+            className="mt-4 grid gap-4"
             onSubmit={(event) => {
               event.preventDefault();
               if (!confirm) {
@@ -124,7 +124,7 @@ function SubmissionPage() {
 
 function Evidence({ title, links, repo, document, notes }: { title: string; links: string[]; repo?: string | null; document?: string | null; notes?: string | null }) {
   return (
-    <section className="mt-6">
+    <section className="mt-10">
       <h2 className="text-lg text-ink">{title}</h2>
       <ul className="mt-2 grid gap-1">
         {links.map((url) => <li key={url}><a className="text-sm text-sand" href={url} target="_blank" rel="noreferrer">{url}</a></li>)}

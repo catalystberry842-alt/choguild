@@ -26,12 +26,12 @@ function ApplicationsPage() {
   }
   return (
     <div>
-      <h1 className="text-[1.75rem] leading-tight text-ink">Your applications</h1>
-      <p className="mt-3 max-w-xl text-base leading-relaxed text-body">
+      <h1 className="text-3xl leading-tight font-bold tracking-tight text-ink">Your applications</h1>
+      <p className="mt-3 max-w-xl text-base leading-7 text-body">
         A submitted application is with the creator. It is not an acceptance.
       </p>
       {result.items.length === 0 ? (
-        <div className="mt-6">
+        <div className="mt-10">
           <EmptyState
             title="No applications yet"
             body="When you apply to an open opportunity, it will be listed here."
@@ -39,7 +39,7 @@ function ApplicationsPage() {
           />
         </div>
       ) : (
-        <ul className="mt-6 grid gap-3">
+        <ul className="mt-10 grid gap-4">
           {result.items.map((item) => (
             <li key={item.id} className="rounded-2xl border border-line bg-elevated px-4 py-4">
               <div className="flex flex-wrap items-center justify-between gap-2">

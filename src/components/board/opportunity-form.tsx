@@ -104,7 +104,7 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
 
   if (step === "review") {
     return (
-      <div className="rounded-2xl border border-line bg-elevated p-5">
+      <div className="rounded-3xl border border-line bg-elevated p-6">
         <h2 className="text-lg font-semibold text-ink">Review before publishing</h2>
         <dl className="mt-4 grid gap-3 text-sm">
           <div><dt className="text-muted">Title</dt><dd className="text-ink">{form.title}</dd></div>

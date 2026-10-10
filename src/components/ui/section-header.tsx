@@ -15,7 +15,7 @@ export function SectionHeader({
         <h2 className="text-xl leading-tight font-bold text-ink">{title}</h2>
         {action}
       </div>
-      {children ? <p className="mt-1 max-w-2xl text-sm leading-5 text-body">{children}</p> : null}
+      {children ? <p className="mt-2 max-w-2xl text-sm leading-6 text-body">{children}</p> : null}
     </div>
   );
 }

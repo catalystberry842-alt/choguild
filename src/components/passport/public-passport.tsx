@@ -66,7 +66,7 @@ export function PublicPassport({
           </span>
         )}
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">{profile.displayName}</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-ink">{profile.displayName}</h1>
           <p className="mt-1 text-sm text-body">@{profile.username}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <p className="font-mono text-sm text-ink">{shortAddress(profile.walletAddress)}</p>
@@ -83,9 +83,9 @@ export function PublicPassport({
         </div>
       </header>
 
-      <p className="mt-6 max-w-2xl text-base leading-relaxed text-body">{profile.biography}</p>
+      <p className="mt-10 max-w-2xl text-base leading-7 text-body">{profile.biography}</p>
 
-      <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+      <dl className="mt-10 grid gap-4 sm:grid-cols-2">
         <div>
           <dt className="text-xs text-muted">Skills</dt>
           <dd className="mt-2 flex flex-wrap gap-2">
@@ -131,9 +131,9 @@ export function PublicPassport({
         </div>
       </dl>
 
-      <section className="mt-8 border-t border-line pt-6">
+      <section className="mt-12 border-t border-line pt-6">
         <h2 className="text-lg font-semibold text-ink">Accepted work</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-body">
+        <p className="mt-2 max-w-2xl text-sm leading-7 text-body">
           {contributions.accepted === 0
             ? "No accepted work is attached to this passport. Drafts, rejected submissions, and unreviewed applications are not counted."
             : `${contributions.accepted} accepted ${contributions.accepted === 1 ? "submission" : "submissions"} across ${contributions.opportunities} ${contributions.opportunities === 1 ? "opportunity" : "opportunities"}. This is a record, not a score.`}
@@ -144,9 +144,9 @@ export function PublicPassport({
           </div>
         ) : null}
         {contributions.items.length > 0 ? (
-          <ul className="mt-4 grid gap-3">
+          <ul className="mt-4 grid gap-4">
             {contributions.items.map((item) => (
-              <li key={item.id} className="rounded-2xl border border-line bg-elevated p-4">
+              <li key={item.id} className="rounded-3xl border border-line bg-elevated p-6">
                 <p className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">Accepted {formatStamp(item.acceptedAt)}</p>
                 <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
                 <p className="text-sm text-body">{item.projectName} · {item.opportunityTitle}</p>
@@ -165,7 +165,7 @@ export function PublicPassport({
         ) : null}
       </section>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-10 flex flex-wrap gap-2">
         <Button variant="secondary" onClick={() => void copy(window.location.href, "url")}>
           {copiedUrl ? "Copied" : "Copy profile URL"}
         </Button>

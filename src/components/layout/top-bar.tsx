@@ -18,7 +18,7 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
   return (
     <header className="glass sticky top-0 z-30 border-b border-line">
       <div className="h-[env(safe-area-inset-top,0px)]" aria-hidden="true" />
-      <div className="mx-auto flex h-16 max-w-5xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
+      <div className="mx-auto flex h-16 max-w-3xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
         <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="Choguild home">
           <img src="/brand/choguild-mark.jpg" alt="" width={36} height={36} className="size-9 rounded-xl" />
           <span className="hidden text-[17px] font-bold tracking-tight text-ink sm:inline">Choguild</span>

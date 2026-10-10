@@ -50,8 +50,8 @@ function DiscoverPage() {
           <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">
             Collaboration board
           </p>
-          <h1 className="mt-3 text-[1.75rem] leading-tight text-ink">Opportunities</h1>
-          <p className="mt-3 max-w-xl text-base leading-relaxed text-body">
+          <h1 className="mt-3 text-3xl leading-tight font-bold tracking-tight text-ink">Opportunities</h1>
+          <p className="mt-3 max-w-xl text-base leading-7 text-body">
             Open work from people with a Chog Passport. Demo listings are marked and do not accept
             applications.
           </p>
@@ -67,7 +67,7 @@ function DiscoverPage() {
       </header>
 
       <form
-        className="mt-8 grid gap-4 rounded-3xl border border-line bg-elevated p-2"
+        className="mt-12 grid gap-4 rounded-3xl border border-line bg-elevated p-2"
         role="search"
         aria-label="Filter opportunities"
         onSubmit={(event) => event.preventDefault()}
@@ -213,12 +213,12 @@ function DiscoverPage() {
         ) : null}
       </form>
 
-      <p className="mt-8 text-sm text-muted" aria-live="polite">
+      <p className="mt-12 text-sm text-muted" aria-live="polite">
         {result.total} {result.total === 1 ? "opportunity" : "opportunities"}
       </p>
 
       {result.items.length > 0 ? (
-        <ul className="stagger mt-5 grid gap-5 xl:grid-cols-2">
+        <ul className="stagger mt-5 grid gap-5">
           {result.items.map((item) => (
             <OpportunityCardView key={item.id} item={item} />
           ))}

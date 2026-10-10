@@ -42,8 +42,8 @@ function SubmissionsPage() {
     <div>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-2xl">
-          <h1 className="mt-3 text-[1.75rem] leading-tight text-ink">Submissions</h1>
-          <p className="mt-3 max-w-xl text-base leading-relaxed text-body">
+          <h1 className="mt-3 text-3xl leading-tight font-bold tracking-tight text-ink">Submissions</h1>
+          <p className="mt-3 max-w-xl text-base leading-7 text-body">
             Send evidence after an application is accepted. A link is something you provided, and it stays unverified until a reviewer accepts it.
           </p>
         </div>
@@ -53,12 +53,12 @@ function SubmissionsPage() {
       </header>
 
       {!data.ok ? (
-        <div className="mt-6">
+        <div className="mt-10">
           <EmptyState title="Sign in to submit work" body={data.error} action={<Button asChild><Link to="/passport">Open passport</Link></Button>} />
         </div>
       ) : (
         <>
-          <div className="mt-6 flex flex-wrap items-center gap-2">
+          <div className="mt-10 flex flex-wrap items-center gap-2">
             <Link to="/submissions" search={{ view: "mine", status: search.status }} className={cn("min-h-11 rounded-lg px-3 text-sm font-semibold", search.view === "mine" ? "bg-secondary text-ink" : "text-body")}>Your work</Link>
             <Link to="/submissions" search={{ view: "review", status: "all" }} className={cn("min-h-11 rounded-lg px-3 text-sm font-semibold", search.view === "review" ? "bg-secondary text-ink" : "text-body")}>To review</Link>
             <SelectInput

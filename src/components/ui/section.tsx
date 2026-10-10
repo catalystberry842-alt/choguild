@@ -14,12 +14,12 @@ export function Section({
   id?: string;
 }) {
   return (
-    <section id={id} className="border-t border-line py-8 first:border-t-0 first:pt-0">
-      <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
+    <section id={id} className="border-t border-line py-12 first:border-t-0 first:pt-0 sm:py-14">
+      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-2xl">
-          <h2 className="text-lg font-medium text-ink">{title}</h2>
+          <h2 className="text-xl font-semibold tracking-tight text-ink">{title}</h2>
           {description ? (
-            <p className="mt-1 text-sm leading-relaxed text-body">{description}</p>
+            <p className="mt-2 text-[15px] leading-7 text-body">{description}</p>
           ) : null}
         </div>
         {action}

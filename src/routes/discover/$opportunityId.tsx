@@ -101,34 +101,31 @@ function OpportunityPage() {
   }
 
   return (
-    <article>
-      <button type="button" className="text-sm font-medium text-sand" onClick={() => router.history.back()}>
-        Back to the board
-      </button>
-      <header className="mt-4 flex items-start gap-3">
+    <article className="mx-auto max-w-3xl">
+      <header className="flex items-start gap-4">
         <ProjectMark name={project} logoUrl={opportunity.projectLogoUrl} />
         <div className="min-w-0">
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {opportunity.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status}</Badge>
           </div>
-          <h1 className="mt-2 text-[1.75rem] leading-tight text-ink">{opportunity.title}</h1>
-          <p className="mt-1 text-sm text-body">
+          <h1 className="mt-3 text-[1.9rem] leading-tight font-bold tracking-tight text-ink">{opportunity.title}</h1>
+          <p className="mt-2 text-sm text-body">
             {project} · {CATEGORY_LABEL[opportunity.category as Category] ?? opportunity.category}
           </p>
         </div>
       </header>
 
-      <p className="mt-5 max-w-2xl text-base leading-relaxed text-body">{listingSummary(opportunity.summary, opportunity.isDemo)}</p>
+      <p className="mt-8 text-base leading-7 text-body">{listingSummary(opportunity.summary, opportunity.isDemo)}</p>
 
-      <dl className="mt-5 grid max-w-2xl gap-3 text-sm sm:grid-cols-2">
-        <div>
+      <dl className="mt-8 grid gap-4 text-sm sm:grid-cols-2">
+        <div className="rounded-3xl border border-line bg-elevated px-6 py-5">
           <dt className="text-muted">Compensation</dt>
-          <dd className="mt-1 text-ink">{compensationLine || "Not specified"}</dd>
+          <dd className="mt-2 leading-6 text-ink">{compensationLine || "Not specified"}</dd>
         </div>
-        <div>
+        <div className="rounded-3xl border border-line bg-elevated px-6 py-5">
           <dt className="text-muted">Timing</dt>
-          <dd className="mt-1 text-ink">
+          <dd className="mt-2 leading-6 text-ink">
             {timeLabel}
             {" · "}
             {opportunity.deadline ? `Due ${formatStamp(opportunity.deadline)}` : "No deadline"}
@@ -137,13 +134,13 @@ function OpportunityPage() {
         </div>
       </dl>
 
-      <div className="mt-6 grid max-w-2xl gap-5">
+      <div className="mt-14 flex flex-col divide-y divide-line border-y border-line">
         <Block title="The work" body={plainCopy(opportunity.description)} />
         <Block title="Scope" body={plainCopy(opportunity.scope)} />
         <Block title="Deliverables" body={plainCopy(opportunity.deliverables)} />
-        <section>
-          <h2 className="text-base font-semibold text-ink">Skills</h2>
-          <p className="mt-2 text-sm leading-6 text-body">
+        <section className="py-9">
+          <h2 className="text-lg font-semibold tracking-tight text-ink">Skills</h2>
+          <p className="mt-3 text-[15px] leading-7 text-body">
             Required: {opportunity.requiredSkills.join(", ") || "None listed"}.
             {opportunity.preferredSkills.length > 0 ? ` Preferred: ${opportunity.preferredSkills.join(", ")}.` : " No preferred skills listed."}
           </p>
@@ -151,8 +148,8 @@ function OpportunityPage() {
         <Block title="How to apply" body={plainCopy(opportunity.instructions)} />
       </div>
 
-      <section className="mt-8 rounded-2xl border border-line bg-elevated p-5">
-        <h2 className="text-lg font-semibold text-ink">Application</h2>
+      <section className="mt-14 rounded-3xl border border-line bg-elevated p-6 sm:p-8">
+        <h2 className="text-lg font-semibold tracking-tight text-ink">Application</h2>
         {opportunity.myApplicationStatus ? (
           <p className="mt-2 text-sm text-body">
             Status: {APPLICATION_STATUS_LABEL[opportunity.myApplicationStatus as ApplicationStatus]}. Submitting does not mean you were accepted.
@@ -243,9 +240,9 @@ function OpportunityPage() {
 
 function Block({ title, body }: { title: string; body: string }) {
   return (
-    <section>
-      <h2 className="text-lg font-semibold text-ink">{title}</h2>
-      <p className="mt-2 max-w-2xl whitespace-pre-wrap text-sm leading-relaxed text-body">{body}</p>
+    <section className="py-9">
+      <h2 className="text-lg font-semibold tracking-tight text-ink">{title}</h2>
+      <p className="mt-3 whitespace-pre-wrap text-[15px] leading-7 text-body">{body}</p>
     </section>
   );
 }

@@ -31,14 +31,14 @@ function NewSubmissionPage() {
   return (
     <div className="max-w-2xl">
       <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">Evidence</p>
-      <h1 className="mt-2 text-3xl text-ink">Submit work</h1>
-      <label className="mt-6 block text-sm font-medium text-ink" htmlFor="eligible">Accepted application</label>
+      <h1 className="mt-3 text-3xl font-bold tracking-tight text-ink">Submit work</h1>
+      <label className="mt-10 block text-sm font-medium text-ink" htmlFor="eligible">Accepted application</label>
       <SelectInput id="eligible" className="mt-2" value={applicationId} onChange={(event) => setApplicationId(event.target.value)}>
         {data.eligible.map((item) => (
           <option key={item.applicationId} value={item.applicationId}>{item.projectName} — {item.opportunityTitle}</option>
         ))}
       </SelectInput>
-      <div className="mt-6">
+      <div className="mt-10">
         <WorkForm applicationId={applicationId} />
       </div>
     </div>
