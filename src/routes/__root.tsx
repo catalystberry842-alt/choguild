@@ -19,7 +19,7 @@ export const Route = createRootRoute({
         content:
           "Choguild helps Monad contributors keep an identity, find opportunities, and build a record of reviewed work.",
       },
-      { name: "theme-color", content: "#171714" },
+      { name: "theme-color", content: "#0b0814" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },

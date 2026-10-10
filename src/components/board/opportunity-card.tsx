@@ -23,8 +23,8 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
   const category = label(CATEGORY_LABEL, item.category as Category);
 
   return (
-    <li className="rounded-lg border border-line bg-elevated px-3 py-2.5 md:p-4">
-      <div className="grid grid-cols-1 items-start gap-2 md:grid-cols-[minmax(0,1.5fr)_minmax(0,16rem)_auto] md:items-center md:gap-6">
+    <li className="card-pop @container rounded-xl border border-line bg-elevated/80 px-3 py-3 md:p-4">
+      <div className="grid grid-cols-1 items-start gap-2 @2xl:grid-cols-[minmax(0,1.5fr)_minmax(0,16rem)_auto] @2xl:items-center @2xl:gap-6">
         <div className="flex min-w-0 gap-2.5">
           <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
           <div className="min-w-0">
@@ -34,8 +34,8 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
           </div>
         </div>
 
-        <div className="grid min-w-0 grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line pt-2 md:border-t-0 md:pt-0 md:grid-cols-1">
-          <div className="col-span-2 flex flex-wrap gap-1 md:col-span-1">
+        <div className="grid min-w-0 grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line pt-2 @2xl:border-t-0 @2xl:pt-0 @2xl:grid-cols-1">
+          <div className="col-span-2 flex flex-wrap gap-1 @2xl:col-span-1">
             {item.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{category}</Badge>
             <Badge tone={item.status === "open" ? "olive" : "neutral"}>
@@ -55,9 +55,10 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
         <Link
           to="/discover/$opportunityId"
           params={{ opportunityId: item.id }}
-          className="w-fit text-sm font-semibold text-sand md:justify-self-end"
+          className="group/link inline-flex w-fit items-center gap-1 text-sm font-semibold text-sand hover:text-sand-hover @2xl:justify-self-end"
         >
           View opportunity
+          <span aria-hidden="true" className="transition-transform group-hover/link:translate-x-0.5">→</span>
         </Link>
       </div>
       {item.myApplicationStatus ? (
@@ -75,7 +76,7 @@ export function ProjectMark({ name, logoUrl }: { name: string; logoUrl: string |
     return <img src={logoUrl} alt="" className="size-9 rounded-md border border-line object-cover" />;
   }
   return (
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-line bg-secondary text-sm font-semibold text-ink">
+    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-action to-pink text-sm font-bold text-on-accent shadow-[0_4px_14px_-6px_rgb(236_72_153_/_0.7)]">
       {initial}
     </span>
   );
