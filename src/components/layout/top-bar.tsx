@@ -34,13 +34,13 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
             <span className="hidden sm:inline">Back</span>
           </Button>
         ) : null}
-        <p className="hidden min-w-0 flex-1 truncate font-display text-lg font-semibold text-ink lg:block">{title}</p>
+        <p className="hidden min-w-0 flex-1 truncate text-sm font-semibold text-ink lg:block">{title}</p>
         <div className="ml-auto flex shrink-0 items-center gap-2">
           <button
             type="button"
             onClick={onOpenPalette}
             aria-label="Search pages and actions"
-            className="flex h-9 items-center gap-2 rounded-lg border border-line bg-elevated/60 px-2.5 text-sm text-muted transition-colors hover:border-sand/50 hover:text-ink"
+            className="flex h-9 items-center gap-2 rounded-lg border border-line bg-black px-2.5 text-sm text-muted transition-colors hover:border-action/60 hover:text-ink"
           >
             <Search className="size-4" aria-hidden="true" />
             <span className="hidden md:inline">Jump to…</span>
@@ -61,8 +61,8 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
               </Button>
             </Dialog.Trigger>
             <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/60 backdrop-blur-sm" />
-              <Dialog.Content className="fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-line bg-elevated p-5 shadow-[0_30px_80px_-20px_rgb(139_92_246_/_0.5)]">
+              <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/80" />
+              <Dialog.Content className="fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-line bg-elevated p-5">
                 <Dialog.Title className="text-lg font-semibold text-ink">Wallet</Dialog.Title>
                 <Dialog.Description className="mt-2 text-sm text-body">
                   Connect a browser wallet. A connection is not a passport session until you sign.

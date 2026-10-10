@@ -1,6 +1,10 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ArrowRight, Compass, IdCard, ScrollText } from "lucide-react";
+import { ArrowRight, Compass, IdCard, ScrollText, Sparkles, Trophy } from "lucide-react";
 import { Logo } from "@/components/brand/logo";
+import { Avatar, TierBadge } from "@/components/ranking/bits";
+import { CountUp } from "@/components/ranking/count-up";
+import { getRanking } from "@/lib/ranking/functions";
+import { TIERS, formatXp } from "@/lib/ranking/xp";
 import { OpportunityCardView } from "@/components/board/opportunity-card";
 import { Button } from "@/components/ui/button";
 import { SectionHeader } from "@/components/ui/section-header";
@@ -12,11 +16,12 @@ import { shortAddress } from "@/lib/passport/format";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
-    const [passport, board] = await Promise.all([
+    const [passport, board, ranking] = await Promise.all([
       getPassportState(),
       listBoard({ data: { ...emptyBoardSearch(), status: "all", page: 1 } }),
+      getRanking(),
     ]);
-    return { ...passport, featured: board.items.slice(0, 2) };
+    return { ...passport, featured: board.items.slice(0, 2), leaders: ranking.ranking.slice(0, 3), stats: ranking.stats };
   },
   staticData: { title: "Home" },
   head: () => ({ meta: [{ title: "Home · Choguild" }] }),
@@ -24,7 +29,7 @@ export const Route = createFileRoute("/")({
 });
 
 function HomePage() {
-  const { sessionAddress, profile, featured } = Route.useLoaderData();
+  const { sessionAddress, profile, featured, leaders, stats } = Route.useLoaderData();
   const examplesOnly = featured.length > 0 && featured.every((item) => item.isDemo);
   const details = profile
     ? completionSummary(
@@ -42,19 +47,20 @@ function HomePage() {
 
   return (
     <div className="flex flex-col gap-12">
-      <section className="relative grid items-center gap-8 overflow-hidden rounded-3xl border border-line bg-gradient-to-br from-elevated via-canvas to-secondary/60 p-6 sm:p-10 md:grid-cols-[minmax(0,1fr)_auto]">
-        <div className="max-w-2xl stagger">
-          <p className="inline-flex items-center gap-2 rounded-full border border-action/40 bg-action/10 px-3 py-1 text-xs font-semibold tracking-wide text-sand uppercase">
+      <section className="grid items-center gap-8 md:grid-cols-[minmax(0,1fr)_auto]">
+        <div className="stagger max-w-2xl">
+          <p className="inline-flex items-center gap-2 rounded-full border border-line px-3 py-1 font-mono text-xs text-body">
             <span className="pulse-dot size-1.5 rounded-full bg-success" aria-hidden="true" />
-            Contributor guild on Monad
+            <span className="blink">gm, chog</span>
           </p>
-          <h1 className="mt-4 text-[2.6rem] leading-[1.02] font-bold text-ink sm:text-6xl">
+          <h1 className="mt-5 text-[2.75rem] leading-[1.02] font-bold tracking-tight text-ink sm:text-6xl">
             Show the work.
             <br />
-            <span className="text-gradient">Wear the name.</span>
+            <span className="text-sand">Wear the name.</span>
           </h1>
           <p className="mt-4 max-w-lg text-[17px] leading-7 text-body">
-            A passport for your name, a board of opportunities, and a record of accepted work.
+            The contributor guild for Monad. Claim a passport, pick up real work, and climb the ranking with every
+            accepted contribution.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild>
@@ -76,28 +82,120 @@ function HomePage() {
             <Link to="/network" className="font-semibold text-sand hover:text-sand-hover">Network status</Link>
           </p>
         </div>
-        <div className="relative order-first mx-auto w-28 sm:w-40 md:order-none md:w-64" aria-hidden="true">
-          <div className="absolute inset-4 rounded-full bg-gradient-to-br from-action to-pink opacity-50 blur-3xl" />
-          <Logo float className="relative rotate-2 [&_img]:rounded-3xl [&_img]:shadow-[0_20px_60px_-20px_rgb(236_72_153_/_0.8)]" />
+        <div className="relative order-first mx-auto w-28 sm:w-40 md:order-none md:w-52" aria-hidden="true">
+          <Logo float className="rotate-2 [&_img]:rounded-3xl [&_img]:ring-1 [&_img]:ring-line" />
+        </div>
+      </section>
+
+      <div className="marquee -mx-4 overflow-hidden border-y border-line py-3 sm:-mx-6" aria-hidden="true">
+        <div className="marquee-track flex w-max gap-8 font-mono text-sm whitespace-nowrap text-muted">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex gap-8">
+              {TICKER.map((item) => (
+                <span key={item} className="flex items-center gap-8">
+                  {item}
+                  <Sparkles className="size-3.5 text-sand" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <dl className="grid grid-cols-3 divide-x divide-line overflow-hidden rounded-xl border border-line bg-elevated">
+        {[
+          ["Passports", stats.passports],
+          ["Open work", stats.openOpportunities],
+          ["Accepted", stats.acceptedWork],
+        ].map(([label, value]) => (
+          <div key={label} className="px-3 py-5 text-center sm:px-6">
+            <dt className="text-[11px] font-medium tracking-wide text-muted uppercase">{label}</dt>
+            <dd className="mt-1 font-mono text-2xl font-bold text-ink sm:text-3xl">
+              <CountUp value={Number(value)} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+
+      <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)]">
+        <div className="rounded-2xl border border-line bg-elevated p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="flex items-center gap-2 text-lg font-bold text-ink">
+              <Trophy className="size-5 text-warning" aria-hidden="true" />
+              Top of the ladder
+            </h2>
+            <Link to="/ranking" className="text-sm font-semibold text-sand hover:text-sand-hover">Full ranking</Link>
+          </div>
+          {leaders.length > 0 ? (
+            <ol className="stagger mt-4 flex flex-col gap-2">
+              {leaders.map((person) => (
+                <li key={person.username}>
+                  <Link
+                    to="/passport/$username"
+                    params={{ username: person.username }}
+                    className="flex items-center gap-3 rounded-lg px-2 py-2 transition-colors hover:bg-secondary"
+                  >
+                    <span className="w-6 font-mono text-sm text-muted">#{person.rank}</span>
+                    <Avatar name={person.displayName} url={person.avatarUrl} />
+                    <span className="min-w-0 flex-1 truncate font-semibold text-ink">{person.displayName}</span>
+                    <TierBadge tier={person.tier} />
+                    <span className="font-mono text-sm text-ink">{formatXp(person.xp)}</span>
+                  </Link>
+                </li>
+              ))}
+            </ol>
+          ) : (
+            <div className="dot-grid mt-4 rounded-xl border border-dashed border-line p-6 text-center">
+              <p className="font-semibold text-ink">No one has claimed #1 yet.</p>
+              <p className="mt-1 text-sm text-body">Save a passport and you are on the ladder today.</p>
+              <Button asChild size="compact" className="mt-4">
+                <Link to="/passport">Claim your spot</Link>
+              </Button>
+            </div>
+          )}
+        </div>
+
+        <div className="rounded-2xl border border-line bg-elevated p-5 sm:p-6">
+          <div className="flex items-center justify-between gap-3">
+            <h2 className="text-lg font-bold text-ink">Ranks to unlock</h2>
+            <Link to="/how-it-works" hash="xp" className="text-sm font-semibold text-sand hover:text-sand-hover">How XP works</Link>
+          </div>
+          <ol className="mt-4 flex flex-col gap-3">
+            {TIERS.map((tier, index) => (
+              <li key={tier.name} className="flex items-center gap-3">
+                <span className="w-14 shrink-0 text-right font-mono text-xs text-muted">{tier.min}+</span>
+                <span className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary">
+                  <span className="block h-full rounded-full bg-action" style={{ width: `${(index + 1) * 20}%` }} />
+                </span>
+                <TierBadge tier={tier.name} className="w-28 justify-center" />
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
       <section>
-        <SectionHeader title="How the guild works">Three steps from wallet to reputation.</SectionHeader>
+        <SectionHeader
+          title="How the guild works"
+          action={
+            <Button asChild variant="secondary" size="compact">
+              <Link to="/how-it-works">Full guide</Link>
+            </Button>
+          }
+        >
+          Three steps from wallet to reputation.
+        </SectionHeader>
         <ol className="stagger mt-4 grid gap-4 md:grid-cols-3">
           {STEPS.map((step, index) => {
             const Icon = step.icon;
             return (
               <li key={step.title}>
-                <Link
-                  to={step.to}
-                  className="card-pop group flex h-full flex-col gap-3 rounded-2xl border border-line bg-elevated/80 p-5"
-                >
+                <Link to={step.to} className="card-pop group flex h-full flex-col gap-3 rounded-xl border border-line bg-elevated p-5">
                   <div className="flex items-center justify-between">
-                    <span className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-action to-pink text-on-accent shadow-[0_6px_20px_-8px_rgb(236_72_153_/_0.8)] transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                    <span className="flex size-10 items-center justify-center rounded-lg bg-action/15 text-sand ring-1 ring-action/40 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
                       <Icon className="size-5" aria-hidden="true" />
                     </span>
-                    <span className="font-display text-3xl font-bold text-line">0{index + 1}</span>
+                    <span className="font-mono text-xs text-muted">0{index + 1}</span>
                   </div>
                   <h3 className="text-lg font-semibold text-ink">{step.title}</h3>
                   <p className="text-sm leading-6 text-body">{step.body}</p>
@@ -135,6 +233,16 @@ function HomePage() {
   );
 }
 
+const TICKER = [
+  "Claim a passport",
+  "Find open work",
+  "Ship it",
+  "Get accepted",
+  "Earn XP",
+  "Hatchling → Legend",
+  "Built on Monad",
+];
+
 const STEPS = [
   {
     title: "Claim your passport",
@@ -151,10 +259,10 @@ const STEPS = [
     icon: Compass,
   },
   {
-    title: "Ship and get reviewed",
-    body: "Submit evidence once you are accepted. Reviewed work builds your contribution history.",
-    cta: "Submissions",
-    to: "/submissions",
+    title: "Ship and climb",
+    body: "Submit evidence once you are accepted. Every accepted piece of work earns XP on the ranking.",
+    cta: "See the ranking",
+    to: "/ranking",
     icon: ScrollText,
   },
 ] as const;

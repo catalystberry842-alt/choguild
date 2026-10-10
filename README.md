@@ -20,9 +20,24 @@
 | **Opportunities** | Publish open work, edit your listings, and review the applications they receive. |
 | **Applications** | Track what you applied to and where each application stands. |
 | **Submissions** | Once accepted, submit evidence of the work. Reviewed submissions build your contribution history. |
+| **Ranking** | The Chog ladder: every public passport ranked by XP earned from reviewed work, with a top-3 podium. |
+| **How it works** | The full loop, the XP table, the five ranks, and an FAQ. |
 | **Network** | Live Monad mainnet status for the RPC the app uses. |
 
 A connected wallet is only an address. Nothing is treated as an account until you sign and save a passport, and Choguild never asks for a seed phrase or private key.
+
+## XP and ranks
+
+XP is calculated live from the database, so it can't drift out of sync with the board.
+
+| Action | XP |
+| --- | --- |
+| Accepted submission | +100 |
+| Accepted application | +25 |
+| Published opportunity (not draft, not demo) | +15 |
+| Saved public passport | +10 |
+
+Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Guildmaster** (400) → **Legend** (1000). The rules live in `src/lib/ranking/xp.ts`.
 
 ## Getting around
 
@@ -83,6 +98,7 @@ src/
   lib/work/        submissions and reviews
   lib/passport/    profiles, SIWE sessions, wallet config
   lib/monad/       network status
+  lib/ranking/     XP rules, tiers, and the ranking query
 migrations/        SQL schema, applied in order
 public/brand/      Chog mascot artwork
 ```

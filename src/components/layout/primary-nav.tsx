@@ -20,14 +20,14 @@ export function PrimaryNav({ onNavigate }: { onNavigate?: () => void }) {
                 className={cn(
                   "group relative flex min-h-11 items-center gap-3 overflow-hidden rounded-xl px-3 text-sm font-semibold transition-all duration-200",
                   active
-                    ? "bg-gradient-to-r from-action/25 via-action/10 to-transparent text-ink"
+                    ? "bg-elevated text-ink"
                     : "text-body hover:translate-x-0.5 hover:bg-elevated hover:text-ink",
                 )}
               >
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute inset-y-2 left-0 w-1 rounded-r-full bg-gradient-to-b from-action to-pink transition-transform duration-300",
+                    "absolute inset-y-2 left-0 w-1 rounded-r-full bg-action transition-transform duration-300",
                     active ? "scale-y-100" : "scale-y-0",
                   )}
                 />

@@ -30,7 +30,7 @@ export function BottomTabs() {
                 <span
                   className={cn(
                     "flex h-7 w-12 items-center justify-center rounded-full transition-all duration-300",
-                    active ? "bg-gradient-to-r from-action/40 to-pink/30 scale-100" : "scale-90",
+                    active ? "bg-action/25 text-sand scale-100" : "scale-90",
                   )}
                 >
                   <Icon className="size-[18px]" aria-hidden="true" />

@@ -17,7 +17,6 @@ export function AppShell({ children }: { children: ReactNode }) {
 
   return (
     <div className="site-bg relative min-h-dvh overflow-x-clip text-ink lg:flex">
-      <div className="ambient" aria-hidden="true" />
       <RouteProgress />
       <a
         href="#content"
@@ -25,11 +24,11 @@ export function AppShell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      <aside className="sticky top-0 z-10 hidden h-dvh w-64 shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-sidebar/80 p-4 backdrop-blur lg:flex">
+      <aside className="sticky top-0 z-10 hidden h-dvh w-64 shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-black p-4 lg:flex">
         <div className="flex items-center gap-3">
           <Logo className="w-12" />
           <div>
-            <p className="font-display text-xl leading-none font-bold text-ink">Choguild</p>
+            <p className="text-lg leading-none font-bold tracking-tight text-ink">Choguild</p>
             <p className="mt-1 text-[11px] font-medium tracking-wide text-muted uppercase">Built on Monad</p>
           </div>
         </div>

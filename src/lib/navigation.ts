@@ -1,7 +1,7 @@
-import { Activity, Compass, House, IdCard, Inbox, ScrollText, type LucideIcon } from "lucide-react";
+import { Activity, BookOpen, Compass, House, IdCard, Inbox, ScrollText, Trophy, type LucideIcon } from "lucide-react";
 
 export type NavItem = {
-  to: "/" | "/passport" | "/discover" | "/submissions" | "/applications" | "/network";
+  to: "/" | "/passport" | "/discover" | "/submissions" | "/applications" | "/network" | "/ranking" | "/how-it-works";
   label: string;
   icon: LucideIcon;
   /** Shown in the mobile bottom tab bar (five slots max). */
@@ -11,9 +11,11 @@ export type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Home", icon: House, tab: true },
   { to: "/discover", label: "Discover", icon: Compass, tab: true },
+  { to: "/ranking", label: "Ranking", icon: Trophy, tab: true },
   { to: "/passport", label: "Passport", icon: IdCard, tab: true },
-  { to: "/applications", label: "Applications", icon: Inbox, tab: true },
   { to: "/submissions", label: "Submissions", icon: ScrollText, tab: true },
+  { to: "/applications", label: "Applications", icon: Inbox },
+  { to: "/how-it-works", label: "How it works", icon: BookOpen },
   { to: "/network", label: "Network", icon: Activity },
 ];
 

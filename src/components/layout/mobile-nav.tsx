@@ -17,7 +17,7 @@ export function MobileNav() {
         </Button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/70 backdrop-blur-sm" />
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/80" />
         <Dialog.Content className="rise fixed inset-y-0 left-0 z-50 flex w-full max-w-72 flex-col gap-6 overflow-y-auto border-r border-line bg-sidebar p-4">
           <div className="flex items-center justify-between gap-3">
             <Dialog.Title className="text-sm font-medium text-ink">Menu</Dialog.Title>

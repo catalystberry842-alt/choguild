@@ -21,10 +21,10 @@ export function AccountPanel({ onNavigate }: { onNavigate?: () => void }) {
           : "No passport session";
 
   return (
-    <div className="rounded-xl border border-line bg-gradient-to-b from-elevated to-secondary/40 p-3">
+    <div className="rounded-xl border border-line bg-elevated p-3">
       <div className="flex items-center gap-3">
         <span
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-action to-pink text-on-accent"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-action/15 text-sand ring-1 ring-action/40"
           aria-hidden="true"
         >
           <UserRound className="size-4" />

@@ -23,7 +23,7 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
   const category = label(CATEGORY_LABEL, item.category as Category);
 
   return (
-    <li className="card-pop @container rounded-xl border border-line bg-elevated/80 px-3 py-3 md:p-4">
+    <li className="card-pop @container rounded-xl border border-line bg-elevated px-3 py-3 md:p-4">
       <div className="grid grid-cols-1 items-start gap-2 @2xl:grid-cols-[minmax(0,1.5fr)_minmax(0,16rem)_auto] @2xl:items-center @2xl:gap-6">
         <div className="flex min-w-0 gap-2.5">
           <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
@@ -76,7 +76,7 @@ export function ProjectMark({ name, logoUrl }: { name: string; logoUrl: string |
     return <img src={logoUrl} alt="" className="size-9 rounded-md border border-line object-cover" />;
   }
   return (
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gradient-to-br from-action to-pink text-sm font-bold text-on-accent shadow-[0_4px_14px_-6px_rgb(236_72_153_/_0.7)]">
+    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-action/15 text-sm font-bold text-sand ring-1 ring-action/40">
       {initial}
     </span>
   );

@@ -10,7 +10,9 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as NetworkRouteImport } from './routes/network'
+import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsApplicationIdRouteImport } from './routes/applications/$applicationId'
 import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
@@ -30,9 +32,19 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HowItWorksRoute = HowItWorksRouteImport.update({
+  id: '/how-it-works',
+  path: '/how-it-works',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const NetworkRoute = NetworkRouteImport.update({
   id: '/network',
   path: '/network',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApplicationsIndexRoute = ApplicationsIndexRouteImport.update({
@@ -106,7 +118,9 @@ const OpportunitiesOpportunityIdEditRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/network': typeof NetworkRoute
+  '/ranking': typeof RankingRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -123,7 +137,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/network': typeof NetworkRoute
+  '/ranking': typeof RankingRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -141,7 +157,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/how-it-works': typeof HowItWorksRoute
   '/network': typeof NetworkRoute
+  '/ranking': typeof RankingRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -160,7 +178,9 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/how-it-works'
     | '/network'
+    | '/ranking'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -177,7 +197,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/how-it-works'
     | '/network'
+    | '/ranking'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -194,7 +216,9 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/how-it-works'
     | '/network'
+    | '/ranking'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -212,7 +236,9 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HowItWorksRoute: typeof HowItWorksRoute
   NetworkRoute: typeof NetworkRoute
+  RankingRoute: typeof RankingRoute
   ApplicationsApplicationIdRoute: typeof ApplicationsApplicationIdRoute
   DiscoverOpportunityIdRoute: typeof DiscoverOpportunityIdRoute
   OpportunitiesNewRoute: typeof OpportunitiesNewRoute
@@ -237,11 +263,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/how-it-works': {
+      id: '/how-it-works'
+      path: '/how-it-works'
+      fullPath: '/how-it-works'
+      preLoaderRoute: typeof HowItWorksRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/network': {
       id: '/network'
       path: '/network'
       fullPath: '/network'
       preLoaderRoute: typeof NetworkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/applications/': {
@@ -340,7 +380,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HowItWorksRoute: HowItWorksRoute,
   NetworkRoute: NetworkRoute,
+  RankingRoute: RankingRoute,
   ApplicationsApplicationIdRoute: ApplicationsApplicationIdRoute,
   DiscoverOpportunityIdRoute: DiscoverOpportunityIdRoute,
   OpportunitiesNewRoute: OpportunitiesNewRoute,
