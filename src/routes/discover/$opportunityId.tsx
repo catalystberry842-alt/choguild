@@ -158,7 +158,7 @@ function OpportunityPage() {
             Status: {APPLICATION_STATUS_LABEL[opportunity.myApplicationStatus as ApplicationStatus]}. Submitting does not mean you were accepted.
           </p>
         ) : null}
-        {done ? <p className="mt-3 text-sm text-sand">Application sent. It is marked submitted, not accepted.</p> : null}
+        {done ? <p className="mt-3 text-sm text-sand">Application sent and marked as submitted, not yet accepted.</p> : null}
         {opportunity.mine && !opportunity.isDemo ? (
           <div className="mt-4 flex flex-wrap gap-2">
             <Button asChild variant="secondary"><Link to="/opportunities/$opportunityId/edit" params={{ opportunityId: opportunity.id }}>Edit</Link></Button>
@@ -180,10 +180,10 @@ function OpportunityPage() {
           </p>
         ) : null}
         {!opportunity.mine && !opportunity.isDemo && opportunity.accepting && !sessionAddress ? (
-          <p className="mt-3 text-sm text-body">Sign in on the Passport page before applying. A connected wallet alone is not enough.</p>
+          <p className="mt-3 text-sm text-body">Sign in on the Passport page before applying, since a connected wallet alone is not enough.</p>
         ) : null}
         {!opportunity.mine && !opportunity.isDemo && opportunity.accepting && sessionAddress && !profile ? (
-          <p className="mt-3 text-sm text-body">Save your Chog Passport before applying. The address is not the application.</p>
+          <p className="mt-3 text-sm text-body">Save your Chog Passport before applying, because an address alone is not an application.</p>
         ) : null}
         {!opportunity.mine && opportunity.accepting && profile && !opportunity.myApplicationStatus && !done ? (
           <form className="mt-4 grid gap-4" onSubmit={(event) => { event.preventDefault(); void onApply(); }}>

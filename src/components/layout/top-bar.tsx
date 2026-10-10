@@ -4,6 +4,7 @@ import { ArrowLeft, Search, Wallet } from "lucide-react";
 import { useAccount } from "wagmi";
 import { Logo } from "@/components/brand/logo";
 import { MobileNav } from "@/components/layout/mobile-nav";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { WalletPanel } from "@/components/passport/wallet-panel";
 import { Button } from "@/components/ui/button";
 import { shortAddress } from "@/lib/passport/format";
@@ -40,12 +41,13 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
             type="button"
             onClick={onOpenPalette}
             aria-label="Search pages and actions"
-            className="flex h-9 items-center gap-2 rounded-lg border border-line bg-black px-2.5 text-sm text-muted transition-colors hover:border-action/60 hover:text-ink"
+            className="flex h-9 items-center gap-2 rounded-lg border border-line bg-canvas px-2.5 text-sm text-muted transition-colors hover:border-action/60 hover:text-ink"
           >
             <Search className="size-4" aria-hidden="true" />
             <span className="hidden md:inline">Jump to…</span>
             <kbd className="hidden rounded border border-line px-1 text-[10px] md:inline">⌘K</kbd>
           </button>
+          <ThemeToggle />
           <Button asChild variant="secondary" size="compact" className="hidden sm:inline-flex">
             <Link to="/passport">Passport</Link>
           </Button>

@@ -18,7 +18,7 @@ function NewOpportunityPage() {
     return (
       <EmptyState
         title="A passport is required to publish"
-        body="Sign in and save a Chog Passport first. A connected wallet is not an account."
+        body="Sign in and save a Chog Passport first, because a connected wallet is not an account."
         action={<Button asChild><Link to="/passport">Open passport</Link></Button>}
       />
     );

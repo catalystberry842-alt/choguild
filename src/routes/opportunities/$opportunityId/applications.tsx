@@ -69,7 +69,7 @@ function ReviewCard({ item }: { item: ApplicationView }) {
           <li key={link}><a href={link} className="text-sm text-sand" target="_blank" rel="noreferrer">{link}</a></li>
         ))}
       </ul>
-      {item.status === "withdrawn" ? <p className="mt-3 text-sm text-muted">Withdrawn by the contributor. You cannot change that decision.</p> : (
+      {item.status === "withdrawn" ? <p className="mt-3 text-sm text-muted">The contributor withdrew this application, so the decision can't be changed.</p> : (
         <form
           className="mt-4 grid gap-3"
           onSubmit={(event) => {

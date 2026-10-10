@@ -54,13 +54,14 @@ function HomePage() {
             <span className="blink">gm, chog</span>
           </p>
           <h1 className="mt-5 text-[2.75rem] leading-[1.02] font-bold tracking-tight text-ink sm:text-6xl">
-            Show the work.
+            Show the work
             <br />
-            <span className="text-sand">Wear the name.</span>
+            and <span className="marker">wear the name.</span>
           </h1>
           <p className="mt-4 max-w-lg text-[17px] leading-7 text-body">
-            The contributor guild for Monad. Claim a passport, pick up real work, and climb the ranking with every
-            accepted contribution.
+            The contributor guild for <strong className="font-semibold text-ink">Monad</strong>, where you claim a
+            passport, pick up real work, and <span className="marker font-semibold text-ink">climb the ranking</span> with
+            every accepted contribution.
           </p>
           <div className="mt-6 flex flex-wrap gap-3">
             <Button asChild>
@@ -78,7 +79,7 @@ function HomePage() {
               ? `${profile.displayName} is signed in as @${profile.username}. ${details}`
               : sessionAddress
                 ? `${shortAddress(sessionAddress)} is signed in, and the passport is not saved yet.`
-                : "No passport session. Connecting a wallet does not create one."}{" "}
+                : "No passport session yet, since connecting a wallet does not create one."}{" "}
             <Link to="/network" className="font-semibold text-sand hover:text-sand-hover">Network status</Link>
           </p>
         </div>
@@ -94,7 +95,7 @@ function HomePage() {
               {TICKER.map((item) => (
                 <span key={item} className="flex items-center gap-8">
                   {item}
-                  <Sparkles className="size-3.5 text-sand" />
+                  <Sparkles className="size-3.5 text-muted" />
                 </span>
               ))}
             </div>
@@ -146,7 +147,7 @@ function HomePage() {
             </ol>
           ) : (
             <div className="dot-grid mt-4 rounded-xl border border-dashed border-line p-6 text-center">
-              <p className="font-semibold text-ink">No one has claimed #1 yet.</p>
+              <p className="font-semibold text-ink">Nobody has claimed the top spot yet.</p>
               <p className="mt-1 text-sm text-body">Save a passport and you are on the ladder today.</p>
               <Button asChild size="compact" className="mt-4">
                 <Link to="/passport">Claim your spot</Link>
@@ -192,7 +193,7 @@ function HomePage() {
               <li key={step.title}>
                 <Link to={step.to} className="card-pop group flex h-full flex-col gap-3 rounded-xl border border-line bg-elevated p-5">
                   <div className="flex items-center justify-between">
-                    <span className="flex size-10 items-center justify-center rounded-lg bg-action/15 text-sand ring-1 ring-action/40 transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
+                    <span className="flex size-10 items-center justify-center rounded-lg bg-secondary text-ink ring-1 ring-line transition-transform duration-300 group-hover:-rotate-6 group-hover:scale-110">
                       <Icon className="size-5" aria-hidden="true" />
                     </span>
                     <span className="font-mono text-xs text-muted">0{index + 1}</span>

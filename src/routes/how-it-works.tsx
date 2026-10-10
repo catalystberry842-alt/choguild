@@ -63,7 +63,7 @@ function HowItWorksPage() {
             return (
               <li key={step.title} className="card-pop rounded-xl border border-line bg-elevated p-5">
                 <div className="flex items-center justify-between">
-                  <span className="flex size-10 items-center justify-center rounded-lg bg-action/15 text-sand ring-1 ring-action/40">
+                  <span className="flex size-10 items-center justify-center rounded-lg bg-secondary text-ink ring-1 ring-line">
                     <Icon className="size-5" aria-hidden="true" />
                   </span>
                   <span className="font-mono text-xs text-muted">step {String(index + 1).padStart(2, "0")}</span>
@@ -78,7 +78,7 @@ function HowItWorksPage() {
 
       <section id="xp" className="scroll-mt-24">
         <h2 className="text-xl font-bold text-ink">How XP is counted</h2>
-        <p className="mt-1 text-sm text-body">Only public passports appear on the ranking. XP is recalculated live from the board.</p>
+        <p className="mt-1 text-sm text-body">Only public passports appear on the ranking, and XP is recalculated live from the board.</p>
         <div className="mt-4 overflow-hidden rounded-xl border border-line">
           <table className="w-full text-left text-sm">
             <thead className="bg-elevated text-xs text-muted uppercase">

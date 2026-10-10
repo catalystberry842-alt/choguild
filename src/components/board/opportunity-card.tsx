@@ -76,7 +76,7 @@ export function ProjectMark({ name, logoUrl }: { name: string; logoUrl: string |
     return <img src={logoUrl} alt="" className="size-9 rounded-md border border-line object-cover" />;
   }
   return (
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-action/15 text-sm font-bold text-sand ring-1 ring-action/40">
+    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-sm font-bold text-ink ring-1 ring-line">
       {initial}
     </span>
   );

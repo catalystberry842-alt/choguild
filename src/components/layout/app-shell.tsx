@@ -24,7 +24,7 @@ export function AppShell({ children }: { children: ReactNode }) {
       >
         Skip to content
       </a>
-      <aside className="sticky top-0 z-10 hidden h-dvh w-64 shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-black p-4 lg:flex">
+      <aside className="sticky top-0 z-10 hidden h-dvh w-64 shrink-0 flex-col gap-6 overflow-y-auto border-r border-line bg-canvas p-4 lg:flex">
         <div className="flex items-center gap-3">
           <Logo className="w-12" />
           <div>

@@ -10,11 +10,11 @@ export type XpKey = (typeof XP_RULES)[number]["key"];
 export type XpCounts = Record<XpKey, number>;
 
 export const TIERS = [
-  { name: "Hatchling", min: 0, blurb: "Fresh out of the egg. Save a passport to start." },
+  { name: "Hatchling", min: 0, blurb: "Fresh out of the egg, so save a passport to start." },
   { name: "Apprentice", min: 50, blurb: "On the board and getting picked." },
   { name: "Artisan", min: 150, blurb: "Shipped and accepted work, more than once." },
   { name: "Guildmaster", min: 400, blurb: "A name people look for on the board." },
-  { name: "Legend", min: 1000, blurb: "Chog royalty. The crown fits." },
+  { name: "Legend", min: 1000, blurb: "Chog royalty, and the crown fits." },
 ] as const;
 
 export type Tier = (typeof TIERS)[number];

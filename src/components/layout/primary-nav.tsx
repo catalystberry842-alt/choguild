@@ -34,7 +34,7 @@ export function PrimaryNav({ onNavigate }: { onNavigate?: () => void }) {
                 <Icon
                   className={cn(
                     "size-[18px] shrink-0 transition-transform duration-200 group-hover:scale-110",
-                    active && "text-sand",
+                    active && "text-ink",
                   )}
                   aria-hidden="true"
                 />

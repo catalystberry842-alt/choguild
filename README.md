@@ -5,7 +5,7 @@
 <h1 align="center">Choguild</h1>
 
 <p align="center">
-  <strong>Show the work. Wear the name.</strong><br />
+  <strong>Show the work and wear the name.</strong><br />
   A contributor guild for the Monad ecosystem: a passport for your name, a board of open work, and a record of reviewed contributions.
 </p>
 

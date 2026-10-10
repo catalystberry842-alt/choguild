@@ -170,7 +170,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
 
       <fieldset>
         <legend className="text-sm font-medium text-ink">Skills</legend>
-        <p className="mt-1 text-xs text-muted">Suggested skills are optional. Add your own if none fit.</p>
+        <p className="mt-1 text-xs text-muted">Suggested skills are optional, so add your own if none fit.</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {SUGGESTED_SKILLS.map((skill) => {
             const selected = form.skills.some((item) => item.toLowerCase() === skill.toLowerCase());

@@ -33,7 +33,37 @@
   --radius-lg: 0.75rem;
 }
 
+/* Light theme: the same tokens, swapped. Dark (pure black) is the default. */
+:root[data-theme="light"] {
+  --color-canvas: #ffffff;
+  --color-sidebar: #ffffff;
+  --color-elevated: #fafafa;
+  --color-secondary: #f0f0f0;
+  --color-ink: #0a0a0a;
+  --color-body: #4a4a4a;
+  --color-muted: #737373;
+  --color-sand: #6d28d9;
+  --color-sand-hover: #5b21b6;
+  --color-action: #7c3aed;
+  --color-action-hover: #6d28d9;
+  --color-pink: #db2777;
+  --color-olive: #6d28d9;
+  --color-line: #e5e5e5;
+  --color-success: #15803d;
+  --color-warning: #b45309;
+  --color-danger: #dc2626;
+  --color-scrim: #0a0a0a;
+  --dot: rgb(0 0 0 / 0.09);
+  --highlight: rgb(250 204 21 / 0.55);
+  color-scheme: light;
+}
+
 @layer base {
+  :root {
+    --dot: rgb(255 255 255 / 0.07);
+    --highlight: rgb(139 92 246 / 0.45);
+  }
+
   html {
     color-scheme: dark;
     background: var(--color-canvas);
@@ -88,7 +118,21 @@
 
 @layer components {
   .site-bg {
-    background-color: #000000;
+    background-color: var(--color-canvas);
+  }
+
+  /* Highlighter-pen mark behind a phrase; the sweep plays once on load. */
+  .marker {
+    background-image: linear-gradient(var(--highlight), var(--highlight));
+    background-repeat: no-repeat;
+    background-position: 0 88%;
+    background-size: 100% 0.42em;
+    border-radius: 0.15em;
+    padding: 0 0.08em;
+    margin: 0 -0.08em;
+    box-decoration-break: clone;
+    -webkit-box-decoration-break: clone;
+    animation: marker-sweep 0.9s cubic-bezier(0.2, 0, 0, 1) 0.35s both;
   }
 
   .btn-accent {
@@ -100,14 +144,14 @@
   }
 
   .glass {
-    background-color: rgb(0 0 0 / 0.88);
+    background-color: color-mix(in srgb, var(--color-canvas) 88%, transparent);
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
   }
 
   /* Faint dot grid used inside feature panels (never on the page background). */
   .dot-grid {
-    background-image: radial-gradient(rgb(255 255 255 / 0.07) 1px, transparent 1px);
+    background-image: radial-gradient(var(--dot) 1px, transparent 1px);
     background-size: 18px 18px;
   }
 
@@ -196,6 +240,11 @@
 @keyframes marquee {
   from { transform: translateX(0); }
   to { transform: translateX(-50%); }
+}
+
+@keyframes marker-sweep {
+  from { background-size: 0% 0.42em; }
+  to { background-size: 100% 0.42em; }
 }
 
 @keyframes blink {

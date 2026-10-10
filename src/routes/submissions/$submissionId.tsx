@@ -66,7 +66,7 @@ function SubmissionPage() {
         {editable ? (
           <section className="mt-8">
             <h2 className="text-lg text-ink">{work.status === "draft" ? "Finish the draft" : "Send a revision"}</h2>
-            <p className="mt-2 text-sm text-body">A revision is stored as a new version. The earlier evidence stays.</p>
+            <p className="mt-2 text-sm text-body">A revision is stored as a new version, and the earlier evidence stays.</p>
             <div className="mt-4"><WorkForm work={work} /></div>
           </section>
         ) : null}
@@ -83,7 +83,7 @@ function SubmissionPage() {
             </li>
           ))}
         </ol>
-        <p className="mt-4 text-xs text-muted">External links were supplied by the contributor. Opening one does not verify the work.</p>
+        <p className="mt-4 text-xs text-muted">External links were supplied by the contributor, so opening one does not verify the work.</p>
         <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="mt-3 inline-flex text-sm font-semibold text-sand">Opportunity</Link>
         {work.viewer === "reviewer" && (work.status === "submitted" || work.status === "under_review") ? (
           <form

@@ -24,7 +24,7 @@ export function AccountPanel({ onNavigate }: { onNavigate?: () => void }) {
     <div className="rounded-xl border border-line bg-elevated p-3">
       <div className="flex items-center gap-3">
         <span
-          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-action/15 text-sand ring-1 ring-action/40"
+          className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary text-ink ring-1 ring-line"
           aria-hidden="true"
         >
           <UserRound className="size-4" />
@@ -37,7 +37,7 @@ export function AccountPanel({ onNavigate }: { onNavigate?: () => void }) {
       <p className="mt-3 text-xs leading-relaxed text-muted">
         {isConnected && address
           ? `Wallet ${shortAddress(address)} · ${network.label}. A different address does not take over this passport.`
-          : "Use Wallet in the header to connect. A connection is not a passport."}
+          : "Use Wallet in the header to connect, though a connection alone is not a passport."}
       </p>
       <div className="mt-3 flex flex-col gap-2">
         <Button asChild variant="secondary" className="w-full">

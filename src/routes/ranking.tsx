@@ -135,8 +135,8 @@ function PodiumCard({ person }: { person: RankedContributor }) {
 function EmptyLadder() {
   return (
     <section className="dot-grid rounded-2xl border border-dashed border-line p-8 text-center sm:p-12">
-      <Trophy className="mx-auto size-10 text-sand" aria-hidden="true" />
-      <h2 className="mt-4 text-2xl font-bold text-ink">The ladder is empty. First place is open.</h2>
+      <Trophy className="mx-auto size-10 text-ink" aria-hidden="true" />
+      <h2 className="mt-4 text-2xl font-bold text-ink">The ladder is empty, so first place is yours to take.</h2>
       <p className="mx-auto mt-2 max-w-md text-body">
         Save a public passport and you are on the board with {XP_RULES.find((rule) => rule.key === "passport")?.points} XP.
         Accepted work is where the real points are.

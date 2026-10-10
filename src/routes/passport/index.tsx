@@ -46,7 +46,7 @@ function PassportPage() {
         </Notice>
       </div>
 
-      <Section title="Wallet" description="Use a browser wallet. Disconnecting it does not delete a saved passport.">
+      <Section title="Wallet" description="Use a browser wallet, and disconnecting it never deletes a saved passport.">
         <div className="rounded-lg border border-line bg-elevated p-5">
           <WalletPanel />
         </div>
@@ -65,7 +65,7 @@ function PassportPage() {
         {status === "ready" && !verified ? (
           <EmptyState
             title="Verify a wallet before creating a profile"
-            body="Connect a wallet, then sign the Choguild message. The signature opens an edit session. It is not a transaction."
+            body="Connect a wallet, then sign the Choguild message to open an edit session, which is free and not a transaction."
           />
         ) : null}
         {status === "ready" && verified ? (
@@ -81,7 +81,7 @@ function PassportPage() {
 
       <Section
         title="Contribution history"
-        description="Reviewed evidence will be listed here after submissions exist. There is no history to show."
+        description="There is no history yet, and reviewed evidence will show up here once submissions exist."
       >
         <EmptyState
           title="No contributions yet"

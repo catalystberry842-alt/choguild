@@ -14,7 +14,7 @@ export function TierBadge({ tier, className }: { tier: string; className?: strin
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full bg-black px-2 py-0.5 text-[11px] font-semibold ring-1",
+        "inline-flex items-center gap-1 rounded-full bg-canvas px-2 py-0.5 text-[11px] font-semibold ring-1",
         TIER_STYLE[tier] ?? TIER_STYLE.Hatchling,
         className,
       )}
