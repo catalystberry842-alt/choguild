@@ -2,7 +2,7 @@ import type { InputHTMLAttributes, ReactNode, SelectHTMLAttributes, TextareaHTML
 import { cn } from "@/lib/cn";
 
 const controlClass =
-  "min-h-11 w-full rounded-md border border-line bg-elevated px-3 text-sm text-ink placeholder:text-muted";
+  "min-h-11 w-full rounded-xl border border-line bg-elevated px-3.5 text-sm text-ink placeholder:text-muted";
 
 export function TextInput({ className, ...props }: InputHTMLAttributes<HTMLInputElement>) {
   return <input className={cn(controlClass, className)} {...props} />;

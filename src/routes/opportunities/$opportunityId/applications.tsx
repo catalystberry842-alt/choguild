@@ -48,7 +48,7 @@ function ReviewCard({ item }: { item: ApplicationView }) {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   return (
-    <li className="rounded-lg border border-line bg-elevated p-4">
+    <li className="rounded-2xl border border-line bg-elevated p-4">
       <div className="flex flex-wrap items-center gap-2">
         <Badge>{APPLICATION_STATUS_LABEL[item.status]}</Badge>
         <span className="text-xs text-muted">{formatStamp(item.createdAt)}</span>

@@ -47,8 +47,8 @@ function HowItWorksPage() {
   return (
     <div className="flex flex-col gap-14">
       <header className="max-w-2xl">
-        <p className="text-xs font-semibold tracking-[0.2em] text-sand uppercase">Guide</p>
-        <h1 className="mt-2 text-4xl font-bold tracking-tight text-ink sm:text-5xl">How the guild works</h1>
+        <p className="text-xs font-medium tracking-[0.15em] text-muted uppercase">Guide</p>
+        <h1 className="mt-2 text-3xl font-bold tracking-tight text-ink">How the guild works</h1>
         <p className="mt-3 text-body">
           Choguild is a place to prove what you have shipped in the Monad ecosystem. Here is the whole loop, how XP is
           counted, and what each rank means.
@@ -61,7 +61,7 @@ function HowItWorksPage() {
           {FLOW.map((step, index) => {
             const Icon = step.icon;
             return (
-              <li key={step.title} className="card-pop rounded-xl border border-line bg-elevated p-5">
+              <li key={step.title} className="card-pop rounded-2xl border border-line bg-elevated p-5">
                 <div className="flex items-center justify-between">
                   <span className="flex size-10 items-center justify-center rounded-lg bg-secondary text-ink ring-1 ring-line">
                     <Icon className="size-5" aria-hidden="true" />
@@ -96,7 +96,7 @@ function HowItWorksPage() {
                     <span className="mt-0.5 block text-xs font-normal text-muted sm:hidden">{rule.detail}</span>
                   </td>
                   <td className="hidden px-4 py-3 text-body sm:table-cell">{rule.detail}</td>
-                  <td className="px-4 py-3 text-right font-mono font-bold text-sand">+{rule.points}</td>
+                  <td className="px-4 py-3 text-right font-semibold tabular-nums text-ink">+{rule.points}</td>
                 </tr>
               ))}
             </tbody>
@@ -108,10 +108,10 @@ function HowItWorksPage() {
         <h2 className="text-xl font-bold text-ink">Ranks</h2>
         <ol className="stagger mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {TIERS.map((tier, index) => (
-            <li key={tier.name} className="rounded-xl border border-line bg-elevated p-4">
+            <li key={tier.name} className="rounded-2xl border border-line bg-elevated p-4">
               <div className="flex items-center justify-between gap-2">
                 <TierBadge tier={tier.name} />
-                <span className="font-mono text-xs text-muted">{tier.min}+ XP</span>
+                <span className="text-xs tabular-nums text-muted">{tier.min}+ XP</span>
               </div>
               <div className="mt-3 flex gap-1" aria-hidden="true">
                 {TIERS.map((_, dot) => (

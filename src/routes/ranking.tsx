@@ -24,8 +24,8 @@ function RankingPage() {
     <div className="flex flex-col gap-10">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <p className="text-xs font-semibold tracking-[0.2em] text-sand uppercase">Guild ranking</p>
-          <h1 className="mt-2 text-4xl font-bold tracking-tight text-ink sm:text-5xl">The Chog ladder</h1>
+          <p className="text-xs font-medium tracking-[0.15em] text-muted uppercase">Guild ranking</p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-ink">The Chog ladder</h1>
           <p className="mt-3 max-w-xl text-body">
             Every public passport earns XP from real, reviewed activity. No likes, no follower counts, just work that
             shipped.
@@ -36,7 +36,7 @@ function RankingPage() {
         </Button>
       </header>
 
-      <dl className="grid grid-cols-3 divide-x divide-line overflow-hidden rounded-xl border border-line bg-elevated">
+      <dl className="grid grid-cols-3 divide-x divide-line overflow-hidden rounded-2xl border border-line bg-elevated">
         <Stat label="Passports" value={stats.passports} />
         <Stat label="Open work" value={stats.openOpportunities} />
         <Stat label="Accepted" value={stats.acceptedWork} />
@@ -55,7 +55,7 @@ function RankingPage() {
           {rest.length > 0 ? (
             <section>
               <h2 className="text-lg font-bold text-ink">Everyone else on the ladder</h2>
-              <ol className="stagger mt-3 divide-y divide-line overflow-hidden rounded-xl border border-line bg-elevated">
+              <ol className="stagger mt-3 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-elevated">
                 {rest.map((person) => (
                   <li key={person.username}>
                     <Link
@@ -63,7 +63,7 @@ function RankingPage() {
                       params={{ username: person.username }}
                       className="grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-3 px-4 py-3 transition-colors hover:bg-secondary"
                     >
-                      <span className="font-mono text-sm text-muted">#{person.rank}</span>
+                      <span className="text-sm tabular-nums text-muted">#{person.rank}</span>
                       <span className="flex min-w-0 items-center gap-3">
                         <Avatar name={person.displayName} url={person.avatarUrl} />
                         <span className="min-w-0">
@@ -72,7 +72,7 @@ function RankingPage() {
                         </span>
                       </span>
                       <span className="flex flex-col items-end gap-1">
-                        <span className="font-mono text-sm font-semibold text-ink">{formatXp(person.xp)} XP</span>
+                        <span className="text-sm font-semibold tabular-nums text-ink">{formatXp(person.xp)} XP</span>
                         <TierBadge tier={person.tier} />
                       </span>
                     </Link>
@@ -91,7 +91,7 @@ function Stat({ label, value }: { label: string; value: number }) {
   return (
     <div className="px-3 py-4 text-center sm:px-6">
       <dt className="text-[11px] font-medium tracking-wide text-muted uppercase">{label}</dt>
-      <dd className="mt-1 font-mono text-2xl font-bold text-ink sm:text-3xl">
+      <dd className="mt-1 text-2xl font-semibold tabular-nums text-ink sm:text-3xl">
         <CountUp value={value} />
       </dd>
     </div>
@@ -99,7 +99,7 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 const PODIUM = [
-  { icon: Crown, ring: "border-warning/60", label: "text-warning", order: "md:order-2", lift: "md:pb-10" },
+  { icon: Crown, ring: "border-ink/70", label: "text-ink", order: "md:order-2", lift: "md:pb-10" },
   { icon: Medal, ring: "border-line", label: "text-body", order: "md:order-1", lift: "" },
   { icon: Trophy, ring: "border-line", label: "text-body", order: "md:order-3", lift: "" },
 ] as const;
@@ -114,7 +114,7 @@ function PodiumCard({ person }: { person: RankedContributor }) {
         params={{ username: person.username }}
         className={cn("card-pop flex flex-col items-center gap-3 rounded-2xl border bg-elevated p-6 pt-5 text-center", style.ring, style.lift)}
       >
-        <span className={cn("flex items-center gap-1 font-mono text-sm font-bold", style.label)}>
+        <span className={cn("flex items-center gap-1 text-sm font-semibold tabular-nums", style.label)}>
           <Icon className="size-4" aria-hidden="true" />#{person.rank}
         </span>
         <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
@@ -123,7 +123,7 @@ function PodiumCard({ person }: { person: RankedContributor }) {
           <span className="block text-xs text-muted">@{person.username}</span>
         </span>
         <TierBadge tier={person.tier} />
-        <span className="font-mono text-2xl font-bold text-ink">{formatXp(person.xp)} <span className="text-sm text-muted">XP</span></span>
+        <span className="text-2xl font-semibold tabular-nums text-ink">{formatXp(person.xp)} <span className="text-sm text-muted">XP</span></span>
         <span className="w-full">
           <XpBar xp={person.xp} />
         </span>

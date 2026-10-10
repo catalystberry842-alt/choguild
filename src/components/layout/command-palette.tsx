@@ -30,7 +30,7 @@ const ACTIONS: Action[] = [
 ];
 
 const itemClass =
-  "flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-body data-[selected=true]:bg-action/20 data-[selected=true]:text-ink";
+  "flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-body data-[selected=true]:bg-secondary data-[selected=true]:text-ink";
 
 /** Global ⌘K / Ctrl+K jump menu. */
 export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {

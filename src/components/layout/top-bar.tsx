@@ -41,7 +41,7 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
             type="button"
             onClick={onOpenPalette}
             aria-label="Search pages and actions"
-            className="flex h-9 items-center gap-2 rounded-lg border border-line bg-canvas px-2.5 text-sm text-muted transition-colors hover:border-action/60 hover:text-ink"
+            className="flex h-9 items-center gap-2 rounded-full border border-line bg-elevated px-3 text-sm text-muted transition-colors hover:border-muted hover:text-ink"
           >
             <Search className="size-4" aria-hidden="true" />
             <span className="hidden md:inline">Jump to…</span>

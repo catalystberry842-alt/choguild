@@ -54,7 +54,7 @@ function SubmissionPage() {
             <h2 className="text-lg text-ink">Earlier versions</h2>
             <ol className="mt-3 grid gap-3">
               {work.versions.slice(0, -1).map((version) => (
-                <li key={version.version} className="rounded-lg border border-line bg-elevated p-4">
+                <li key={version.version} className="rounded-2xl border border-line bg-elevated p-4">
                   <p className="text-xs text-muted">Version {version.version} · {formatStamp(version.createdAt)}</p>
                   <p className="mt-1 text-sm font-semibold text-ink">{version.title}</p>
                   <p className="mt-2 text-sm text-body">{version.description}</p>
@@ -71,7 +71,7 @@ function SubmissionPage() {
           </section>
         ) : null}
       </div>
-      <aside className="rounded-lg border border-line bg-elevated p-4">
+      <aside className="rounded-2xl border border-line bg-elevated p-4">
         <h2 className="text-sm font-semibold tracking-[0.14em] text-muted uppercase">Review history</h2>
         <ol className="mt-3 grid gap-3">
           {work.history.map((event, index) => (

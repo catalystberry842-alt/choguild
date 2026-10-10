@@ -59,7 +59,7 @@ export function PublicPassport({
           />
         ) : (
           <span
-            className="flex size-16 items-center justify-center rounded-lg border border-line bg-elevated text-xl text-ink"
+            className="flex size-16 items-center justify-center rounded-2xl border border-line bg-elevated text-xl text-ink"
             aria-hidden="true"
           >
             {initial}
@@ -146,7 +146,7 @@ export function PublicPassport({
         {contributions.items.length > 0 ? (
           <ul className="mt-4 grid gap-3">
             {contributions.items.map((item) => (
-              <li key={item.id} className="rounded-lg border border-line bg-elevated p-4">
+              <li key={item.id} className="rounded-2xl border border-line bg-elevated p-4">
                 <p className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">Accepted {formatStamp(item.acceptedAt)}</p>
                 <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
                 <p className="text-sm text-body">{item.projectName} · {item.opportunityTitle}</p>

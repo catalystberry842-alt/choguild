@@ -26,12 +26,12 @@ function NetworkPage() {
           Choguild uses a wallet address as an identifier. A signature proves you control that address. Accepted work is a review record kept by Choguild. It is not a Monad transaction, a balance, or an on-chain credential.
         </p>
         <dl className="mt-6 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-lg border border-line bg-elevated p-4">
+          <div className="rounded-2xl border border-line bg-elevated p-4">
             <dt className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">Configured chain</dt>
             <dd className="mt-2 font-mono text-sm text-ink">Monad · {MONAD_CHAIN_ID}</dd>
             <dd className="mt-1 text-sm text-body">Currency is MON, and no balance is read.</dd>
           </div>
-          <div className="rounded-lg border border-line bg-elevated p-4">
+          <div className="rounded-2xl border border-line bg-elevated p-4">
             <dt className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">Public RPC</dt>
             <dd className="mt-2 text-sm text-ink">{probe.ok ? "Responded" : "Unavailable"}</dd>
             <dd className="mt-1 font-mono text-xs text-muted">{probe.rpcHost}</dd>
@@ -41,14 +41,14 @@ function NetworkPage() {
               <dd className="mt-2 text-sm text-warning">{probe.error}</dd>
             )}
           </div>
-          <div className="rounded-lg border border-line bg-elevated p-4">
+          <div className="rounded-2xl border border-line bg-elevated p-4">
             <dt className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">This wallet</dt>
             <dd className="mt-2">
               <Badge tone={wallet.onMonad ? "olive" : "warning"}>{isConnected ? wallet.label : "Not connected"}</Badge>
             </dd>
             <dd className="mt-2 text-sm text-body">The badge uses the chain the wallet reported rather than assuming one.</dd>
           </div>
-          <div className="rounded-lg border border-line bg-elevated p-4">
+          <div className="rounded-2xl border border-line bg-elevated p-4">
             <dt className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">On-chain credentials</dt>
             <dd className="mt-2 text-sm text-body">This is planned but not built yet, so no contract is deployed and no attestation is issued.</dd>
           </div>
@@ -68,7 +68,7 @@ function NetworkPage() {
           <Link to="/passport" className="text-sand">Passport</Link> ownership stays on the address that signed in.
         </p>
       </div>
-      <aside className="rounded-lg border border-line bg-elevated p-4">
+      <aside className="rounded-2xl border border-line bg-elevated p-4">
         <h2 className="text-sm font-semibold text-ink">Wallet</h2>
         <div className="mt-3">
           <WalletPanel />

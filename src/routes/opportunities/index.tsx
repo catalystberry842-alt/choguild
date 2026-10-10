@@ -39,7 +39,7 @@ function OwnedPage() {
       ) : (
         <ul className="mt-6 grid gap-3">
           {result.items.map((item) => (
-            <li key={item.id} className="rounded-lg border border-line bg-elevated p-4">
+            <li key={item.id} className="rounded-2xl border border-line bg-elevated p-4">
               <Badge>{OPPORTUNITY_STATUS_LABEL[item.status as OpportunityStatus] ?? item.status}</Badge>
               <h2 className="mt-2 text-lg font-semibold text-ink">{item.title}</h2>
               <p className="text-sm text-body">{item.projectName}</p>

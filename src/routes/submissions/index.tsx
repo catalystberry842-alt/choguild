@@ -84,7 +84,7 @@ function SubmissionsPage() {
               />
             </div>
           ) : (
-            <ul className="mt-4 divide-y divide-line overflow-hidden rounded-lg border border-line bg-elevated">
+            <ul className="mt-4 divide-y divide-line overflow-hidden rounded-2xl border border-line bg-elevated">
               {visible.map((item) => (
                 <li key={item.id} className="px-4 py-4">
                   <div className="flex flex-wrap items-center gap-2">

@@ -21,7 +21,7 @@ export function AccountPanel({ onNavigate }: { onNavigate?: () => void }) {
           : "No passport session";
 
   return (
-    <div className="rounded-xl border border-line bg-elevated p-3">
+    <div className="rounded-2xl border border-line bg-elevated p-3">
       <div className="flex items-center gap-3">
         <span
           className="flex size-10 shrink-0 items-center justify-center rounded-full bg-secondary text-ink ring-1 ring-line"

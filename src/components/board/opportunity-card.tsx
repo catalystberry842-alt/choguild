@@ -23,7 +23,7 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
   const category = label(CATEGORY_LABEL, item.category as Category);
 
   return (
-    <li className="card-pop @container rounded-xl border border-line bg-elevated px-3 py-3 md:p-4">
+    <li className="card-pop @container rounded-2xl border border-line bg-elevated px-3 py-3 md:p-4">
       <div className="grid grid-cols-1 items-start gap-2 @2xl:grid-cols-[minmax(0,1.5fr)_minmax(0,16rem)_auto] @2xl:items-center @2xl:gap-6">
         <div className="flex min-w-0 gap-2.5">
           <ProjectMark name={project} logoUrl={item.projectLogoUrl} />

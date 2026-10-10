@@ -1,28 +1,30 @@
 @import "tailwindcss";
-@import "@fontsource/inter/400.css";
-@import "@fontsource/inter/500.css";
-@import "@fontsource/inter/600.css";
-@import "@fontsource/inter/700.css";
+@import "@fontsource/dm-sans/400.css";
+@import "@fontsource/dm-sans/500.css";
+@import "@fontsource/dm-sans/600.css";
+@import "@fontsource/dm-sans/700.css";
+@import "@fontsource/dm-mono/400.css";
+@import "@fontsource/dm-mono/500.css";
 
 @theme {
-  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, monospace;
+  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
   --color-canvas: #000000;
   --color-sidebar: #000000;
-  --color-elevated: #0a0a0a;
-  --color-secondary: #141414;
+  --color-elevated: #0b0b0b;
+  --color-secondary: #161616;
   --color-ink: #f5f5f5;
-  --color-body: #a3a3a3;
-  --color-muted: #737373;
-  --color-sand: #c4a6ff;
-  --color-sand-hover: #ddc9ff;
-  --color-action: #8b5cf6;
-  --color-action-hover: #7c3aed;
-  --color-pink: #f472b6;
-  --color-on-accent: #ffffff;
-  --color-olive: #c4a6ff;
-  --color-line: #232323;
+  --color-body: #a1a1a1;
+  --color-muted: #6f6f6f;
+  --color-sand: #fafafa;
+  --color-sand-hover: #d4d4d4;
+  --color-action: #fafafa;
+  --color-action-hover: #d4d4d4;
+  --color-pink: #fafafa;
+  --color-on-accent: #0a0a0a;
+  --color-olive: #fafafa;
+  --color-line: #1f1f1f;
   --color-success: #86e0a8;
   --color-warning: #f5c97a;
   --color-danger: #fb7185;
@@ -35,33 +37,34 @@
 
 /* Light theme: the same tokens, swapped. Dark (pure black) is the default. */
 :root[data-theme="light"] {
-  --color-canvas: #ffffff;
-  --color-sidebar: #ffffff;
-  --color-elevated: #fafafa;
-  --color-secondary: #f0f0f0;
+  --color-canvas: #f7f7f8;
+  --color-sidebar: #f7f7f8;
+  --color-elevated: #ffffff;
+  --color-secondary: #f1f1f3;
   --color-ink: #0a0a0a;
   --color-body: #4a4a4a;
   --color-muted: #737373;
-  --color-sand: #6d28d9;
-  --color-sand-hover: #5b21b6;
-  --color-action: #7c3aed;
-  --color-action-hover: #6d28d9;
-  --color-pink: #db2777;
-  --color-olive: #6d28d9;
-  --color-line: #e5e5e5;
+  --color-sand: #0a0a0a;
+  --color-sand-hover: #404040;
+  --color-action: #0a0a0a;
+  --color-action-hover: #262626;
+  --color-pink: #0a0a0a;
+  --color-olive: #0a0a0a;
+  --color-on-accent: #ffffff;
+  --color-line: #e6e6ea;
   --color-success: #15803d;
   --color-warning: #b45309;
   --color-danger: #dc2626;
   --color-scrim: #0a0a0a;
   --dot: rgb(0 0 0 / 0.09);
-  --highlight: rgb(250 204 21 / 0.55);
+  --highlight: rgb(250 204 21 / 0.45);
   color-scheme: light;
 }
 
 @layer base {
   :root {
     --dot: rgb(255 255 255 / 0.07);
-    --highlight: rgb(139 92 246 / 0.45);
+    --highlight: rgb(255 255 255 / 0.16);
   }
 
   html {
@@ -87,7 +90,7 @@
   }
 
   :focus-visible {
-    outline: 2px solid #a78bfa;
+    outline: 2px solid var(--color-ink);
     outline-offset: 2px;
   }
 
@@ -95,7 +98,7 @@
   h2,
   h3 {
     font-weight: 700;
-    letter-spacing: -0.02em;
+    letter-spacing: -0.025em;
     text-wrap: balance;
     scroll-margin-top: calc(4.5rem + env(safe-area-inset-top, 0px));
   }
@@ -183,8 +186,8 @@
   }
 
   .card-pop:hover {
-    transform: translateY(-3px);
-    border-color: rgb(139 92 246 / 0.6);
+    transform: translateY(-2px);
+    border-color: var(--color-muted);
   }
 
   .route-progress {

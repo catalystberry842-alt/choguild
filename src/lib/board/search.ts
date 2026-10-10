@@ -34,8 +34,12 @@ export function parseBoardSearch(search: Record<string, unknown>): BoardSearch {
   const statusRaw = text(search.status, 20);
   const sortRaw = text(search.sort, 20);
   const pageRaw = Number(search.page);
-  const skills = text(search.skills, 160)
-    .split(",")
+  // The router serializes arrays as JSON, so skills arrive as a list; a plain
+  // comma-separated string (hand-typed URLs) is accepted too.
+  const skillItems = Array.isArray(search.skills)
+    ? search.skills.map((item) => text(item, 40))
+    : text(search.skills, 160).split(",");
+  const skills = skillItems
     .map((item) => item.trim())
     .filter(Boolean)
     .slice(0, 6);

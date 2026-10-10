@@ -41,7 +41,7 @@ function ApplicationsPage() {
       ) : (
         <ul className="mt-6 grid gap-3">
           {result.items.map((item) => (
-            <li key={item.id} className="rounded-lg border border-line bg-elevated px-4 py-4">
+            <li key={item.id} className="rounded-2xl border border-line bg-elevated px-4 py-4">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <h2 className="text-base font-semibold text-ink">{item.opportunityTitle}</h2>
                 <Badge>{APPLICATION_STATUS_LABEL[item.status]}</Badge>

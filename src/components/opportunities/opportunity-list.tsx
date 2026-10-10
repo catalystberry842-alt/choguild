@@ -13,7 +13,7 @@ const statusTone: Record<OpportunityStatus, "olive" | "warning" | "neutral"> = {
 
 export function OpportunityList({ items }: { items: DemoOpportunity[] }) {
   return (
-    <ul className="divide-y divide-line overflow-hidden rounded-lg border border-line bg-elevated">
+    <ul className="divide-y divide-line overflow-hidden rounded-2xl border border-line bg-elevated">
       {items.map((item) => (
         <li key={item.id} className="px-4 py-5 md:px-5">
           <div className="flex flex-wrap items-start justify-between gap-3">

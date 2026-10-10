@@ -17,7 +17,7 @@ export function ThemeToggle() {
       }}
       aria-label={`Switch to ${next} mode`}
       title={`Switch to ${next} mode`}
-      className="flex size-9 items-center justify-center rounded-lg border border-line bg-canvas text-muted transition-colors hover:border-action/60 hover:text-ink"
+      className="flex size-9 items-center justify-center rounded-full border border-line bg-elevated text-muted transition-colors hover:border-muted hover:text-ink"
     >
       {theme === "dark" ? <Sun className="size-4" aria-hidden="true" /> : <Moon className="size-4" aria-hidden="true" />}
     </button>

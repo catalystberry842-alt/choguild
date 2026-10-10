@@ -47,7 +47,7 @@ function PassportPage() {
       </div>
 
       <Section title="Wallet" description="Use a browser wallet, and disconnecting it never deletes a saved passport.">
-        <div className="rounded-lg border border-line bg-elevated p-5">
+        <div className="rounded-2xl border border-line bg-elevated p-5">
           <WalletPanel />
         </div>
       </Section>
@@ -69,7 +69,7 @@ function PassportPage() {
           />
         ) : null}
         {status === "ready" && verified ? (
-          <div className="rounded-lg border border-line bg-elevated p-5">
+          <div className="rounded-2xl border border-line bg-elevated p-5">
             <ProfileForm
               key={profile?.updatedAt ?? "new"}
               mode={profile ? "update" : "create"}

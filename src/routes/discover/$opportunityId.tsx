@@ -151,7 +151,7 @@ function OpportunityPage() {
         <Block title="How to apply" body={plainCopy(opportunity.instructions)} />
       </div>
 
-      <section className="mt-8 rounded-lg border border-line bg-elevated p-5">
+      <section className="mt-8 rounded-2xl border border-line bg-elevated p-5">
         <h2 className="text-lg font-semibold text-ink">Application</h2>
         {opportunity.myApplicationStatus ? (
           <p className="mt-2 text-sm text-body">
