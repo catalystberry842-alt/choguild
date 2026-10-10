@@ -35,3 +35,61 @@ export function tierFor(xp: number): { tier: Tier; next: Tier | null; progress: 
 export function formatXp(xp: number): string {
   return new Intl.NumberFormat("en-US").format(xp);
 }
+
+/**
+ * Onchain XP: 10 × √(transactions sent on Monad), capped at 150. Heavy onchain
+ * activity is worth about one accepted job, so reviewed guild work still leads.
+ */
+export const ONCHAIN_XP_CAP = 150;
+
+export function onchainXpFor(txCount: number): number {
+  if (!Number.isFinite(txCount) || txCount <= 0) return 0;
+  return Math.min(ONCHAIN_XP_CAP, Math.round(10 * Math.sqrt(txCount)));
+}
+
+export type RankBy = "overall" | "guild" | "onchain";
+
+export const RANK_BY: { id: RankBy; label: string }[] = [
+  { id: "overall", label: "Overall" },
+  { id: "guild", label: "Guild work" },
+  { id: "onchain", label: "Onchain" },
+];
+
+export type Contributor = {
+  username: string;
+  displayName: string;
+  avatarUrl: string | null;
+  wallet: string;
+  joined: string;
+  counts: XpCounts;
+  guildXp: number;
+  /** Null when the Monad RPC could not be reached for this wallet. */
+  txCount: number | null;
+  onchainXp: number | null;
+};
+
+export type RankedContributor = Contributor & { rank: number; xp: number; tier: string };
+
+function scoreFor(person: Contributor, by: RankBy): number {
+  if (by === "guild") return person.guildXp;
+  if (by === "onchain") return person.onchainXp ?? 0;
+  return person.guildXp + (person.onchainXp ?? 0);
+}
+
+/** Sorts by the chosen score; ties go to overall XP, then whoever joined first. Tier always uses overall XP. */
+export function rankContributors(people: Contributor[], by: RankBy, limit = 50): RankedContributor[] {
+  return [...people]
+    .sort(
+      (a, b) =>
+        scoreFor(b, by) - scoreFor(a, by) ||
+        scoreFor(b, "overall") - scoreFor(a, "overall") ||
+        a.joined.localeCompare(b.joined),
+    )
+    .slice(0, limit)
+    .map((person, index) => ({
+      ...person,
+      rank: index + 1,
+      xp: scoreFor(person, by),
+      tier: tierFor(scoreFor(person, "overall")).tier.name,
+    }));
+}

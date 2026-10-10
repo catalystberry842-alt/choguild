@@ -20,7 +20,7 @@
 | **Opportunities** | Publish open work, edit your listings, and review the applications they receive. |
 | **Applications** | Track what you applied to and where each application stands. |
 | **Submissions** | Once accepted, submit evidence of the work. Reviewed submissions build your contribution history. |
-| **Ranking** | The Chog ladder: every public passport ranked by XP earned from reviewed work, with a top-3 podium. |
+| **Ranking** | The Chog ladder: every public passport ranked by guild XP and onchain Monad activity, with Overall / Guild work / Onchain views and a top-3 podium. |
 | **How it works** | The full loop, the XP table, the five ranks, and an FAQ. |
 | **Network** | Live Monad mainnet status for the RPC the app uses. |
 
@@ -36,6 +36,9 @@ XP is calculated live from the database, so it can't drift out of sync with the 
 | Accepted application | +25 |
 | Published opportunity (not draft, not demo) | +15 |
 | Saved public passport | +10 |
+| Onchain activity on Monad mainnet | 10 × √(transactions sent), up to +150 |
+
+Onchain XP reads each passport wallet's transaction count from the public Monad RPC (batched, cached for 10 minutes). The square root and the cap mean steady activity counts, but spamming transactions can't outrank reviewed guild work, and balances are never used. The Ranking page can sort by **Overall**, **Guild work**, or **Onchain**.
 
 Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Guildmaster** (400) → **Legend** (1000). The rules live in `src/lib/ranking/xp.ts`.
 
@@ -97,7 +100,7 @@ src/
   lib/board/       opportunities and applications
   lib/work/        submissions and reviews
   lib/passport/    profiles, SIWE sessions, wallet config
-  lib/monad/       network status
+  lib/monad/       network status and onchain activity (tx counts)
   lib/ranking/     XP rules, tiers, and the ranking query
 migrations/        SQL schema, applied in order
 public/brand/      Chog mascot artwork

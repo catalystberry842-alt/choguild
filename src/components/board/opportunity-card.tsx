@@ -23,18 +23,18 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
   const category = label(CATEGORY_LABEL, item.category as Category);
 
   return (
-    <li className="card-pop @container rounded-2xl border border-line bg-elevated px-3 py-3 md:p-4">
-      <div className="grid grid-cols-1 items-start gap-2 @2xl:grid-cols-[minmax(0,1.5fr)_minmax(0,16rem)_auto] @2xl:items-center @2xl:gap-6">
-        <div className="flex min-w-0 gap-2.5">
+    <li className="card-pop @container rounded-3xl border border-line bg-elevated p-5 md:p-6">
+      <div className="grid grid-cols-1 items-start gap-4 @2xl:grid-cols-[minmax(0,1.5fr)_minmax(0,16rem)_auto] @2xl:items-center @2xl:gap-6">
+        <div className="flex min-w-0 gap-4">
           <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
           <div className="min-w-0">
             <h3 className="text-base leading-snug font-semibold text-ink">{item.title}</h3>
             <p className="mt-0.5 text-sm leading-5 text-body">{project}</p>
-            <p className="mt-1 line-clamp-2 text-sm leading-5 text-body">{cardSummary(item.summary)}</p>
+            <p className="mt-2 line-clamp-2 text-sm leading-6 text-body">{cardSummary(item.summary)}</p>
           </div>
         </div>
 
-        <div className="grid min-w-0 grid-cols-2 gap-x-3 gap-y-1.5 border-t border-line pt-2 @2xl:border-t-0 @2xl:pt-0 @2xl:grid-cols-1">
+        <div className="grid min-w-0 grid-cols-2 gap-x-4 gap-y-3 border-t border-line pt-4 @2xl:border-t-0 @2xl:pt-0 @2xl:grid-cols-1">
           <div className="col-span-2 flex flex-wrap gap-1 @2xl:col-span-1">
             {item.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{category}</Badge>

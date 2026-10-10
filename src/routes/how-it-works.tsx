@@ -3,7 +3,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { ChevronDown, Compass, FileCheck2, IdCard, Inbox, Trophy, Wallet } from "lucide-react";
 import { TierBadge } from "@/components/ranking/bits";
 import { Button } from "@/components/ui/button";
-import { TIERS, XP_RULES } from "@/lib/ranking/xp";
+import { ONCHAIN_XP_CAP, TIERS, XP_RULES } from "@/lib/ranking/xp";
 
 export const Route = createFileRoute("/how-it-works")({
   staticData: { title: "How it works", crumb: "How it works" },
@@ -34,6 +34,10 @@ const FAQ = [
     a: "The big points come from submissions a publisher accepted. Publishing opportunities only counts when they leave draft, and demo listings never count.",
   },
   {
+    q: "How does onchain XP work?",
+    a: "We read how many transactions your passport wallet has sent on Monad mainnet. The score grows with the square root of that count and caps at 150 XP, about one accepted job, so steady activity counts but spamming transactions cannot outrank reviewed guild work. Your balance is never used.",
+  },
+  {
     q: "Who verifies the work?",
     a: "The person who published the opportunity reviews your submission. Links you provide stay marked as unverified until they accept them.",
   },
@@ -45,11 +49,11 @@ const FAQ = [
 
 function HowItWorksPage() {
   return (
-    <div className="flex flex-col gap-14">
-      <header className="max-w-2xl">
+    <div className="mx-auto flex max-w-4xl flex-col gap-16">
+      <header className="flex max-w-2xl flex-col gap-3">
         <p className="text-xs font-medium tracking-[0.15em] text-muted uppercase">Guide</p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-ink">How the guild works</h1>
-        <p className="mt-3 text-body">
+        <h1 className="text-3xl font-bold tracking-tight text-ink">How the guild works</h1>
+        <p className="leading-7 text-body">
           Choguild is a place to prove what you have shipped in the Monad ecosystem. Here is the whole loop, how XP is
           counted, and what each rank means.
         </p>
@@ -57,19 +61,19 @@ function HowItWorksPage() {
 
       <section>
         <h2 className="text-xl font-bold text-ink">The loop</h2>
-        <ol className="stagger relative mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="stagger relative mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {FLOW.map((step, index) => {
             const Icon = step.icon;
             return (
-              <li key={step.title} className="card-pop rounded-2xl border border-line bg-elevated p-5">
+              <li key={step.title} className="card-pop rounded-3xl border border-line bg-elevated p-6">
                 <div className="flex items-center justify-between">
                   <span className="flex size-10 items-center justify-center rounded-lg bg-secondary text-ink ring-1 ring-line">
                     <Icon className="size-5" aria-hidden="true" />
                   </span>
                   <span className="font-mono text-xs text-muted">step {String(index + 1).padStart(2, "0")}</span>
                 </div>
-                <h3 className="mt-4 font-semibold text-ink">{step.title}</h3>
-                <p className="mt-1 text-sm leading-6 text-body">{step.body}</p>
+                <h3 className="mt-5 font-semibold text-ink">{step.title}</h3>
+                <p className="mt-2 text-sm leading-6 text-body">{step.body}</p>
               </li>
             );
           })}
@@ -78,8 +82,8 @@ function HowItWorksPage() {
 
       <section id="xp" className="scroll-mt-24">
         <h2 className="text-xl font-bold text-ink">How XP is counted</h2>
-        <p className="mt-1 text-sm text-body">Only public passports appear on the ranking, and XP is recalculated live from the board.</p>
-        <div className="mt-4 overflow-hidden rounded-xl border border-line">
+        <p className="mt-1 text-sm text-body">Only public passports appear on the ranking, and XP is recalculated live from the board and Monad mainnet.</p>
+        <div className="mt-6 overflow-hidden rounded-3xl border border-line">
           <table className="w-full text-left text-sm">
             <thead className="bg-elevated text-xs text-muted uppercase">
               <tr>
@@ -99,6 +103,18 @@ function HowItWorksPage() {
                   <td className="px-4 py-3 text-right font-semibold tabular-nums text-ink">+{rule.points}</td>
                 </tr>
               ))}
+              <tr className="transition-colors hover:bg-elevated">
+                <td className="px-4 py-3 font-medium text-ink">
+                  Onchain activity
+                  <span className="mt-0.5 block text-xs font-normal text-muted sm:hidden">
+                    10 × √(transactions your wallet sent on Monad), up to {ONCHAIN_XP_CAP}.
+                  </span>
+                </td>
+                <td className="hidden px-4 py-3 text-body sm:table-cell">
+                  10 × √(transactions your wallet sent on Monad mainnet), up to {ONCHAIN_XP_CAP}. 25 txs = 50 XP.
+                </td>
+                <td className="px-4 py-3 text-right font-semibold tabular-nums text-ink">≤{ONCHAIN_XP_CAP}</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -106,9 +122,9 @@ function HowItWorksPage() {
 
       <section>
         <h2 className="text-xl font-bold text-ink">Ranks</h2>
-        <ol className="stagger mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
+        <ol className="stagger mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
           {TIERS.map((tier, index) => (
-            <li key={tier.name} className="rounded-2xl border border-line bg-elevated p-4">
+            <li key={tier.name} className="rounded-3xl border border-line bg-elevated p-5">
               <div className="flex items-center justify-between gap-2">
                 <TierBadge tier={tier.name} />
                 <span className="text-xs tabular-nums text-muted">{tier.min}+ XP</span>
@@ -126,22 +142,22 @@ function HowItWorksPage() {
 
       <section>
         <h2 className="text-xl font-bold text-ink">Questions</h2>
-        <Accordion.Root type="single" collapsible className="mt-4 divide-y divide-line rounded-xl border border-line">
+        <Accordion.Root type="single" collapsible className="mt-6 divide-y divide-line rounded-3xl border border-line">
           {FAQ.map((item) => (
             <Accordion.Item key={item.q} value={item.q}>
               <Accordion.Header>
-                <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 px-4 py-4 text-left font-medium text-ink transition-colors hover:bg-elevated">
+                <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 px-4 py-4 text-left font-medium text-ink transition-colors hover:bg-elevated sm:px-6 sm:py-5">
                   {item.q}
                   <ChevronDown className="size-4 shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true" />
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="px-4 pb-4 text-sm leading-6 text-body">{item.a}</Accordion.Content>
+              <Accordion.Content className="px-4 pb-5 text-sm leading-7 text-body sm:px-6">{item.a}</Accordion.Content>
             </Accordion.Item>
           ))}
         </Accordion.Root>
       </section>
 
-      <section className="dot-grid flex flex-col items-start gap-4 rounded-2xl border border-line p-6 sm:flex-row sm:items-center sm:justify-between sm:p-8">
+      <section className="dot-grid flex flex-col items-start gap-4 rounded-3xl border border-line p-7 sm:flex-row sm:items-center sm:justify-between sm:p-10">
         <div>
           <h2 className="text-2xl font-bold text-ink">Ready to get on the ladder?</h2>
           <p className="mt-1 text-body">It takes one signature and a short bio.</p>

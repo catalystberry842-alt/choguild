@@ -67,7 +67,7 @@ function DiscoverPage() {
       </header>
 
       <form
-        className="mt-6 grid gap-4 rounded-3xl border border-line bg-elevated p-2"
+        className="mt-8 grid gap-4 rounded-3xl border border-line bg-elevated p-2"
         role="search"
         aria-label="Filter opportunities"
         onSubmit={(event) => event.preventDefault()}
@@ -213,12 +213,12 @@ function DiscoverPage() {
         ) : null}
       </form>
 
-      <p className="mt-4 text-sm text-muted" aria-live="polite">
+      <p className="mt-8 text-sm text-muted" aria-live="polite">
         {result.total} {result.total === 1 ? "opportunity" : "opportunities"}
       </p>
 
       {result.items.length > 0 ? (
-        <ul className="stagger mt-3 grid gap-4 xl:grid-cols-2">
+        <ul className="stagger mt-5 grid gap-5 xl:grid-cols-2">
           {result.items.map((item) => (
             <OpportunityCardView key={item.id} item={item} />
           ))}

@@ -22,7 +22,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         Skip to content
       </a>
       <TopBar title={title} onOpenPalette={() => setPaletteOpen(true)} />
-      <main id="content" className="mx-auto w-full max-w-5xl scroll-mt-[4.5rem] px-4 pt-6 pb-36 sm:px-6 md:pt-10">
+      <main id="content" className="mx-auto w-full max-w-5xl scroll-mt-[4.5rem] px-5 pt-8 pb-40 sm:px-8 md:pt-14">
         {/* Keyed on the path (not search) so filters keep state while pages animate in. */}
         <div key={pathname} className="page-enter">
           {children}
