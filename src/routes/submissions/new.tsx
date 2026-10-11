@@ -31,7 +31,7 @@ function NewSubmissionPage() {
   return (
     <div className="max-w-2xl">
       <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">Evidence</p>
-      <h1 className="mt-3 text-[2.5rem] font-bold tracking-tight text-ink">Submit work</h1>
+      <h1 className="mt-3 text-[2.25rem] font-bold tracking-tight text-ink">Submit work</h1>
       <label className="mt-10 block text-sm font-medium text-ink" htmlFor="eligible">Accepted application</label>
       <SelectInput id="eligible" className="mt-2" value={applicationId} onChange={(event) => setApplicationId(event.target.value)}>
         {data.eligible.map((item) => (

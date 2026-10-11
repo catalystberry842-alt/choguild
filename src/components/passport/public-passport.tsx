@@ -66,7 +66,7 @@ export function PublicPassport({
           </span>
         )}
         <div className="min-w-0">
-          <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">{profile.displayName}</h1>
+          <h1 className="text-[2.25rem] font-bold tracking-tight text-ink">{profile.displayName}</h1>
           <p className="mt-1 text-sm text-body">@{profile.username}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <p className="font-mono text-sm text-ink">{shortAddress(profile.walletAddress)}</p>

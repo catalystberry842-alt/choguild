@@ -50,7 +50,7 @@ function DiscoverPage() {
           <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">
             Collaboration board
           </p>
-          <h1 className="mt-3 text-[2.5rem] leading-tight font-bold tracking-tight text-ink">Opportunities</h1>
+          <h1 className="mt-3 text-[2.25rem] leading-tight font-bold tracking-tight text-ink">Opportunities</h1>
           <p className="mt-3 max-w-xl text-base leading-7 text-body">
             Open work from people with a Chog Passport. Demo listings are marked and do not accept
             applications.

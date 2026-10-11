@@ -42,7 +42,7 @@ function RankingPage() {
     <div className="mx-auto flex max-w-3xl flex-col gap-12">
       <header className="flex flex-col gap-3">
         <p className="text-xs font-medium tracking-[0.15em] text-muted uppercase">Guild ranking</p>
-        <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">The Chog ladder</h1>
+        <h1 className="text-[2.25rem] font-bold tracking-tight text-ink">The Chog ladder</h1>
         <p className="max-w-xl leading-7 text-body">
           Every public passport earns XP from reviewed guild work and from real activity on Monad, so the ladder
           reflects what people actually ship.

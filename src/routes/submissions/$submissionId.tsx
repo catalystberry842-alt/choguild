@@ -44,7 +44,7 @@ function SubmissionPage() {
     <article className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
       <div>
         <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">{work.projectName}</p>
-        <h1 className="mt-3 text-[2.5rem] font-bold tracking-tight text-ink">{latest?.title ?? "Submission"}</h1>
+        <h1 className="mt-3 text-[2.25rem] font-bold tracking-tight text-ink">{latest?.title ?? "Submission"}</h1>
         <p className="mt-2 text-sm text-body">{work.opportunityTitle}</p>
         <div className="mt-3"><Badge>{WORK_STATUS_LABEL[work.status]}</Badge></div>
         <p className="mt-4 max-w-2xl whitespace-pre-wrap text-sm leading-7 text-body">{latest?.description}</p>

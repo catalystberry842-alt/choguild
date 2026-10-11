@@ -66,11 +66,11 @@ function Hero() {
 
         <h1
           id="hero-title"
-          className="landing-headline rise mt-6 max-w-[14ch] text-[clamp(2.75rem,1.2rem+5vw,5.5rem)] [animation-delay:60ms] sm:mt-7"
+          className="landing-headline rise mt-6 max-w-[14ch] text-[clamp(2.5rem,1.1rem+4.4vw,4.75rem)] [animation-delay:60ms] sm:mt-7"
         >
           Show the work.
           <br />
-          <em className="italic">Wear the name.</em>
+          <span className="text-[#bdb3cf]">Wear the name.</span>
         </h1>
 
         <p className="rise mt-6 max-w-[33rem] text-[16px] leading-7 text-balance text-[var(--l-body)] [animation-delay:120ms] sm:mt-7 sm:text-[18px] sm:leading-8">
@@ -135,8 +135,8 @@ function Inside() {
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div className="max-w-xl">
           <p className="text-[11px] font-medium tracking-[0.2em] text-[var(--l-muted)] uppercase sm:text-xs">Inside the guild</p>
-          <h2 id="inside-title" className="mt-4 font-display text-[clamp(2rem,1.2rem+2.4vw,3rem)] leading-[1.05] font-normal tracking-[-0.01em] text-[var(--l-ink)]">
-            Live from the board <em className="italic text-[var(--l-body)]">and the ladder.</em>
+          <h2 id="inside-title" className="mt-4 text-[clamp(1.75rem,1.1rem+2vw,2.5rem)] leading-[1.08] font-semibold tracking-[-0.035em] text-[var(--l-ink)]">
+            Live from the board <span className="text-[var(--l-muted)]">and the ladder.</span>
           </h2>
         </div>
         <Link to="/how-it-works" className="text-[14px] text-[var(--l-body)] underline-offset-4 hover:text-[var(--l-ink)] hover:underline">
@@ -161,7 +161,7 @@ function Inside() {
             }
           >
             <dt className="text-[13px] text-[var(--l-muted)]">{label}</dt>
-            <dd className="mt-3 font-display text-[2.5rem] leading-none text-[var(--l-ink)]">
+            <dd className="mt-3 text-[2.25rem] leading-none font-semibold tracking-[-0.04em] text-[var(--l-ink)] tabular-nums">
               <CountUp value={Number(value)} />
             </dd>
           </div>

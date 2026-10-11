@@ -21,7 +21,7 @@ function NetworkPage() {
     <div className="grid gap-12">
       <div>
         <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">Monad mainnet</p>
-        <h1 className="mt-3 text-[2.5rem] font-bold tracking-tight text-ink">Network</h1>
+        <h1 className="mt-3 text-[2.25rem] font-bold tracking-tight text-ink">Network</h1>
         <p className="mt-3 max-w-2xl text-sm leading-7 text-body">
           Choguild uses a wallet address as an identifier. A signature proves you control that address. Accepted work is a review record kept by Choguild. It is not a Monad transaction, a balance, or an on-chain credential.
         </p>

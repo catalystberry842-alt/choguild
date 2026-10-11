@@ -37,7 +37,7 @@ function ApplicationPage() {
   const [pending, setPending] = useState(false);
   return (
     <article>
-      <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">{application.opportunityTitle}</h1>
+      <h1 className="text-[2.25rem] font-bold tracking-tight text-ink">{application.opportunityTitle}</h1>
       <p className="mt-1 text-sm text-body">{application.projectName}</p>
       <div className="mt-3 flex flex-wrap gap-2">
         <Badge>{APPLICATION_STATUS_LABEL[application.status]}</Badge>

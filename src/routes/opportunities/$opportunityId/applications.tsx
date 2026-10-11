@@ -25,7 +25,7 @@ function ReviewPage() {
   }
   return (
     <div>
-      <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">{result.title}</h1>
+      <h1 className="text-[2.25rem] font-bold tracking-tight text-ink">{result.title}</h1>
       <p className="mt-2 text-sm text-body">Only you can see these applications. Accepting one is a decision you make here. It is not automatic.</p>
       {result.items.length === 0 ? (
         <div className="mt-10">

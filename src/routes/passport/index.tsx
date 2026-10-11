@@ -25,7 +25,7 @@ function PassportPage() {
   return (
     <div>
       <header className="max-w-2xl">
-        <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">Contributor Passport</h1>
+        <h1 className="text-[2.25rem] font-bold tracking-tight text-ink">Contributor Passport</h1>
         <p className="mt-3 text-base leading-7 text-body">
           A passport is the profile other people can read. A wallet address is only an address until
           you sign a message and save a profile.

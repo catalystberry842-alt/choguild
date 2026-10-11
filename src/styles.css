@@ -5,13 +5,11 @@
 @import "@fontsource/dm-sans/700.css";
 @import "@fontsource/dm-mono/400.css";
 @import "@fontsource/dm-mono/500.css";
-@import "@fontsource/instrument-serif/latin-400.css";
-@import "@fontsource/instrument-serif/latin-400-italic.css";
 
 @theme {
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
+  --font-display: "DM Sans", ui-sans-serif, system-ui, sans-serif;
 
   --color-canvas: #050505;
   --color-sidebar: #050505;
@@ -99,11 +97,11 @@
     outline-offset: 2px;
   }
 
+  /* Page titles: tight sans, low letter spacing. */
   h1 {
     font-family: var(--font-display);
-    font-weight: 400;
-    font-synthesis: none;
-    letter-spacing: -0.01em !important;
+    font-weight: 600;
+    letter-spacing: -0.035em !important;
     line-height: 1.05;
   }
 
@@ -260,9 +258,9 @@
 
   .landing-headline {
     font-family: var(--font-display);
-    font-weight: 400;
-    letter-spacing: -0.015em;
-    line-height: 0.98;
+    font-weight: 600;
+    letter-spacing: -0.045em !important;
+    line-height: 1;
     background: linear-gradient(180deg, #ffffff 30%, #cfc7dd 100%);
     -webkit-background-clip: text;
     background-clip: text;
