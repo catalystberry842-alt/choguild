@@ -60,17 +60,17 @@ function Hero() {
       <div className="landing-hero-bg" aria-hidden="true" />
 
       <div className="relative flex flex-1 flex-col items-center justify-center px-5 pt-32 pb-12 text-center sm:px-8 sm:pt-36">
-        <p className="rise text-[11px] font-medium tracking-[0.2em] text-[var(--l-muted)] uppercase sm:text-xs">
+        <p className="rise text-[10px] font-medium tracking-[0.14em] whitespace-nowrap text-[var(--l-muted)] uppercase min-[370px]:text-[11px] min-[370px]:tracking-[0.2em] sm:text-xs">
           The contributor ecosystem on Monad
         </p>
 
         <h1
           id="hero-title"
-          className="landing-headline rise mt-6 max-w-[14ch] text-[clamp(2.5rem,1.1rem+4.4vw,4.75rem)] [animation-delay:60ms] sm:mt-7"
+          className="landing-headline rise mt-6 text-[2.25rem] [animation-delay:60ms] min-[370px]:text-[clamp(2.5rem,1.1rem+4.4vw,4.75rem)] sm:mt-7"
         >
-          Show the work.
-          <br />
-          <span className="text-[#bdb3cf]">Wear the name.</span>
+          {/* Each line is one unbreakable unit, so the headline is always exactly two lines. */}
+          <span className="block whitespace-nowrap">Show the work.</span>
+          <span className="block whitespace-nowrap text-[#bdb3cf]">Wear the name.</span>
         </h1>
 
         <p className="rise mt-6 max-w-[33rem] text-[16px] leading-7 text-balance text-[var(--l-body)] [animation-delay:120ms] sm:mt-7 sm:text-[18px] sm:leading-8">
