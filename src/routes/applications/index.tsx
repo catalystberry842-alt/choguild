@@ -26,7 +26,7 @@ function ApplicationsPage() {
   }
   return (
     <div>
-      <h1 className="text-3xl leading-tight font-bold tracking-tight text-ink">Your applications</h1>
+      <h1 className="text-[2.5rem] leading-tight font-bold tracking-tight text-ink">Your applications</h1>
       <p className="mt-3 max-w-xl text-base leading-7 text-body">
         A submitted application is with the creator. It is not an acceptance.
       </p>

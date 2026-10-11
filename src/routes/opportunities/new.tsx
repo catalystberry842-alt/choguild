@@ -25,7 +25,7 @@ function NewOpportunityPage() {
   }
   return (
     <div>
-      <h1 className="text-3xl font-bold tracking-tight text-ink">Publish an opportunity</h1>
+      <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">Publish an opportunity</h1>
       <p className="mt-3 max-w-2xl text-sm leading-7 text-body">
         You can save a draft or review it and publish. Only the terms you write are shown. Nothing here creates a payment.
       </p>

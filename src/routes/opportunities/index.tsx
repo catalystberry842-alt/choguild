@@ -27,7 +27,7 @@ function OwnedPage() {
     <div>
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-ink">Your opportunities</h1>
+          <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">Your opportunities</h1>
           <p className="mt-2 text-sm text-body">Drafts stay off the public board until you publish them.</p>
         </div>
         <Button asChild><Link to="/opportunities/new">New opportunity</Link></Button>

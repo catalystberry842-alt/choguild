@@ -42,7 +42,7 @@ function SubmissionsPage() {
     <div>
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div className="max-w-2xl">
-          <h1 className="mt-3 text-3xl leading-tight font-bold tracking-tight text-ink">Submissions</h1>
+          <h1 className="mt-3 text-[2.5rem] leading-tight font-bold tracking-tight text-ink">Submissions</h1>
           <p className="mt-3 max-w-xl text-base leading-7 text-body">
             Send evidence after an application is accepted. A link is something you provided, and it stays unverified until a reviewer accepts it.
           </p>

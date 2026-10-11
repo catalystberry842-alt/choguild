@@ -52,7 +52,7 @@ function HowItWorksPage() {
     <div className="mx-auto flex max-w-4xl flex-col gap-16">
       <header className="flex max-w-2xl flex-col gap-3">
         <p className="text-xs font-medium tracking-[0.15em] text-muted uppercase">Guide</p>
-        <h1 className="text-3xl font-bold tracking-tight text-ink">How the guild works</h1>
+        <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">How the guild works</h1>
         <p className="leading-7 text-body">
           Choguild is a place to prove what you have shipped in the Monad ecosystem. Here is the whole loop, how XP is
           counted, and what each rank means.

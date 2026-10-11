@@ -1,14 +1,10 @@
-import * as Dialog from "@radix-ui/react-dialog";
 import { Link, useCanGoBack, useRouter, useRouterState } from "@tanstack/react-router";
-import { ArrowLeft, Search, Wallet } from "lucide-react";
-import { useAccount } from "wagmi";
+import { ArrowLeft, Search } from "lucide-react";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
-import { WalletPanel } from "@/components/passport/wallet-panel";
+import { WalletButton } from "@/components/passport/wallet-button";
 import { Button } from "@/components/ui/button";
-import { shortAddress } from "@/lib/passport/format";
 
 export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette: () => void }) {
-  const { address, isConnected } = useAccount();
   const router = useRouter();
   const canGoBack = useCanGoBack();
   const pathname = useRouterState({ select: (state) => state.location.pathname });
@@ -48,35 +44,7 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
             <kbd className="hidden rounded border border-line px-1 text-[10px] md:inline">⌘K</kbd>
           </button>
           <ThemeToggle />
-          <Dialog.Root>
-            <Dialog.Trigger asChild>
-              <Button size="compact">
-                {isConnected && address ? (
-                  <span className="pulse-dot size-2 rounded-full bg-success" aria-hidden="true" />
-                ) : (
-                  <Wallet className="size-4" aria-hidden="true" />
-                )}
-                {isConnected && address ? shortAddress(address) : "Wallet"}
-              </Button>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/80" />
-              <Dialog.Content className="fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-line bg-elevated p-5">
-                <Dialog.Title className="text-lg font-semibold text-ink">Wallet</Dialog.Title>
-                <Dialog.Description className="mt-2 text-sm text-body">
-                  Connect a browser wallet. A connection is not a passport session until you sign.
-                </Dialog.Description>
-                <div className="mt-4">
-                  <WalletPanel />
-                </div>
-                <div className="mt-4 flex justify-end">
-                  <Dialog.Close asChild>
-                    <Button variant="secondary">Close</Button>
-                  </Dialog.Close>
-                </div>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
+          <WalletButton />
         </div>
       </div>
     </header>

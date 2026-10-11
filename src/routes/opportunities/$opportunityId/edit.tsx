@@ -21,7 +21,7 @@ function EditOpportunityPage() {
   const opportunity = Route.useLoaderData();
   return (
     <div>
-      <h1 className="text-3xl font-bold tracking-tight text-ink">Edit {opportunity.title}</h1>
+      <h1 className="text-[2.5rem] font-bold tracking-tight text-ink">Edit {opportunity.title}</h1>
       <div className="mt-10">
         <OpportunityForm opportunity={opportunity} />
       </div>

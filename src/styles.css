@@ -5,30 +5,35 @@
 @import "@fontsource/dm-sans/700.css";
 @import "@fontsource/dm-mono/400.css";
 @import "@fontsource/dm-mono/500.css";
+@import "@fontsource/instrument-serif/latin-400.css";
+@import "@fontsource/instrument-serif/latin-400-italic.css";
 
 @theme {
   --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: "Instrument Serif", ui-serif, Georgia, serif;
 
-  --color-canvas: #000000;
-  --color-sidebar: #000000;
-  --color-elevated: #0b0b0b;
-  --color-secondary: #161616;
-  --color-ink: #f5f5f5;
-  --color-body: #a1a1a1;
-  --color-muted: #6f6f6f;
-  --color-sand: #fafafa;
-  --color-sand-hover: #d4d4d4;
-  --color-action: #fafafa;
-  --color-action-hover: #d4d4d4;
-  --color-pink: #fafafa;
-  --color-on-accent: #0a0a0a;
-  --color-olive: #fafafa;
-  --color-line: #1f1f1f;
+  --color-canvas: #050505;
+  --color-sidebar: #050505;
+  --color-elevated: #0c0b10;
+  --color-secondary: #16141c;
+  --color-ink: #f7f4fc;
+  --color-body: #b7b1c2;
+  --color-muted: #81798d;
+  --color-sand: #f7f4fc;
+  --color-sand-hover: #d9d3e4;
+  --color-action: #8b5cf6;
+  --color-action-hover: #7c3aed;
+  --color-pink: #a78bfa;
+  --color-on-accent: #ffffff;
+  --color-olive: #a78bfa;
+  --color-line: rgb(255 255 255 / 0.12);
   --color-success: #86e0a8;
   --color-warning: #f5c97a;
   --color-danger: #fb7185;
   --color-scrim: #000000;
+  --color-violet: #a78bfa;
+  --color-plum: #241633;
 
   --radius-sm: 0.375rem;
   --radius-md: 0.5rem;
@@ -46,8 +51,8 @@
   --color-muted: #737373;
   --color-sand: #0a0a0a;
   --color-sand-hover: #404040;
-  --color-action: #0a0a0a;
-  --color-action-hover: #262626;
+  --color-action: #7c3aed;
+  --color-action-hover: #6d28d9;
   --color-pink: #0a0a0a;
   --color-olive: #0a0a0a;
   --color-on-accent: #ffffff;
@@ -92,6 +97,14 @@
   :focus-visible {
     outline: 2px solid var(--color-ink);
     outline-offset: 2px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-synthesis: none;
+    letter-spacing: -0.01em !important;
+    line-height: 1.05;
   }
 
   h1,
@@ -144,6 +157,116 @@
 
   .btn-accent:hover {
     background-color: var(--color-action-hover);
+  }
+
+  /* ---------- Landing (always dark, independent of the app theme) ---------- */
+  .landing {
+    --l-bg: #050505;
+    --l-ink: #f7f4fc;
+    --l-body: #b7b1c2;
+    --l-muted: #81798d;
+    --l-violet: #8b5cf6;
+    --l-violet-bright: #a78bfa;
+    --l-plum: #241633;
+    --l-border: rgb(255 255 255 / 0.12);
+    /* app tokens pinned to dark so shared components match the landing */
+    --color-canvas: #050505;
+    --color-elevated: #0c0b10;
+    --color-secondary: #16141c;
+    --color-ink: #f7f4fc;
+    --color-body: #b7b1c2;
+    --color-muted: #81798d;
+    --color-sand: #f7f4fc;
+    --color-line: rgb(255 255 255 / 0.12);
+    --color-action: #8b5cf6;
+    --color-action-hover: #7c3aed;
+    --color-on-accent: #ffffff;
+    --color-success: #86e0a8;
+    --color-warning: #f5c97a;
+    --highlight: rgb(255 255 255 / 0.16);
+    background-color: var(--l-bg);
+    color: var(--l-ink);
+    color-scheme: dark;
+  }
+
+  /* Hero atmosphere: violet light pooled at the top and edges, a dot matrix
+     that is only visible where that light falls, irregular vertical streaks,
+     and a dark readable centre. Pure CSS, no images. */
+  .landing-hero-bg {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+    background:
+      radial-gradient(55% 42% at 50% -4%, rgb(167 139 250 / 0.55), transparent 72%),
+      radial-gradient(26% 70% at 104% 46%, rgb(139 92 246 / 0.55), transparent 70%),
+      radial-gradient(30% 46% at -4% 18%, rgb(139 92 246 / 0.34), transparent 72%),
+      radial-gradient(60% 45% at 50% 6%, rgb(36 22 51 / 0.9), transparent 80%),
+      radial-gradient(40% 35% at 92% 102%, rgb(139 92 246 / 0.22), transparent 70%),
+      var(--l-bg);
+  }
+
+  /* dot matrix, lit only where the glow is */
+  .landing-hero-bg::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at center, rgb(236 228 255 / 0.95) 1.25px, transparent 1.75px);
+    background-size: 10px 10px;
+    -webkit-mask-image:
+      radial-gradient(62% 48% at 50% -6%, #000 10%, rgb(0 0 0 / 0.5) 45%, transparent 78%),
+      radial-gradient(24% 66% at 104% 46%, #000 15%, rgb(0 0 0 / 0.45) 50%, transparent 80%),
+      radial-gradient(26% 40% at -4% 16%, rgb(0 0 0 / 0.75) 10%, transparent 78%),
+      radial-gradient(34% 30% at 94% 104%, rgb(0 0 0 / 0.5), transparent 75%);
+    mask-image:
+      radial-gradient(62% 48% at 50% -6%, #000 10%, rgb(0 0 0 / 0.5) 45%, transparent 78%),
+      radial-gradient(24% 66% at 104% 46%, #000 15%, rgb(0 0 0 / 0.45) 50%, transparent 80%),
+      radial-gradient(26% 40% at -4% 16%, rgb(0 0 0 / 0.75) 10%, transparent 78%),
+      radial-gradient(34% 30% at 94% 104%, rgb(0 0 0 / 0.5), transparent 75%);
+    opacity: 0.62;
+  }
+
+  /* irregular vertical streaks + readable centre + fade into the page */
+  .landing-hero-bg::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    /* first layer paints on top: fade and centre sit above the streaks */
+    background:
+      linear-gradient(to bottom, transparent 62%, rgb(5 5 5 / 0.85) 88%, var(--l-bg) 100%),
+      radial-gradient(46% 40% at 50% 54%, rgb(5 5 5 / 0.97) 30%, rgb(5 5 5 / 0.72) 62%, transparent 100%),
+      repeating-linear-gradient(90deg, transparent 0 89px, rgb(5 5 5 / 0.45) 89px 93px, transparent 93px 211px),
+      repeating-linear-gradient(90deg, transparent 0 151px, rgb(5 5 5 / 0.3) 151px 158px, transparent 158px 331px);
+  }
+
+  @media (max-width: 640px) {
+    .landing-hero-bg::before {
+      background-size: 8px 8px;
+    }
+    .landing-hero-bg::after {
+      background:
+        linear-gradient(to bottom, transparent 62%, rgb(5 5 5 / 0.85) 88%, var(--l-bg) 100%),
+        radial-gradient(70% 38% at 50% 52%, rgb(5 5 5 / 0.97) 35%, rgb(5 5 5 / 0.7) 65%, transparent 100%),
+        repeating-linear-gradient(90deg, transparent 0 53px, rgb(5 5 5 / 0.4) 53px 56px, transparent 56px 131px);
+    }
+  }
+
+  .landing-glass {
+    background-color: rgb(12 10 18 / 0.62);
+    backdrop-filter: blur(14px) saturate(140%);
+    -webkit-backdrop-filter: blur(14px) saturate(140%);
+    border: 1px solid var(--l-border);
+  }
+
+  .landing-headline {
+    font-family: var(--font-display);
+    font-weight: 400;
+    letter-spacing: -0.015em;
+    line-height: 0.98;
+    background: linear-gradient(180deg, #ffffff 30%, #cfc7dd 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
   }
 
   .glass {

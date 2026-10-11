@@ -109,7 +109,7 @@ function OpportunityPage() {
             {opportunity.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status}</Badge>
           </div>
-          <h1 className="mt-3 text-[1.9rem] leading-tight font-bold tracking-tight text-ink">{opportunity.title}</h1>
+          <h1 className="mt-3 text-[2.5rem] leading-[1.05] font-bold tracking-tight text-ink">{opportunity.title}</h1>
           <p className="mt-2 text-sm text-body">
             {project} · {CATEGORY_LABEL[opportunity.category as Category] ?? opportunity.category}
           </p>
