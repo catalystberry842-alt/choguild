@@ -4,6 +4,7 @@ import { useState } from "react";
 import { OpportunityCardView } from "@/components/board/opportunity-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { Field, SelectInput, TextInput } from "@/components/ui/input";
 import {
   BOARD_SKILLS,
@@ -45,26 +46,20 @@ function DiscoverPage() {
 
   return (
     <div>
-      <header className="rise flex flex-wrap items-end justify-between gap-4">
-        <div className="max-w-2xl">
-          <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">
-            Collaboration board
-          </p>
-          <h1 className="mt-3 text-[2.25rem] leading-tight font-bold tracking-tight text-ink">Opportunities</h1>
-          <p className="mt-3 max-w-xl text-base leading-7 text-body">
-            Open work from people with a Chog Passport. Demo listings are marked and do not accept
-            applications.
-          </p>
-        </div>
-        <div className="flex flex-wrap gap-2">
-          <Button asChild variant="secondary" size="compact">
-            <Link to="/opportunities">Your opportunities</Link>
-          </Button>
-          <Button asChild size="compact">
-            <Link to="/opportunities/new">Publish an opportunity</Link>
-          </Button>
-        </div>
-      </header>
+      <PageHeader
+        title="Opportunities"
+        description="Open work from contributors with a Chog Passport."
+        actions={
+          <>
+            <Button asChild size="compact">
+              <Link to="/opportunities/new">Publish work</Link>
+            </Button>
+            <Button asChild variant="secondary" size="compact">
+              <Link to="/opportunities">Your listings</Link>
+            </Button>
+          </>
+        }
+      />
 
       <form
         className="mt-12 grid gap-4 rounded-3xl border border-line bg-elevated p-2"
@@ -213,25 +208,22 @@ function DiscoverPage() {
         ) : null}
       </form>
 
-      <p className="mt-12 text-sm text-muted" aria-live="polite">
+      <p className="t-meta mt-8" aria-live="polite">
         {result.total} {result.total === 1 ? "opportunity" : "opportunities"}
       </p>
 
       {result.items.length > 0 ? (
-        <ul className="stagger mt-5 grid gap-5">
+        <ul className="stagger mt-4 grid gap-4">
           {result.items.map((item) => (
             <OpportunityCardView key={item.id} item={item} />
           ))}
         </ul>
       ) : (
-        <div className="mt-3">
+        <div className="mt-4">
           <EmptyState
-            title="No opportunities match"
-            body="Nothing on the board fits these filters. Reset them, or publish an opportunity from your passport."
+            title="Nothing matches these filters"
             action={
-              <Button
-                onClick={() => void navigate({ to: "/discover", search: emptyBoardSearch() })}
-              >
+              <Button variant="secondary" size="compact" onClick={() => void navigate({ to: "/discover", search: emptyBoardSearch() })}>
                 Reset filters
               </Button>
             }
@@ -240,7 +232,7 @@ function DiscoverPage() {
       )}
 
       {pages > 1 ? (
-        <div className="mt-4 flex items-center gap-2">
+        <div className="mt-8 flex items-center justify-center gap-3">
           <Button
             variant="secondary"
             disabled={result.page <= 1}
@@ -248,8 +240,8 @@ function DiscoverPage() {
           >
             Previous
           </Button>
-          <p className="text-sm text-body">
-            Page {result.page} of {pages}
+          <p className="t-meta tabular-nums">
+            {result.page} / {pages}
           </p>
           <Button
             variant="secondary"

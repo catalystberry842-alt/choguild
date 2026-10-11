@@ -49,7 +49,7 @@ export function WorkForm({ applicationId, work }: { applicationId?: string; work
 
   return (
     <form className="grid gap-4" onSubmit={(event) => { event.preventDefault(); void send(true); }}>
-      {formError ? <ErrorMessage title="Submission was not saved">{formError}</ErrorMessage> : null}
+      {formError ? <ErrorMessage title="That didn't save">{formError}</ErrorMessage> : null}
       <Field label="Title" htmlFor="work-title" error={errors.title}>
         <TextInput id="work-title" value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
       </Field>
@@ -76,7 +76,7 @@ export function WorkForm({ applicationId, work }: { applicationId?: string; work
         <Button type="button" variant="secondary" className="mt-2" onClick={() => setForm({ ...form, evidenceLinks: [...form.evidenceLinks, ""] })}>Add a link</Button>
         {errors.evidenceLinks ? <p className="mt-2 text-xs text-danger" role="alert">{errors.evidenceLinks}</p> : null}
       </fieldset>
-      <Field label="Repository or pull request" htmlFor="work-repo" hint="Optional https link. Not verified by itself." error={errors.repoUrl}>
+      <Field label="Repository or pull request" htmlFor="work-repo" hint="Optional." error={errors.repoUrl}>
         <TextInput id="work-repo" value={form.repoUrl} onChange={(event) => setForm({ ...form, repoUrl: event.target.value })} />
       </Field>
       <Field label="Document" htmlFor="work-doc" hint="Optional https link." error={errors.documentUrl}>

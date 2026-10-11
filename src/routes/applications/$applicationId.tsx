@@ -4,6 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, SelectInput, TextArea } from "@/components/ui/input";
 import { APPLICATION_STATUS_LABEL, REVIEW_STATUSES, type ReviewStatus } from "@/lib/board/copy";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/applications/$applicationId")({
   }),
   component: ApplicationPage,
   notFoundComponent: () => (
-    <EmptyState title="This application is not available" body="It does not exist, or it belongs to someone else." />
+    <EmptyState title="Application not found" body="It may have been removed, or it belongs to someone else." />
   ),
 });
 
@@ -35,58 +36,66 @@ function ApplicationPage() {
   const [feedback, setFeedback] = useState(application.feedback ?? "");
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
+  const answers = [
+    ["Introduction", application.introduction],
+    ["Why they fit", application.suitability],
+    ["Experience", application.experience],
+    ["Answer", application.extraAnswer],
+  ].filter((entry): entry is [string, string] => Boolean(entry[1]));
+
   return (
-    <article>
-      <h1 className="text-[2.25rem] font-bold tracking-tight text-ink">{application.opportunityTitle}</h1>
-      <p className="mt-1 text-sm text-body">{application.projectName}</p>
-      <div className="mt-3 flex flex-wrap gap-2">
-        <Badge>{APPLICATION_STATUS_LABEL[application.status]}</Badge>
-        {application.isDemo ? <Badge tone="warning">Example</Badge> : null}
-      </div>
-      <p className="mt-3 text-sm text-muted">Sent {formatStamp(application.createdAt)}</p>
-      {application.viewer === "creator" && application.username ? (
-        <p className="mt-3 text-sm">
-          <Link to="/passport/$username" params={{ username: application.username }} className="text-sand">
-            {application.displayName} (@{application.username})
-          </Link>
-        </p>
-      ) : null}
-      <section className="mt-10 grid gap-4">
-        <p className="text-sm leading-7 text-body">{application.introduction}</p>
-        <p className="text-sm leading-7 text-body">{application.suitability}</p>
-        {application.experience ? <p className="text-sm leading-7 text-body">{application.experience}</p> : null}
-        {application.extraAnswer ? <p className="text-sm leading-7 text-body">{application.extraAnswer}</p> : null}
-      </section>
-      {application.feedback ? <p className="mt-4 text-sm text-body">Message: {application.feedback}</p> : null}
-      <ol className="mt-4 grid gap-1 text-sm text-muted">
-        {application.history.map((event, index) => (
-          <li key={`${event.createdAt}-${index}`}>{APPLICATION_STATUS_LABEL[event.status as keyof typeof APPLICATION_STATUS_LABEL] ?? event.status} · {formatStamp(event.createdAt)}</li>
+    <article className="flex flex-col gap-10">
+      <PageHeader eyebrow={application.projectName} title={application.opportunityTitle}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge tone={application.status === "accepted" ? "olive" : application.status === "rejected" ? "danger" : "neutral"}>
+            {APPLICATION_STATUS_LABEL[application.status]}
+          </Badge>
+          {application.isDemo ? <Badge tone="warning">Example</Badge> : null}
+          <span className="t-meta">Sent {formatStamp(application.createdAt)}</span>
+          {application.viewer === "creator" && application.username ? (
+            <Link to="/passport/$username" params={{ username: application.username }} className="t-link text-sm">
+              {application.displayName} · @{application.username}
+            </Link>
+          ) : null}
+        </div>
+      </PageHeader>
+
+      <dl className="surface flex flex-col gap-6 p-6 sm:p-8">
+        {answers.map(([label, text]) => (
+          <div key={label}>
+            <dt className="t-meta">{label}</dt>
+            <dd className="t-lead mt-1.5 whitespace-pre-wrap">{text}</dd>
+          </div>
         ))}
-      </ol>
-      <div className="mt-4">
-        <Link to="/discover/$opportunityId" params={{ opportunityId: application.opportunityId }} className="text-sm text-sand">View opportunity</Link>
-      </div>
-      {error ? <div className="mt-4"><ErrorMessage title="That did not save">{error}</ErrorMessage></div> : null}
-      {application.viewer === "contributor" && ["submitted", "under_review", "shortlisted"].includes(application.status) ? (
-        <Button
-          className="mt-4"
-          variant="secondary"
-          disabled={pending}
-          onClick={() => {
-            setPending(true);
-            void withdraw({ data: application.id }).then(async (result) => {
-              setPending(false);
-              setError(result.ok ? null : result.error);
-              if (result.ok) await router.invalidate();
-            });
-          }}
-        >
-          Withdraw
-        </Button>
+        {application.feedback ? (
+          <div className="border-t border-line pt-6">
+            <dt className="t-meta">Message from the publisher</dt>
+            <dd className="t-lead mt-1.5">{application.feedback}</dd>
+          </div>
+        ) : null}
+      </dl>
+
+      {application.history.length > 0 ? (
+        <section>
+          <h2 className="t-h3">History</h2>
+          <ol className="mt-3 flex flex-col gap-2">
+            {application.history.map((event, index) => (
+              <li key={`${event.createdAt}-${index}`} className="t-body flex gap-3">
+                <span className="text-ink">
+                  {APPLICATION_STATUS_LABEL[event.status as keyof typeof APPLICATION_STATUS_LABEL] ?? event.status}
+                </span>
+                <span className="t-meta self-center">{formatStamp(event.createdAt)}</span>
+              </li>
+            ))}
+          </ol>
+        </section>
       ) : null}
+
+      {error ? <ErrorMessage title="That didn't save">{error}</ErrorMessage> : null}
+
       {application.viewer === "creator" && application.status !== "withdrawn" ? (
         <form
-          className="mt-10 grid max-w-xl gap-3"
+          className="surface grid gap-5 p-6 sm:p-8"
           onSubmit={(event) => {
             event.preventDefault();
             setPending(true);
@@ -97,17 +106,47 @@ function ApplicationPage() {
             });
           }}
         >
-          <Field label="Decision" htmlFor="decision">
+          <h2 className="t-h2">Your decision</h2>
+          <Field label="Status" htmlFor="decision">
             <SelectInput id="decision" value={status} onChange={(event) => setStatus(event.target.value as ReviewStatus)}>
-              {REVIEW_STATUSES.map((value) => <option key={value} value={value}>{APPLICATION_STATUS_LABEL[value]}</option>)}
+              {REVIEW_STATUSES.map((value) => (
+                <option key={value} value={value}>
+                  {APPLICATION_STATUS_LABEL[value]}
+                </option>
+              ))}
             </SelectInput>
           </Field>
-          <Field label="Message" htmlFor="feedback" hint="The contributor can read this.">
+          <Field label="Message" htmlFor="feedback" hint="The contributor sees this.">
             <TextArea id="feedback" value={feedback} onChange={(event) => setFeedback(event.target.value)} />
           </Field>
-          <Button type="submit" disabled={pending}>{pending ? "Saving" : "Save decision"}</Button>
+          <Button type="submit" disabled={pending} className="justify-self-start">
+            {pending ? "Saving…" : "Save decision"}
+          </Button>
         </form>
       ) : null}
+
+      <div className="flex flex-wrap items-center gap-3">
+        <Button asChild variant="secondary" size="compact">
+          <Link to="/discover/$opportunityId" params={{ opportunityId: application.opportunityId }}>View opportunity</Link>
+        </Button>
+        {application.viewer === "contributor" && ["submitted", "under_review", "shortlisted"].includes(application.status) ? (
+          <Button
+            variant="ghost"
+            size="compact"
+            disabled={pending}
+            onClick={() => {
+              setPending(true);
+              void withdraw({ data: application.id }).then(async (result) => {
+                setPending(false);
+                setError(result.ok ? null : result.error);
+                if (result.ok) await router.invalidate();
+              });
+            }}
+          >
+            Withdraw application
+          </Button>
+        ) : null}
+      </div>
     </article>
   );
 }

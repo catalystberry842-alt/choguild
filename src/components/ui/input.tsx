@@ -36,11 +36,11 @@ export function Field({
       </label>
       {children}
       {error ? (
-        <p className="text-xs leading-relaxed text-danger" role="alert">
+        <p className="text-[0.8125rem] leading-snug text-danger" role="alert">
           {error}
         </p>
       ) : hint ? (
-        <p className="text-xs leading-relaxed text-muted">{hint}</p>
+        <p className="t-meta">{hint}</p>
       ) : null}
     </div>
   );

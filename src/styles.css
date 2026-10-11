@@ -131,6 +131,110 @@
 }
 
 @layer components {
+  /* ---------- Type scale: tracking tightens as size grows, body stays at 0 ---------- */
+  .t-eyebrow {
+    font-size: 0.75rem;
+    line-height: 1rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-muted);
+  }
+  .t-title {
+    font-size: clamp(1.875rem, 1.45rem + 1.4vw, 2.25rem);
+    line-height: 1.08;
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .t-lead {
+    font-size: 0.9375rem;
+    line-height: 1.7;
+    color: var(--color-body);
+  }
+  .t-h2 {
+    font-size: 1.25rem;
+    line-height: 1.3;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+  }
+  .t-h3 {
+    font-size: 1rem;
+    line-height: 1.4;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-ink);
+  }
+  .t-body {
+    font-size: 0.875rem;
+    line-height: 1.6;
+    color: var(--color-body);
+  }
+  .t-meta {
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--color-muted);
+  }
+  .t-link {
+    font-weight: 500;
+    color: var(--color-ink);
+    text-decoration-line: underline;
+    text-decoration-color: var(--color-line);
+    text-underline-offset: 4px;
+    transition: text-decoration-color 150ms ease-out;
+  }
+  .t-link:hover {
+    text-decoration-color: currentColor;
+  }
+
+  /* Segmented tabs (Submissions, Applications); Ranking animates the same look. */
+  .seg {
+    display: inline-flex;
+    width: fit-content;
+    border-radius: 9999px;
+    border: 1px solid var(--color-line);
+    background-color: var(--color-elevated);
+    padding: 0.25rem;
+  }
+  .seg-item {
+    border-radius: 9999px;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--color-body);
+    transition: color 150ms ease-out, background-color 150ms ease-out;
+  }
+  .seg-item:hover {
+    color: var(--color-ink);
+  }
+  .seg-item[aria-current="page"],
+  .seg-item[aria-selected="true"] {
+    background-color: var(--color-ink);
+    color: var(--color-canvas);
+  }
+
+  /* A list of rows inside one surface; each row is a link. */
+  .row-list > li + li {
+    border-top: 1px solid var(--color-line);
+  }
+  .row-link {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    transition: background-color 150ms ease-out;
+  }
+  .row-link:hover {
+    background-color: var(--color-secondary);
+  }
+
+  /* One surface style for every card. */
+  .surface {
+    border-radius: 1.5rem;
+    border: 1px solid var(--color-line);
+    background-color: var(--color-elevated);
+  }
+
   .site-bg {
     background-color: var(--color-canvas);
   }
@@ -336,6 +440,15 @@
     content: "_";
     margin-left: 2px;
     animation: blink 1s steps(1) infinite;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .glass,
+  .landing-glass {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+    background-color: var(--color-canvas);
   }
 }
 

@@ -6,14 +6,14 @@ export function EmptyState({
   action,
 }: {
   title: string;
-  body: string;
+  body?: string;
   action?: ReactNode;
 }) {
   return (
-    <div className="rounded-3xl border border-dashed border-line bg-sidebar px-6 py-10 sm:px-8">
-      <h3 className="text-base font-medium text-ink">{title}</h3>
-      <p className="mt-3 max-w-xl text-sm leading-6 text-body">{body}</p>
-      {action ? <div className="mt-6">{action}</div> : null}
+    <div className="rounded-3xl border border-dashed border-line px-6 py-10 text-center sm:px-8">
+      <h3 className="t-h3">{title}</h3>
+      {body ? <p className="t-body mx-auto mt-2 max-w-md">{body}</p> : null}
+      {action ? <div className="mt-6 flex justify-center">{action}</div> : null}
     </div>
   );
 }

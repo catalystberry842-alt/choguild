@@ -5,6 +5,7 @@ import { WorkForm } from "@/components/work/work-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, SelectInput, TextArea } from "@/components/ui/input";
 import { REVIEW_ACTIONS, WORK_STATUS_LABEL, type ReviewAction } from "@/lib/work/copy";
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/submissions/$submissionId")({
   }),
   component: SubmissionPage,
   notFoundComponent: () => (
-    <EmptyState title="This submission is not available" body="It does not exist, or you are not the contributor or the opportunity owner." />
+    <EmptyState title="Submission not found" body="Only the contributor and the publisher can open it." />
   ),
 });
 
@@ -40,98 +41,143 @@ function SubmissionPage() {
   const [pending, setPending] = useState(false);
   const editable = work.viewer === "contributor" && (work.status === "draft" || work.status === "changes_requested");
 
+  const canReview = work.viewer === "reviewer" && (work.status === "submitted" || work.status === "under_review");
+
   return (
-    <article className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_18rem]">
-      <div>
-        <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">{work.projectName}</p>
-        <h1 className="mt-3 text-[2.25rem] font-bold tracking-tight text-ink">{latest?.title ?? "Submission"}</h1>
-        <p className="mt-2 text-sm text-body">{work.opportunityTitle}</p>
-        <div className="mt-3"><Badge>{WORK_STATUS_LABEL[work.status]}</Badge></div>
-        <p className="mt-4 max-w-2xl whitespace-pre-wrap text-sm leading-7 text-body">{latest?.description}</p>
-        <Evidence title="Latest evidence" links={latest?.evidenceLinks ?? []} repo={latest?.repoUrl} document={latest?.documentUrl} notes={latest?.notes} />
-        {work.versions.length > 1 ? (
-          <section className="mt-12">
-            <h2 className="text-lg text-ink">Earlier versions</h2>
-            <ol className="mt-3 grid gap-4">
-              {work.versions.slice(0, -1).map((version) => (
-                <li key={version.version} className="rounded-3xl border border-line bg-elevated p-6">
-                  <p className="text-xs text-muted">Version {version.version} · {formatStamp(version.createdAt)}</p>
-                  <p className="mt-1 text-sm font-semibold text-ink">{version.title}</p>
-                  <p className="mt-2 text-sm text-body">{version.description}</p>
+    <article className="flex flex-col gap-10">
+      <PageHeader eyebrow={work.projectName} title={latest?.title ?? "Submission"}>
+        <div className="flex flex-wrap items-center gap-2">
+          <Badge>{WORK_STATUS_LABEL[work.status]}</Badge>
+          <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="t-link text-sm">
+            {work.opportunityTitle}
+          </Link>
+        </div>
+      </PageHeader>
+
+      <section className="surface flex flex-col gap-6 p-6 sm:p-8">
+        {latest?.description ? <p className="t-lead whitespace-pre-wrap">{latest.description}</p> : null}
+        <Evidence links={latest?.evidenceLinks ?? []} repo={latest?.repoUrl} document={latest?.documentUrl} notes={latest?.notes} />
+      </section>
+
+      {canReview ? (
+        <form
+          className="surface grid gap-5 p-6 sm:p-8"
+          onSubmit={(event) => {
+            event.preventDefault();
+            if (!confirm) {
+              setConfirm(true);
+              return;
+            }
+            setPending(true);
+            void review({ data: { id: work.id, action, comment, privateNote: note } }).then(async (result) => {
+              setPending(false);
+              setError(result.ok ? null : result.error);
+              if (result.ok) await router.invalidate();
+            });
+          }}
+        >
+          <h2 className="t-h2">Review</h2>
+          {error ? <ErrorMessage title="That didn't save">{error}</ErrorMessage> : null}
+          <Field label="Decision" htmlFor="decision">
+            <SelectInput
+              id="decision"
+              value={action}
+              onChange={(event) => {
+                setAction(event.target.value as ReviewAction);
+                setConfirm(false);
+              }}
+            >
+              {REVIEW_ACTIONS.map((item) => (
+                <option key={item} value={item}>
+                  {WORK_STATUS_LABEL[item]}
+                </option>
+              ))}
+            </SelectInput>
+          </Field>
+          <Field label="Comment" htmlFor="comment" hint="The contributor sees this. Required for changes or rejection.">
+            <TextArea id="comment" value={comment} onChange={(event) => setComment(event.target.value)} />
+          </Field>
+          <Field label="Private note" htmlFor="note" hint="Only you see this.">
+            <TextArea id="note" value={note} onChange={(event) => setNote(event.target.value)} />
+          </Field>
+          <Button type="submit" disabled={pending} className="justify-self-start">
+            {pending ? "Saving…" : confirm ? `Confirm: ${WORK_STATUS_LABEL[action]}` : "Save review"}
+          </Button>
+        </form>
+      ) : null}
+
+      {editable ? (
+        <section className="flex flex-col gap-6">
+          <div>
+            <h2 className="t-h2">{work.status === "draft" ? "Finish your draft" : "Send a revision"}</h2>
+            <p className="t-body mt-1.5">Earlier versions are kept.</p>
+          </div>
+          <WorkForm work={work} />
+        </section>
+      ) : null}
+
+      {work.history.length > 0 ? (
+        <section>
+          <h2 className="t-h3">History</h2>
+          <ol className="mt-4 flex flex-col gap-4">
+            {work.history.map((event, index) => (
+              <li key={`${event.createdAt}-${index}`} className="border-l border-line pl-4">
+                <p className="t-body text-ink">
+                  {WORK_STATUS_LABEL[event.toStatus as keyof typeof WORK_STATUS_LABEL] ?? event.toStatus}
+                  <span className="t-meta ml-2">{formatStamp(event.createdAt)}</span>
+                </p>
+                {event.comment ? <p className="t-body mt-1">{event.comment}</p> : null}
+                {event.privateNote ? <p className="t-meta mt-1">Private note: {event.privateNote}</p> : null}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ) : null}
+
+      {work.versions.length > 1 ? (
+        <section>
+          <h2 className="t-h3">Earlier versions</h2>
+          <ol className="mt-4 flex flex-col gap-3">
+            {work.versions
+              .slice(0, -1)
+              .reverse()
+              .map((version) => (
+                <li key={version.version} className="surface p-5">
+                  <p className="t-meta">
+                    Version {version.version} · {formatStamp(version.createdAt)}
+                  </p>
+                  <p className="t-h3 mt-1">{version.title}</p>
+                  <p className="t-body mt-1.5">{version.description}</p>
                 </li>
               ))}
-            </ol>
-          </section>
-        ) : null}
-        {editable ? (
-          <section className="mt-12">
-            <h2 className="text-lg text-ink">{work.status === "draft" ? "Finish the draft" : "Send a revision"}</h2>
-            <p className="mt-2 text-sm text-body">A revision is stored as a new version, and the earlier evidence stays.</p>
-            <div className="mt-4"><WorkForm work={work} /></div>
-          </section>
-        ) : null}
-      </div>
-      <aside className="rounded-3xl border border-line bg-elevated p-6">
-        <h2 className="text-sm font-semibold tracking-[0.14em] text-muted uppercase">Review history</h2>
-        <ol className="mt-3 grid gap-4">
-          {work.history.map((event, index) => (
-            <li key={`${event.createdAt}-${index}`}>
-              <p className="text-sm text-ink">{WORK_STATUS_LABEL[event.toStatus as keyof typeof WORK_STATUS_LABEL] ?? event.toStatus}</p>
-              <p className="text-xs text-muted">{formatStamp(event.createdAt)}</p>
-              {event.comment ? <p className="mt-1 text-sm text-body">{event.comment}</p> : null}
-              {event.privateNote ? <p className="mt-1 text-xs text-muted">Private note: {event.privateNote}</p> : null}
-            </li>
-          ))}
-        </ol>
-        <p className="mt-4 text-xs text-muted">External links were supplied by the contributor, so opening one does not verify the work.</p>
-        <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="mt-3 inline-flex text-sm font-semibold text-sand">Opportunity</Link>
-        {work.viewer === "reviewer" && (work.status === "submitted" || work.status === "under_review") ? (
-          <form
-            className="mt-4 grid gap-4"
-            onSubmit={(event) => {
-              event.preventDefault();
-              if (!confirm) {
-                setConfirm(true);
-                return;
-              }
-              setPending(true);
-              void review({ data: { id: work.id, action, comment, privateNote: note } }).then(async (result) => {
-                setPending(false);
-                setError(result.ok ? null : result.error);
-                if (result.ok) await router.invalidate();
-              });
-            }}
-          >
-            {error ? <ErrorMessage title="Review was not saved">{error}</ErrorMessage> : null}
-            <Field label="Decision" htmlFor="decision">
-              <SelectInput id="decision" value={action} onChange={(event) => { setAction(event.target.value as ReviewAction); setConfirm(false); }}>
-                {REVIEW_ACTIONS.map((item) => <option key={item} value={item}>{WORK_STATUS_LABEL[item]}</option>)}
-              </SelectInput>
-            </Field>
-            <Field label="Comment for the contributor" htmlFor="comment" hint="Required when you request changes or reject.">
-              <TextArea id="comment" value={comment} onChange={(event) => setComment(event.target.value)} />
-            </Field>
-            <Field label="Private note" htmlFor="note" hint="Only you can read this.">
-              <TextArea id="note" value={note} onChange={(event) => setNote(event.target.value)} />
-            </Field>
-            <Button type="submit" disabled={pending}>{pending ? "Saving" : confirm ? `Confirm ${WORK_STATUS_LABEL[action].toLowerCase()}` : "Review decision"}</Button>
-          </form>
-        ) : null}
-      </aside>
+          </ol>
+        </section>
+      ) : null}
     </article>
   );
 }
 
-function Evidence({ title, links, repo, document, notes }: { title: string; links: string[]; repo?: string | null; document?: string | null; notes?: string | null }) {
+function Evidence({ links, repo, document, notes }: { links: string[]; repo?: string | null; document?: string | null; notes?: string | null }) {
+  const items = [
+    ...(repo ? [{ label: "Repository", url: repo }] : []),
+    ...(document ? [{ label: "Document", url: document }] : []),
+    ...links.map((url) => ({ label: "Link", url })),
+  ];
+  if (items.length === 0 && !notes) return null;
   return (
-    <section className="mt-10">
-      <h2 className="text-lg text-ink">{title}</h2>
-      <ul className="mt-2 grid gap-1">
-        {links.map((url) => <li key={url}><a className="text-sm text-sand" href={url} target="_blank" rel="noreferrer">{url}</a></li>)}
-        {repo ? <li><a className="text-sm text-sand" href={repo} target="_blank" rel="noreferrer">Repository · {repo}</a></li> : null}
-        {document ? <li><a className="text-sm text-sand" href={document} target="_blank" rel="noreferrer">Document · {document}</a></li> : null}
+    <div className="border-t border-line pt-6">
+      <p className="t-meta">Evidence · links are provided by the contributor</p>
+      <ul className="mt-3 flex flex-col gap-2">
+        {items.map((item) => (
+          <li key={item.url} className="flex gap-3 text-sm">
+            <span className="t-meta w-20 shrink-0 pt-px">{item.label}</span>
+            <a className="t-link min-w-0 break-all" href={item.url} target="_blank" rel="noreferrer">
+              {item.url}
+            </a>
+          </li>
+        ))}
       </ul>
-      {notes ? <p className="mt-2 text-sm text-body">{notes}</p> : null}
-    </section>
+      {notes ? <p className="t-body mt-4">{notes}</p> : null}
+    </div>
   );
 }

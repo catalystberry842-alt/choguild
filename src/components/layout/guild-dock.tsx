@@ -20,7 +20,7 @@ const PANELS: { id: PanelId; label: string; icon: LucideIcon }[] = [
 const TABS = NAV_ITEMS.filter((item) => item.dock);
 const MORE_LINKS = NAV_ITEMS.filter((item) => !item.dock);
 
-const SPRING = { type: "spring", bounce: 0.15, duration: 0.45 } as const;
+const SPRING = { type: "spring", bounce: 0, duration: 0.4 } as const;
 
 /**
  * Floating navigation dock. Collapsed it is a pill of page tabs; opening a

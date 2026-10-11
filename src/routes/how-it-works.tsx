@@ -3,6 +3,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { ChevronDown, Compass, FileCheck2, IdCard, Inbox, Trophy, Wallet } from "lucide-react";
 import { TierBadge } from "@/components/ranking/bits";
 import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/ui/page-header";
 import { ONCHAIN_XP_CAP, TIERS, XP_RULES } from "@/lib/ranking/xp";
 
 export const Route = createFileRoute("/how-it-works")({
@@ -49,31 +50,24 @@ const FAQ = [
 
 function HowItWorksPage() {
   return (
-    <div className="mx-auto flex max-w-4xl flex-col gap-16">
-      <header className="flex max-w-2xl flex-col gap-3">
-        <p className="text-xs font-medium tracking-[0.15em] text-muted uppercase">Guide</p>
-        <h1 className="text-[2.25rem] font-bold tracking-tight text-ink">How the guild works</h1>
-        <p className="leading-7 text-body">
-          Choguild is a place to prove what you have shipped in the Monad ecosystem. Here is the whole loop, how XP is
-          counted, and what each rank means.
-        </p>
-      </header>
+    <div className="flex flex-col gap-14">
+      <PageHeader title="How it works" description="From wallet to accepted work, and how that becomes rank." />
 
       <section>
-        <h2 className="text-xl font-bold text-ink">The loop</h2>
+        <h2 className="t-h2">The loop</h2>
         <ol className="stagger relative mt-6 grid gap-5 sm:grid-cols-2">
           {FLOW.map((step, index) => {
             const Icon = step.icon;
             return (
-              <li key={step.title} className="card-pop rounded-3xl border border-line bg-elevated p-6">
+              <li key={step.title} className="surface p-6">
                 <div className="flex items-center justify-between">
-                  <span className="flex size-10 items-center justify-center rounded-lg bg-secondary text-ink ring-1 ring-line">
+                  <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-ink">
                     <Icon className="size-5" aria-hidden="true" />
                   </span>
-                  <span className="font-mono text-xs text-muted">step {String(index + 1).padStart(2, "0")}</span>
+                  <span className="t-meta tabular-nums">{String(index + 1).padStart(2, "0")}</span>
                 </div>
-                <h3 className="mt-5 font-semibold text-ink">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-body">{step.body}</p>
+                <h3 className="t-h3 mt-5">{step.title}</h3>
+                <p className="t-body mt-1.5">{step.body}</p>
               </li>
             );
           })}
@@ -81,11 +75,11 @@ function HowItWorksPage() {
       </section>
 
       <section id="xp" className="scroll-mt-24">
-        <h2 className="text-xl font-bold text-ink">How XP is counted</h2>
-        <p className="mt-1 text-sm text-body">Only public passports appear on the ranking, and XP is recalculated live from the board and Monad mainnet.</p>
-        <div className="mt-6 overflow-hidden rounded-3xl border border-line">
+        <h2 className="t-h2">XP</h2>
+        <p className="t-body mt-1.5">Recalculated live for every public passport.</p>
+        <div className="surface mt-6 overflow-hidden">
           <table className="w-full text-left text-sm">
-            <thead className="bg-elevated text-xs text-muted uppercase">
+            <thead className="t-meta">
               <tr>
                 <th className="px-4 py-3 font-medium">Action</th>
                 <th className="hidden px-4 py-3 font-medium sm:table-cell">When it counts</th>
@@ -121,10 +115,10 @@ function HowItWorksPage() {
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-ink">Ranks</h2>
+        <h2 className="t-h2">Ranks</h2>
         <ol className="stagger mt-6 grid gap-4 sm:grid-cols-2">
           {TIERS.map((tier, index) => (
-            <li key={tier.name} className="rounded-3xl border border-line bg-elevated p-5">
+            <li key={tier.name} className="surface p-5">
               <div className="flex items-center justify-between gap-2">
                 <TierBadge tier={tier.name} />
                 <span className="text-xs tabular-nums text-muted">{tier.min}+ XP</span>
@@ -141,8 +135,8 @@ function HowItWorksPage() {
       </section>
 
       <section>
-        <h2 className="text-xl font-bold text-ink">Questions</h2>
-        <Accordion.Root type="single" collapsible className="mt-6 divide-y divide-line rounded-3xl border border-line">
+        <h2 className="t-h2">Questions</h2>
+        <Accordion.Root type="single" collapsible className="surface mt-6 divide-y divide-line overflow-hidden">
           {FAQ.map((item) => (
             <Accordion.Item key={item.q} value={item.q}>
               <Accordion.Header>
@@ -157,14 +151,14 @@ function HowItWorksPage() {
         </Accordion.Root>
       </section>
 
-      <section className="dot-grid flex flex-col items-start gap-6 rounded-3xl border border-line p-7 sm:p-10">
+      <section className="surface flex flex-col items-start gap-6 p-7 sm:p-10">
         <div>
-          <h2 className="text-2xl font-bold text-ink">Ready to get on the ladder?</h2>
+          <h2 className="t-h2">Ready to start?</h2>
           <p className="mt-1 text-body">It takes one signature and a short bio.</p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Button asChild>
-            <Link to="/passport">Create your passport</Link>
+            <Link to="/passport">Create your Passport</Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to="/ranking">See the ranking</Link>
