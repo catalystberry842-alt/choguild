@@ -1,15 +1,15 @@
 @import "tailwindcss";
-@import "@fontsource/dm-sans/400.css";
-@import "@fontsource/dm-sans/500.css";
-@import "@fontsource/dm-sans/600.css";
-@import "@fontsource/dm-sans/700.css";
-@import "@fontsource/dm-mono/400.css";
-@import "@fontsource/dm-mono/500.css";
+@import "@fontsource/geist-sans/400.css";
+@import "@fontsource/geist-sans/500.css";
+@import "@fontsource/geist-sans/600.css";
+@import "@fontsource/geist-sans/700.css";
+@import "@fontsource/geist-mono/400.css";
+@import "@fontsource/geist-mono/500.css";
 
 @theme {
-  --font-sans: "DM Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "DM Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --font-display: "DM Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --font-display: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
 
   --color-canvas: #050505;
   --color-sidebar: #050505;
@@ -101,7 +101,7 @@
   h1 {
     font-family: var(--font-display);
     font-weight: 600;
-    letter-spacing: -0.035em !important;
+    letter-spacing: -0.03em !important;
     line-height: 1.05;
   }
 
@@ -259,8 +259,8 @@
   .landing-headline {
     font-family: var(--font-display);
     font-weight: 600;
-    letter-spacing: -0.045em !important;
-    line-height: 1;
+    letter-spacing: -0.06em !important;
+    line-height: 0.98;
     background: linear-gradient(180deg, #ffffff 30%, #cfc7dd 100%);
     -webkit-background-clip: text;
     background-clip: text;

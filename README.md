@@ -51,7 +51,7 @@ Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Gui
 ## Tech stack
 
 - [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions)
-- Tailwind CSS v4, Radix UI primitives, Motion, `cmdk`, `lucide-react`; DM Sans and DM Mono
+- Tailwind CSS v4, Radix UI primitives, Motion, `cmdk`, `lucide-react`; Geist and Geist Mono
 - `wagmi` + `viem` for wallets and Monad; SIWE for passport sessions
 - Postgres via `pg` when `DATABASE_URL` is set, otherwise an in-memory [PGLite](https://pglite.dev) database
 - Deployed on Vercel through Nitro
