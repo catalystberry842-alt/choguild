@@ -104,8 +104,8 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
 
   if (step === "review") {
     return (
-      <div className="rounded-lg border border-line bg-elevated p-5">
-        <h2 className="text-lg font-semibold text-ink">Review before publishing</h2>
+      <div className="rounded-3xl border border-line bg-elevated p-6">
+        <h2 className="t-h2">Review before publishing</h2>
         <dl className="mt-4 grid gap-3 text-sm">
           <div><dt className="text-muted">Title</dt><dd className="text-ink">{form.title}</dd></div>
           <div><dt className="text-muted">Project</dt><dd className="text-ink">{form.projectName}</dd></div>
@@ -168,14 +168,14 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
         </Field>
       </div>
       {note ? <p className="text-sm text-muted">{note}</p> : null}
-      <Field label="Compensation details" htmlFor="opp-details" hint="Required unless the work is unpaid. Do not invent a guarantee." error={errors.compensationDetails}>
+      <Field label="Compensation details" htmlFor="opp-details" hint="Required unless the work is unpaid." error={errors.compensationDetails}>
         <TextArea id="opp-details" value={form.compensationDetails} onChange={(event) => set("compensationDetails", event.target.value)} />
       </Field>
       <div className="grid gap-4 sm:grid-cols-2">
         <Field label="Time commitment" htmlFor="opp-time" hint="Optional." error={errors.timeCommitment}>
           <TextInput id="opp-time" value={form.timeCommitment} onChange={(event) => set("timeCommitment", event.target.value)} />
         </Field>
-        <Field label="Application deadline" htmlFor="opp-deadline" hint="Optional. Required only if you set one." error={errors.deadline}>
+        <Field label="Application deadline" htmlFor="opp-deadline" hint="Optional." error={errors.deadline}>
           <TextInput id="opp-deadline" type="date" value={form.deadline} onChange={(event) => set("deadline", event.target.value)} />
         </Field>
       </div>

@@ -1,4 +1,5 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import { emptyBoardSearch } from "@/lib/board/search";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ProjectMark } from "@/components/board/opportunity-card";
@@ -37,9 +38,13 @@ export const Route = createFileRoute("/discover/$opportunityId")({
   component: OpportunityPage,
   notFoundComponent: () => (
     <EmptyState
-      title="This opportunity is not on the board"
-      body="It may be a draft, or the address is wrong."
-      action={<Link to="/discover" search={{ q: "", category: "all", skills: [], compensation: "all", status: "open", sort: "newest", page: 1 }} className="text-sm font-medium text-sand">Back to Discover</Link>}
+      title="Opportunity not found"
+      body="It may still be a draft, or it was removed."
+      action={
+        <Button asChild variant="secondary" size="compact">
+          <Link to="/discover" search={emptyBoardSearch()}>Back to Discover</Link>
+        </Button>
+      }
     />
   ),
 });
@@ -102,33 +107,30 @@ function OpportunityPage() {
 
   return (
     <article>
-      <button type="button" className="text-sm font-medium text-sand" onClick={() => router.history.back()}>
-        Back to the board
-      </button>
-      <header className="mt-4 flex items-start gap-3">
+      <header className="flex items-start gap-4">
         <ProjectMark name={project} logoUrl={opportunity.projectLogoUrl} />
         <div className="min-w-0">
-          <div className="flex flex-wrap gap-1.5">
+          <div className="flex flex-wrap gap-2">
             {opportunity.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status}</Badge>
           </div>
-          <h1 className="mt-2 text-[1.75rem] leading-tight text-ink">{opportunity.title}</h1>
-          <p className="mt-1 text-sm text-body">
+          <h1 className="t-title mt-3">{opportunity.title}</h1>
+          <p className="t-meta mt-2">
             {project} · {CATEGORY_LABEL[opportunity.category as Category] ?? opportunity.category}
           </p>
         </div>
       </header>
 
-      <p className="mt-5 max-w-2xl text-base leading-relaxed text-body">{listingSummary(opportunity.summary, opportunity.isDemo)}</p>
+      <p className="t-lead mt-8">{listingSummary(opportunity.summary, opportunity.isDemo)}</p>
 
-      <dl className="mt-5 grid max-w-2xl gap-3 text-sm sm:grid-cols-2">
-        <div>
-          <dt className="text-muted">Compensation</dt>
-          <dd className="mt-1 text-ink">{compensationLine || "Not specified"}</dd>
+      <dl className="mt-8 grid gap-4 sm:grid-cols-2">
+        <div className="surface px-6 py-5">
+          <dt className="t-meta">Compensation</dt>
+          <dd className="t-body mt-1.5 text-ink">{compensationLine || "Not specified"}</dd>
         </div>
-        <div>
-          <dt className="text-muted">Timing</dt>
-          <dd className="mt-1 text-ink">
+        <div className="surface px-6 py-5">
+          <dt className="t-meta">Timing</dt>
+          <dd className="t-body mt-1.5 text-ink">
             {timeLabel}
             {" · "}
             {opportunity.deadline ? `Due ${formatStamp(opportunity.deadline)}` : "No deadline"}
@@ -137,30 +139,30 @@ function OpportunityPage() {
         </div>
       </dl>
 
-      <div className="mt-6 grid max-w-2xl gap-5">
+      <div className="mt-12 flex flex-col divide-y divide-line border-y border-line">
         <Block title="The work" body={plainCopy(opportunity.description)} />
         <Block title="Scope" body={plainCopy(opportunity.scope)} />
         <Block title="Deliverables" body={plainCopy(opportunity.deliverables)} />
-        <section>
-          <h2 className="text-base font-semibold text-ink">Skills</h2>
-          <p className="mt-2 text-sm leading-6 text-body">
+        <section className="py-8">
+          <h2 className="t-h3">Skills</h2>
+          <p className="t-lead mt-2">
             Required: {opportunity.requiredSkills.join(", ") || "None listed"}.
-            {opportunity.preferredSkills.length > 0 ? ` Preferred: ${opportunity.preferredSkills.join(", ")}.` : " No preferred skills listed."}
+            {opportunity.preferredSkills.length > 0 ? ` Preferred: ${opportunity.preferredSkills.join(", ")}.` : ""}
           </p>
         </section>
         <Block title="How to apply" body={plainCopy(opportunity.instructions)} />
       </div>
 
-      <section className="mt-8 rounded-lg border border-line bg-elevated p-5">
-        <h2 className="text-lg font-semibold text-ink">Application</h2>
+      <section className="surface mt-12 p-6 sm:p-8">
+        <h2 className="t-h2">Apply</h2>
         {opportunity.myApplicationStatus ? (
-          <p className="mt-2 text-sm text-body">
-            Status: {APPLICATION_STATUS_LABEL[opportunity.myApplicationStatus as ApplicationStatus]}. Submitting does not mean you were accepted.
+          <p className="t-body mt-2">
+            Your application: {APPLICATION_STATUS_LABEL[opportunity.myApplicationStatus as ApplicationStatus]}.
           </p>
         ) : null}
-        {done ? <p className="mt-3 text-sm text-sand">Application sent. It is marked submitted, not accepted.</p> : null}
+        {done ? <p className="t-body mt-3 text-ink">Application sent. You'll see the decision under Applications.</p> : null}
         {opportunity.mine && !opportunity.isDemo ? (
-          <div className="mt-4 flex flex-wrap gap-2">
+          <div className="mt-5 flex flex-wrap gap-2">
             <Button asChild variant="secondary"><Link to="/opportunities/$opportunityId/edit" params={{ opportunityId: opportunity.id }}>Edit</Link></Button>
             <Button asChild variant="secondary"><Link to="/opportunities/$opportunityId/applications" params={{ opportunityId: opportunity.id }}>Review applications</Link></Button>
             {opportunity.status === "open" ? <Button disabled={pending} onClick={() => void change("closed")}>Close applications</Button> : null}
@@ -169,9 +171,9 @@ function OpportunityPage() {
           </div>
         ) : null}
         {unavailable && !opportunity.mine ? (
-          <p className="mt-3 text-sm text-body">
+          <p className="t-body mt-3">
             {opportunity.isDemo
-              ? "This is a demo opportunity, so applications are not accepted."
+              ? "This is a demo listing, so it doesn't take applications."
               : opportunity.status === "filled"
                 ? "This opportunity is filled."
                 : opportunity.status === "closed" || (opportunity.deadline && new Date(opportunity.deadline).getTime() <= Date.now())
@@ -180,15 +182,15 @@ function OpportunityPage() {
           </p>
         ) : null}
         {!opportunity.mine && !opportunity.isDemo && opportunity.accepting && !sessionAddress ? (
-          <p className="mt-3 text-sm text-body">Sign in on the Passport page before applying. A connected wallet alone is not enough.</p>
+          <p className="t-body mt-3">Sign in on your <Link to="/passport" className="t-link">Passport</Link> to apply.</p>
         ) : null}
         {!opportunity.mine && !opportunity.isDemo && opportunity.accepting && sessionAddress && !profile ? (
-          <p className="mt-3 text-sm text-body">Save your Chog Passport before applying. The address is not the application.</p>
+          <p className="t-body mt-3">Save your <Link to="/passport" className="t-link">Passport</Link> first, then apply.</p>
         ) : null}
         {!opportunity.mine && opportunity.accepting && profile && !opportunity.myApplicationStatus && !done ? (
-          <form className="mt-4 grid gap-4" onSubmit={(event) => { event.preventDefault(); void onApply(); }}>
+          <form className="mt-5 grid gap-5" onSubmit={(event) => { event.preventDefault(); void onApply(); }}>
             {message ? <ErrorMessage title="Application was not sent">{message}</ErrorMessage> : null}
-            <p className="text-sm text-body">Applying as {profile.displayName} (@{profile.username}). Review the prefilled lines before you send them.</p>
+            <p className="t-meta">Applying as {profile.displayName} · @{profile.username}</p>
             <Field label="Introduction" htmlFor="app-intro" error={errors.introduction}>
               <TextArea id="app-intro" value={intro} onChange={(event) => setIntro(event.target.value)} required />
             </Field>
@@ -206,7 +208,7 @@ function OpportunityPage() {
                 <TextArea id="app-extra" value={extra} onChange={(event) => setExtra(event.target.value)} />
               </Field>
             ) : null}
-            <Button type="submit" disabled={pending}>{pending ? "Sending" : "Submit application"}</Button>
+            <Button type="submit" disabled={pending} className="justify-self-start">{pending ? "Sending…" : "Send application"}</Button>
           </form>
         ) : null}
         {opportunity.myApplicationStatus && ["submitted", "under_review", "shortlisted"].includes(opportunity.myApplicationStatus) ? (
@@ -243,9 +245,9 @@ function OpportunityPage() {
 
 function Block({ title, body }: { title: string; body: string }) {
   return (
-    <section>
-      <h2 className="text-lg font-semibold text-ink">{title}</h2>
-      <p className="mt-2 max-w-2xl whitespace-pre-wrap text-sm leading-relaxed text-body">{body}</p>
+    <section className="py-8">
+      <h2 className="t-h3">{title}</h2>
+      <p className="t-lead mt-2 whitespace-pre-wrap">{body}</p>
     </section>
   );
 }

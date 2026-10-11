@@ -1,48 +1,50 @@
-import * as Dialog from "@radix-ui/react-dialog";
-import { Link } from "@tanstack/react-router";
-import { useAccount } from "wagmi";
-import { Logo } from "@/components/brand/logo";
-import { MobileNav } from "@/components/layout/mobile-nav";
-import { WalletPanel } from "@/components/passport/wallet-panel";
+import { Link, useCanGoBack, useRouter, useRouterState } from "@tanstack/react-router";
+import { ArrowLeft, Search } from "lucide-react";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { WalletButton } from "@/components/passport/wallet-button";
 import { Button } from "@/components/ui/button";
-import { shortAddress } from "@/lib/passport/format";
 
-export function TopBar({ title }: { title: string }) {
-  const { address, isConnected } = useAccount();
+export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette: () => void }) {
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  // Detail and form pages (`/discover/abc`, `/submissions/new`) get a back control.
+  const nested = pathname.split("/").filter(Boolean).length > 1;
 
   return (
-    <header className="sticky top-0 z-30 border-b border-line bg-canvas">
+    <header className="glass sticky top-0 z-30 border-b border-line">
       <div className="h-[env(safe-area-inset-top,0px)]" aria-hidden="true" />
-      <div className="mx-auto flex h-16 max-w-[1200px] items-center gap-3 px-6">
-        <MobileNav />
-        <Logo className="w-9 shrink-0 lg:hidden" />
-        <p className="hidden min-w-0 flex-1 truncate text-sm font-semibold text-ink lg:block">{title}</p>
-        <div className="ml-auto flex shrink-0 items-center gap-2">
-          <Button asChild variant="secondary" size="compact" className="hidden sm:inline-flex">
-            <Link to="/passport">Passport</Link>
+      <div className="mx-auto flex h-16 max-w-3xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
+        <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="Choguild home">
+          <img src="/brand/choguild-mark.jpg" alt="" width={36} height={36} className="size-9 rounded-xl" />
+          <span className="hidden text-[17px] font-bold tracking-tight text-ink sm:inline">Choguild</span>
+        </Link>
+        {nested ? (
+          <Button
+            variant="ghost"
+            size="compact"
+            className="px-2"
+            aria-label="Go back"
+            onClick={() => (canGoBack ? router.history.back() : router.navigate({ to: "/" }))}
+          >
+            <ArrowLeft className="size-4" aria-hidden="true" />
+            <span className="hidden sm:inline">Back</span>
           </Button>
-          <Dialog.Root>
-            <Dialog.Trigger asChild>
-              <Button size="compact">{isConnected && address ? shortAddress(address) : "Wallet"}</Button>
-            </Dialog.Trigger>
-            <Dialog.Portal>
-              <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/40" />
-              <Dialog.Content className="fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-lg border border-line bg-elevated p-5">
-                <Dialog.Title className="text-lg font-semibold text-ink">Wallet</Dialog.Title>
-                <Dialog.Description className="mt-2 text-sm text-body">
-                  Connect a browser wallet. A connection is not a passport session until you sign.
-                </Dialog.Description>
-                <div className="mt-4">
-                  <WalletPanel />
-                </div>
-                <div className="mt-4 flex justify-end">
-                  <Dialog.Close asChild>
-                    <Button variant="secondary">Close</Button>
-                  </Dialog.Close>
-                </div>
-              </Dialog.Content>
-            </Dialog.Portal>
-          </Dialog.Root>
+        ) : null}
+        <span className="sr-only">{title}</span>
+        <div className="ml-auto flex shrink-0 items-center gap-2">
+          <button
+            type="button"
+            onClick={onOpenPalette}
+            aria-label="Search pages and actions"
+            className="flex h-9 items-center gap-2 rounded-full border border-line bg-elevated px-3 text-sm text-muted transition-colors hover:border-muted hover:text-ink"
+          >
+            <Search className="size-4" aria-hidden="true" />
+            <span className="hidden md:inline">Jump to…</span>
+            <kbd className="hidden rounded border border-line px-1 text-[10px] md:inline">⌘K</kbd>
+          </button>
+          <ThemeToggle />
+          <WalletButton />
         </div>
       </div>
     </header>

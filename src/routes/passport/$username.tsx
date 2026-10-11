@@ -32,8 +32,8 @@ function PublicPassportPage() {
 function PassportNotFound() {
   return (
     <EmptyState
-      title="No passport at this address"
-      body="That username is not a saved Chog Passport. Usernames are lowercase letters, numbers, and underscores."
+      title="Passport not found"
+      body="Check the username and try again."
     />
   );
 }

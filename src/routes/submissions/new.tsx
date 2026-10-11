@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { WorkForm } from "@/components/work/work-form";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
-import { SelectInput } from "@/components/ui/input";
+import { PageHeader } from "@/components/ui/page-header";
+import { Field, SelectInput } from "@/components/ui/input";
 import { getWorkHome } from "@/lib/work/functions";
 import { useState } from "react";
 
@@ -16,29 +17,37 @@ export const Route = createFileRoute("/submissions/new")({
 function NewSubmissionPage() {
   const data = Route.useLoaderData();
   const [applicationId, setApplicationId] = useState(data.eligible[0]?.applicationId ?? "");
-  if (!data.ok) {
-    return <EmptyState title="Sign in to submit work" body={data.error} action={<Button asChild><Link to="/passport">Open passport</Link></Button>} />;
-  }
-  if (data.eligible.length === 0) {
+  if (!data.ok || data.eligible.length === 0) {
     return (
-      <EmptyState
-        title="No accepted application to attach"
-        body="Work is submitted against an application a creator has accepted. Example listings and open applications do not qualify."
-        action={<Button asChild><Link to="/applications">View applications</Link></Button>}
-      />
+      <div>
+        <PageHeader title="Submit work" />
+        <div className="mt-10">
+          <EmptyState
+            title={data.ok ? "No accepted applications yet" : "Sign in to submit work"}
+            body={data.ok ? "You can submit work once a publisher accepts your application." : undefined}
+            action={
+              <Button asChild size="compact" variant={data.ok ? "secondary" : "primary"}>
+                {data.ok ? <Link to="/applications">Your applications</Link> : <Link to="/passport">Open Passport</Link>}
+              </Button>
+            }
+          />
+        </div>
+      </div>
     );
   }
   return (
-    <div className="max-w-2xl">
-      <p className="text-xs font-semibold tracking-[0.14em] text-muted uppercase">Evidence</p>
-      <h1 className="mt-2 text-3xl text-ink">Submit work</h1>
-      <label className="mt-6 block text-sm font-medium text-ink" htmlFor="eligible">Accepted application</label>
-      <SelectInput id="eligible" className="mt-2" value={applicationId} onChange={(event) => setApplicationId(event.target.value)}>
-        {data.eligible.map((item) => (
-          <option key={item.applicationId} value={item.applicationId}>{item.projectName} — {item.opportunityTitle}</option>
-        ))}
-      </SelectInput>
-      <div className="mt-6">
+    <div>
+      <PageHeader title="Submit work" description="Share links to what you delivered. The publisher reviews it." />
+      <div className="mt-10 flex flex-col gap-10">
+        <Field label="For" htmlFor="eligible">
+          <SelectInput id="eligible" value={applicationId} onChange={(event) => setApplicationId(event.target.value)}>
+            {data.eligible.map((item) => (
+              <option key={item.applicationId} value={item.applicationId}>
+                {item.projectName} · {item.opportunityTitle}
+              </option>
+            ))}
+          </SelectInput>
+        </Field>
         <WorkForm applicationId={applicationId} />
       </div>
     </div>

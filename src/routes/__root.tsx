@@ -4,6 +4,7 @@ import { NotFoundState } from "@/components/layout/not-found";
 import { PreviewHostBridge } from "@/components/preview-host-bridge";
 import { AuthProvider } from "@/lib/auth/provider";
 import { PassportProvider } from "@/components/passport/passport-provider";
+import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Choguild";
@@ -19,7 +20,7 @@ export const Route = createRootRoute({
         content:
           "Choguild helps Monad contributors keep an identity, find opportunities, and build a record of reviewed work.",
       },
-      { name: "theme-color", content: "#171714" },
+      { name: "theme-color", content: "#0b0814" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
@@ -36,6 +37,7 @@ function RootComponent() {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT_SCRIPT }} />
         <HeadContent />
       </head>
       <body>

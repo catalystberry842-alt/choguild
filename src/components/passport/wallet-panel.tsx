@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { MONAD_CHAIN_ID, explorerAddressUrl, monadChainLabel } from "@/lib/passport/chain";
-import { SIWE_STATEMENT } from "@/lib/passport/copy";
 import { shortAddress } from "@/lib/passport/format";
 import { endPassportSession, requestNonce, verifySignature } from "@/lib/passport/functions";
 import { walletErrorMessage } from "@/lib/passport/wallet-error";
@@ -125,7 +124,7 @@ export function WalletPanel() {
     try {
       await endSession();
       await refresh();
-      setMessage("Passport session ended. Saved profile data was not deleted.");
+      setMessage("Signed out. Your passport is still saved.");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "The session could not be ended.");
     } finally {
@@ -134,7 +133,7 @@ export function WalletPanel() {
   }
 
   return (
-    <div className="flex flex-col gap-3">
+    <div className="flex flex-col gap-4">
       <div className="flex flex-wrap items-center gap-2">
         {isConnected && address ? (
           <>
@@ -147,19 +146,16 @@ export function WalletPanel() {
         {sessionAddress ? <Badge tone="sand">Session {shortAddress(sessionAddress)}</Badge> : null}
       </div>
 
-      <p className="text-xs leading-relaxed text-muted">
-        A connected address is not a passport and is not proof of a human identity. Choguild never asks
-        for a seed phrase or private key.
-      </p>
+      <p className="t-meta">Choguild never asks for your seed phrase or private key.</p>
 
       {isConnected && !onMonad ? (
-        <p className="text-sm leading-relaxed text-warning">
-          The wallet reported {network.label}. Monad mainnet is chain {MONAD_CHAIN_ID}. Nothing has been switched until the wallet confirms it.
+        <p className="text-sm leading-6 text-warning">
+          Your wallet is on {network.label}. Switch to Monad (chain {MONAD_CHAIN_ID}) to continue.
         </p>
       ) : null}
       {sessionAddress && address && !sameWallet ? (
-        <p className="text-sm leading-relaxed text-warning">
-          Passport session {shortAddress(sessionAddress)} is not this connected wallet. Connecting another address does not move a saved profile. Verifying replaces the session. The other passport stays on its own address.
+        <p className="text-sm leading-6 text-warning">
+          You're signed in as {shortAddress(sessionAddress)}, not this wallet. Verify to switch, and each passport stays on its own address.
         </p>
       ) : null}
 
@@ -180,8 +176,7 @@ export function WalletPanel() {
           </div>
         ) : (
           <ErrorMessage title="No wallet found">
-            This browser does not expose an Ethereum provider such as MetaMask or Rabby. Install one, then
-            reload. Nothing was connected.
+            Install a browser wallet such as MetaMask or Rabby, then reload this page.
           </ErrorMessage>
         )
       ) : (
@@ -190,7 +185,7 @@ export function WalletPanel() {
             {copied ? "Copied" : "Copy address"}
           </Button>
           {explorer ? (
-            <a className="inline-flex min-h-11 items-center text-sm font-semibold text-sand" href={explorer} target="_blank" rel="noreferrer">
+            <a className="t-link inline-flex min-h-11 items-center text-sm" href={explorer} target="_blank" rel="noreferrer">
               Explorer
             </a>
           ) : null}
@@ -207,7 +202,7 @@ export function WalletPanel() {
 
       {isConnected && onMonad && !sameWallet ? (
         <div className="flex flex-col gap-2">
-          <p className="text-xs leading-relaxed text-body">{SIWE_STATEMENT}</p>
+          <p className="t-meta">You'll sign a free message to prove you own this wallet. It isn't a transaction.</p>
           <Button onClick={() => void verifyWallet()} disabled={busy || signing}>
             {busy || signing ? "Waiting for signature" : "Verify this wallet"}
           </Button>

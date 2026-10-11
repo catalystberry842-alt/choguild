@@ -59,35 +59,34 @@ export function PublicPassport({
           />
         ) : (
           <span
-            className="flex size-16 items-center justify-center rounded-lg border border-line bg-elevated text-xl text-ink"
+            className="flex size-16 items-center justify-center rounded-2xl border border-line bg-elevated text-xl text-ink"
             aria-hidden="true"
           >
             {initial}
           </span>
         )}
         <div className="min-w-0">
-          <h1 className="text-2xl font-semibold tracking-tight text-ink">{profile.displayName}</h1>
-          <p className="mt-1 text-sm text-body">@{profile.username}</p>
+          <h1 className="t-title">{profile.displayName}</h1>
+          <p className="t-meta mt-1.5">@{profile.username}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <p className="font-mono text-sm text-ink">{shortAddress(profile.walletAddress)}</p>
-            <Button variant="secondary" onClick={() => void copy(profile.walletAddress, "address")}>
+            <Button variant="secondary" size="compact" onClick={() => void copy(profile.walletAddress, "address")}>
               {copiedAddress ? "Copied" : "Copy address"}
             </Button>
             {explorerAddressUrl(profile.walletAddress) ? (
-              <a className="text-sm font-semibold text-sand" href={explorerAddressUrl(profile.walletAddress) ?? undefined} target="_blank" rel="noreferrer">
+              <a className="t-link text-sm" href={explorerAddressUrl(profile.walletAddress) ?? undefined} target="_blank" rel="noreferrer">
                 Explorer
               </a>
             ) : null}
           </div>
-          <p className="mt-2 text-xs text-muted">This address was signed in to Choguild. Accepted work below is a review record, not a Monad transaction.</p>
         </div>
       </header>
 
-      <p className="mt-6 max-w-2xl text-base leading-relaxed text-body">{profile.biography}</p>
+      <p className="t-lead mt-10 max-w-2xl">{profile.biography}</p>
 
-      <dl className="mt-6 grid gap-4 sm:grid-cols-2">
+      <dl className="mt-10 grid gap-4 sm:grid-cols-2">
         <div>
-          <dt className="text-xs text-muted">Skills</dt>
+          <dt className="t-meta">Skills</dt>
           <dd className="mt-2 flex flex-wrap gap-2">
             {profile.skills.length > 0 ? (
               profile.skills.map((skill) => <Badge key={skill}>{skill}</Badge>)
@@ -97,11 +96,11 @@ export function PublicPassport({
           </dd>
         </div>
         <div>
-          <dt className="text-xs text-muted">Interests</dt>
+          <dt className="t-meta">Interests</dt>
           <dd className="mt-1 text-sm text-ink">{profile.interests ?? "Not added"}</dd>
         </div>
         <div>
-          <dt className="text-xs text-muted">Links</dt>
+          <dt className="t-meta">Links</dt>
           <dd className="mt-2 flex flex-col gap-2">
             {links.length > 0 ? (
               links.map((link) => (
@@ -121,7 +120,7 @@ export function PublicPassport({
           </dd>
         </div>
         <div>
-          <dt className="text-xs text-muted">Record</dt>
+          <dt className="t-meta">Record</dt>
           <dd className="mt-1 text-sm text-body">
             Created {formatStamp(profile.createdAt)}
             <br />
@@ -131,12 +130,12 @@ export function PublicPassport({
         </div>
       </dl>
 
-      <section className="mt-8 border-t border-line pt-6">
-        <h2 className="text-lg font-semibold text-ink">Accepted work</h2>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-body">
+      <section className="mt-12 border-t border-line pt-12">
+        <h2 className="t-h2">Accepted work</h2>
+        <p className="t-body mt-1.5 max-w-2xl">
           {contributions.accepted === 0
-            ? "No accepted work is attached to this passport. Drafts, rejected submissions, and unreviewed applications are not counted."
-            : `${contributions.accepted} accepted ${contributions.accepted === 1 ? "submission" : "submissions"} across ${contributions.opportunities} ${contributions.opportunities === 1 ? "opportunity" : "opportunities"}. This is a record, not a score.`}
+            ? "No accepted work yet."
+            : `${contributions.accepted} accepted ${contributions.accepted === 1 ? "submission" : "submissions"} across ${contributions.opportunities} ${contributions.opportunities === 1 ? "opportunity" : "opportunities"}.`}
         </p>
         {contributions.skills.length > 0 ? (
           <div className="mt-3 flex flex-wrap gap-2">
@@ -144,18 +143,17 @@ export function PublicPassport({
           </div>
         ) : null}
         {contributions.items.length > 0 ? (
-          <ul className="mt-4 grid gap-3">
+          <ul className="mt-4 grid gap-4">
             {contributions.items.map((item) => (
-              <li key={item.id} className="rounded-lg border border-line bg-elevated p-4">
-                <p className="text-xs font-semibold tracking-[0.12em] text-muted uppercase">Accepted {formatStamp(item.acceptedAt)}</p>
-                <h3 className="mt-1 text-base font-semibold text-ink">{item.title}</h3>
-                <p className="text-sm text-body">{item.projectName} · {item.opportunityTitle}</p>
+              <li key={item.id} className="surface p-6">
+                <h3 className="t-h3">{item.title}</h3>
+                <p className="t-meta mt-1">{item.projectName} · {item.opportunityTitle} · Accepted {formatStamp(item.acceptedAt)}</p>
                 {item.evidence === null ? (
-                  <p className="mt-2 text-sm text-muted">Evidence links were kept private.</p>
+                  <p className="t-meta mt-3">Evidence is private.</p>
                 ) : (
-                  <ul className="mt-2 grid gap-1">
+                  <ul className="mt-3 grid gap-1.5">
                     {item.evidence.map((link) => (
-                      <li key={link.url}><a className="text-sm text-sand" href={link.url} target="_blank" rel="noreferrer">{link.label}</a></li>
+                      <li key={link.url}><a className="t-link text-sm" href={link.url} target="_blank" rel="noreferrer">{link.label}</a></li>
                     ))}
                   </ul>
                 )}
@@ -165,7 +163,7 @@ export function PublicPassport({
         ) : null}
       </section>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-10 flex flex-wrap gap-2">
         <Button variant="secondary" onClick={() => void copy(window.location.href, "url")}>
           {copiedUrl ? "Copied" : "Copy profile URL"}
         </Button>

@@ -2,6 +2,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { usePassport } from "@/components/passport/passport-provider";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, SelectInput, TextArea, TextInput } from "@/components/ui/input";
@@ -170,7 +171,6 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
 
       <fieldset>
         <legend className="text-sm font-medium text-ink">Skills</legend>
-        <p className="mt-1 text-xs text-muted">Suggested skills are optional. Add your own if none fit.</p>
         <div className="mt-2 flex flex-wrap gap-2">
           {SUGGESTED_SKILLS.map((skill) => {
             const selected = form.skills.some((item) => item.toLowerCase() === skill.toLowerCase());
@@ -298,7 +298,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
         label="Visibility"
         htmlFor="passport-visibility"
         error={errors.visibility}
-        hint="Unlisted passports are not listed anywhere. Anyone with the URL can still open them."
+        hint="Unlisted passports stay off the ranking but open by link."
       >
         <SelectInput
           id="passport-visibility"
@@ -310,15 +310,15 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
         </SelectInput>
       </Field>
 
-      <div className="rounded-lg border border-line bg-sidebar px-4 py-3">
-        <p className="text-sm font-medium text-ink">{completionSummary(completion)}</p>
-        <p className="mt-1 text-xs text-muted">
-          This checklist is not a reputation score. It only shows profile details that are still empty.
-        </p>
-        <ul className="mt-3 flex flex-col gap-1">
+      <div className="rounded-2xl bg-secondary px-5 py-4">
+        <p className="t-h3">{completionSummary(completion)}</p>
+        <ul className="mt-3 flex flex-wrap gap-1.5">
           {completion.map((item) => (
-            <li key={item.id} className={item.done ? "text-sm text-success" : "text-sm text-body"}>
-              {item.done ? "Filled" : "Missing"}: {item.label}
+            <li key={item.id}>
+              <Badge tone={item.done ? "olive" : "neutral"}>
+                {item.done ? "✓ " : ""}
+                {item.label}
+              </Badge>
             </li>
           ))}
         </ul>

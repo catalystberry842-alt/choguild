@@ -1,6 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { OpportunityForm } from "@/components/board/opportunity-form";
 import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
 import { getBoardOpportunity } from "@/lib/board/functions";
 
 export const Route = createFileRoute("/opportunities/$opportunityId/edit")({
@@ -13,7 +14,7 @@ export const Route = createFileRoute("/opportunities/$opportunityId/edit")({
   head: () => ({ meta: [{ title: "Edit opportunity · Choguild" }] }),
   component: EditOpportunityPage,
   notFoundComponent: () => (
-    <EmptyState title="You cannot edit this opportunity" body="It is missing, it is an example, or it belongs to someone else." />
+    <EmptyState title="You can't edit this listing" body="It may be an example, or it belongs to someone else." />
   ),
 });
 
@@ -21,8 +22,8 @@ function EditOpportunityPage() {
   const opportunity = Route.useLoaderData();
   return (
     <div>
-      <h1 className="text-3xl text-ink">Edit {opportunity.title}</h1>
-      <div className="mt-6">
+      <PageHeader eyebrow="Edit listing" title={opportunity.title} />
+      <div className="mt-10">
         <OpportunityForm opportunity={opportunity} />
       </div>
     </div>

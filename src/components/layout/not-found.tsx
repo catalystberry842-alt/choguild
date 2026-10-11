@@ -5,11 +5,10 @@ import { EmptyState } from "@/components/ui/empty-state";
 export function NotFoundState() {
   return (
     <EmptyState
-      title="This page does not exist"
-      body="That address does not match Home, Passport, Discover, or Submissions."
+      title="Page not found"
       action={
-        <Button asChild>
-          <Link to="/">Back to Home</Link>
+        <Button asChild variant="secondary" size="compact">
+          <Link to="/">Go home</Link>
         </Button>
       }
     />
