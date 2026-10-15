@@ -11,7 +11,7 @@ type PassportSessionData = {
 function sessionPassword(): string {
   const resolved = resolveSessionSecret({
     explicit: env("CHOG_SESSION_SECRET"),
-    databaseUrl: env("DATABASE_URL"),
+    databaseUrl: env("DATABASE_URL") ?? env("POSTGRES_URL") ?? env("DATABASE_URL_UNPOOLED"),
     preview: isLocalDev(),
   });
   if (resolved) return resolved;
