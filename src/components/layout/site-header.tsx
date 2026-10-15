@@ -96,7 +96,7 @@ function MobileMenu() {
             initial={{ opacity: 0, y: -16, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="bento fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 p-3 lg:hidden"
+            className="bento fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 max-h-[calc(100dvh-1.5rem)] overflow-y-auto p-3 lg:hidden"
           >
             <Dialog.Title className="sr-only">Menu</Dialog.Title>
             <Dialog.Description className="sr-only">All Choguild pages and your passport.</Dialog.Description>
@@ -124,7 +124,7 @@ function MobileMenu() {
                       to={item.to}
                       search={item.to === "/discover" ? emptyBoardSearch() : undefined}
                       className={cn(
-                        "flex flex-col gap-6 rounded-2xl border p-4 transition-colors",
+                        "flex flex-row items-center gap-3 rounded-2xl border px-4 py-3 transition-colors min-[360px]:flex-col min-[360px]:items-start min-[360px]:gap-6 min-[360px]:p-4",
                         active ? "border-signal/40 bg-signal/10" : "border-line bg-white/[0.02] hover:border-line-strong",
                       )}
                     >
