@@ -37,6 +37,7 @@ function emptyInput(): OpportunityInput {
     question: "",
     positions: "",
     publish: false,
+    holdersOnly: false,
   };
 }
 
@@ -60,6 +61,7 @@ function fromOpportunity(opportunity: OpportunityDetail): OpportunityInput {
     question: opportunity.question ?? "",
     positions: opportunity.positions ? String(opportunity.positions) : "",
     publish: opportunity.status === "open",
+    holdersOnly: opportunity.holdersOnly,
   };
 }
 
@@ -111,6 +113,7 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
           <div><dt className="text-muted">Project</dt><dd className="text-ink">{form.projectName}</dd></div>
           <div><dt className="text-muted">Summary</dt><dd className="text-ink">{form.summary}</dd></div>
           <div><dt className="text-muted">Compensation</dt><dd className="text-ink">{COMPENSATION_LABEL[form.compensationType as keyof typeof COMPENSATION_LABEL]} {form.compensationDetails}</dd></div>
+          <div><dt className="text-muted">Who can apply</dt><dd className="text-ink">{form.holdersOnly ? "Chog Genesis holders only" : "Anyone with a passport"}</dd></div>
           <div><dt className="text-muted">Required skills</dt><dd className="text-ink">{form.requiredSkills.join(", ") || "None"}</dd></div>
         </dl>
         {formError ? <div className="mt-4"><ErrorMessage title="Could not publish">{formError}</ErrorMessage></div> : null}
@@ -188,6 +191,21 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
       <Field label="Question for applicants" htmlFor="opp-question" hint="Optional." error={errors.question}>
         <TextInput id="opp-question" value={form.question} onChange={(event) => set("question", event.target.value)} />
       </Field>
+      <label htmlFor="opp-holders-only" className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line bg-white/[0.02] p-4 transition-colors hover:border-line-strong">
+        <input
+          id="opp-holders-only"
+          type="checkbox"
+          checked={form.holdersOnly === true}
+          onChange={(event) => set("holdersOnly", event.target.checked)}
+          className="mt-0.5 size-4 accent-[var(--color-signal)]"
+        />
+        <span>
+          <span className="block text-base font-medium text-ink">Chog holders only</span>
+          <span className="t-meta mt-0.5 block">
+            Only wallets holding a Chog Genesis NFT can apply. Checked onchain on Monad when they apply.
+          </span>
+        </span>
+      </label>
       <div className="flex flex-wrap gap-2">
         <Button type="submit">Review</Button>
       </div>

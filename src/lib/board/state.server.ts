@@ -78,7 +78,8 @@ export async function changeOpportunityStatus(input: { id: string; status: "open
 export async function submitApplication(input: { opportunityId: string; application: ApplicationInput }) {
   const auth = await requireProfile();
   if (!auth.ok) return auth;
-  return applyToOpportunity(auth.sql, auth.wallet, input.opportunityId, input.application);
+  const { isChogHolderNow } = await import("@/lib/chog/holders.server");
+  return applyToOpportunity(auth.sql, auth.wallet, input.opportunityId, input.application, isChogHolderNow);
 }
 
 export async function pullApplication(id: string) {

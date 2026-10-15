@@ -17,6 +17,7 @@ import {
   type RankedContributor,
 } from "@/lib/ranking/xp";
 import { seo } from "@/lib/seo";
+import { ChogBadge, ChogImage } from "@/components/chog/chog-bits";
 import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/ranking")({
@@ -115,9 +116,16 @@ function RankingPage() {
                     >
                       <span className="t-stat-sm text-muted">{person.rank}</span>
                       <span className="flex min-w-0 items-center gap-3">
-                        <Avatar name={person.displayName} url={person.avatarUrl} />
+                        {person.chog?.tokenIds[0] ? (
+                          <ChogImage tokenId={person.chog.tokenIds[0]} size="sm" className="rounded-full" />
+                        ) : (
+                          <Avatar name={person.displayName} url={person.avatarUrl} />
+                        )}
                         <span className="min-w-0">
-                          <span className="block truncate text-base text-ink group-hover:text-signal">{person.displayName}</span>
+                          <span className="flex min-w-0 items-center gap-2">
+                            <span className="truncate text-base text-ink group-hover:text-signal">{person.displayName}</span>
+                            <ChogBadge count={person.chog?.count ?? 0} className="shrink-0" />
+                          </span>
                           <span className="block truncate text-label text-muted">
                             @{person.username}
                             {person.txCount !== null ? ` · ${formatXp(person.txCount)} txs` : ""}
@@ -150,17 +158,25 @@ function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
         className={cn("bento group flex flex-col items-center gap-4 px-6 py-8 text-center", first && "signal-glow border-signal/30")}
       >
         <span className={cn("t-stat-lg", first ? "text-signal" : "text-faint")}>{person.rank}</span>
-        <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
+        {person.chog?.tokenIds[0] ? (
+          <ChogImage tokenId={person.chog.tokenIds[0]} size="md" className="size-16 rounded-full" />
+        ) : (
+          <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
+        )}
         <span>
           <span className="t-h3 block text-ink">{person.displayName}</span>
           <span className="block text-label text-muted">@{person.username}</span>
         </span>
-        <TierBadge tier={person.tier} />
+        <span className="flex flex-wrap justify-center gap-1.5">
+          <TierBadge tier={person.tier} />
+          <ChogBadge count={person.chog?.count ?? 0} />
+        </span>
         <span className="t-stat tabular-nums">
           <CountUp value={person.xp} /> <span className="font-sans text-label text-muted">XP</span>
         </span>
         <span className="text-label text-muted">
-          Guild {formatXp(person.guildXp)} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
+          Guild {formatXp(person.guildXp)}
+          {person.chogBonus ? ` (incl. +${person.chogBonus} Chog)` : ""} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
         </span>
         {by === "overall" ? <span className="w-full"><XpBar xp={person.xp} /></span> : null}
       </Link>

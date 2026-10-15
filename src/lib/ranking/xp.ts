@@ -1,3 +1,5 @@
+import type { ChogHolding } from "@/lib/chog/chog";
+
 /** How XP is earned. Shared by the ranking query and the How it works page. */
 export const XP_RULES = [
   { key: "acceptedSubmissions", label: "Accepted submission", points: 100, detail: "Work you submitted was reviewed and accepted." },
@@ -66,6 +68,9 @@ export type Contributor = {
   /** Null when the Monad RPC could not be reached for this wallet. */
   txCount: number | null;
   onchainXp: number | null;
+  /** Chog Genesis holdings; null when the chain could not be read. guildXp already includes chogBonus. */
+  chog?: ChogHolding | null;
+  chogBonus?: number;
 };
 
 export type RankedContributor = Contributor & { rank: number; xp: number; tier: string };

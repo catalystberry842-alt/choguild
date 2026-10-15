@@ -41,7 +41,7 @@ describe("work proof", () => {
   before(async () => {
     const pg = new PGlite();
     sql = toSql(pg);
-    for (const file of ["0002_passport.sql", "0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql"]) {
+    for (const file of ["0002_passport.sql", "0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql"]) {
       await pg.exec(readFileSync(new URL(`../../../migrations/${file}`, import.meta.url), "utf8"));
     }
     await sql.query(

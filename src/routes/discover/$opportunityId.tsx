@@ -25,6 +25,7 @@ import { getBoardOpportunity, sendApplication, updateBoardStatus, withdrawBoardA
 import type { BoardErrors } from "@/lib/board/validate";
 import { formatStamp } from "@/lib/passport/format";
 import { seo } from "@/lib/seo";
+import { HoldersOnlyPill } from "@/components/chog/chog-bits";
 import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/discover/$opportunityId")({
@@ -118,6 +119,7 @@ function OpportunityPage() {
         <div className="min-w-0">
           <div className="flex flex-wrap gap-2">
             <Badge>{OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status}</Badge>
+            {opportunity.holdersOnly ? <HoldersOnlyPill /> : null}
           </div>
           <h1 className="t-title mt-3">{opportunity.title}</h1>
           <p className="t-meta mt-2">
@@ -194,6 +196,9 @@ function OpportunityPage() {
           <form className="mt-5 grid gap-5" onSubmit={(event) => { event.preventDefault(); void onApply(); }}>
             {message ? <ErrorMessage title="Application was not sent">{message}</ErrorMessage> : null}
             <p className="t-meta">Applying as {profile.displayName} · @{profile.username}</p>
+            {opportunity.holdersOnly ? (
+              <p className="t-meta">This listing is for Chog Genesis holders. Your wallet is checked on Monad when you send.</p>
+            ) : null}
             <Field label="Introduction" htmlFor="app-intro" error={errors.introduction}>
               <TextArea id="app-intro" value={intro} onChange={(event) => setIntro(event.target.value)} required />
             </Field>

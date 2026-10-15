@@ -5,14 +5,18 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { getPublicProfile } from "@/lib/passport/functions";
 import { getPublicContributions } from "@/lib/work/functions";
 import { seo } from "@/lib/seo";
+import { getChogHolding } from "@/lib/chog/functions";
 import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/passport/$username")({
   loader: async ({ params }) => {
     const profile = await getPublicProfile({ data: params.username });
     if (!profile) throw notFound();
-    const contributions = await getPublicContributions({ data: params.username });
-    return { profile, contributions };
+    const [contributions, chog] = await Promise.all([
+      getPublicContributions({ data: params.username }),
+      getChogHolding({ data: profile.walletAddress }).catch(() => null),
+    ]);
+    return { profile, contributions, chog };
   },
   staticData: { title: "Public passport", crumb: "Passport" },
   pendingComponent: () => <LoadingState label="Loading page" layout="detail" />,
@@ -27,12 +31,12 @@ export const Route = createFileRoute("/passport/$username")({
 });
 
 function PublicPassportPage() {
-  const { profile, contributions } = Route.useLoaderData();
+  const { profile, contributions, chog } = Route.useLoaderData();
   const { sessionAddress } = usePassport();
   const owner = Boolean(
     sessionAddress && sessionAddress.toLowerCase() === profile.walletAddress.toLowerCase(),
   );
-  return <PublicPassport profile={profile} owner={owner} contributions={contributions} />;
+  return <PublicPassport profile={profile} owner={owner} contributions={contributions} chog={chog} />;
 }
 
 function PassportNotFound() {

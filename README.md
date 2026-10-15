@@ -112,6 +112,13 @@ Copy `.env.example` into your host's environment settings. Do not commit real va
 2. Add `CHOG_SESSION_SECRET` and `DATABASE_URL`. Without `DATABASE_URL` the deployed app runs on in-memory PGLite and every cold start wipes the data.
 3. Deploy. `npm run build` runs the database migrations automatically when `DATABASE_URL` is present.
 
+## Chog Genesis holders
+
+- Contract: [`0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763`](https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763) (Chog Genesis, CHOG, ERC-721, 1,969 tokens), as used by the official mint site mint.chog.xyz.
+- Holdings are read onchain: `ownerOf(1..totalSupply)` through Multicall3 builds an owner snapshot, cached server-side for 5 minutes (`src/lib/chog/holders.server.ts`). Images come from each token's `tokenURI` on IPFS via `/api/chog/:id` (edge-cached).
+- Holders get a "Chog holder" badge and their Chog on the passport and in ranking rows, plus **+10% guild XP, rounded, capped at +50** (onchain XP is not boosted). Documented in the XP table on How it works.
+- Publishers can mark a listing "Chog holders only". The server re-checks `balanceOf` live when someone applies; if Monad can't be reached the application is refused rather than let through.
+
 ## Security and operations
 
 - Security headers (`nosniff`, frame denial, referrer and permissions policy, a report-only CSP) and long cache headers for static assets live in `vercel.json`.

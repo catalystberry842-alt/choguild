@@ -16,6 +16,8 @@ export type OpportunityCard = {
   myApplicationStatus: ApplicationStatus | null;
   myApplicationId: string | null;
   createdAt: string;
+  /** Only Chog Genesis holders may apply (checked onchain at apply time). */
+  holdersOnly: boolean;
 };
 
 export type OpportunityDetail = OpportunityCard & {

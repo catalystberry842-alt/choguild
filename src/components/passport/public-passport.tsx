@@ -5,16 +5,20 @@ import { Button } from "@/components/ui/button";
 import { explorerAddressUrl } from "@/lib/passport/chain";
 import { formatStamp, shortAddress } from "@/lib/passport/format";
 import type { PublicProfile } from "@/lib/passport/types";
+import { ChogBadge, ChogGallery } from "@/components/chog/chog-bits";
+import type { ChogHolding } from "@/lib/chog/chog";
 import type { ContributionSummary } from "@/lib/work/types";
 
 export function PublicPassport({
   profile,
   owner,
   contributions,
+  chog,
 }: {
   profile: PublicProfile;
   owner: boolean;
   contributions: ContributionSummary;
+  chog?: ChogHolding | null;
 }) {
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedUrl, setCopiedUrl] = useState(false);
@@ -67,7 +71,10 @@ export function PublicPassport({
         )}
         <div className="min-w-0">
           <h1 className="t-title">{profile.displayName}</h1>
-          <p className="t-meta mt-1.5">@{profile.username}</p>
+          <p className="t-meta mt-1.5 flex flex-wrap items-center gap-2">
+            @{profile.username}
+            <ChogBadge count={chog?.count ?? 0} />
+          </p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
             <p className="font-mono text-base text-ink">{shortAddress(profile.walletAddress)}</p>
             <Button variant="secondary" size="compact" onClick={() => void copy(profile.walletAddress, "address")}>
@@ -129,6 +136,12 @@ export function PublicPassport({
           </dd>
         </div>
       </dl>
+
+      {chog && chog.count > 0 ? (
+        <div className="mt-10">
+          <ChogGallery holding={chog} />
+        </div>
+      ) : null}
 
       <section className="mt-12 border-t border-line pt-12">
         <h2 className="t-h2">Accepted work</h2>

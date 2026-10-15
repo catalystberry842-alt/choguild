@@ -38,6 +38,7 @@ type OppRow = {
   instructions: string;
   question: string | null;
   positions: number | string | null;
+  holders_only?: boolean | null;
   status: string;
   created_at: string;
   updated_at: string;
@@ -85,6 +86,7 @@ function toCard(row: OppRow, viewer: string | null): OpportunityCard {
     myApplicationStatus: mine ? null : status,
     myApplicationId: mine ? null : row.my_application_id,
     createdAt: row.created_at,
+    holdersOnly: row.holders_only === true,
   };
 }
 
@@ -110,7 +112,7 @@ const CARD_COLUMNS = `
   o.scope, o.deliverables, o.required_skills, o.preferred_skills, o.category, o.compensation_type,
   o.compensation_details, o.time_commitment,
   to_char(o.deadline at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as deadline,
-  o.instructions, o.question, o.positions, o.status,
+  o.instructions, o.question, o.positions, o.holders_only, o.status,
   to_char(o.created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
   to_char(o.updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as updated_at,
   a.status as my_status,
@@ -227,15 +229,15 @@ export async function createOpportunity(
     `insert into opportunities (
       id, owner_wallet, project_name, project_logo_url, title, summary, description, scope, deliverables,
       required_skills, preferred_skills, category, compensation_type, compensation_details, time_commitment,
-      deadline, instructions, question, positions, status
+      deadline, instructions, question, positions, status, holders_only
     ) values (
-      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20
+      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21
     )`,
     [
       id, owner, value.projectName, value.projectLogoUrl, value.title, value.summary, value.description,
       value.scope, value.deliverables, JSON.stringify(value.requiredSkills), JSON.stringify(value.preferredSkills),
       value.category, value.compensationType, value.compensationDetails, value.timeCommitment, value.deadline,
-      value.instructions, value.question, value.positions, value.status,
+      value.instructions, value.question, value.positions, value.status, value.holdersOnly,
     ],
   );
   const opportunity = await readDetail(sql, id, owner);
@@ -260,14 +262,14 @@ export async function updateOpportunity(
       project_name = $3, project_logo_url = $4, title = $5, summary = $6, description = $7, scope = $8,
       deliverables = $9, required_skills = $10::jsonb, preferred_skills = $11::jsonb, category = $12,
       compensation_type = $13, compensation_details = $14, time_commitment = $15, deadline = $16,
-      instructions = $17, question = $18, positions = $19, status = $20, updated_at = now()
+      instructions = $17, question = $18, positions = $19, status = $20, holders_only = $21, updated_at = now()
      where id = $1 and owner_wallet = $2
      returning id`,
     [
       id, owner, value.projectName, value.projectLogoUrl, value.title, value.summary, value.description,
       value.scope, value.deliverables, JSON.stringify(value.requiredSkills), JSON.stringify(value.preferredSkills),
       value.category, value.compensationType, value.compensationDetails, value.timeCommitment, value.deadline,
-      value.instructions, value.question, value.positions, status,
+      value.instructions, value.question, value.positions, status, value.holdersOnly,
     ],
   );
   if (!updated[0]) return { ok: false, error: "You can only edit an opportunity you published." };
@@ -308,11 +310,13 @@ export async function applyToOpportunity(
   wallet: string,
   opportunityId: string,
   input: ApplicationInput,
+  /** Live Chog Genesis check for gated listings: true/false, or null when the chain can't be read. */
+  isChogHolder: (wallet: string) => Promise<boolean | null> = async () => null,
 ): Promise<{ ok: true; applicationId: string } | { ok: false; error: string; fieldErrors?: BoardErrors }> {
   const parsed = validateApplication(input);
   if (!parsed.ok) return { ok: false, error: "Check the highlighted fields.", fieldErrors: parsed.errors };
-  const rows = await sql<{ owner_wallet: string; status: string; deadline: string | null }>`
-    select owner_wallet, status,
+  const rows = await sql<{ owner_wallet: string; status: string; deadline: string | null; holders_only: boolean | null }>`
+    select owner_wallet, status, holders_only,
       to_char(deadline at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as deadline
     from opportunities where id = ${opportunityId}
   `;
@@ -320,6 +324,11 @@ export async function applyToOpportunity(
   if (!opportunity) return { ok: false, error: "That opportunity does not exist." };
   const reason = closedReason(opportunity, wallet);
   if (reason) return { ok: false, error: reason };
+  if (opportunity.holders_only === true) {
+    const holder = await isChogHolder(wallet);
+    if (holder === null) return { ok: false, error: "Chog holdings could not be checked on Monad right now. Try again in a minute." };
+    if (!holder) return { ok: false, error: "This listing is open to Chog Genesis holders only." };
+  }
   const existing = await sql<{ id: string; status: string }>`
     select id, status from applications
     where opportunity_id = ${opportunityId} and contributor_wallet = ${wallet}

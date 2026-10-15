@@ -12,6 +12,7 @@ import {
 } from "@/lib/board/copy";
 import { cardSummary, projectLabel } from "@/lib/board/display";
 import type { OpportunityCard } from "@/lib/board/types";
+import { HoldersOnlyPill } from "@/components/chog/chog-bits";
 import { formatDay } from "@/lib/passport/format";
 
 function label<T extends string>(map: Record<T, string>, value: string): string {
@@ -35,11 +36,12 @@ export function OpportunityCardView({ item, animate = true }: { item: Opportunit
                 <span className="block truncate text-label text-muted">{label(CATEGORY_LABEL, item.category as Category)}</span>
               </span>
             </span>
-            <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-label" + (open ? "bg-success/10 text-success" : "bg-white/[0.05] text-muted")}>
+            <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-label " + (open ? "bg-success/10 text-success" : "bg-white/[0.05] text-muted")}>
               <span className={"size-1.5 rounded-full " + (open ? "bg-success" : "bg-muted")} aria-hidden="true" />
               {label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}
             </span>
           </div>
+          {item.holdersOnly ? <HoldersOnlyPill className="mt-4" /> : null}
           <h3 className="t-h3 mt-6 text-ink transition-colors group-hover:text-signal">{item.title}</h3>
           <p className="t-body mt-3 line-clamp-2">{cardSummary(item.summary)}</p>
           {item.requiredSkills.length > 0 ? (

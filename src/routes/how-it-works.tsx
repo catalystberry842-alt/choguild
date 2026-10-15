@@ -7,6 +7,9 @@ import { TierBadge } from "@/components/ranking/bits";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { ONCHAIN_XP_CAP, TIERS, XP_RULES } from "@/lib/ranking/xp";
+import { CHOG_BOOST_CAP, CHOG_BOOST_RATE, CHOG_EXPLORER_URL } from "@/lib/chog/chog";
+
+const CHOG_BOOST_PCT = Math.round(CHOG_BOOST_RATE * 100);
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/how-it-works")({
@@ -96,6 +99,21 @@ function HowItWorksPage() {
                   10 × √(transactions your wallet sent on Monad mainnet), up to {ONCHAIN_XP_CAP}. 25 txs = 50 XP.
                 </td>
                 <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">≤{ONCHAIN_XP_CAP}</td>
+              </tr>
+              <tr className="transition-colors hover:text-ink">
+                <td className="py-3 pr-4 font-medium text-ink">
+                  Chog holder boost
+                  <span className="mt-0.5 block text-label font-normal text-muted sm:hidden">
+                    Hold a Chog Genesis NFT: +{CHOG_BOOST_PCT}% of guild XP, up to +{CHOG_BOOST_CAP}.
+                  </span>
+                </td>
+                <td className="hidden py-3 pr-4 text-body sm:table-cell">
+                  Hold at least one{" "}
+                  <a href={CHOG_EXPLORER_URL} target="_blank" rel="noreferrer" className="t-link">Chog Genesis</a>{" "}
+                  NFT in your passport wallet: +{CHOG_BOOST_PCT}% of guild XP (rounded), up to +{CHOG_BOOST_CAP}. Onchain XP is not
+                  boosted. Holdings are read from Monad every few minutes.
+                </td>
+                <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">≤{CHOG_BOOST_CAP}</td>
               </tr>
             </tbody>
           </table>

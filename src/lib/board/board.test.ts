@@ -85,6 +85,7 @@ describe("collaboration board", () => {
     await pg.exec(readFileSync(new URL("../../../migrations/0004_work.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0005_indexes.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0006_remove_demo_data.sql", import.meta.url), "utf8"));
+    await pg.exec(readFileSync(new URL("../../../migrations/0007_chog_gate.sql", import.meta.url), "utf8"));
   });
 
   it("publishes, hides drafts, and blocks edits from another wallet", async () => {
@@ -161,6 +162,33 @@ describe("collaboration board", () => {
     assert.equal(again.ok, true);
     if (!again.ok) return;
     assert.equal(again.applicationId, sent.applicationId);
+  });
+
+  it("enforces the Chog holders-only gate on apply", async () => {
+    const created = await createOpportunity(sql, OWNER, input({ title: "Holders only listing", holdersOnly: true }));
+    assert.equal(created.ok, true);
+    if (!created.ok) return;
+    assert.equal(created.opportunity.holdersOnly, true);
+    const id = created.opportunity.id;
+    const A = "0x5555555555555555555555555555555555555555";
+    const B = "0x6666666666666666666666666666666666666666";
+    const notHolder = await applyToOpportunity(sql, A, id, application(), async () => false);
+    assert.equal(notHolder.ok, false);
+    if (!notHolder.ok) assert.match(notHolder.error, /holders only/);
+    const unknown = await applyToOpportunity(sql, A, id, application(), async () => null);
+    assert.equal(unknown.ok, false);
+    if (!unknown.ok) assert.match(unknown.error, /could not be checked/);
+    const holder = await applyToOpportunity(sql, B, id, application(), async () => true);
+    assert.equal(holder.ok, true);
+    // Ungated listings never call the checker.
+    const open = await createOpportunity(sql, OWNER, input({ title: "Open to everyone listing" }));
+    assert.equal(open.ok, true);
+    if (!open.ok) return;
+    assert.equal(open.opportunity.holdersOnly, false);
+    const anyone = await applyToOpportunity(sql, A, open.opportunity.id, application(), async () => {
+      throw new Error("should not be called");
+    });
+    assert.equal(anyone.ok, true);
   });
 });
 

@@ -47,6 +47,7 @@ export type OpportunityInput = {
   question: string;
   positions: string;
   publish: boolean;
+  holdersOnly?: boolean;
 };
 
 export type OpportunityRecord = {
@@ -67,6 +68,7 @@ export type OpportunityRecord = {
   instructions: string;
   question: string | null;
   positions: number | null;
+  holdersOnly: boolean;
   status: Extract<OpportunityStatus, "draft" | "open">;
 };
 
@@ -228,6 +230,7 @@ export function validateOpportunity(
       instructions,
       question,
       positions,
+      holdersOnly: input.holdersOnly === true,
       status: input.publish ? "open" : "draft",
     },
   };

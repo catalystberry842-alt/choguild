@@ -26,6 +26,7 @@ import { Route as PassportUsernameRouteImport } from './routes/passport/$usernam
 import { Route as SubmissionsIndexRouteImport } from './routes/submissions/index'
 import { Route as SubmissionsSubmissionIdRouteImport } from './routes/submissions/$submissionId'
 import { Route as SubmissionsNewRouteImport } from './routes/submissions/new'
+import { Route as ApiChogTokenIdRouteImport } from './routes/api/chog.$tokenId'
 import { Route as OpportunitiesOpportunityIdApplicationsRouteImport } from './routes/opportunities/$opportunityId/applications'
 import { Route as OpportunitiesOpportunityIdEditRouteImport } from './routes/opportunities/$opportunityId/edit'
 
@@ -115,6 +116,11 @@ const SubmissionsNewRoute = SubmissionsNewRouteImport.update({
   path: '/submissions/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiChogTokenIdRoute = ApiChogTokenIdRouteImport.update({
+  id: '/api/chog/$tokenId',
+  path: '/api/chog/$tokenId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesOpportunityIdApplicationsRoute =
   OpportunitiesOpportunityIdApplicationsRouteImport.update({
     id: '/opportunities/$opportunityId/applications',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/passport/': typeof PassportIndexRoute
   '/submissions/': typeof SubmissionsIndexRoute
+  '/api/chog/$tokenId': typeof ApiChogTokenIdRoute
   '/opportunities/$opportunityId/applications': typeof OpportunitiesOpportunityIdApplicationsRoute
   '/opportunities/$opportunityId/edit': typeof OpportunitiesOpportunityIdEditRoute
 }
@@ -167,6 +174,7 @@ export interface FileRoutesByTo {
   '/opportunities': typeof OpportunitiesIndexRoute
   '/passport': typeof PassportIndexRoute
   '/submissions': typeof SubmissionsIndexRoute
+  '/api/chog/$tokenId': typeof ApiChogTokenIdRoute
   '/opportunities/$opportunityId/applications': typeof OpportunitiesOpportunityIdApplicationsRoute
   '/opportunities/$opportunityId/edit': typeof OpportunitiesOpportunityIdEditRoute
 }
@@ -189,6 +197,7 @@ export interface FileRoutesById {
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/passport/': typeof PassportIndexRoute
   '/submissions/': typeof SubmissionsIndexRoute
+  '/api/chog/$tokenId': typeof ApiChogTokenIdRoute
   '/opportunities/$opportunityId/applications': typeof OpportunitiesOpportunityIdApplicationsRoute
   '/opportunities/$opportunityId/edit': typeof OpportunitiesOpportunityIdEditRoute
 }
@@ -212,6 +221,7 @@ export interface FileRouteTypes {
     | '/opportunities/'
     | '/passport/'
     | '/submissions/'
+    | '/api/chog/$tokenId'
     | '/opportunities/$opportunityId/applications'
     | '/opportunities/$opportunityId/edit'
   fileRoutesByTo: FileRoutesByTo
@@ -233,6 +243,7 @@ export interface FileRouteTypes {
     | '/opportunities'
     | '/passport'
     | '/submissions'
+    | '/api/chog/$tokenId'
     | '/opportunities/$opportunityId/applications'
     | '/opportunities/$opportunityId/edit'
   id:
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/opportunities/'
     | '/passport/'
     | '/submissions/'
+    | '/api/chog/$tokenId'
     | '/opportunities/$opportunityId/applications'
     | '/opportunities/$opportunityId/edit'
   fileRoutesById: FileRoutesById
@@ -276,6 +288,7 @@ export interface RootRouteChildren {
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
   PassportIndexRoute: typeof PassportIndexRoute
   SubmissionsIndexRoute: typeof SubmissionsIndexRoute
+  ApiChogTokenIdRoute: typeof ApiChogTokenIdRoute
   OpportunitiesOpportunityIdApplicationsRoute: typeof OpportunitiesOpportunityIdApplicationsRoute
   OpportunitiesOpportunityIdEditRoute: typeof OpportunitiesOpportunityIdEditRoute
 }
@@ -401,6 +414,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubmissionsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/chog/$tokenId': {
+      id: '/api/chog/$tokenId'
+      path: '/api/chog/$tokenId'
+      fullPath: '/api/chog/$tokenId'
+      preLoaderRoute: typeof ApiChogTokenIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities/$opportunityId/applications': {
       id: '/opportunities/$opportunityId/applications'
       path: '/opportunities/$opportunityId/applications'
@@ -436,6 +456,7 @@ const rootRouteChildren: RootRouteChildren = {
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
   PassportIndexRoute: PassportIndexRoute,
   SubmissionsIndexRoute: SubmissionsIndexRoute,
+  ApiChogTokenIdRoute: ApiChogTokenIdRoute,
   OpportunitiesOpportunityIdApplicationsRoute:
     OpportunitiesOpportunityIdApplicationsRoute,
   OpportunitiesOpportunityIdEditRoute: OpportunitiesOpportunityIdEditRoute,

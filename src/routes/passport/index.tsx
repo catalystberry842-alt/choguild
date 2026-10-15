@@ -11,6 +11,11 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
 import { emptyBoardSearch } from "@/lib/board/search";
 import { seo } from "@/lib/seo";
+import { useServerFn } from "@tanstack/react-start";
+import { useEffect, useState } from "react";
+import { ChogGallery } from "@/components/chog/chog-bits";
+import { getChogHolding } from "@/lib/chog/functions";
+import type { ChogHolding } from "@/lib/chog/chog";
 
 export const Route = createFileRoute("/passport/")({
   staticData: { title: "Contributor Passport", crumb: "Passport" },
@@ -21,6 +26,19 @@ export const Route = createFileRoute("/passport/")({
 function PassportPage() {
   const { status, error, sessionAddress, profile } = usePassport();
   const verified = Boolean(sessionAddress);
+  const loadChog = useServerFn(getChogHolding);
+  const [chog, setChog] = useState<{ wallet: string; holding: ChogHolding | null } | null>(null);
+  useEffect(() => {
+    if (!sessionAddress) return;
+    let live = true;
+    loadChog({ data: sessionAddress })
+      .then((holding) => live && setChog({ wallet: sessionAddress, holding }))
+      .catch(() => undefined);
+    return () => {
+      live = false;
+    };
+  }, [sessionAddress, loadChog]);
+  const holding = chog && chog.wallet === sessionAddress ? chog.holding : null;
 
   return (
     <div className="flex flex-col gap-3">
@@ -66,6 +84,12 @@ function PassportPage() {
           </div>
         ) : null}
       </Section>
+
+      {holding && holding.count > 0 ? (
+        <div className="lg:col-span-2">
+          <ChogGallery holding={holding} />
+        </div>
+      ) : null}
 
       <Section title="Contribution history" className="lg:col-span-2">
         <EmptyState
