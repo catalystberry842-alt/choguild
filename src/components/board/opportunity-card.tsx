@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { Reveal } from "@/components/fx/reveal";
 import { Badge } from "@/components/ui/badge";
 import {
   APPLICATION_STATUS_LABEL,
@@ -23,11 +24,11 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
   const category = label(CATEGORY_LABEL, item.category as Category);
 
   return (
-    <li>
+    <Reveal as="li" y={14}>
       <Link
         to="/discover/$opportunityId"
         params={{ opportunityId: item.id }}
-        className="card-pop surface group flex flex-col gap-5 p-5 sm:p-6"
+        className="card-pop surface spotlight group flex flex-col gap-5 p-5 sm:p-6"
       >
         <div className="flex min-w-0 gap-4">
           <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
@@ -36,7 +37,7 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
             <p className="t-meta mt-1">{project}</p>
             <p className="t-body mt-2 line-clamp-2">{cardSummary(item.summary)}</p>
           </div>
-          <span aria-hidden="true" className="hidden self-center text-muted transition-transform group-hover:translate-x-0.5 group-hover:text-ink sm:block">
+          <span aria-hidden="true" className="hidden size-9 shrink-0 items-center justify-center self-center rounded-full border border-white/10 text-muted transition-all duration-300 group-hover:translate-x-0.5 group-hover:border-white/20 group-hover:bg-white/[0.05] group-hover:text-ink sm:flex">
             →
           </span>
         </div>
@@ -60,17 +61,17 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
           </p>
         ) : null}
       </Link>
-    </li>
+    </Reveal>
   );
 }
 
 export function ProjectMark({ name, logoUrl }: { name: string; logoUrl: string | null }) {
-  const initial = name.replace(/^Example ·\s*/, "").slice(0, 1).toUpperCase();
+  const initial = name.slice(0, 1).toUpperCase();
   if (logoUrl) {
-    return <img src={logoUrl} alt="" className="size-9 rounded-md border border-line object-cover" />;
+    return <img src={logoUrl} alt="" className="size-10 shrink-0 rounded-xl border border-white/10 object-cover" />;
   }
   return (
-    <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-sm font-bold text-ink ring-1 ring-line">
+    <span className="flex size-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-gradient-to-b from-white/[0.08] to-white/[0.02] text-sm font-semibold text-ink">
       {initial}
     </span>
   );

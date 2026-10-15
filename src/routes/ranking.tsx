@@ -1,9 +1,11 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { Activity, Crown, Medal, Trophy } from "lucide-react";
+import { Activity } from "lucide-react";
 import { motion } from "motion/react";
-import { Avatar, TierBadge, XpBar } from "@/components/ranking/bits";
+import { Reveal } from "@/components/fx/reveal";
+import { Avatar, RankMedal, TierBadge, XpBar } from "@/components/ranking/bits";
 import { CountUp } from "@/components/ranking/count-up";
 import { Button } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 import { getRanking } from "@/lib/ranking/functions";
@@ -42,7 +44,7 @@ function RankingPage() {
     <div className="flex flex-col gap-12">
       <PageHeader title="Ranking" description="XP from accepted guild work and activity on Monad." />
 
-      <dl className="grid grid-cols-3 divide-x divide-line border-y border-line">
+      <dl className="surface grid grid-cols-3 divide-x divide-line overflow-hidden rounded-2xl">
         <Stat label="Passports" value={stats.passports} />
         <Stat label="Accepted" value={stats.acceptedWork} />
         <Stat label="Onchain txs" value={stats.onchainTxs} />
@@ -50,7 +52,7 @@ function RankingPage() {
 
       <section className="flex flex-col gap-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div role="tablist" aria-label="Rank by" className="inline-flex w-fit rounded-full border border-line bg-elevated p-1">
+          <div role="tablist" aria-label="Rank by" className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] p-1 backdrop-blur">
             {RANK_BY.map((option) => {
               const active = option.id === by;
               return (
@@ -96,7 +98,7 @@ function RankingPage() {
         <EmptyLadder />
       ) : (
         <>
-          <ol className="stagger grid gap-5 md:grid-cols-3 md:items-end">
+          <ol className="grid gap-5 pt-2 md:grid-cols-3 md:items-end md:pt-8">
             {podium.map((person) => (
               <PodiumCard key={person.username} person={person} by={by} />
             ))}
@@ -104,32 +106,38 @@ function RankingPage() {
 
           {rest.length > 0 ? (
             <section className="flex flex-col gap-4">
-              <h2 className="t-h3">Everyone else</h2>
-              <ol className="stagger flex flex-col gap-3">
-                {rest.map((person) => (
-                  <li key={person.username}>
+              <h2 className="text-[12px] font-medium tracking-[0.18em] text-muted uppercase">The ladder</h2>
+              <ol className="surface overflow-hidden rounded-2xl">
+                <li className="hidden grid-cols-[3rem_minmax(0,1fr)_7rem_6rem] gap-4 border-b border-line px-5 py-3 text-[11px] tracking-wide text-muted uppercase sm:grid">
+                  <span>Rank</span>
+                  <span>Contributor</span>
+                  <span>Tier</span>
+                  <span className="text-right">XP</span>
+                </li>
+                {rest.map((person, index) => (
+                  <Reveal as="li" key={person.username} delay={Math.min(index, 8) * 0.03} y={8} className="border-b border-line last:border-b-0">
                     <Link
                       to="/passport/$username"
                       params={{ username: person.username }}
-                      className="card-pop surface grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-4 px-5 py-4"
+                      className="grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-4 px-5 py-3.5 transition-colors hover:bg-white/[0.03] sm:grid-cols-[3rem_minmax(0,1fr)_7rem_6rem]"
                     >
-                      <span className="text-sm tabular-nums text-muted">#{person.rank}</span>
-                      <span className="flex min-w-0 items-center gap-4">
+                      <RankMedal rank={person.rank} />
+                      <span className="flex min-w-0 items-center gap-3">
                         <Avatar name={person.displayName} url={person.avatarUrl} />
                         <span className="min-w-0">
-                          <span className="block truncate font-medium text-ink">{person.displayName}</span>
+                          <span className="block truncate text-[15px] font-medium text-ink">{person.displayName}</span>
                           <span className="mt-0.5 block truncate text-xs text-muted">
                             @{person.username}
                             {person.txCount !== null ? ` · ${formatXp(person.txCount)} txs` : ""}
                           </span>
                         </span>
                       </span>
-                      <span className="flex flex-col items-end gap-1.5">
-                        <span className="text-sm font-semibold tabular-nums text-ink">{formatXp(person.xp)} XP</span>
+                      <span className="hidden sm:block">
                         <TierBadge tier={person.tier} />
                       </span>
+                      <span className="text-right text-sm font-semibold tabular-nums text-ink">{formatXp(person.xp)} XP</span>
                     </Link>
-                  </li>
+                  </Reveal>
                 ))}
               </ol>
             </section>
@@ -142,9 +150,9 @@ function RankingPage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="min-w-0 px-3 py-5 first:pl-0 sm:px-6 sm:first:pl-0">
-      <dt className="t-meta truncate">{label}</dt>
-      <dd className="mt-1.5 text-xl sm:text-2xl font-semibold tracking-[-0.03em] tabular-nums text-ink">
+    <div className="min-w-0 px-4 py-5 sm:px-6">
+      <dt className="truncate text-[11px] tracking-wide text-muted uppercase sm:text-[12px]">{label}</dt>
+      <dd className="mt-2 text-2xl font-semibold sm:text-[1.75rem] tracking-[-0.03em] tabular-nums text-ink">
         <CountUp value={value} />
       </dd>
     </div>
@@ -152,32 +160,34 @@ function Stat({ label, value }: { label: string; value: number }) {
 }
 
 const PODIUM = [
-  { icon: Crown, ring: "border-ink/70", order: "md:order-2", lift: "md:pb-10" },
-  { icon: Medal, ring: "border-line", order: "md:order-1", lift: "" },
-  { icon: Trophy, ring: "border-line", order: "md:order-3", lift: "" },
+  { order: "md:order-2", lift: "md:-translate-y-6", glow: "rgb(212 175 90 / 0.18)" },
+  { order: "md:order-1", lift: "", glow: "rgb(190 195 210 / 0.12)" },
+  { order: "md:order-3", lift: "", glow: "rgb(190 120 70 / 0.14)" },
 ] as const;
 
 function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
   const style = PODIUM[person.rank - 1];
-  const Icon = style.icon;
   return (
-    <li className={style.order}>
+    <Reveal as="li" className={style.order} delay={person.rank * 0.06}>
       <Link
         to="/passport/$username"
         params={{ username: person.username }}
-        className={cn("card-pop flex flex-col items-center gap-4 rounded-3xl border bg-elevated px-6 py-7 text-center", style.ring, style.lift)}
+        className={cn("surface spotlight card-pop relative flex flex-col items-center gap-4 overflow-hidden px-6 py-8 text-center", style.lift)}
       >
-        <span className="flex items-center gap-1.5 text-sm font-semibold tabular-nums text-ink">
-          <Icon className="size-4" aria-hidden="true" />#{person.rank}
-        </span>
+        <span
+          className="pointer-events-none absolute inset-x-0 top-0 h-32"
+          style={{ background: `radial-gradient(70% 100% at 50% 0%, ${style.glow}, transparent)` }}
+          aria-hidden="true"
+        />
+        <RankMedal rank={person.rank} size="lg" />
         <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
         <span>
-          <span className="block font-semibold text-ink">{person.displayName}</span>
+          <span className="block text-[16px] font-semibold tracking-[-0.02em] text-ink">{person.displayName}</span>
           <span className="mt-0.5 block text-xs text-muted">@{person.username}</span>
         </span>
         <TierBadge tier={person.tier} />
-        <span className="text-2xl font-semibold tabular-nums text-ink">
-          {formatXp(person.xp)} <span className="text-sm font-normal text-muted">XP</span>
+        <span className="text-[2rem] leading-none font-semibold tracking-[-0.04em] tabular-nums text-ink">
+          <CountUp value={person.xp} /> <span className="text-sm font-normal tracking-normal text-muted">XP</span>
         </span>
         <span className="flex gap-3 text-xs text-muted">
           <span>Guild {formatXp(person.guildXp)}</span>
@@ -190,24 +200,25 @@ function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
           </span>
         ) : null}
       </Link>
-    </li>
+    </Reveal>
   );
 }
 
 function EmptyLadder() {
   return (
-    <section className="flex flex-col items-center gap-4 rounded-3xl border border-dashed border-line px-6 py-12 text-center">
-      <Trophy className="size-10 text-ink" aria-hidden="true" />
-      <h2 className="t-h2">First place is open</h2>
-      <p className="t-body max-w-sm">Save a public Passport to join. Accepted work moves you up.</p>
-      <div className="mt-2 flex flex-wrap justify-center gap-3">
-        <Button asChild>
-          <Link to="/passport">Claim your spot</Link>
-        </Button>
-        <Button asChild variant="secondary">
-          <Link to="/how-it-works">How it works</Link>
-        </Button>
-      </div>
-    </section>
+    <EmptyState
+      title="First place is open"
+      body="Save a public Passport to join. Accepted work moves you up."
+      action={
+        <>
+          <Button asChild>
+            <Link to="/passport">Claim your spot</Link>
+          </Button>
+          <Button asChild variant="secondary">
+            <Link to="/how-it-works">How it works</Link>
+          </Button>
+        </>
+      }
+    />
   );
 }

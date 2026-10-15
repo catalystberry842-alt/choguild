@@ -62,7 +62,7 @@ function DiscoverPage() {
       />
 
       <form
-        className="mt-12 grid gap-4 rounded-3xl border border-line bg-elevated p-2"
+        className="surface mt-12 grid gap-4 rounded-2xl p-2"
         role="search"
         aria-label="Filter opportunities"
         onSubmit={(event) => event.preventDefault()}
@@ -81,7 +81,7 @@ function DiscoverPage() {
               value={search.q}
               onChange={(event) => update({ q: event.target.value })}
               placeholder="Search the board"
-              className="rounded-2xl border-transparent bg-secondary pl-10"
+              className="rounded-xl border-transparent bg-white/[0.04] pl-10 focus:bg-white/[0.06]"
             />
           </div>
           <Button
@@ -213,7 +213,7 @@ function DiscoverPage() {
       </p>
 
       {result.items.length > 0 ? (
-        <ul className="stagger mt-4 grid gap-4">
+        <ul className="mt-4 grid gap-4 lg:grid-cols-2">
           {result.items.map((item) => (
             <OpportunityCardView key={item.id} item={item} />
           ))}

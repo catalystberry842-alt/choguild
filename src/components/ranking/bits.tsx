@@ -14,7 +14,7 @@ export function TierBadge({ tier, className }: { tier: string; className?: strin
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full bg-elevated px-2 py-0.5 text-[11px] font-semibold ring-1",
+        "inline-flex items-center gap-1 rounded-full bg-white/[0.03] px-2 py-0.5 text-[11px] font-medium tracking-wide ring-1",
         TIER_STYLE[tier] ?? TIER_STYLE.Hatchling,
         className,
       )}
@@ -43,9 +43,20 @@ export function XpBar({ xp }: { xp: number }) {
   return (
     <div className="flex items-center gap-2">
       <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary">
-        <div className="h-full rounded-full bg-action transition-[width] duration-700" style={{ width: `${Math.round(progress * 100)}%` }} />
+        <div className="h-full rounded-full bg-gradient-to-r from-action to-[#a59cf0] transition-[width] duration-1000" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
       <span className="text-[11px] tabular-nums text-muted">{next ? `${next.min - xp} to ${next.name}` : "Max tier"}</span>
     </div>
+  );
+}
+
+/** Rank badge: metallic medals for the top three, a quiet chip for everyone else. */
+export function RankMedal({ rank, size = "md" }: { rank: number; size?: "md" | "lg" }) {
+  const box = size === "lg" ? "size-9 text-[14px]" : "size-7 text-[12px]";
+  const tone = rank === 1 ? "medal-1" : rank === 2 ? "medal-2" : rank === 3 ? "medal-3" : "medal-n";
+  return (
+    <span className={cn("medal shrink-0", box, tone)} aria-label={`Rank ${rank}`}>
+      {rank}
+    </span>
   );
 }

@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { PassportCard } from "@/components/passport/passport-card";
 import { ProfileForm } from "@/components/passport/profile-form";
 import { usePassport } from "@/components/passport/passport-provider";
 import { WalletPanel } from "@/components/passport/wallet-panel";
@@ -24,6 +25,7 @@ function PassportPage() {
 
   return (
     <div className="flex flex-col gap-12">
+      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)]">
       <PageHeader
         title="Your Passport"
         description="The public profile people see when they review your work. Sign once with your wallet to create or edit it."
@@ -40,6 +42,8 @@ function PassportPage() {
           ) : null
         }
       />
+        <PassportCard profile={profile} address={sessionAddress} />
+      </div>
 
       <Section title="Wallet">
         <div className="surface p-6">
@@ -52,6 +56,7 @@ function PassportPage() {
         {status === "error" ? <ErrorMessage title="Passport unavailable">{error}</ErrorMessage> : null}
         {status === "ready" && !verified ? (
           <EmptyState
+            compact
             title="Sign in to edit your profile"
             body="Connect a wallet above, then sign the Choguild message. Signing is free."
           />
@@ -65,6 +70,7 @@ function PassportPage() {
 
       <Section title="Contribution history">
         <EmptyState
+          compact
           title="No accepted work yet"
           body="Work a publisher accepts shows up here and on your public page."
           action={
