@@ -548,12 +548,8 @@
   .btn-glow:hover { box-shadow: 0 0 0 1px rgb(255 255 255 / 0.16) inset, 0 10px 40px -8px rgb(116 103 212 / 0.9); }
 
   .text-shine {
-    background: linear-gradient(180deg, #ffffff 35%, #b9b8c6 100%);
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
+    color: var(--color-ink);
   }
-  :root[data-theme="light"] .text-shine { background: none; color: var(--color-ink); }
   .serif-accent {
     font-family: var(--font-serif);
     font-style: italic;

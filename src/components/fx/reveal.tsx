@@ -36,17 +36,20 @@ export function WordReveal({
   className,
   wordClassName = "",
   delay = 0,
+  wrap = false,
 }: {
   lines: ReactNode[][];
   className?: string;
   wordClassName?: string;
   delay?: number;
+  /** Let the words wrap naturally instead of keeping each line on one row. */
+  wrap?: boolean;
 }) {
   let index = 0;
   return (
     <span className={className}>
       {lines.map((words, line) => (
-        <span key={line} className="block whitespace-nowrap">
+        <span key={line} className={wrap ? "inline" : "block whitespace-nowrap"}>
           {words.map((word, i) => {
             const d = delay + index++ * 0.07;
             return [

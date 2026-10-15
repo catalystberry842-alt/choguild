@@ -55,6 +55,8 @@ function HomePage() {
   );
 }
 
+const HEADLINE = "Where Monad contributors find work, prove it, and earn their rank.";
+
 function Hero() {
   const { profile, stats } = Route.useLoaderData();
 
@@ -80,15 +82,12 @@ function Hero() {
 
         <h1
           id="hero-title"
-          className="mt-8 text-[clamp(2.6rem,1.2rem+5.6vw,5.75rem)] leading-[0.98] font-semibold tracking-[-0.055em]"
+          className="mt-8 max-w-[15ch] text-[clamp(2.4rem,1.2rem+4.4vw,4.5rem)] lg:max-w-[19ch] leading-[1.02] font-semibold tracking-[-0.05em] text-balance text-ink"
         >
           <WordReveal
             delay={0.15}
-            wordClassName="text-shine pb-[0.08em]"
-            lines={[
-              ["Show", "the", "work."],
-              ["Wear", "the", <span key="n" className="serif-accent pr-[0.06em] text-[1.08em] tracking-[-0.01em]">name.</span>],
-            ]}
+            wrap
+            lines={[HEADLINE.split(" ")]}
           />
         </h1>
 
@@ -98,7 +97,7 @@ function Hero() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.65 }}
           className="mt-7 max-w-[34rem] text-[16px] leading-7 text-balance text-body sm:text-[18px] sm:leading-8"
         >
-          A passport for your name, a board of open work, and a record of every contribution a publisher accepted.
+          One passport, open work from the community, and a public record of everything you deliver.
         </motion.p>
 
         <motion.div
@@ -159,13 +158,13 @@ function Hero() {
   );
 }
 
-function SectionHead({ eyebrow, title, accent, aside }: { eyebrow: string; title: string; accent: string; aside?: ReactNode }) {
+function SectionHead({ eyebrow, title, aside }: { eyebrow: string; title: string; aside?: ReactNode }) {
   return (
     <Reveal className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
       <div className="max-w-2xl">
         <p className="text-[12px] font-medium tracking-[0.18em] text-muted uppercase">{eyebrow}</p>
-        <h2 className="text-shine mt-4 text-[clamp(1.9rem,1.2rem+2.2vw,2.9rem)] leading-[1.04] font-semibold tracking-[-0.045em]">
-          {title} <span className="serif-accent text-[1.06em]">{accent}</span>
+        <h2 className="mt-4 text-ink text-[clamp(1.9rem,1.2rem+2.2vw,2.9rem)] leading-[1.04] font-semibold tracking-[-0.045em]">
+          {title}
         </h2>
       </div>
       {aside}
@@ -178,8 +177,7 @@ function Steps() {
     <section aria-label="How the guild works" className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8 lg:pt-24">
       <SectionHead
         eyebrow="How it works"
-        title="One record, from identity to"
-        accent="accepted work."
+        title="One record, from identity to accepted work."
         aside={
           <Link to="/how-it-works" className="text-[14px] text-body underline-offset-4 hover:text-ink hover:underline">
             The full loop and XP table
@@ -220,7 +218,7 @@ function Inside() {
 
   return (
     <section aria-labelledby="inside-title" className="relative mx-auto w-full max-w-6xl px-5 pt-24 pb-24 sm:px-8 lg:pt-32">
-      <SectionHead eyebrow="Inside the guild" title="Live from the board and" accent="the ladder." />
+      <SectionHead eyebrow="Inside the guild" title="Live from the board and the ladder." />
 
       <div className="mt-12 grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-6">
         <Reveal>
