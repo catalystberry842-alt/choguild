@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { Reveal } from "@/components/fx/reveal";
 
-/** A titled block rendered as a rounded card: serif title and context on top, content below. */
+/** A titled block rendered as a rounded card: title and context on top, content below. */
 export function Section({
   title,
   description,

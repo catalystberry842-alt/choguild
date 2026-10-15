@@ -48,7 +48,7 @@ function SubmissionPage() {
       <PageHeader eyebrow={work.projectName} title={latest?.title ?? "Submission"}>
         <div className="flex flex-wrap items-center gap-2">
           <Badge>{WORK_STATUS_LABEL[work.status]}</Badge>
-          <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="t-link text-sm">
+          <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="t-link text-base">
             {work.opportunityTitle}
           </Link>
         </div>
@@ -169,7 +169,7 @@ function Evidence({ links, repo, document, notes }: { links: string[]; repo?: st
       <p className="t-meta">Evidence · links are provided by the contributor</p>
       <ul className="mt-3 flex flex-col gap-2">
         {items.map((item) => (
-          <li key={item.url} className="flex gap-3 text-sm">
+          <li key={item.url} className="flex gap-3 text-base">
             <span className="t-meta w-20 shrink-0 pt-px">{item.label}</span>
             <a className="t-link min-w-0 break-all" href={item.url} target="_blank" rel="noreferrer">
               {item.url}

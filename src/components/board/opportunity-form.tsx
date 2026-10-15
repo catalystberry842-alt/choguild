@@ -106,7 +106,7 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
     return (
       <div className="rounded-3xl border border-line bg-elevated p-6">
         <h2 className="t-h2">Review before publishing</h2>
-        <dl className="mt-4 grid gap-3 text-sm">
+        <dl className="mt-4 grid gap-3 text-base">
           <div><dt className="text-muted">Title</dt><dd className="text-ink">{form.title}</dd></div>
           <div><dt className="text-muted">Project</dt><dd className="text-ink">{form.projectName}</dd></div>
           <div><dt className="text-muted">Summary</dt><dd className="text-ink">{form.summary}</dd></div>
@@ -167,7 +167,7 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
           </SelectInput>
         </Field>
       </div>
-      {note ? <p className="text-sm text-muted">{note}</p> : null}
+      {note ? <p className="text-base text-muted">{note}</p> : null}
       <Field label="Compensation details" htmlFor="opp-details" hint="Required unless the work is unpaid." error={errors.compensationDetails}>
         <TextArea id="opp-details" value={form.compensationDetails} onChange={(event) => set("compensationDetails", event.target.value)} />
       </Field>
@@ -209,7 +209,7 @@ function SkillPicker({
   const [custom, setCustom] = useState("");
   return (
     <fieldset>
-      <legend className="text-sm font-medium text-ink">{label}</legend>
+      <legend className="text-base font-medium text-ink">{label}</legend>
       <div className="mt-2 flex flex-wrap gap-2">
         {BOARD_SKILLS.map((skill) => {
           const on = selected.some((item) => item.toLowerCase() === skill.toLowerCase());
@@ -220,7 +220,7 @@ function SkillPicker({
               aria-pressed={on}
               onClick={() => onToggle(skill)}
               className={cn(
-                "min-h-11 rounded-lg border px-3 text-sm",
+                "min-h-11 rounded-lg border px-3 text-base",
                 on ? "border-action bg-elevated text-ink" : "border-line bg-canvas text-body",
               )}
             >
@@ -244,7 +244,7 @@ function SkillPicker({
           Add
         </Button>
       </div>
-      {error ? <p className="mt-2 text-xs text-danger" role="alert">{error}</p> : null}
+      {error ? <p className="mt-2 text-label text-danger" role="alert">{error}</p> : null}
     </fieldset>
   );
 }

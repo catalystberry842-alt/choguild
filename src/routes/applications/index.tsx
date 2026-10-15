@@ -28,7 +28,7 @@ function ApplicationsPage() {
             title="Sign in to see your applications"
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open Passport</Link>
+                <Link to="/passport">Open passport</Link>
               </Button>
             }
           />

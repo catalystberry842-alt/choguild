@@ -55,8 +55,8 @@ function HowItWorksPage() {
         <ol className="flex flex-col">
           {FLOW.map((step, index) => (
             <Reveal as="li" key={step.title} delay={index * 0.04} y={8} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-4 border-b border-line py-5 sm:grid-cols-[4rem_16rem_minmax(0,1fr)]">
-              <span className="t-display text-[1.5rem] leading-none text-faint">{index + 1}</span>
-              <h3 className="text-[16px] font-medium text-ink">{step.title}</h3>
+              <span className="t-h3 text-faint">{index + 1}</span>
+              <h3 className="text-base font-medium text-ink">{step.title}</h3>
               <p className="t-body col-start-2 sm:col-start-3">{step.body}</p>
             </Reveal>
           ))}
@@ -65,7 +65,7 @@ function HowItWorksPage() {
 
       <Section id="xp" title="XP" description="Recalculated live for every public passport.">
         <div className="scroll-mt-24 border-t border-line-strong">
-          <table className="w-full text-left text-sm">
+          <table className="w-full text-left text-base">
             <thead className="t-label">
               <tr>
                 <th className="py-3 pr-4 font-medium">Action</th>
@@ -78,7 +78,7 @@ function HowItWorksPage() {
                 <tr key={rule.key} className="transition-colors hover:text-ink">
                   <td className="py-3 pr-4 font-medium text-ink">
                     {rule.label}
-                    <span className="mt-0.5 block text-xs font-normal text-muted sm:hidden">{rule.detail}</span>
+                    <span className="mt-0.5 block text-label font-normal text-muted sm:hidden">{rule.detail}</span>
                   </td>
                   <td className="hidden py-3 pr-4 text-body sm:table-cell">{rule.detail}</td>
                   <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">+{rule.points}</td>
@@ -87,7 +87,7 @@ function HowItWorksPage() {
               <tr className="transition-colors hover:text-ink">
                 <td className="py-3 pr-4 font-medium text-ink">
                   Onchain activity
-                  <span className="mt-0.5 block text-xs font-normal text-muted sm:hidden">
+                  <span className="mt-0.5 block text-label font-normal text-muted sm:hidden">
                     10 × √(transactions your wallet sent on Monad), up to {ONCHAIN_XP_CAP}.
                   </span>
                 </td>
@@ -107,14 +107,14 @@ function HowItWorksPage() {
             <li key={tier.name} className="border-b border-line py-5 sm:odd:pr-6 sm:even:border-l sm:even:pl-6">
               <div className="flex items-center justify-between gap-2">
                 <TierBadge tier={tier.name} />
-                <span className="font-mono text-[11px] tabular-nums text-muted">{tier.min}+ XP</span>
+                <span className="font-mono text-label tabular-nums text-muted">{tier.min}+ XP</span>
               </div>
               <div className="mt-3 flex gap-1" aria-hidden="true">
                 {TIERS.map((_, dot) => (
                   <span key={dot} className={dot <= index ? "h-px flex-1 bg-signal" : "h-px flex-1 bg-line-strong"} />
                 ))}
               </div>
-              <p className="mt-3 text-sm leading-6 text-body">{tier.blurb}</p>
+              <p className="mt-3 text-base text-body">{tier.blurb}</p>
             </li>
           ))}
         </ol>
@@ -125,12 +125,12 @@ function HowItWorksPage() {
           {FAQ.map((item) => (
             <Accordion.Item key={item.q} value={item.q}>
               <Accordion.Header>
-                <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] text-ink transition-colors hover:text-signal">
+                <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 py-5 text-left text-base text-ink transition-colors hover:text-signal">
                   {item.q}
                   <ChevronDown className="size-4 shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true" />
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="max-w-2xl pb-5 text-sm leading-7 text-body">{item.a}</Accordion.Content>
+              <Accordion.Content className="max-w-2xl pb-5 text-base text-body">{item.a}</Accordion.Content>
             </Accordion.Item>
           ))}
         </Accordion.Root>
@@ -138,7 +138,7 @@ function HowItWorksPage() {
 
       <section className="flex flex-col items-start justify-between gap-6 border-t border-line-strong pt-10 md:flex-row md:items-end">
         <div>
-          <h2 className="t-display text-[clamp(2rem,1.4rem+2vw,3rem)] leading-tight">Ready to start?</h2>
+          <h2 className="t-h2">Ready to start?</h2>
           <p className="mt-1 text-body">It takes one signature and a short bio.</p>
         </div>
         <div className="flex flex-wrap gap-3">

@@ -2,14 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { LogoMark } from "@/components/brand/logo";
 import { emptyBoardSearch } from "@/lib/board/search";
 
-const pill = "rounded-full border border-line px-4 py-2 text-[13px] text-body transition-colors hover:border-line-strong hover:text-ink";
+const pill = "rounded-full border border-line px-4 py-2 text-small text-body transition-colors hover:border-line-strong hover:text-ink";
 
 export function SiteFooter() {
   return (
     <footer className="relative z-10 mx-auto mt-32 max-w-6xl px-3 pb-6 sm:px-6">
       <div className="bento flex flex-col items-center px-6 py-16 text-center sm:py-20">
         <LogoMark className="size-9 text-ink" />
-        <p className="t-display mt-6 text-[clamp(2.5rem,1.6rem+3.5vw,4.5rem)] leading-[0.95]">
+        <p className="t-h1 mt-6">
           Get work and earn your <em>rank.</em>
         </p>
         <nav aria-label="Footer" className="mt-10 flex flex-wrap justify-center gap-2">
@@ -22,7 +22,7 @@ export function SiteFooter() {
           <a href="https://github.com/catalystberry842-alt/choguild" className={pill}>Source</a>
         </nav>
       </div>
-      <div className="flex items-center justify-between px-4 pt-5 text-[12px] text-muted">
+      <div className="flex items-center justify-between px-4 pt-5 text-label text-muted">
         <span>Choguild · Built on Monad</span>
         <span>MIT licensed</span>
       </div>

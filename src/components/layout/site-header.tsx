@@ -29,7 +29,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
         <div className="pill-nav mx-auto flex h-12 min-w-0 items-center gap-1 pr-1.5 pl-4 lg:pl-5">
           <Link to="/" aria-label="Choguild home" className="logo-anim mr-2 flex items-center gap-2 text-ink">
             <LogoMark className="size-5" />
-            <span className="t-display text-[1.35rem] leading-none">Choguild</span>
+            <span className="t-h3">Choguild</span>
           </Link>
           <nav aria-label="Main" className="hidden items-center lg:flex">
             {PRIMARY.map((item) => {
@@ -39,7 +39,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
                   key={item.to}
                   to={item.to}
                   search={item.to === "/discover" ? emptyBoardSearch() : undefined}
-                  className={cn("relative rounded-full px-3.5 py-1.5 text-[13px] transition-colors", active ? "text-ink" : "text-muted hover:text-ink")}
+                  className={cn("relative rounded-full px-3.5 py-1.5 text-small transition-colors", active ? "text-ink" : "text-muted hover:text-ink")}
                 >
                   {active ? (
                     <motion.span
@@ -57,7 +57,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
             type="button"
             onClick={onOpenPalette}
             aria-label="Search pages and actions"
-            className="ml-1 hidden size-9 items-center justify-center rounded-full text-[11px] text-muted transition-colors hover:bg-white/[0.06] hover:text-ink md:flex"
+            className="ml-1 hidden size-9 items-center justify-center rounded-full text-label text-muted transition-colors hover:bg-white/[0.06] hover:text-ink md:flex"
           >
             ⌘K
           </button>
@@ -101,7 +101,7 @@ function MobileMenu() {
             <div className="flex items-center justify-between px-3 py-2">
               <span className="flex items-center gap-2 text-ink">
                 <LogoMark className="size-5" />
-                <span className="t-display text-[1.35rem] leading-none">Choguild</span>
+                <span className="t-h3">Choguild</span>
               </span>
               <Dialog.Close asChild>
                 <button type="button" aria-label="Close menu" className="flex size-9 items-center justify-center rounded-full bg-white/[0.06]">
@@ -127,15 +127,15 @@ function MobileMenu() {
                       )}
                     >
                       <Icon className={cn("size-4", active ? "text-signal" : "text-muted")} aria-hidden="true" />
-                      <span className="t-display text-[1.4rem] leading-none text-ink">{item.label}</span>
+                      <span className="t-h3 text-ink">{item.label}</span>
                     </Link>
                   </motion.div>
                 );
               })}
             </nav>
-            <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/[0.03] px-4 py-3 text-[13px]">
+            <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/[0.03] px-4 py-3 text-small">
               <span className="truncate text-ink">{profile ? `@${profile.username}` : sessionAddress ? "Signed in" : "Not signed in"}</span>
-              <span className="truncate font-mono text-[12px] text-muted">
+              <span className="truncate font-mono text-label text-muted">
                 {isConnected && address ? `${shortAddress(address)} · ${network.label}` : "No wallet"}
               </span>
             </div>

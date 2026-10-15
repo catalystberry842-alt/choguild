@@ -2,6 +2,8 @@ import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-r
 import { AppShell } from "@/components/layout/app-shell";
 import { NotFoundState } from "@/components/layout/not-found";
 import { PassportProvider } from "@/components/passport/passport-provider";
+import geist400 from "@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url";
+import geist600 from "@fontsource/geist-sans/files/geist-sans-latin-600-normal.woff2?url";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Choguild";
@@ -26,6 +28,8 @@ export const Route = createRootRoute({
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
+      { rel: "preload", href: geist400, as: "font", type: "font/woff2", crossOrigin: "anonymous" },
+      { rel: "preload", href: geist600, as: "font", type: "font/woff2", crossOrigin: "anonymous" },
       { rel: "stylesheet", href: appCss },
       { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],

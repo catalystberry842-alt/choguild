@@ -35,20 +35,20 @@ export function PassportRecord({ profile, address }: { profile: PublicProfile | 
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-ink">
               <LogoMark className="size-5" />
-              <span className="t-display text-[1.35rem] leading-none">Choguild passport</span>
+              <span className="t-h3">Choguild passport</span>
             </span>
-            <span className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 text-[11px] text-body">{status}</span>
+            <span className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 text-label text-body">{status}</span>
           </div>
           <div>
-            <p className="t-display text-[clamp(2rem,1.5rem+2vw,2.75rem)] leading-none text-ink">
-              {profile ? profile.displayName : address ? <em>Finish your passport</em> : <em>Your name here</em>}
+            <p className="t-h2 text-ink">
+              {profile ? profile.displayName : address ? "Finish your passport" : "Your name here"}
             </p>
-            <p className="mt-2 text-[13px] text-body">
+            <p className="mt-2 text-small text-body">
               {profile ? `@${profile.username}` : "Connect a wallet and sign to claim it."}
               {profile && profile.skills.length > 0 ? ` · ${profile.skills.slice(0, 3).join(", ")}` : ""}
             </p>
           </div>
-          <div className="flex items-end justify-between font-mono text-[11px] tracking-[0.08em] text-muted uppercase">
+          <div className="flex items-end justify-between font-mono text-label text-muted">
             <span>{wallet ? shortAddress(wallet) : "0x···· ····"}</span>
             <span>{profile ? `Since ${formatDay(profile.createdAt)}` : "Monad"}</span>
           </div>

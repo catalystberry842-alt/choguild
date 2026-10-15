@@ -21,10 +21,10 @@ function NewOpportunityPage() {
         <PageHeader eyebrow="Publish" title="Publish work" />
         <div className="mt-10">
           <EmptyState
-            title="Save your Passport to publish"
+            title="Save your passport to publish"
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open Passport</Link>
+                <Link to="/passport">Open passport</Link>
               </Button>
             }
           />

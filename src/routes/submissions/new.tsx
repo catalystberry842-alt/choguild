@@ -27,7 +27,7 @@ function NewSubmissionPage() {
             body={data.ok ? "You can submit work once a publisher accepts your application." : undefined}
             action={
               <Button asChild size="compact" variant={data.ok ? "secondary" : "primary"}>
-                {data.ok ? <Link to="/applications">Your applications</Link> : <Link to="/passport">Open Passport</Link>}
+                {data.ok ? <Link to="/applications">Your applications</Link> : <Link to="/passport">Open passport</Link>}
               </Button>
             }
           />

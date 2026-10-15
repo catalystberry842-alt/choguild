@@ -100,7 +100,7 @@ function ReviewCard({ item }: { item: ApplicationView }) {
         <ul className="flex flex-col gap-1.5">
           {item.links.map((link) => (
             <li key={link}>
-              <a href={link} className="t-link break-all text-sm" target="_blank" rel="noreferrer">
+              <a href={link} className="t-link break-all text-base" target="_blank" rel="noreferrer">
                 {link}
               </a>
             </li>

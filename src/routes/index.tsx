@@ -70,12 +70,12 @@ function Hero() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.2 }}
-          className="mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-[12.5px] text-body backdrop-blur"
+          className="mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-label text-body backdrop-blur"
         >
           <span className="pulse-dot" aria-hidden="true" />
           The contributor guild on Monad
         </motion.p>
-        <h1 id="hero-title" className="t-display mt-7 max-w-[12ch] text-[clamp(3.5rem,1.6rem+7.5vw,8.25rem)] leading-[0.92] text-balance">
+        <h1 id="hero-title" className="t-display mt-7 max-w-[12ch] text-balance">
           <WordReveal
             delay={0.25}
             wrap
@@ -86,7 +86,7 @@ function Hero() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: EASE, delay: 0.8 }}
-          className="mt-6 text-[18px] text-body sm:text-[20px]"
+          className="mt-6 text-lead text-body sm:text-lead"
         >
           Find work, prove it, climb the ladder.
         </motion.p>
@@ -99,14 +99,14 @@ function Hero() {
           <Link
             to="/discover"
             search={emptyBoardSearch()}
-            className="sheen signal-glow group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[linear-gradient(180deg,#9a89ff,#7058f0)] px-7 text-[15px] font-medium text-on-accent"
+            className="sheen signal-glow group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[linear-gradient(180deg,#9a89ff,#7058f0)] px-7 text-base font-medium text-on-accent"
           >
             Explore opportunities
             <span aria-hidden="true" className="arrow-slide">→</span>
           </Link>
           <Link
             to="/passport"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-line-strong bg-elevated/60 px-7 text-[15px] text-ink backdrop-blur transition-colors hover:border-ink/30"
+            className="inline-flex h-12 items-center justify-center rounded-full border border-line-strong bg-elevated/60 px-7 text-base text-ink backdrop-blur transition-colors hover:border-ink/30"
           >
             {profile ? "Open your passport" : "Create your passport"}
           </Link>
@@ -172,8 +172,8 @@ function Bento() {
         <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {cells.map(([label, value]) => (
             <div key={label} className="rounded-2xl border border-line bg-canvas/50 p-4">
-              <dt className="text-[12px] text-muted">{label}</dt>
-              <dd className="t-display mt-3 text-[2.75rem] leading-none tabular-nums">
+              <dt className="text-label text-muted">{label}</dt>
+              <dd className="t-stat mt-3 tabular-nums">
                 <CountUp value={Number(value)} />
               </dd>
             </div>
@@ -193,12 +193,12 @@ function Bento() {
                 search={step.to === "/discover" ? emptyBoardSearch() : step.to === "/submissions" ? { view: "mine", status: "all" } : undefined}
                 className="group flex items-center gap-4 rounded-2xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
               >
-                <span className="t-display flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong text-[1.2rem] text-ink transition-colors group-hover:border-signal group-hover:bg-signal group-hover:text-on-accent">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong text-small font-semibold text-ink transition-colors group-hover:border-signal group-hover:bg-signal group-hover:text-on-accent">
                   {index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block text-[14px] font-medium text-ink">{step.label}</span>
-                  <span className="block truncate text-[13px] text-muted">{step.body}</span>
+                  <span className="block text-base font-medium text-ink">{step.label}</span>
+                  <span className="block truncate text-small text-muted">{step.body}</span>
                 </span>
                 <span aria-hidden="true" className="arrow-slide text-muted">→</span>
               </Link>
@@ -217,8 +217,8 @@ function Bento() {
                 <Link to="/passport/$username" params={{ username: person.username }} className="flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]">
                   <RankMedal rank={person.rank} />
                   <Avatar name={person.displayName} url={person.avatarUrl} />
-                  <span className="min-w-0 flex-1 truncate text-[14px] text-ink">{person.displayName}</span>
-                  <span className="font-mono text-[12px] tabular-nums text-body">{formatXp(person.xp)} XP</span>
+                  <span className="min-w-0 flex-1 truncate text-base text-ink">{person.displayName}</span>
+                  <span className="font-mono text-label tabular-nums text-body">{formatXp(person.xp)} XP</span>
                 </Link>
               </li>
             ))}
@@ -238,10 +238,10 @@ function Bento() {
                 <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="group flex h-full flex-col gap-4 rounded-2xl border border-line bg-canvas/50 p-4 transition-colors hover:border-line-strong">
                   <span className="flex items-center gap-2.5">
                     <ProjectMark name={projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} />
-                    <span className="truncate text-[12px] text-muted">{projectLabel(item.projectName)}</span>
+                    <span className="truncate text-label text-muted">{projectLabel(item.projectName)}</span>
                   </span>
-                  <span className="t-display text-[1.45rem] leading-tight text-ink group-hover:text-signal">{item.title}</span>
-                  <span className="mt-auto text-[12px] text-body">
+                  <span className="t-h3 text-ink group-hover:text-signal">{item.title}</span>
+                  <span className="mt-auto text-label text-body">
                     {COMPENSATION_LABEL[item.compensationType as CompensationType] ?? item.compensationType}
                   </span>
                 </Link>
@@ -255,10 +255,10 @@ function Bento() {
 
       {/* CTA */}
       <Reveal className="bento flex flex-col items-start justify-between gap-6 p-6 sm:p-10 md:col-span-6 md:flex-row md:items-center lg:col-span-12">
-        <p className="t-display max-w-xl text-[clamp(2rem,1.4rem+2vw,3rem)] leading-[1.05]">
+        <p className="t-h2 max-w-xl">
           One passport. Every piece of work, <em>on the record.</em>
         </p>
-        <Link to="/passport" className="sheen group inline-flex h-12 shrink-0 items-center gap-3 rounded-full bg-ink px-7 text-[15px] font-medium text-canvas">
+        <Link to="/passport" className="sheen group inline-flex h-12 shrink-0 items-center gap-3 rounded-full bg-ink px-7 text-base font-medium text-canvas">
           Get your passport <span aria-hidden="true" className="arrow-slide">→</span>
         </Link>
       </Reveal>
@@ -270,14 +270,14 @@ function CardHead({ label, title, to, cta }: { label: string; title: ReactNode; 
   return (
     <div className="flex items-start justify-between gap-4">
       <div>
-        <p className="flex items-center gap-2 text-[12px] text-muted">
+        <p className="flex items-center gap-2 text-label text-muted">
           <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
           {label}
         </p>
-        <h2 className="t-display mt-3 text-[clamp(1.9rem,1.5rem+1.2vw,2.5rem)] leading-none">{title}</h2>
+        <h2 className="t-h2 mt-3">{title}</h2>
       </div>
       {to && cta ? (
-        <Link to={to} search={to === "/discover" ? emptyBoardSearch() : undefined} className="shrink-0 rounded-full border border-line px-3 py-1.5 text-[12px] text-body transition-colors hover:border-line-strong hover:text-ink">
+        <Link to={to} search={to === "/discover" ? emptyBoardSearch() : undefined} className="shrink-0 rounded-full border border-line px-3 py-1.5 text-label text-body transition-colors hover:border-line-strong hover:text-ink">
           {cta}
         </Link>
       ) : null}
@@ -289,8 +289,8 @@ function EmptyPreview({ body, to, cta }: { body: string; to: "/passport" | "/opp
   return (
     <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-dashed border-line-strong p-5">
       <AnimatedMark size={36} className="text-ink" />
-      <p className="text-[14px] text-body">{body}</p>
-      <Link to={to} className="rounded-full bg-white/[0.06] px-4 py-2 text-[13px] text-ink transition-colors hover:bg-white/[0.1]">
+      <p className="text-base text-body">{body}</p>
+      <Link to={to} className="rounded-full bg-white/[0.06] px-4 py-2 text-small text-ink transition-colors hover:bg-white/[0.1]">
         {cta} →
       </Link>
     </div>
@@ -309,7 +309,7 @@ function Ticker({ stats, titles }: { stats: { openOpportunities: number; passpor
   const row = (hidden: boolean) => (
     <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
       {items.map((item, index) => (
-        <li key={index} className="flex items-center gap-5 pr-5 text-[12.5px] whitespace-nowrap text-body">
+        <li key={index} className="flex items-center gap-5 pr-5 text-label whitespace-nowrap text-body">
           <span className="text-signal" aria-hidden="true">◆</span>
           {item}
         </li>

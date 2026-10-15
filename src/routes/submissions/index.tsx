@@ -59,7 +59,7 @@ function SubmissionsPage() {
             title="Sign in to see submissions"
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open Passport</Link>
+                <Link to="/passport">Open passport</Link>
               </Button>
             }
           />

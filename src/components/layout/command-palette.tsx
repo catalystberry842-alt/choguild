@@ -30,7 +30,7 @@ const ACTIONS: Action[] = [
 ];
 
 const itemClass =
-  "flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-sm text-body data-[selected=true]:bg-secondary data-[selected=true]:text-ink";
+  "flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2.5 text-base text-body data-[selected=true]:bg-secondary data-[selected=true]:text-ink";
 
 /** Global ⌘K / Ctrl+K jump menu. */
 export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
@@ -65,13 +65,13 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
               <Command.Input
                 autoFocus
                 placeholder="Where to?"
-                className="h-12 w-full bg-transparent text-[15px] text-ink outline-none placeholder:text-muted"
+                className="h-12 w-full bg-transparent text-base text-ink outline-none placeholder:text-muted"
               />
-              <kbd className="rounded border border-line px-1.5 text-[11px] text-muted">Esc</kbd>
+              <kbd className="rounded border border-line px-1.5 text-label text-muted">Esc</kbd>
             </div>
             <Command.List className="max-h-[50vh] overflow-y-auto p-2">
-              <Command.Empty className="px-3 py-6 text-center text-sm text-muted">Nothing matches.</Command.Empty>
-              <Command.Group heading="Pages" className="text-xs text-muted [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
+              <Command.Empty className="px-3 py-6 text-center text-base text-muted">Nothing matches.</Command.Empty>
+              <Command.Group heading="Pages" className="text-label text-muted [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
                 {NAV_ITEMS.map((item) => {
                   const Icon = item.icon;
                   return (
@@ -93,7 +93,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
                   );
                 })}
               </Command.Group>
-              <Command.Group heading="Actions" className="mt-1 text-xs text-muted [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
+              <Command.Group heading="Actions" className="mt-1 text-label text-muted [&_[cmdk-group-heading]]:px-3 [&_[cmdk-group-heading]]:py-1.5">
                 {ACTIONS.map((action) => {
                   const Icon = action.icon;
                   return (
@@ -105,7 +105,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
                     >
                       <Icon className="size-4" aria-hidden="true" />
                       <span className="flex-1">{action.label}</span>
-                      <span className="hidden text-xs text-muted sm:inline">{action.hint}</span>
+                      <span className="hidden text-label text-muted sm:inline">{action.hint}</span>
                     </Command.Item>
                   );
                 })}

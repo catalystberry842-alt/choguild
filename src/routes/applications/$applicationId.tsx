@@ -52,7 +52,7 @@ function ApplicationPage() {
           </Badge>
           <span className="t-meta">Sent {formatStamp(application.createdAt)}</span>
           {application.viewer === "creator" && application.username ? (
-            <Link to="/passport/$username" params={{ username: application.username }} className="t-link text-sm">
+            <Link to="/passport/$username" params={{ username: application.username }} className="t-link text-base">
               {application.displayName} · @{application.username}
             </Link>
           ) : null}

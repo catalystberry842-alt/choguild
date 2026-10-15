@@ -137,11 +137,11 @@ export function WalletPanel() {
       <div className="flex flex-wrap items-center gap-2">
         {isConnected && address ? (
           <>
-            <p className="text-sm font-medium text-ink">{shortAddress(address)}</p>
+            <p className="text-base font-medium text-ink">{shortAddress(address)}</p>
             <Badge tone={onMonad ? "olive" : "warning"}>{isConnected ? network.label : "Not connected"}</Badge>
           </>
         ) : (
-          <p className="text-sm text-body">No wallet connected</p>
+          <p className="text-base text-body">No wallet connected</p>
         )}
         {sessionAddress ? <Badge tone="sand">Session {shortAddress(sessionAddress)}</Badge> : null}
       </div>
@@ -149,19 +149,19 @@ export function WalletPanel() {
       <p className="t-meta">Choguild never asks for your seed phrase or private key.</p>
 
       {isConnected && !onMonad ? (
-        <p className="text-sm leading-6 text-warning">
+        <p className="text-base text-warning">
           Your wallet is on {network.label}. Switch to Monad (chain {MONAD_CHAIN_ID}) to continue.
         </p>
       ) : null}
       {sessionAddress && address && !sameWallet ? (
-        <p className="text-sm leading-6 text-warning">
+        <p className="text-base text-warning">
           You're signed in as {shortAddress(sessionAddress)}, not this wallet. Verify to switch, and each passport stays on its own address.
         </p>
       ) : null}
 
       {!isConnected ? (
         providerIds === null ? (
-          <p className="text-sm text-body">Checking for a wallet…</p>
+          <p className="text-base text-body">Checking for a wallet…</p>
         ) : readyConnectors.length > 0 ? (
           <div className="flex flex-col gap-2">
             {readyConnectors.map((connector) => (
@@ -185,7 +185,7 @@ export function WalletPanel() {
             {copied ? "Copied" : "Copy address"}
           </Button>
           {explorer ? (
-            <a className="t-link inline-flex min-h-11 items-center text-sm" href={explorer} target="_blank" rel="noreferrer">
+            <a className="t-link inline-flex min-h-11 items-center text-base" href={explorer} target="_blank" rel="noreferrer">
               Explorer
             </a>
           ) : null}
@@ -215,7 +215,7 @@ export function WalletPanel() {
         </Button>
       ) : null}
 
-      {message ? <p className="text-sm text-body">{message}</p> : null}
+      {message ? <p className="text-base text-body">{message}</p> : null}
       {error ? <ErrorMessage title="Wallet">{error}</ErrorMessage> : null}
     </div>
   );

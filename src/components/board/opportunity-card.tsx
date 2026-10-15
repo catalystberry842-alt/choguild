@@ -18,7 +18,7 @@ function label<T extends string>(map: Record<T, string>, value: string): string 
   return map[value as T] ?? value;
 }
 
-/** A rich listing card: project, status, serif title, summary, skills, and terms in a footer strip. */
+/** A rich listing card: project, status, title, summary, skills, and terms in a footer strip. */
 export function OpportunityCardView({ item }: { item: OpportunityCard; index?: number }) {
   const project = projectLabel(item.projectName);
   const open = item.status === "open";
@@ -31,29 +31,29 @@ export function OpportunityCardView({ item }: { item: OpportunityCard; index?: n
             <span className="flex min-w-0 items-center gap-2.5">
               <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
               <span className="min-w-0">
-                <span className="block truncate text-[13px] text-ink">{project}</span>
-                <span className="block truncate text-[12px] text-muted">{label(CATEGORY_LABEL, item.category as Category)}</span>
+                <span className="block truncate text-small text-ink">{project}</span>
+                <span className="block truncate text-label text-muted">{label(CATEGORY_LABEL, item.category as Category)}</span>
               </span>
             </span>
-            <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] " + (open ? "bg-success/10 text-success" : "bg-white/[0.05] text-muted")}>
+            <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-label" + (open ? "bg-success/10 text-success" : "bg-white/[0.05] text-muted")}>
               <span className={"size-1.5 rounded-full " + (open ? "bg-success" : "bg-muted")} aria-hidden="true" />
               {label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}
             </span>
           </div>
-          <h3 className="t-display mt-6 text-[1.9rem] leading-[1.05] text-ink transition-colors group-hover:text-signal">{item.title}</h3>
+          <h3 className="t-h3 mt-6 text-ink transition-colors group-hover:text-signal">{item.title}</h3>
           <p className="t-body mt-3 line-clamp-2">{cardSummary(item.summary)}</p>
           {item.requiredSkills.length > 0 ? (
             <ul className="mt-5 flex flex-wrap gap-1.5">
               {item.requiredSkills.slice(0, 4).map((skill) => (
-                <li key={skill} className="rounded-full border border-line px-2.5 py-0.5 text-[11.5px] text-body">{skill}</li>
+                <li key={skill} className="rounded-full border border-line px-2.5 py-0.5 text-label text-body">{skill}</li>
               ))}
             </ul>
           ) : null}
           {item.myApplicationStatus ? (
-            <p className="mt-4 text-[12px] text-signal">You applied · {APPLICATION_STATUS_LABEL[item.myApplicationStatus as ApplicationStatus]}</p>
+            <p className="mt-4 text-label text-signal">You applied · {APPLICATION_STATUS_LABEL[item.myApplicationStatus as ApplicationStatus]}</p>
           ) : null}
         </div>
-        <div className="flex items-center justify-between gap-3 border-t border-line bg-canvas/40 px-6 py-3.5 text-[13px]">
+        <div className="flex items-center justify-between gap-3 border-t border-line bg-canvas/40 px-6 py-3.5 text-small">
           <span className="text-ink">{label(COMPENSATION_LABEL, item.compensationType as CompensationType)}</span>
           <span className="flex items-center gap-3 text-muted">
             {item.deadline ? `Due ${formatDay(item.deadline)}` : "No deadline"}
@@ -71,7 +71,7 @@ export function ProjectMark({ name, logoUrl, className = "" }: { name: string; l
     return <img src={logoUrl} alt="" className={"size-9 shrink-0 rounded-full border border-line object-cover " + className} />;
   }
   return (
-    <span className={"t-display flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong bg-secondary text-[1.15rem] text-ink " + className}>
+    <span className={"flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong bg-secondary text-small font-semibold text-ink" + className}>
       {initial}
     </span>
   );

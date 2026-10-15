@@ -1,15 +1,23 @@
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
+import { PageHeader } from "@/components/ui/page-header";
+import { emptyBoardSearch } from "@/lib/board/search";
 
 export function NotFoundState() {
   return (
-    <EmptyState
+    <PageHeader
+      eyebrow="404"
       title="Page not found"
-      action={
-        <Button asChild variant="secondary" size="compact">
-          <Link to="/">Go home</Link>
-        </Button>
+      description="That link doesn't lead anywhere. It may have moved, or it never existed."
+      actions={
+        <>
+          <Button asChild size="compact">
+            <Link to="/">Go home</Link>
+          </Button>
+          <Button asChild variant="secondary" size="compact">
+            <Link to="/discover" search={emptyBoardSearch()}>Browse work</Link>
+          </Button>
+        </>
       }
     />
   );

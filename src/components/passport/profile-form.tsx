@@ -170,7 +170,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
       </Field>
 
       <fieldset>
-        <legend className="text-sm font-medium text-ink">Skills</legend>
+        <legend className="text-base font-medium text-ink">Skills</legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {SUGGESTED_SKILLS.map((skill) => {
             const selected = form.skills.some((item) => item.toLowerCase() === skill.toLowerCase());
@@ -181,7 +181,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
                 aria-pressed={selected}
                 onClick={() => toggleSkill(skill)}
                 className={cn(
-                  "min-h-11 rounded-md border px-3 text-sm",
+                  "min-h-11 rounded-md border px-3 text-base",
                   selected
                     ? "border-action bg-elevated text-ink"
                     : "border-line bg-canvas text-body hover:text-ink",
@@ -205,10 +205,10 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
           </Button>
         </div>
         {form.skills.length > 0 ? (
-          <p className="mt-2 text-sm text-body">{form.skills.join(", ")}</p>
+          <p className="mt-2 text-base text-body">{form.skills.join(", ")}</p>
         ) : null}
         {errors.skills ? (
-          <p className="mt-2 text-xs text-danger" role="alert">
+          <p className="mt-2 text-label text-danger" role="alert">
             {errors.skills}
           </p>
         ) : null}
@@ -246,7 +246,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
       </Field>
 
       <fieldset>
-        <legend className="text-sm font-medium text-ink">Other links</legend>
+        <legend className="text-base font-medium text-ink">Other links</legend>
         <div className="mt-3 flex flex-col gap-3">
           {form.otherLinks.map((link, index) => (
             <div key={index} className="grid gap-2 sm:grid-cols-2">
@@ -279,7 +279,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
           </Button>
         ) : null}
         {errors.otherLinks ? (
-          <p className="mt-2 text-xs text-danger" role="alert">
+          <p className="mt-2 text-label text-danger" role="alert">
             {errors.otherLinks}
           </p>
         ) : null}

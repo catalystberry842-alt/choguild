@@ -59,7 +59,7 @@ export function PublicPassport({
           />
         ) : (
           <span
-            className="flex size-16 items-center justify-center rounded-full border border-line bg-elevated text-xl text-ink"
+            className="flex size-16 items-center justify-center rounded-full border border-line bg-elevated text-lead font-semibold text-ink"
             aria-hidden="true"
           >
             {initial}
@@ -69,12 +69,12 @@ export function PublicPassport({
           <h1 className="t-title">{profile.displayName}</h1>
           <p className="t-meta mt-1.5">@{profile.username}</p>
           <div className="mt-3 flex flex-wrap items-center gap-2">
-            <p className="font-mono text-sm text-ink">{shortAddress(profile.walletAddress)}</p>
+            <p className="font-mono text-base text-ink">{shortAddress(profile.walletAddress)}</p>
             <Button variant="secondary" size="compact" onClick={() => void copy(profile.walletAddress, "address")}>
               {copiedAddress ? "Copied" : "Copy address"}
             </Button>
             {explorerAddressUrl(profile.walletAddress) ? (
-              <a className="t-link text-sm" href={explorerAddressUrl(profile.walletAddress) ?? undefined} target="_blank" rel="noreferrer">
+              <a className="t-link text-base" href={explorerAddressUrl(profile.walletAddress) ?? undefined} target="_blank" rel="noreferrer">
                 Explorer
               </a>
             ) : null}
@@ -91,13 +91,13 @@ export function PublicPassport({
             {profile.skills.length > 0 ? (
               profile.skills.map((skill) => <Badge key={skill}>{skill}</Badge>)
             ) : (
-              <span className="text-sm text-body">Not added</span>
+              <span className="text-base text-body">Not added</span>
             )}
           </dd>
         </div>
         <div>
           <dt className="t-meta">Interests</dt>
-          <dd className="mt-1 text-sm text-ink">{profile.interests ?? "Not added"}</dd>
+          <dd className="mt-1 text-base text-ink">{profile.interests ?? "Not added"}</dd>
         </div>
         <div>
           <dt className="t-meta">Links</dt>
@@ -109,19 +109,19 @@ export function PublicPassport({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-sand underline-offset-2 hover:underline"
+                  className="text-base text-sand underline-offset-2 hover:underline"
                 >
                   {link.label}
                 </a>
               ))
             ) : (
-              <span className="text-sm text-body">Not added</span>
+              <span className="text-base text-body">Not added</span>
             )}
           </dd>
         </div>
         <div>
           <dt className="t-meta">Record</dt>
-          <dd className="mt-1 text-sm text-body">
+          <dd className="mt-1 text-base text-body">
             Created {formatStamp(profile.createdAt)}
             <br />
             Updated {formatStamp(profile.updatedAt)}
@@ -153,7 +153,7 @@ export function PublicPassport({
                 ) : (
                   <ul className="mt-3 grid gap-1.5">
                     {item.evidence.map((link) => (
-                      <li key={link.url}><a className="t-link text-sm" href={link.url} target="_blank" rel="noreferrer">{link.label}</a></li>
+                      <li key={link.url}><a className="t-link text-base" href={link.url} target="_blank" rel="noreferrer">{link.label}</a></li>
                     ))}
                   </ul>
                 )}
@@ -173,7 +173,7 @@ export function PublicPassport({
           </Button>
         ) : null}
       </div>
-      {copyError ? <p className="mt-2 text-sm text-danger">{copyError}</p> : null}
+      {copyError ? <p className="mt-2 text-base text-danger">{copyError}</p> : null}
     </article>
   );
 }

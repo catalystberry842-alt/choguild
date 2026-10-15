@@ -45,8 +45,8 @@ function RankingPage() {
         <dl className="mt-8 flex flex-wrap justify-center gap-2">
           {([["Passports", stats.passports], ["Accepted", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value]) => (
             <div key={label} className="flex items-baseline gap-2 rounded-full border border-line bg-elevated/70 px-4 py-2">
-              <dd className="t-display text-[1.5rem] leading-none tabular-nums text-ink"><CountUp value={value} /></dd>
-              <dt className="text-[12px] text-muted">{label}</dt>
+              <dd className="t-stat-sm text-ink"><CountUp value={value} /></dd>
+              <dt className="text-label text-muted">{label}</dt>
             </div>
           ))}
         </dl>
@@ -64,7 +64,7 @@ function RankingPage() {
                 to="/ranking"
                 search={option.id === "overall" ? {} : { by: option.id }}
                 replace
-                className={cn("relative rounded-full px-4 py-1.5 text-[13px] transition-colors", active ? "text-on-accent" : "text-body hover:text-ink")}
+                className={cn("relative rounded-full px-4 py-1.5 text-small transition-colors", active ? "text-on-accent" : "text-body hover:text-ink")}
               >
                 {active ? <motion.span layoutId="rank-by" className="absolute inset-0 rounded-full bg-signal" transition={{ type: "spring", bounce: 0.15, duration: 0.45 }} /> : null}
                 <span className="relative">{option.label}</span>
@@ -96,7 +96,7 @@ function RankingPage() {
 
           {rest.length > 0 ? (
             <section aria-label="The ladder" className="bento p-2 sm:p-3">
-              <div className="hidden grid-cols-[3.5rem_minmax(0,1fr)_8rem_7rem] gap-4 px-4 py-3 text-[12px] text-muted sm:grid">
+              <div className="hidden grid-cols-[3.5rem_minmax(0,1fr)_8rem_7rem] gap-4 px-4 py-3 text-label text-muted sm:grid">
                 <span>Rank</span>
                 <span>Contributor</span>
                 <span>Tier</span>
@@ -110,19 +110,19 @@ function RankingPage() {
                       params={{ username: person.username }}
                       className="group grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-4 rounded-2xl px-4 py-3 transition-colors hover:bg-white/[0.04] sm:grid-cols-[3.5rem_minmax(0,1fr)_8rem_7rem]"
                     >
-                      <span className="t-display text-[1.4rem] leading-none text-muted tabular-nums">{person.rank}</span>
+                      <span className="t-stat-sm text-muted">{person.rank}</span>
                       <span className="flex min-w-0 items-center gap-3">
                         <Avatar name={person.displayName} url={person.avatarUrl} />
                         <span className="min-w-0">
-                          <span className="block truncate text-[14px] text-ink group-hover:text-signal">{person.displayName}</span>
-                          <span className="block truncate text-[12px] text-muted">
+                          <span className="block truncate text-base text-ink group-hover:text-signal">{person.displayName}</span>
+                          <span className="block truncate text-label text-muted">
                             @{person.username}
                             {person.txCount !== null ? ` · ${formatXp(person.txCount)} txs` : ""}
                           </span>
                         </span>
                       </span>
                       <span className="hidden sm:block"><TierBadge tier={person.tier} /></span>
-                      <span className="text-right font-mono text-[13px] tabular-nums text-ink">{formatXp(person.xp)}</span>
+                      <span className="text-right font-mono text-small tabular-nums text-ink">{formatXp(person.xp)}</span>
                     </Link>
                   </Reveal>
                 ))}
@@ -146,17 +146,17 @@ function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
         params={{ username: person.username }}
         className={cn("bento group flex flex-col items-center gap-4 px-6 py-8 text-center", first && "signal-glow border-signal/30")}
       >
-        <span className={cn("t-display text-[4.5rem] leading-[0.8]", first ? "text-signal" : "text-faint")}>{person.rank}</span>
+        <span className={cn("t-stat-lg", first ? "text-signal" : "text-faint")}>{person.rank}</span>
         <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
         <span>
-          <span className="t-display block text-[1.75rem] leading-tight text-ink">{person.displayName}</span>
-          <span className="block text-[12px] text-muted">@{person.username}</span>
+          <span className="t-h3 block text-ink">{person.displayName}</span>
+          <span className="block text-label text-muted">@{person.username}</span>
         </span>
         <TierBadge tier={person.tier} />
-        <span className="t-display text-[2.25rem] leading-none tabular-nums">
-          <CountUp value={person.xp} /> <span className="font-sans text-[12px] text-muted">XP</span>
+        <span className="t-stat tabular-nums">
+          <CountUp value={person.xp} /> <span className="font-sans text-label text-muted">XP</span>
         </span>
-        <span className="text-[12px] text-muted">
+        <span className="text-label text-muted">
           Guild {formatXp(person.guildXp)} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
         </span>
         {by === "overall" ? <span className="w-full"><XpBar xp={person.xp} /></span> : null}
@@ -171,10 +171,10 @@ function EmptyLadder() {
       {[2, 1, 3].map((rank) => (
         <Reveal as="li" key={rank} delay={rank * 0.08} className={rank === 1 ? "md:order-2 md:pb-14" : rank === 2 ? "md:order-1" : "md:order-3"}>
           <div className={cn("flex flex-col items-center gap-4 rounded-[1.5rem] border border-dashed px-6 py-10 text-center", rank === 1 ? "signal-glow border-signal/40 bg-signal/[0.04]" : "border-line-strong bg-elevated/40")}>
-            <span className={cn("t-display text-[4.5rem] leading-[0.8]", rank === 1 ? "text-signal" : "text-faint")}>{rank}</span>
+            <span className={cn("t-stat-lg", rank === 1 ? "text-signal" : "text-faint")}>{rank}</span>
             <span className="flex size-16 items-center justify-center rounded-full border border-dashed border-line-strong text-faint">?</span>
-            <span className="t-display text-[1.75rem] leading-tight text-ink">{rank === 1 ? "First place is open." : "Open spot"}</span>
-            <span className="text-[13px] text-muted">{rank === 1 ? "Save a public passport to join. Accepted work moves you up." : "Waiting for accepted work."}</span>
+            <span className="t-h3 text-ink">{rank === 1 ? "First place is open." : "Open spot"}</span>
+            <span className="text-small text-muted">{rank === 1 ? "Save a public passport to join. Accepted work moves you up." : "Waiting for accepted work."}</span>
             {rank === 1 ? (
               <span className="mt-2 flex flex-wrap justify-center gap-2">
                 <Button asChild size="compact"><Link to="/passport">Claim your spot</Link></Button>

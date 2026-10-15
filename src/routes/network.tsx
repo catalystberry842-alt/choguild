@@ -40,11 +40,11 @@ function NetworkPage() {
 
       <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
         {MONAD_EXPLORERS.map((explorer) => (
-          <a key={explorer.url} className="t-link text-sm" href={explorer.url} target="_blank" rel="noreferrer">
+          <a key={explorer.url} className="t-link text-base" href={explorer.url} target="_blank" rel="noreferrer">
             {explorer.name}
           </a>
         ))}
-        <a className="t-link text-sm" href="https://docs.monad.xyz/developer-essentials/network-information" target="_blank" rel="noreferrer">
+        <a className="t-link text-base" href="https://docs.monad.xyz/developer-essentials/network-information" target="_blank" rel="noreferrer">
           Monad docs
         </a>
       </div>

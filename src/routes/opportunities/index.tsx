@@ -37,7 +37,7 @@ function OwnedPage() {
             title="Sign in to see your listings"
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open Passport</Link>
+                <Link to="/passport">Open passport</Link>
               </Button>
             }
           />

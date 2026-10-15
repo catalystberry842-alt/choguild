@@ -226,7 +226,7 @@ function OpportunityPage() {
             </Button>
           </div>
         ) : null}
-        {message && !done ? <p className="mt-3 text-sm text-danger">{message}</p> : null}
+        {message && !done ? <p className="mt-3 text-base text-danger">{message}</p> : null}
       </section>
     </article>
   );

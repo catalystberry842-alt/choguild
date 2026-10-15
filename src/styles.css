@@ -9,13 +9,13 @@
 /*
  * Choguild — editorial dark.
  * Warm near-black paper, bone ink, one vermilion signal colour, solid
- * hairlines, square-ish geometry. Newsreader for display, Geist for UI,
+ * hairlines, square-ish geometry. Geist Sans throughout, Geist Mono for figures,
  * Geist Mono for labels and numbers.
  */
 @theme {
   --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --font-display: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Geist Sans", ui-sans-serif, system-ui, sans-serif; /* alias of sans; no serif */
 
   --color-canvas: #0e0b1f;
   --color-sidebar: #0e0b1f;
@@ -110,72 +110,7 @@
 }
 
 @layer components {
-  /* ---------- Type ---------- */
-  .t-display {
-    font-family: var(--font-display);
-    font-weight: 600;
-    letter-spacing: -0.045em;
-    line-height: 1.02;
-    color: var(--color-ink);
-  }
-  .t-eyebrow {
-    font-size: 0.8125rem;
-    line-height: 1.25rem;
-    font-weight: 500;
-    color: var(--color-body);
-  }
-  .t-label {
-    font-family: var(--font-mono);
-    font-size: 0.6875rem;
-    line-height: 1rem;
-    font-weight: 400;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--color-muted);
-  }
-  .t-title {
-    font-family: var(--font-display);
-    font-size: clamp(2.5rem, 1.7rem + 2.6vw, 4rem);
-    line-height: 1.02;
-    font-weight: 600;
-    letter-spacing: -0.045em !important;
-    color: var(--color-ink);
-  }
-  .t-lead {
-    font-size: 1rem;
-    line-height: 1.65;
-    color: var(--color-body);
-  }
-  .t-h2 {
-    font-family: var(--font-display);
-    font-size: clamp(1.6rem, 1.3rem + 1.1vw, 2.25rem);
-    line-height: 1.08;
-    font-weight: 600;
-    letter-spacing: -0.04em;
-    color: var(--color-ink);
-  }
-  .t-h3 {
-    font-size: 0.9375rem;
-    line-height: 1.4;
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    color: var(--color-ink);
-  }
-  .t-body {
-    font-size: 0.875rem;
-    line-height: 1.6;
-    color: var(--color-body);
-  }
-  .t-meta {
-    font-size: 0.8125rem;
-    line-height: 1.4;
-    color: var(--color-muted);
-  }
-  .t-num {
-    font-family: var(--font-mono);
-    font-variant-numeric: tabular-nums;
-    letter-spacing: -0.02em;
-  }
+  /* Type scale lives in the v10 block at the end of this file. */
   .t-link {
     color: var(--color-ink);
     text-decoration-line: underline;
@@ -349,7 +284,7 @@
     animation: amark-draw 1.4s var(--ease-out-quint) 0.15s forwards;
   }
   .amark-diamond {
-    transform-origin: 24px 24px;
+    transform-origin: 12px 12px;
     transform-box: view-box;
     animation: amark-turn 6s var(--ease-out-quint) infinite;
   }
@@ -573,4 +508,39 @@
   a.bento:hover, .bento-hover:hover { border-color: rgb(131 110 249 / 0.4); box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 20px 60px -30px rgb(131 110 249 / 0.45); }
   .signal-glow { box-shadow: 0 0 0 1px rgb(131 110 249 / 0.4), 0 12px 40px -10px rgb(131 110 249 / 0.65), inset 0 1px 0 rgb(255 255 255 / 0.25); }
   .pill-nav { background: rgb(22 17 48 / 0.7); border-color: rgb(131 110 249 / 0.2); }
+}
+
+/* ── v10 type scale: the single source of truth ──────────────────────────
+   display  hero only            h1  page titles        h2  section/card titles
+   h3       item titles          body-lg  leads         body  default copy
+   small    secondary copy       label    chips, captions, table headers
+   figure   mono numbers (XP, addresses)   stat  big sans numerals            */
+@theme {
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.25rem;
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.5rem;
+  --text-lead: 1.125rem;
+  --text-lead--line-height: 1.75rem;
+}
+@layer base {
+  html { font-family: var(--font-sans); }
+  button, input, select, textarea, kbd { font-family: inherit; font-size: inherit; letter-spacing: inherit; }
+  kbd, code { font-family: var(--font-mono); }
+}
+@layer components {
+  .t-display { font-family: var(--font-sans); font-size: clamp(3rem, 1.5rem + 6vw, 7.5rem); font-weight: 600; line-height: 0.98; letter-spacing: -0.05em; color: var(--color-ink); }
+  .t-h1, .t-title { font-family: var(--font-sans); font-size: clamp(2.5rem, 1.8rem + 2.4vw, 4rem); font-weight: 600; line-height: 1.04; letter-spacing: -0.045em !important; color: var(--color-ink); }
+  .t-h2 { font-family: var(--font-sans); font-size: clamp(1.75rem, 1.45rem + 1vw, 2.25rem); font-weight: 600; line-height: 1.1; letter-spacing: -0.04em; color: var(--color-ink); }
+  .t-h3 { font-family: var(--font-sans); font-size: 1.25rem; font-weight: 600; line-height: 1.3; letter-spacing: -0.025em; color: var(--color-ink); }
+  .t-lead, .t-body-lg { font-size: var(--text-lead); line-height: var(--text-lead--line-height); font-weight: 400; letter-spacing: -0.011em; color: var(--color-body); }
+  .t-body { font-size: var(--text-base); line-height: var(--text-base--line-height); font-weight: 400; letter-spacing: -0.011em; color: var(--color-body); }
+  .t-meta, .t-small { font-size: var(--text-small); line-height: var(--text-small--line-height); font-weight: 400; letter-spacing: -0.006em; color: var(--color-muted); }
+  .t-label, .t-eyebrow { font-family: var(--font-sans); font-size: var(--text-label); line-height: var(--text-label--line-height); font-weight: 500; letter-spacing: 0; text-transform: none; color: var(--color-muted); }
+  .t-figure, .t-num { font-family: var(--font-mono); font-size: var(--text-small); font-weight: 500; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--color-ink); }
+  .t-stat { font-family: var(--font-sans); font-size: 2.5rem; font-weight: 600; line-height: 1; letter-spacing: -0.045em; font-variant-numeric: tabular-nums; color: var(--color-ink); }
+  .t-stat-sm { font-family: var(--font-sans); font-size: 1.25rem; font-weight: 600; line-height: 1; letter-spacing: -0.03em; font-variant-numeric: tabular-nums; }
+  .t-stat-lg { font-family: var(--font-sans); font-size: 4.5rem; font-weight: 600; line-height: 0.85; letter-spacing: -0.06em; font-variant-numeric: tabular-nums; }
 }

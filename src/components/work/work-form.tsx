@@ -57,7 +57,7 @@ export function WorkForm({ applicationId, work }: { applicationId?: string; work
         <TextArea id="work-body" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} required />
       </Field>
       <fieldset>
-        <legend className="text-sm font-medium text-ink">Evidence links</legend>
+        <legend className="text-base font-medium text-ink">Evidence links</legend>
         <div className="mt-2 grid gap-2">
           {form.evidenceLinks.map((link, index) => (
             <TextInput
@@ -74,7 +74,7 @@ export function WorkForm({ applicationId, work }: { applicationId?: string; work
           ))}
         </div>
         <Button type="button" variant="secondary" className="mt-2" onClick={() => setForm({ ...form, evidenceLinks: [...form.evidenceLinks, ""] })}>Add a link</Button>
-        {errors.evidenceLinks ? <p className="mt-2 text-xs text-danger" role="alert">{errors.evidenceLinks}</p> : null}
+        {errors.evidenceLinks ? <p className="mt-2 text-label text-danger" role="alert">{errors.evidenceLinks}</p> : null}
       </fieldset>
       <Field label="Repository or pull request" htmlFor="work-repo" hint="Optional." error={errors.repoUrl}>
         <TextInput id="work-repo" value={form.repoUrl} onChange={(event) => setForm({ ...form, repoUrl: event.target.value })} />
@@ -85,7 +85,7 @@ export function WorkForm({ applicationId, work }: { applicationId?: string; work
       <Field label="Notes" htmlFor="work-notes" hint="Optional." error={errors.notes}>
         <TextArea id="work-notes" value={form.notes} onChange={(event) => setForm({ ...form, notes: event.target.value })} />
       </Field>
-      <label className="flex items-start gap-2 text-sm text-body">
+      <label className="flex items-start gap-2 text-base text-body">
         <input type="checkbox" className="mt-1" checked={form.publicEvidence} onChange={(event) => setForm({ ...form, publicEvidence: event.target.checked })} />
         If this is accepted, show the evidence links on my public passport.
       </label>

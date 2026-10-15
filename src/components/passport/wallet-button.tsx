@@ -51,8 +51,8 @@ export function WalletButton({
             "fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-line bg-elevated p-6",
           )}
         >
-          <Dialog.Title className="text-lg font-semibold text-ink">Wallet</Dialog.Title>
-          <Dialog.Description className="mt-2 text-sm text-body">
+          <Dialog.Title className="text-lead font-semibold text-ink">Wallet</Dialog.Title>
+          <Dialog.Description className="mt-2 text-base text-body">
             Connect a browser wallet. A connection is not a passport session until you sign.
           </Dialog.Description>
           <div className="mt-5">

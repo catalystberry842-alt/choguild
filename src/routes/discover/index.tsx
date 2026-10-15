@@ -49,7 +49,7 @@ function DiscoverPage() {
       <PageHeader
         eyebrow="Discover"
         title="Open work, on the record."
-        description="Open work from contributors with a Chog Passport."
+        description="Open work from contributors with a Choguild passport."
         actions={
           <>
             <Button asChild size="compact">
@@ -82,7 +82,7 @@ function DiscoverPage() {
               value={search.q}
               onChange={(event) => update({ q: event.target.value })}
               placeholder="Search the board"
-              className="h-12 rounded-full bg-elevated pl-11 text-[15px]"
+              className="h-12 rounded-full bg-elevated pl-11 text-base"
             />
           </div>
           <Button
@@ -95,7 +95,7 @@ function DiscoverPage() {
             <SlidersHorizontal className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Filters</span>
             {activeFilters > 0 ? (
-              <span className="flex size-5 items-center justify-center rounded-full bg-signal text-[11px] text-on-accent">
+              <span className="flex size-5 items-center justify-center rounded-full bg-signal text-label text-on-accent">
                 {activeFilters}
               </span>
             ) : null}
@@ -104,7 +104,7 @@ function DiscoverPage() {
         {showFilters ? (
           <div id="board-filters" className="rise surface grid gap-5 p-5 sm:p-6">
             <fieldset>
-              <legend className="text-[13px] font-medium text-ink">Required skills</legend>
+              <legend className="text-small font-medium text-ink">Required skills</legend>
               <div className="mt-2 flex flex-wrap gap-2">
                 {BOARD_SKILLS.map((skill) => {
                   const on = search.skills.some(
@@ -125,7 +125,7 @@ function DiscoverPage() {
                         })
                       }
                       className={cn(
-                        "min-h-9 rounded-full border px-3.5 text-[13px] transition-colors",
+                        "min-h-9 rounded-full border px-3.5 text-small transition-colors",
                         on
                           ? "border-signal bg-signal text-on-accent"
                           : "border-line-strong text-body hover:border-ink/40 hover:text-ink",

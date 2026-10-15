@@ -2,7 +2,7 @@ import { motion } from "motion/react";
 import type { ReactNode } from "react";
 import { WordReveal } from "@/components/fx/reveal";
 
-/** Centred page header: a small pill label, a serif title, a lead and actions. */
+/** Centred page header: a small pill label, a sans title, a lead and actions. */
 export function PageHeader({
   eyebrow,
   title,
@@ -23,7 +23,7 @@ export function PageHeader({
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-elevated/70 px-3 py-1 text-[12px] text-body"
+          className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-elevated/70 px-3 py-1 text-label text-body"
         >
           <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
           {eyebrow}
