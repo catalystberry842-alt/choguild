@@ -1,6 +1,5 @@
 import { Link } from "@tanstack/react-router";
 import { Reveal } from "@/components/fx/reveal";
-import { Badge } from "@/components/ui/badge";
 import {
   APPLICATION_STATUS_LABEL,
   CATEGORY_LABEL,
@@ -19,37 +18,48 @@ function label<T extends string>(map: Record<T, string>, value: string): string 
   return map[value as T] ?? value;
 }
 
-/** One listing as a ruled row: index, project, title and summary, terms, arrow. */
+/** A rich listing card: project, status, serif title, summary, skills, and terms in a footer strip. */
 export function OpportunityCardView({ item }: { item: OpportunityCard; index?: number }) {
   const project = projectLabel(item.projectName);
-  const category = label(CATEGORY_LABEL, item.category as Category);
+  const open = item.status === "open";
 
   return (
-    <Reveal as="li" y={10} className="border-b border-line">
-      <Link
-        to="/discover/$opportunityId"
-        params={{ opportunityId: item.id }}
-        className="row-link group grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-3 py-6 md:grid-cols-[auto_minmax(0,1fr)_13rem_1.5rem] md:items-start"
-      >
-        <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
-        <div className="min-w-0">
-          <p className="text-[13px] text-muted">{project} · {category}</p>
-          <h3 className="mt-1 text-[1.125rem] font-semibold tracking-[-0.02em] text-ink transition-colors group-hover:text-signal">{item.title}</h3>
-          <p className="t-body mt-2 line-clamp-2 max-w-2xl">{cardSummary(item.summary)}</p>
+    <Reveal as="li" y={14} className="h-full">
+      <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="bento group flex h-full flex-col">
+        <div className="flex flex-1 flex-col p-6">
+          <div className="flex items-center justify-between gap-3">
+            <span className="flex min-w-0 items-center gap-2.5">
+              <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
+              <span className="min-w-0">
+                <span className="block truncate text-[13px] text-ink">{project}</span>
+                <span className="block truncate text-[12px] text-muted">{label(CATEGORY_LABEL, item.category as Category)}</span>
+              </span>
+            </span>
+            <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] " + (open ? "bg-success/10 text-success" : "bg-white/[0.05] text-muted")}>
+              <span className={"size-1.5 rounded-full " + (open ? "bg-success" : "bg-muted")} aria-hidden="true" />
+              {label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}
+            </span>
+          </div>
+          <h3 className="t-display mt-6 text-[1.9rem] leading-[1.05] text-ink transition-colors group-hover:text-signal">{item.title}</h3>
+          <p className="t-body mt-3 line-clamp-2">{cardSummary(item.summary)}</p>
+          {item.requiredSkills.length > 0 ? (
+            <ul className="mt-5 flex flex-wrap gap-1.5">
+              {item.requiredSkills.slice(0, 4).map((skill) => (
+                <li key={skill} className="rounded-full border border-line px-2.5 py-0.5 text-[11.5px] text-body">{skill}</li>
+              ))}
+            </ul>
+          ) : null}
           {item.myApplicationStatus ? (
-            <p className="mt-3 font-mono text-[11px] text-signal">
-              You applied · {APPLICATION_STATUS_LABEL[item.myApplicationStatus as ApplicationStatus]}
-            </p>
+            <p className="mt-4 text-[12px] text-signal">You applied · {APPLICATION_STATUS_LABEL[item.myApplicationStatus as ApplicationStatus]}</p>
           ) : null}
         </div>
-        <div className="col-span-2 flex flex-wrap items-center gap-2 md:col-span-1 md:flex-col md:items-start md:gap-1.5 md:pt-1">
-          <p className="text-[13px] text-ink">{label(COMPENSATION_LABEL, item.compensationType as CompensationType)}</p>
-          <p className="t-meta">{item.deadline ? `Due ${formatDay(item.deadline)}` : "No deadline"}</p>
-          <Badge tone={item.status === "open" ? "olive" : "neutral"} className="md:mt-1">
-            {label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}
-          </Badge>
+        <div className="flex items-center justify-between gap-3 border-t border-line bg-canvas/40 px-6 py-3.5 text-[13px]">
+          <span className="text-ink">{label(COMPENSATION_LABEL, item.compensationType as CompensationType)}</span>
+          <span className="flex items-center gap-3 text-muted">
+            {item.deadline ? `Due ${formatDay(item.deadline)}` : "No deadline"}
+            <span aria-hidden="true" className="arrow-slide flex size-7 items-center justify-center rounded-full bg-white/[0.06] text-ink group-hover:bg-signal group-hover:text-on-accent">→</span>
+          </span>
         </div>
-        <span aria-hidden="true" className="arrow-slide hidden pt-1 text-right text-muted group-hover:text-signal md:block">→</span>
       </Link>
     </Reveal>
   );
@@ -58,10 +68,10 @@ export function OpportunityCardView({ item }: { item: OpportunityCard; index?: n
 export function ProjectMark({ name, logoUrl, className = "" }: { name: string; logoUrl: string | null; className?: string }) {
   const initial = name.slice(0, 1).toUpperCase();
   if (logoUrl) {
-    return <img src={logoUrl} alt="" className={"size-9 shrink-0 rounded-xl border border-line object-cover " + className} />;
+    return <img src={logoUrl} alt="" className={"size-9 shrink-0 rounded-full border border-line object-cover " + className} />;
   }
   return (
-    <span className={"flex size-9 shrink-0 items-center justify-center rounded-xl border border-line-strong bg-secondary text-[14px] font-semibold text-ink " + className}>
+    <span className={"t-display flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong bg-secondary text-[1.15rem] text-ink " + className}>
       {initial}
     </span>
   );

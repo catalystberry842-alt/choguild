@@ -52,7 +52,7 @@ function HowItWorksPage() {
       <PageHeader eyebrow="How it works" title="How it works" description="From wallet to accepted work, and how that becomes rank." />
 
       <Section title="The loop" description="Six steps, one record.">
-        <ol className="panel">
+        <ol className="flex flex-col">
           {FLOW.map((step, index) => (
             <Reveal as="li" key={step.title} delay={index * 0.04} y={8} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-4 border-b border-line py-5 sm:grid-cols-[4rem_16rem_minmax(0,1fr)]">
               <span className="t-display text-[1.5rem] leading-none text-faint">{index + 1}</span>

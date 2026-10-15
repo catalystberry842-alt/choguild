@@ -1,10 +1,10 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Activity } from "lucide-react";
+import { motion } from "motion/react";
 import { Reveal } from "@/components/fx/reveal";
 import { Avatar, TierBadge, XpBar } from "@/components/ranking/bits";
 import { CountUp } from "@/components/ranking/count-up";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
 import { getRanking } from "@/lib/ranking/functions";
@@ -36,93 +36,93 @@ function RankingPage() {
   const { contributors, stats, onchainAvailable } = Route.useLoaderData();
   const by: RankBy = Route.useSearch().by ?? "overall";
   const ranking = rankContributors(contributors, by);
-  const leader = ranking[0];
-  const rest = ranking.slice(1);
+  const podium = ranking.slice(0, 3);
+  const rest = ranking.slice(3);
 
   return (
-    <div className="flex flex-col gap-14">
-      <PageHeader eyebrow="Ranking" title="The ladder." description="XP from accepted guild work and activity on Monad." />
+    <div className="flex flex-col gap-10">
+      <PageHeader eyebrow="Ranking" title="The ladder." description="XP from accepted guild work and activity on Monad.">
+        <dl className="mt-8 flex flex-wrap justify-center gap-2">
+          {([["Passports", stats.passports], ["Accepted", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value]) => (
+            <div key={label} className="flex items-baseline gap-2 rounded-full border border-line bg-elevated/70 px-4 py-2">
+              <dd className="t-display text-[1.5rem] leading-none tabular-nums text-ink"><CountUp value={value} /></dd>
+              <dt className="text-[12px] text-muted">{label}</dt>
+            </div>
+          ))}
+        </dl>
+      </PageHeader>
 
-      <dl className="-mt-4 grid grid-cols-3 overflow-hidden rounded-[1.25rem] border border-line bg-elevated/70">
-        <Stat label="Passports" value={stats.passports} index={1} />
-        <Stat label="Accepted" value={stats.acceptedWork} index={2} />
-        <Stat label="Onchain txs" value={stats.onchainTxs} index={3} />
-      </dl>
-
-      <section className="flex flex-col gap-4">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-          <div role="tablist" aria-label="Rank by" className="seg">
-            {RANK_BY.map((option) => (
+      <div className="flex flex-col items-center gap-3">
+        <div role="tablist" aria-label="Rank by" className="inline-flex rounded-full border border-line bg-elevated/70 p-1">
+          {RANK_BY.map((option) => {
+            const active = option.id === by;
+            return (
               <Link
                 key={option.id}
                 role="tab"
-                aria-selected={option.id === by}
+                aria-selected={active}
                 to="/ranking"
                 search={option.id === "overall" ? {} : { by: option.id }}
                 replace
-                className="seg-item"
+                className={cn("relative rounded-full px-4 py-1.5 text-[13px] transition-colors", active ? "text-on-accent" : "text-body hover:text-ink")}
               >
-                {option.label}
+                {active ? <motion.span layoutId="rank-by" className="absolute inset-0 rounded-full bg-signal" transition={{ type: "spring", bounce: 0.15, duration: 0.45 }} /> : null}
+                <span className="relative">{option.label}</span>
               </Link>
-            ))}
-          </div>
-          <Link to="/how-it-works" hash="xp" className="t-link text-[13px]">
-            How XP works
-          </Link>
+            );
+          })}
         </div>
-        <p className="t-meta">{BLURB[by]}</p>
-
+        <p className="t-meta">
+          {BLURB[by]}{" "}
+          <Link to="/how-it-works" hash="xp" className="t-link">How XP works</Link>
+        </p>
         {!onchainAvailable && by !== "guild" ? (
-          <p className="t-body flex items-start gap-3 border-l-2 border-warning py-1 pl-4">
+          <p className="t-body flex items-start gap-3 rounded-2xl border border-warning/30 bg-warning/5 px-4 py-3">
             <Activity className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
             The Monad RPC did not answer just now, so onchain XP is missing and the ladder uses guild XP for the moment.
           </p>
         ) : null}
-      </section>
+      </div>
 
-      {!leader ? (
+      {podium.length === 0 ? (
         <EmptyLadder />
       ) : (
         <>
-          <Leader person={leader} by={by} />
+          <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end">
+            {podium.map((person) => (
+              <PodiumCard key={person.username} person={person} by={by} />
+            ))}
+          </ol>
 
           {rest.length > 0 ? (
-            <section aria-label="The ladder">
-              <div className="hidden grid-cols-[4rem_minmax(0,1fr)_8rem_7rem_7rem] gap-4 px-6 pb-3 sm:grid">
-                <span className="t-label">Rank</span>
-                <span className="t-label">Contributor</span>
-                <span className="t-label">Tier</span>
-                <span className="t-label text-right">Guild / Chain</span>
-                <span className="t-label text-right">XP</span>
+            <section aria-label="The ladder" className="bento p-2 sm:p-3">
+              <div className="hidden grid-cols-[3.5rem_minmax(0,1fr)_8rem_7rem] gap-4 px-4 py-3 text-[12px] text-muted sm:grid">
+                <span>Rank</span>
+                <span>Contributor</span>
+                <span>Tier</span>
+                <span className="text-right">XP</span>
               </div>
-              <ol className="panel">
+              <ol className="flex flex-col gap-0.5">
                 {rest.map((person, index) => (
-                  <Reveal as="li" key={person.username} delay={Math.min(index, 8) * 0.03} y={6} className="border-b border-line">
+                  <Reveal as="li" key={person.username} delay={Math.min(index, 8) * 0.03} y={6}>
                     <Link
                       to="/passport/$username"
                       params={{ username: person.username }}
-                      className="row-link group grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-4 py-4 sm:grid-cols-[4rem_minmax(0,1fr)_8rem_7rem_7rem]"
+                      className="group grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-4 rounded-2xl px-4 py-3 transition-colors hover:bg-white/[0.04] sm:grid-cols-[3.5rem_minmax(0,1fr)_8rem_7rem]"
                     >
-                      <span className={cn("t-display text-[1.25rem] leading-none tabular-nums", person.rank <= 3 ? "text-ink" : "text-faint")}>
-                        {person.rank}
-                      </span>
+                      <span className="t-display text-[1.4rem] leading-none text-muted tabular-nums">{person.rank}</span>
                       <span className="flex min-w-0 items-center gap-3">
                         <Avatar name={person.displayName} url={person.avatarUrl} />
                         <span className="min-w-0">
-                          <span className="block truncate text-[15px] text-ink transition-colors group-hover:text-signal">{person.displayName}</span>
-                          <span className="block truncate font-mono text-[11px] text-muted">
+                          <span className="block truncate text-[14px] text-ink group-hover:text-signal">{person.displayName}</span>
+                          <span className="block truncate text-[12px] text-muted">
                             @{person.username}
                             {person.txCount !== null ? ` · ${formatXp(person.txCount)} txs` : ""}
                           </span>
                         </span>
                       </span>
-                      <span className="hidden sm:block">
-                        <TierBadge tier={person.tier} />
-                      </span>
-                      <span className="hidden text-right font-mono text-[12px] text-muted tabular-nums sm:block">
-                        {formatXp(person.guildXp)} / {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
-                      </span>
-                      <span className="text-right font-mono text-[14px] tabular-nums text-ink">{formatXp(person.xp)}</span>
+                      <span className="hidden sm:block"><TierBadge tier={person.tier} /></span>
+                      <span className="text-right font-mono text-[13px] tabular-nums text-ink">{formatXp(person.xp)}</span>
                     </Link>
                   </Reveal>
                 ))}
@@ -135,53 +135,31 @@ function RankingPage() {
   );
 }
 
-function Stat({ label, value, index }: { label: string; value: number; index: number }) {
-  return (
-    <div className={cn("min-w-0 px-4 py-6 sm:px-6", index > 1 && "border-l border-line")}>
-      <dt className="truncate text-[13px] text-muted">
-        {label}
-      </dt>
-      <dd className="t-display mt-3 text-[clamp(2rem,1.4rem+2vw,3rem)] leading-none tabular-nums">
-        <CountUp value={value} />
-      </dd>
-    </div>
-  );
-}
+const PODIUM = ["md:order-2 md:pb-14", "md:order-1", "md:order-3"] as const;
 
-/** First place gets the editorial treatment: a huge numeral, the name set in serif, and the split. */
-function Leader({ person, by }: { person: RankedContributor; by: RankBy }) {
+function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
+  const first = person.rank === 1;
   return (
-    <Reveal>
+    <Reveal as="li" delay={person.rank * 0.08} className={PODIUM[person.rank - 1]}>
       <Link
         to="/passport/$username"
         params={{ username: person.username }}
-        className="surface group grid gap-8 p-6 sm:p-10 md:grid-cols-12 md:items-end"
+        className={cn("bento group flex flex-col items-center gap-4 px-6 py-8 text-center", first && "signal-glow border-signal/30")}
       >
-        <span className="t-display text-[clamp(5rem,3.5rem+6vw,8.5rem)] leading-[0.85] text-signal md:col-span-3">1</span>
-        <span className="flex min-w-0 flex-col gap-4 md:col-span-5">
-          <span className="t-label">Top of the ladder</span>
-          <span className="flex items-center gap-4">
-            <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
-            <span className="min-w-0">
-              <span className="t-display block truncate text-[1.75rem] leading-tight transition-colors group-hover:text-signal">{person.displayName}</span>
-              <span className="block font-mono text-[12px] text-muted">@{person.username}</span>
-            </span>
-          </span>
-          <TierBadge tier={person.tier} className="self-start" />
+        <span className={cn("t-display text-[4.5rem] leading-[0.8]", first ? "text-signal" : "text-faint")}>{person.rank}</span>
+        <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
+        <span>
+          <span className="t-display block text-[1.75rem] leading-tight text-ink">{person.displayName}</span>
+          <span className="block text-[12px] text-muted">@{person.username}</span>
         </span>
-        <span className="flex flex-col gap-3 md:col-span-4 md:items-end md:text-right">
-          <span className="t-display text-[3rem] leading-none tabular-nums">
-            <CountUp value={person.xp} /> <span className="font-mono text-[12px] text-muted">XP</span>
-          </span>
-          <span className="font-mono text-[11px] text-muted">
-            Guild {formatXp(person.guildXp)} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
-          </span>
-          {by === "overall" ? (
-            <span className="w-full md:max-w-64">
-              <XpBar xp={person.xp} />
-            </span>
-          ) : null}
+        <TierBadge tier={person.tier} />
+        <span className="t-display text-[2.25rem] leading-none tabular-nums">
+          <CountUp value={person.xp} /> <span className="font-sans text-[12px] text-muted">XP</span>
         </span>
+        <span className="text-[12px] text-muted">
+          Guild {formatXp(person.guildXp)} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
+        </span>
+        {by === "overall" ? <span className="w-full"><XpBar xp={person.xp} /></span> : null}
       </Link>
     </Reveal>
   );
@@ -189,19 +167,23 @@ function Leader({ person, by }: { person: RankedContributor; by: RankBy }) {
 
 function EmptyLadder() {
   return (
-    <EmptyState
-      title="First place is open."
-      body="Save a public passport to join. Accepted work moves you up."
-      action={
-        <>
-          <Button asChild>
-            <Link to="/passport">Claim your spot</Link>
-          </Button>
-          <Button asChild variant="secondary">
-            <Link to="/how-it-works">How it works</Link>
-          </Button>
-        </>
-      }
-    />
+    <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end">
+      {[2, 1, 3].map((rank) => (
+        <Reveal as="li" key={rank} delay={rank * 0.08} className={rank === 1 ? "md:order-2 md:pb-14" : rank === 2 ? "md:order-1" : "md:order-3"}>
+          <div className={cn("flex flex-col items-center gap-4 rounded-[1.5rem] border border-dashed px-6 py-10 text-center", rank === 1 ? "signal-glow border-signal/40 bg-signal/[0.04]" : "border-line-strong bg-elevated/40")}>
+            <span className={cn("t-display text-[4.5rem] leading-[0.8]", rank === 1 ? "text-signal" : "text-faint")}>{rank}</span>
+            <span className="flex size-16 items-center justify-center rounded-full border border-dashed border-line-strong text-faint">?</span>
+            <span className="t-display text-[1.75rem] leading-tight text-ink">{rank === 1 ? "First place is open." : "Open spot"}</span>
+            <span className="text-[13px] text-muted">{rank === 1 ? "Save a public passport to join. Accepted work moves you up." : "Waiting for accepted work."}</span>
+            {rank === 1 ? (
+              <span className="mt-2 flex flex-wrap justify-center gap-2">
+                <Button asChild size="compact"><Link to="/passport">Claim your spot</Link></Button>
+                <Button asChild size="compact" variant="secondary"><Link to="/how-it-works">How it works</Link></Button>
+              </span>
+            ) : null}
+          </div>
+        </Reveal>
+      ))}
+    </ol>
   );
 }

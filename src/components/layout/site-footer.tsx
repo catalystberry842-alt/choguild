@@ -2,38 +2,29 @@ import { Link } from "@tanstack/react-router";
 import { LogoMark } from "@/components/brand/logo";
 import { emptyBoardSearch } from "@/lib/board/search";
 
+const pill = "rounded-full border border-line px-4 py-2 text-[13px] text-body transition-colors hover:border-line-strong hover:text-ink";
+
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 mt-24 border-t border-line">
-      <div className="mx-auto grid max-w-7xl gap-10 px-5 py-14 sm:px-8 md:grid-cols-12">
-        <div className="md:col-span-6">
-          <LogoMark className="size-7 text-ink" />
-          <p className="t-display mt-6 max-w-sm text-[1.75rem] leading-[1.05]">Get work and earn your rank.</p>
-        </div>
-        <nav aria-label="Footer" className="grid grid-cols-2 gap-8 text-[13px] md:col-span-6 md:grid-cols-3">
-          <div className="flex flex-col gap-2.5">
-            <p className="t-label mb-1">Work</p>
-            <Link to="/discover" search={emptyBoardSearch()} className="text-body hover:text-ink">Discover</Link>
-            <Link to="/opportunities/new" className="text-body hover:text-ink">Publish work</Link>
-            <Link to="/submissions" search={{ view: "mine", status: "all" }} className="text-body hover:text-ink">Submissions</Link>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <p className="t-label mb-1">Guild</p>
-            <Link to="/ranking" className="text-body hover:text-ink">Ranking</Link>
-            <Link to="/passport" className="text-body hover:text-ink">Passport</Link>
-            <Link to="/applications" className="text-body hover:text-ink">Applications</Link>
-          </div>
-          <div className="flex flex-col gap-2.5">
-            <p className="t-label mb-1">About</p>
-            <Link to="/how-it-works" className="text-body hover:text-ink">How it works</Link>
-            <Link to="/network" className="text-body hover:text-ink">Network</Link>
-            <a href="https://github.com/catalystberry842-alt/choguild" className="text-body hover:text-ink">Source</a>
-          </div>
+    <footer className="relative z-10 mx-auto mt-32 max-w-6xl px-3 pb-6 sm:px-6">
+      <div className="bento flex flex-col items-center px-6 py-16 text-center sm:py-20">
+        <LogoMark className="size-9 text-ink" />
+        <p className="t-display mt-6 text-[clamp(2.5rem,1.6rem+3.5vw,4.5rem)] leading-[0.95]">
+          Get work and earn your <em className="text-signal">rank.</em>
+        </p>
+        <nav aria-label="Footer" className="mt-10 flex flex-wrap justify-center gap-2">
+          <Link to="/discover" search={emptyBoardSearch()} className={pill}>Discover</Link>
+          <Link to="/ranking" className={pill}>Ranking</Link>
+          <Link to="/passport" className={pill}>Passport</Link>
+          <Link to="/opportunities/new" className={pill}>Publish work</Link>
+          <Link to="/how-it-works" className={pill}>How it works</Link>
+          <Link to="/network" className={pill}>Network</Link>
+          <a href="https://github.com/catalystberry842-alt/choguild" className={pill}>Source</a>
         </nav>
       </div>
-      <div className="mx-auto flex max-w-7xl items-center justify-between border-t border-line px-5 py-5 font-mono text-[11px] text-muted sm:px-8">
+      <div className="flex items-center justify-between px-4 pt-5 text-[12px] text-muted">
         <span>Choguild · Built on Monad</span>
-        <span>MIT</span>
+        <span>MIT licensed</span>
       </div>
     </footer>
   );

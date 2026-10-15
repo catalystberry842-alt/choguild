@@ -24,8 +24,8 @@ function PassportPage() {
   const verified = Boolean(sessionAddress);
 
   return (
-    <div className="flex flex-col gap-12">
-      <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
+    <div className="flex flex-col gap-3">
+      <div className="mb-10 flex flex-col items-center">
       <PageHeader
         eyebrow="Passport"
         title="Your passport"
@@ -46,10 +46,9 @@ function PassportPage() {
         <PassportRecord profile={profile} address={sessionAddress} />
       </div>
 
+      <div className="grid gap-3 lg:grid-cols-2">
       <Section title="Wallet">
-        <div>
-          <WalletPanel />
-        </div>
+        <WalletPanel />
       </Section>
 
       <Section title="Profile" description={profile ? undefined : "Username, display name and a short bio are required."}>
@@ -69,7 +68,7 @@ function PassportPage() {
         ) : null}
       </Section>
 
-      <Section title="Contribution history">
+      <Section title="Contribution history" className="lg:col-span-2">
         <EmptyState
           compact
           title="No accepted work yet"
@@ -81,6 +80,7 @@ function PassportPage() {
           }
         />
       </Section>
+      </div>
     </div>
   );
 }

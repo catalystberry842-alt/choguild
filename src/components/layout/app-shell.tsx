@@ -15,9 +15,6 @@ export function AppShell({ children }: { children: ReactNode }) {
     <MotionConfig reducedMotion="user">
       <div className="relative min-h-dvh overflow-x-clip text-ink">
         <div className={home ? "atmos atmos-home" : "atmos"} aria-hidden="true" />
-        <div className="guides" aria-hidden="true">
-          <div />
-        </div>
         <RouteProgress />
         <a
           href="#content"
@@ -31,7 +28,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           className={
             home
               ? "relative z-10 scroll-mt-16"
-              : "relative z-10 mx-auto w-full max-w-7xl scroll-mt-16 px-5 pt-12 sm:px-8 md:pt-20"
+              : "relative z-10 mx-auto w-full max-w-6xl scroll-mt-16 px-4 pt-14 sm:px-6 md:pt-20"
           }
         >
           <motion.div

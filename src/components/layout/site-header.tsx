@@ -3,7 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
-import { Wordmark } from "@/components/brand/logo";
+import { LogoMark } from "@/components/brand/logo";
 import { usePassport } from "@/components/passport/passport-provider";
 import { WalletButton } from "@/components/passport/wallet-button";
 import { emptyBoardSearch } from "@/lib/board/search";
@@ -14,65 +14,58 @@ import { shortAddress } from "@/lib/passport/format";
 
 const PRIMARY = NAV_ITEMS.filter((item) => item.primary);
 
-/** Editorial top bar: wordmark, numbered primary nav, jump, passport, wallet. A full-screen menu on mobile. */
+/** Floating, centred pill navigation. Logo and links in the middle pill, wallet to the right. */
 export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const { profile } = usePassport();
 
   return (
-    <header className="glass sticky top-0 z-40 border-b border-line">
-      <div className="h-[env(safe-area-inset-top,0px)]" aria-hidden="true" />
-      <div className="mx-auto flex h-14 max-w-7xl items-center gap-6 px-5 sm:px-8">
-        <Link to="/" aria-label="Choguild home" className="shrink-0">
-          <Wordmark />
-        </Link>
-
-        <nav aria-label="Main" className="hidden h-full items-stretch lg:flex">
-          {PRIMARY.map((item) => {
-            const active = isNavActive(pathname, item.to);
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                search={item.to === "/discover" ? emptyBoardSearch() : undefined}
-                className={cn(
-                  "relative flex items-center gap-2 px-3.5 text-[13px] transition-colors",
-                  active ? "text-ink" : "nav-hover text-muted hover:text-ink",
-                )}
-              >
-                {item.label}
-                {active ? (
-                  <motion.span
-                    layoutId="nav-active"
-                    className="absolute inset-x-3.5 -bottom-px h-px bg-signal"
-                    transition={{ type: "spring", bounce: 0, duration: 0.4 }}
-                  />
-                ) : null}
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="ml-auto flex items-center gap-2">
+    <header className="sticky top-0 z-40 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
+      <motion.div
+        initial={{ y: -24, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+        className="mx-auto flex max-w-6xl items-center gap-2"
+      >
+        <div className="pill-nav mx-auto flex h-12 min-w-0 items-center gap-1 pr-1.5 pl-4 lg:pl-5">
+          <Link to="/" aria-label="Choguild home" className="logo-anim mr-2 flex items-center gap-2 text-ink">
+            <LogoMark className="size-5" />
+            <span className="t-display text-[1.35rem] leading-none">Choguild</span>
+          </Link>
+          <nav aria-label="Main" className="hidden items-center lg:flex">
+            {PRIMARY.map((item) => {
+              const active = isNavActive(pathname, item.to);
+              return (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  search={item.to === "/discover" ? emptyBoardSearch() : undefined}
+                  className={cn("relative rounded-full px-3.5 py-1.5 text-[13px] transition-colors", active ? "text-ink" : "text-muted hover:text-ink")}
+                >
+                  {active ? (
+                    <motion.span
+                      layoutId="nav-pill"
+                      className="absolute inset-0 rounded-full bg-white/[0.07]"
+                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
+                    />
+                  ) : null}
+                  <span className="relative">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
           <button
             type="button"
             onClick={onOpenPalette}
             aria-label="Search pages and actions"
-            className="hidden h-8 items-center gap-3 rounded-full border border-line px-3.5 text-[12px] text-muted transition-colors hover:border-line-strong hover:text-ink md:flex"
+            className="ml-1 hidden size-9 items-center justify-center rounded-full text-[11px] text-muted transition-colors hover:bg-white/[0.06] hover:text-ink md:flex"
           >
-            Jump to
-            <kbd className="font-mono text-[10px] text-faint">⌘K</kbd>
+            ⌘K
           </button>
-          <Link
-            to="/passport"
-            className="hidden h-8 items-center rounded-full px-3 text-[13px] text-muted transition-colors hover:text-ink sm:flex"
-          >
-            {profile ? `@${profile.username}` : "Passport"}
-          </Link>
+          <span className="ml-auto lg:ml-1" />
           <WalletButton />
           <MobileMenu />
         </div>
-      </div>
+      </motion.div>
     </header>
   );
 }
@@ -89,73 +82,64 @@ function MobileMenu() {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button
-          type="button"
-          aria-label="Open menu"
-          className="flex h-8 w-9 flex-col items-center justify-center gap-[5px] rounded-full border border-line lg:hidden"
-        >
-          <span className="h-px w-4 bg-ink" />
-          <span className="h-px w-4 bg-ink" />
+        <button type="button" aria-label="Open menu" className="ml-1 flex size-9 flex-col items-center justify-center gap-[5px] rounded-full bg-white/[0.06] lg:hidden">
+          <span className="h-px w-3.5 bg-ink" />
+          <span className="h-px w-3.5 bg-ink" />
         </button>
       </Dialog.Trigger>
       <Dialog.Portal>
-        <Dialog.Content className="fixed inset-0 z-50 flex flex-col bg-canvas lg:hidden">
-          <Dialog.Title className="sr-only">Menu</Dialog.Title>
-          <Dialog.Description className="sr-only">All Choguild pages and your passport.</Dialog.Description>
-          <div className="h-[env(safe-area-inset-top,0px)]" aria-hidden="true" />
-          <div className="flex h-14 items-center justify-between border-b border-line px-5 sm:px-8">
-            <Wordmark />
-            <Dialog.Close asChild>
-              <button type="button" aria-label="Close menu" className="flex h-8 w-9 items-center justify-center rounded-full border border-line">
-                <span className="relative block size-4">
-                  <span className="absolute top-1/2 left-0 h-px w-4 rotate-45 bg-ink" />
-                  <span className="absolute top-1/2 left-0 h-px w-4 -rotate-45 bg-ink" />
-                </span>
-              </button>
-            </Dialog.Close>
-          </div>
-          <nav aria-label="All pages" className="flex-1 overflow-y-auto px-4 py-5 sm:px-8">
-            <ul className="panel">
-              {NAV_ITEMS.map((item, index) => (
-                <motion.li
-                  key={item.to}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1], delay: 0.04 * index }}
-                  className="border-b border-line"
-                >
-                  <Link
-                    to={item.to}
-                    search={item.to === "/discover" ? emptyBoardSearch() : undefined}
-                    className="group flex items-baseline gap-4 py-3.5"
-                  >
-                    <span
+        <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden" />
+        <Dialog.Content asChild>
+          <motion.div
+            initial={{ opacity: 0, y: -16, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+            className="bento fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 p-3 lg:hidden"
+          >
+            <Dialog.Title className="sr-only">Menu</Dialog.Title>
+            <Dialog.Description className="sr-only">All Choguild pages and your passport.</Dialog.Description>
+            <div className="flex items-center justify-between px-3 py-2">
+              <span className="flex items-center gap-2 text-ink">
+                <LogoMark className="size-5" />
+                <span className="t-display text-[1.35rem] leading-none">Choguild</span>
+              </span>
+              <Dialog.Close asChild>
+                <button type="button" aria-label="Close menu" className="flex size-9 items-center justify-center rounded-full bg-white/[0.06]">
+                  <span className="relative block size-3.5">
+                    <span className="absolute top-1/2 left-0 h-px w-3.5 rotate-45 bg-ink" />
+                    <span className="absolute top-1/2 left-0 h-px w-3.5 -rotate-45 bg-ink" />
+                  </span>
+                </button>
+              </Dialog.Close>
+            </div>
+            <nav aria-label="All pages" className="mt-2 grid grid-cols-2 gap-2">
+              {NAV_ITEMS.map((item, index) => {
+                const Icon = item.icon;
+                const active = isNavActive(pathname, item.to);
+                return (
+                  <motion.div key={item.to} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 * index, duration: 0.4 }}>
+                    <Link
+                      to={item.to}
+                      search={item.to === "/discover" ? emptyBoardSearch() : undefined}
                       className={cn(
-                        "t-display text-[1.75rem] leading-tight",
-                        isNavActive(pathname, item.to) ? "text-signal" : "text-ink",
+                        "flex flex-col gap-6 rounded-2xl border p-4 transition-colors",
+                        active ? "border-signal/40 bg-signal/10" : "border-line bg-white/[0.02] hover:border-line-strong",
                       )}
                     >
-                      {item.label}
-                    </span>
-                  </Link>
-                </motion.li>
-              ))}
-            </ul>
-          </nav>
-          <div className="mx-4 mb-[max(1rem,env(safe-area-inset-bottom))] grid grid-cols-2 gap-px overflow-hidden rounded-[1.25rem] border border-line bg-line">
-            <div className="bg-canvas px-5 py-4">
-              <p className="t-label">Passport</p>
-              <p className="mt-1 truncate text-sm text-ink">
-                {profile ? `@${profile.username}` : sessionAddress ? "Signed in, not saved" : "Not signed in"}
-              </p>
+                      <Icon className={cn("size-4", active ? "text-signal" : "text-muted")} aria-hidden="true" />
+                      <span className="t-display text-[1.4rem] leading-none text-ink">{item.label}</span>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </nav>
+            <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/[0.03] px-4 py-3 text-[13px]">
+              <span className="truncate text-ink">{profile ? `@${profile.username}` : sessionAddress ? "Signed in" : "Not signed in"}</span>
+              <span className="truncate font-mono text-[12px] text-muted">
+                {isConnected && address ? `${shortAddress(address)} · ${network.label}` : "No wallet"}
+              </span>
             </div>
-            <div className="bg-canvas px-5 py-4">
-              <p className="t-label">Wallet</p>
-              <p className="mt-1 truncate font-mono text-sm text-ink">
-                {isConnected && address ? `${shortAddress(address)} · ${network.label}` : "Not connected"}
-              </p>
-            </div>
-          </div>
+          </motion.div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
