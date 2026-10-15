@@ -1,6 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, BadgeCheck, Compass, FileCheck2, IdCard, type LucideIcon } from "lucide-react";
 import type { ReactNode } from "react";
+import { LogoMark } from "@/components/brand/logo";
 import { ProjectMark } from "@/components/board/opportunity-card";
 import { Avatar, TierBadge } from "@/components/ranking/bits";
 import { CountUp } from "@/components/ranking/count-up";
@@ -16,7 +17,7 @@ export const Route = createFileRoute("/")({
   loader: async () => {
     const [passport, board, ranking] = await Promise.all([
       getPassportState(),
-      listBoard({ data: { ...emptyBoardSearch(), status: "all", page: 1 } }),
+      listBoard({ data: { ...emptyBoardSearch(), page: 1 } }),
       getRanking(),
     ]);
     return {
@@ -55,11 +56,11 @@ function Hero() {
   return (
     <section
       aria-labelledby="hero-title"
-      className="relative isolate flex min-h-[max(660px,100svh)] flex-col md:min-h-[clamp(720px,100svh,880px)] lg:min-h-[clamp(820px,100svh,1000px)]"
+      className="relative isolate flex min-h-[560px] flex-col md:min-h-[640px] lg:min-h-[720px]"
     >
       <div className="landing-hero-bg" aria-hidden="true" />
 
-      <div className="relative flex flex-1 flex-col items-center justify-center px-5 pt-32 pb-12 text-center sm:px-8 sm:pt-36">
+      <div className="relative flex flex-1 flex-col items-center justify-center px-5 pt-20 pb-12 text-center sm:px-8 sm:pt-24">
         <p className="rise text-[10px] font-medium tracking-[0.14em] whitespace-nowrap text-[var(--l-muted)] uppercase min-[370px]:text-[11px] min-[370px]:tracking-[0.2em] sm:text-xs">
           The contributor ecosystem on Monad
         </p>
@@ -70,7 +71,7 @@ function Hero() {
         >
           {/* Each line is one unbreakable unit, so the headline is always exactly two lines. */}
           <span className="block whitespace-nowrap">Show the work.</span>
-          <span className="block whitespace-nowrap text-[#bdb3cf]">Wear the name.</span>
+          <span className="block whitespace-nowrap text-[#8f8d99]">Wear the name.</span>
         </h1>
 
         <p className="rise mt-6 max-w-[33rem] text-[16px] leading-7 text-balance text-[var(--l-body)] [animation-delay:120ms] sm:mt-7 sm:text-[18px] sm:leading-8">
@@ -81,7 +82,7 @@ function Hero() {
           <Link
             to="/discover"
             search={emptyBoardSearch()}
-            className="group inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--l-violet)] px-5 text-[15px] font-medium text-white transition-colors hover:bg-[#7c3aed]"
+            className="group inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--l-violet)] px-5 text-[15px] font-medium text-white transition-colors hover:bg-[var(--color-action-hover)]"
           >
             Explore opportunities
             <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
@@ -128,7 +129,6 @@ function EcosystemStrip() {
 
 function Inside() {
   const { featured, leaders, stats } = Route.useLoaderData();
-  const examplesOnly = featured.length > 0 && featured.every((item) => item.isDemo);
 
   return (
     <section aria-labelledby="inside-title" className="relative mx-auto w-full max-w-6xl px-5 pt-20 pb-24 sm:px-8 lg:pt-28">
@@ -136,7 +136,7 @@ function Inside() {
         <div className="max-w-xl">
           <p className="text-[11px] font-medium tracking-[0.2em] text-[var(--l-muted)] uppercase sm:text-xs">Inside the guild</p>
           <h2 id="inside-title" className="mt-4 text-[clamp(1.75rem,1.1rem+2vw,2.5rem)] leading-[1.08] font-semibold tracking-[-0.035em] text-[var(--l-ink)]">
-            Live from the board <span className="text-[var(--l-muted)]">and the ladder.</span>
+            Live from the board and the ladder.
           </h2>
         </div>
         <Link to="/how-it-works" className="text-[14px] text-[var(--l-body)] underline-offset-4 hover:text-[var(--l-ink)] hover:underline">
@@ -205,7 +205,20 @@ function Inside() {
           )}
         </Panel>
 
-        <Panel title={examplesOnly ? "Example opportunities" : "On the board"} to="/discover">
+        <Panel title="Open on the board" to="/discover">
+          {featured.length === 0 ? (
+            <div className="flex flex-col items-start gap-5 px-3 py-6">
+              <p className="max-w-sm text-[15px] leading-7 text-[var(--l-body)]">
+                No open work yet. Listings appear here the moment a passport holder publishes one.
+              </p>
+              <Link
+                to="/opportunities/new"
+                className="inline-flex h-10 items-center rounded-xl border border-[var(--l-border)] px-4 text-[14px] text-[var(--l-ink)] transition-colors hover:border-white/25"
+              >
+                Publish the first listing
+              </Link>
+            </div>
+          ) : (
           <ul className="flex flex-col">
             {featured.map((item) => (
               <li key={item.id}>
@@ -219,7 +232,6 @@ function Inside() {
                     <span className="block truncate text-[15px] text-[var(--l-ink)]">{item.title}</span>
                     <span className="mt-0.5 block truncate text-[13px] text-[var(--l-muted)]">
                       {projectLabel(item.projectName)}
-                      {item.isDemo ? " · Demo" : ""}
                     </span>
                   </span>
                   <span className="hidden shrink-0 text-right text-[13px] text-[var(--l-body)] sm:block">
@@ -229,6 +241,7 @@ function Inside() {
               </li>
             ))}
           </ul>
+          )}
         </Panel>
       </div>
     </section>
@@ -258,7 +271,7 @@ function Footer() {
     <footer className="border-t border-[var(--l-border)]">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div className="flex items-center gap-3">
-          <img src="/brand/choguild-mark.jpg" alt="" width={28} height={28} className="size-7 rounded-lg" />
+          <LogoMark className="size-5 text-[var(--l-ink)]" />
           <span className="text-[14px] text-[var(--l-body)]">Choguild · Built on Monad</span>
         </div>
         <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-3 text-[14px] text-[var(--l-muted)]">

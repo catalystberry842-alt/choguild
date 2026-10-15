@@ -42,9 +42,9 @@ function RankingPage() {
     <div className="flex flex-col gap-12">
       <PageHeader title="Ranking" description="XP from accepted guild work and activity on Monad." />
 
-      <dl className="grid grid-cols-3 gap-3 sm:gap-4">
+      <dl className="grid grid-cols-3 divide-x divide-line border-y border-line">
         <Stat label="Passports" value={stats.passports} />
-        <Stat label="Accepted work" value={stats.acceptedWork} />
+        <Stat label="Accepted" value={stats.acceptedWork} />
         <Stat label="Onchain txs" value={stats.onchainTxs} />
       </dl>
 
@@ -142,9 +142,9 @@ function RankingPage() {
 
 function Stat({ label, value }: { label: string; value: number }) {
   return (
-    <div className="surface px-4 py-4 sm:px-5 sm:py-5">
-      <dt className="t-meta">{label}</dt>
-      <dd className="mt-1.5 text-2xl font-semibold tracking-[-0.03em] tabular-nums text-ink">
+    <div className="min-w-0 px-3 py-5 first:pl-0 sm:px-6 sm:first:pl-0">
+      <dt className="t-meta truncate">{label}</dt>
+      <dd className="mt-1.5 text-xl sm:text-2xl font-semibold tracking-[-0.03em] tabular-nums text-ink">
         <CountUp value={value} />
       </dd>
     </div>
