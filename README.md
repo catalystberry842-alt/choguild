@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="public/brand/choguild-mark.png" alt="Choguild" width="160" />
+  <img src="public/favicon.svg" alt="Choguild" width="64" />
 </p>
 
 <h1 align="center">Choguild</h1>
@@ -8,6 +8,24 @@
   <strong>Show the work and wear the name.</strong><br />
   A contributor guild for the Monad ecosystem: a passport for your name, a board of open work, and a record of reviewed contributions.
 </p>
+
+<p align="center">
+  <a href="https://choguild.vercel.app"><img alt="Live" src="https://img.shields.io/badge/live-choguild.vercel.app-0a0a0b?style=flat-square&logo=vercel" /></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0a0a0b?style=flat-square" /></a>
+  <img alt="Node 22+" src="https://img.shields.io/badge/node-%E2%89%A522-0a0a0b?style=flat-square&logo=node.js" />
+</p>
+
+<p align="center">
+  <img src="docs/images/home.png" alt="Choguild home page" width="820" />
+</p>
+
+<p align="center">
+  <img src="docs/images/discover.png" alt="Opportunity board" width="560" />
+  &nbsp;
+  <img src="docs/images/ranking-mobile.png" alt="Ranking on mobile" width="200" />
+</p>
+
+Everything on the site is real: listings, passports, and XP come straight from the database and Monad mainnet. There is no seeded or demo content; an empty board means nobody has published yet.
 
 ---
 
@@ -34,7 +52,7 @@ XP is calculated live from the database, so it can't drift out of sync with the 
 | --- | --- |
 | Accepted submission | +100 |
 | Accepted application | +25 |
-| Published opportunity (not draft, not demo) | +15 |
+| Published opportunity (not draft) | +15 |
 | Saved public passport | +10 |
 | Onchain activity on Monad mainnet | 10 × √(transactions sent), up to +150 |
 
@@ -52,13 +70,14 @@ Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Gui
 
 - [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions)
 - Tailwind CSS v4, Radix UI primitives, Motion, `cmdk`, `lucide-react`; Geist and Geist Mono
+- Upstream Monad RPC reads are cached in-process (stale-while-revalidate, with a failure backoff) so a slow RPC never blocks a page render
 - `wagmi` + `viem` for wallets and Monad; SIWE for passport sessions
 - Postgres via `pg` when `DATABASE_URL` is set, otherwise an in-memory [PGLite](https://pglite.dev) database
 - Deployed on Vercel through Nitro
 
 ## Run it locally
 
-Requires Node 22.
+Requires Node 22 (see `.nvmrc`).
 
 ```bash
 npm install
@@ -72,6 +91,7 @@ No database is needed for local work: PGLite starts in memory and applies `migra
 ```bash
 npm run typecheck
 npm run lint
+npm test
 npm run build
 ```
 
@@ -82,13 +102,13 @@ Copy `.env.example` into your host's environment settings. Do not commit real va
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `DATABASE_URL` | For persistent data | Postgres connection string (Neon works well). Without it, data lives in memory and resets when the server restarts. |
-| `CHOG_SESSION_SECRET` | Yes, when `DATABASE_URL` is set | At least 32 random characters. Signs passport sessions. |
+| `CHOG_SESSION_SECRET` | Yes, on every deployed build | At least 32 random characters (`openssl rand -hex 32`). Signs passport sessions. |
 | `VITE_MONAD_RPC_URL` | No | Override the public Monad RPC. |
 
 ## Deploy to Vercel
 
 1. Import the repository in Vercel. The framework preset can stay on **Other**; `vercel.json` and the Nitro build output handle the rest.
-2. Add `CHOG_SESSION_SECRET` (and `DATABASE_URL` if you want data to persist).
+2. Add `CHOG_SESSION_SECRET` and `DATABASE_URL`. Without `DATABASE_URL` the deployed app runs on in-memory PGLite and every cold start wipes the data.
 3. Deploy. `npm run build` runs the database migrations automatically when `DATABASE_URL` is present.
 
 ## Project layout
@@ -103,9 +123,10 @@ src/
   lib/monad/       network status and onchain activity (tx counts)
   lib/ranking/     XP rules, tiers, and the ranking query
 migrations/        SQL schema, applied in order
-public/brand/      Chog mascot artwork
+public/brand/      Choguild mark (SVG)
+scripts/           migrations runner, brand renderer (og.jpg, touch icon)
 ```
 
 ## License
 
-No license has been chosen yet. All rights reserved by the repository owner until one is added.
+[MIT](LICENSE)
