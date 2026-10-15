@@ -454,8 +454,7 @@
   .fx-aurora {
     position: absolute;
     inset: -20%;
-    filter: blur(90px) saturate(115%);
-    opacity: 0.55;
+    opacity: 0.6;
   }
   :root[data-theme="light"] .fx-aurora { opacity: 0.22; }
   .fx-blob {
@@ -465,17 +464,17 @@
   }
   .fx-blob-a {
     width: 46vmax; height: 46vmax; left: 18%; top: -14%;
-    background: radial-gradient(circle, rgb(108 92 220 / 0.55), transparent 65%);
+    background: radial-gradient(circle, rgb(108 92 220 / 0.5), rgb(108 92 220 / 0.12) 40%, transparent 68%);
     animation: fx-drift-a 26s ease-in-out infinite alternate;
   }
   .fx-blob-b {
     width: 38vmax; height: 38vmax; right: 4%; top: 6%;
-    background: radial-gradient(circle, rgb(70 90 200 / 0.38), transparent 65%);
+    background: radial-gradient(circle, rgb(70 90 200 / 0.34), rgb(70 90 200 / 0.08) 40%, transparent 68%);
     animation: fx-drift-b 32s ease-in-out infinite alternate;
   }
   .fx-blob-c {
     width: 34vmax; height: 34vmax; left: 2%; top: 30%;
-    background: radial-gradient(circle, rgb(150 100 210 / 0.28), transparent 65%);
+    background: radial-gradient(circle, rgb(150 100 210 / 0.26), rgb(150 100 210 / 0.06) 40%, transparent 68%);
     animation: fx-drift-c 38s ease-in-out infinite alternate;
   }
   .fx-grid {
@@ -642,6 +641,5 @@
   .amark-ring { stroke-dashoffset: 0; animation: none !important; }
 }
 @media (max-width: 640px) {
-  .fx-aurora { filter: blur(60px); }
   .fx-grain { animation: none; }
 }

@@ -34,21 +34,44 @@ export function AmbientBackground() {
 
     let rgb = dotColor();
 
-    const draw = () => {
-      ctx.clearRect(0, 0, width, height);
-      const radius = 180;
+    // The resting grid is rendered once to an offscreen canvas; each frame
+    // blits it and redraws only the dots inside the cursor radius.
+    const base = document.createElement("canvas");
+    const baseCtx = base.getContext("2d");
+    const RADIUS = 180;
+
+    const paintBase = () => {
+      if (!baseCtx) return;
+      base.width = canvas.width;
+      base.height = canvas.height;
+      baseCtx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      baseCtx.fillStyle = `rgb(${rgb} / 0.06)`;
       for (let y = GAP / 2; y < height; y += GAP) {
-        for (let x = GAP / 2; x < width; x += GAP) {
+        for (let x = GAP / 2; x < width; x += GAP) baseCtx.fillRect(x - 0.75, y - 0.75, 1.5, 1.5);
+      }
+    };
+
+    const draw = () => {
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.drawImage(base, 0, 0);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (strength < 0.01) return;
+      const x0 = Math.max(GAP / 2, Math.floor((pos.x - RADIUS) / GAP) * GAP + GAP / 2);
+      const y0 = Math.max(GAP / 2, Math.floor((pos.y - RADIUS) / GAP) * GAP + GAP / 2);
+      for (let y = y0; y < Math.min(height, pos.y + RADIUS); y += GAP) {
+        for (let x = x0; x < Math.min(width, pos.x + RADIUS); x += GAP) {
           const dx = x - pos.x;
           const dy = y - pos.y;
           const d = Math.sqrt(dx * dx + dy * dy);
-          const near = d < radius ? (1 - d / radius) * strength : 0;
-          const alpha = 0.06 + near * 0.45;
-          // Dots lean slightly away from the cursor.
+          if (d >= RADIUS) continue;
+          const near = (1 - d / RADIUS) * strength;
+          // Cover the resting dot, then draw the lit one pushed slightly outward.
+          ctx.clearRect(x - 1, y - 1, 2, 2);
           const push = near * 6;
           const ox = d > 0 ? (dx / d) * push : 0;
           const oy = d > 0 ? (dy / d) * push : 0;
-          ctx.fillStyle = `rgb(${rgb} / ${alpha.toFixed(3)})`;
+          ctx.fillStyle = `rgb(${rgb} / ${(0.06 + near * 0.45).toFixed(3)})`;
           ctx.fillRect(x + ox - 0.75, y + oy - 0.75, 1.5, 1.5);
         }
       }
@@ -82,7 +105,7 @@ export function AmbientBackground() {
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      paintBase();
       draw();
     };
 
@@ -103,6 +126,7 @@ export function AmbientBackground() {
     };
     const onTheme = new MutationObserver(() => {
       rgb = dotColor();
+      paintBase();
       draw();
     });
 
