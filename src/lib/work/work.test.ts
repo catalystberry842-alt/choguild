@@ -41,12 +41,12 @@ describe("work proof", () => {
   before(async () => {
     const pg = new PGlite();
     sql = toSql(pg);
-    for (const file of ["0002_passport.sql", "0003_board.sql", "0004_work.sql"]) {
+    for (const file of ["0002_passport.sql", "0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql"]) {
       await pg.exec(readFileSync(new URL(`../../../migrations/${file}`, import.meta.url), "utf8"));
     }
     await sql.query(
-      `insert into opportunities (id, owner_wallet, project_name, title, summary, description, scope, deliverables, required_skills, preferred_skills, category, compensation_type, instructions, status, is_demo)
-       values ('opp-1',$1,'Field Desk','Write the note','A summary long enough for the board.','A description long enough to be stored as a real opportunity.','Scope of the note.','One markdown note.','["Content writing"]'::jsonb,'[]'::jsonb,'content','unpaid','Send the note.','open',false)`,
+      `insert into opportunities (id, owner_wallet, project_name, title, summary, description, scope, deliverables, required_skills, preferred_skills, category, compensation_type, instructions, status)
+       values ('opp-1',$1,'Field Desk','Write the note','A summary long enough for the board.','A description long enough to be stored as a real opportunity.','Scope of the note.','One markdown note.','["Content writing"]'::jsonb,'[]'::jsonb,'content','unpaid','Send the note.','open')`,
       [OWNER],
     );
     await sql.query(

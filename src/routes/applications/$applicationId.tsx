@@ -50,7 +50,6 @@ function ApplicationPage() {
           <Badge tone={application.status === "accepted" ? "olive" : application.status === "rejected" ? "danger" : "neutral"}>
             {APPLICATION_STATUS_LABEL[application.status]}
           </Badge>
-          {application.isDemo ? <Badge tone="warning">Example</Badge> : null}
           <span className="t-meta">Sent {formatStamp(application.createdAt)}</span>
           {application.viewer === "creator" && application.username ? (
             <Link to="/passport/$username" params={{ username: application.username }} className="t-link text-sm">

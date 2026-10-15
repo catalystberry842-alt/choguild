@@ -43,7 +43,6 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
 
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 border-t border-line pt-4">
           <div className="flex flex-wrap gap-1.5">
-            {item.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{category}</Badge>
             <Badge tone={item.status === "open" ? "olive" : "neutral"}>
               {label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}

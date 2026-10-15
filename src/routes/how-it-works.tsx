@@ -32,7 +32,7 @@ const FAQ = [
   },
   {
     q: "Can I game the ranking?",
-    a: "The big points come from submissions a publisher accepted. Publishing opportunities only counts when they leave draft, and demo listings never count.",
+    a: "The big points come from submissions a publisher accepted. Publishing an opportunity only counts once it leaves draft.",
   },
   {
     q: "How does onchain XP work?",
@@ -41,10 +41,6 @@ const FAQ = [
   {
     q: "Who verifies the work?",
     a: "The person who published the opportunity reviews your submission. Links you provide stay marked as unverified until they accept them.",
-  },
-  {
-    q: "What are the demo listings?",
-    a: "Example opportunities that show how the board looks. They do not accept applications and award no XP.",
   },
 ] as const;
 

@@ -220,14 +220,26 @@ function DiscoverPage() {
         </ul>
       ) : (
         <div className="mt-4">
-          <EmptyState
-            title="Nothing matches these filters"
-            action={
-              <Button variant="secondary" size="compact" onClick={() => void navigate({ to: "/discover", search: emptyBoardSearch() })}>
-                Reset filters
-              </Button>
-            }
-          />
+          {activeFilters > 0 || search.q ? (
+            <EmptyState
+              title="Nothing matches these filters"
+              action={
+                <Button variant="secondary" size="compact" onClick={() => void navigate({ to: "/discover", search: emptyBoardSearch() })}>
+                  Reset filters
+                </Button>
+              }
+            />
+          ) : (
+            <EmptyState
+              title="No open work yet"
+              body="The board only shows real listings from passport holders. Publish the first one."
+              action={
+                <Button asChild variant="secondary" size="compact">
+                  <Link to="/opportunities/new">Publish work</Link>
+                </Button>
+              }
+            />
+          )}
         </div>
       )}
 

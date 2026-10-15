@@ -27,7 +27,7 @@ export async function listContributors(sql: Sql): Promise<Contributor[]> {
       (select count(*) from applications a
         where lower(a.contributor_wallet) = lower(p.wallet_address) and a.status = 'accepted') as accepted_applications,
       (select count(*) from opportunities o
-        where lower(o.owner_wallet) = lower(p.wallet_address) and o.is_demo = false and o.status <> 'draft') as published_opportunities
+        where lower(o.owner_wallet) = lower(p.wallet_address) and o.status <> 'draft') as published_opportunities
     from contributor_profiles p
     where p.visibility = 'public'
   `;
@@ -56,7 +56,7 @@ export async function loadGuildStats(sql: Sql): Promise<GuildStats> {
   const rows = await sql<{ passports: unknown; open_opportunities: unknown; accepted_work: unknown }>`
     select
       (select count(*) from contributor_profiles where visibility = 'public') as passports,
-      (select count(*) from opportunities where status = 'open' and is_demo = false) as open_opportunities,
+      (select count(*) from opportunities where status = 'open') as open_opportunities,
       (select count(*) from work_submissions where status = 'accepted') as accepted_work
   `;
   const row = rows[0];

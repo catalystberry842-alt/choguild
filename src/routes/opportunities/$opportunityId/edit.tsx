@@ -7,7 +7,7 @@ import { getBoardOpportunity } from "@/lib/board/functions";
 export const Route = createFileRoute("/opportunities/$opportunityId/edit")({
   loader: async ({ params }) => {
     const opportunity = await getBoardOpportunity({ data: params.opportunityId });
-    if (!opportunity || !opportunity.mine || opportunity.isDemo) throw notFound();
+    if (!opportunity || !opportunity.mine) throw notFound();
     return opportunity;
   },
   staticData: { title: "Edit opportunity", crumb: "Edit" },

@@ -39,7 +39,6 @@ type OppRow = {
   question: string | null;
   positions: number | string | null;
   status: string;
-  is_demo: boolean;
   created_at: string;
   updated_at: string;
   my_status: string | null;
@@ -59,8 +58,8 @@ function asStrings(value: unknown): string[] {
   return [];
 }
 
-function accepting(row: { status: string; is_demo: boolean; deadline: string | null }): boolean {
-  if (row.is_demo || row.status !== "open") return false;
+function accepting(row: { status: string; deadline: string | null }): boolean {
+  if (row.status !== "open") return false;
   if (!row.deadline) return true;
   return new Date(row.deadline).getTime() > Date.now();
 }
@@ -82,7 +81,6 @@ function toCard(row: OppRow, viewer: string | null): OpportunityCard {
     compensationDetails: row.compensation_details,
     deadline: row.deadline,
     status: row.status,
-    isDemo: row.is_demo,
     accepting: accepting(row),
     myApplicationStatus: mine ? null : status,
     myApplicationId: mine ? null : row.my_application_id,
@@ -112,7 +110,7 @@ const CARD_COLUMNS = `
   o.scope, o.deliverables, o.required_skills, o.preferred_skills, o.category, o.compensation_type,
   o.compensation_details, o.time_commitment,
   to_char(o.deadline at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as deadline,
-  o.instructions, o.question, o.positions, o.status, o.is_demo,
+  o.instructions, o.question, o.positions, o.status,
   to_char(o.created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
   to_char(o.updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as updated_at,
   a.status as my_status,
@@ -229,9 +227,9 @@ export async function createOpportunity(
     `insert into opportunities (
       id, owner_wallet, project_name, project_logo_url, title, summary, description, scope, deliverables,
       required_skills, preferred_skills, category, compensation_type, compensation_details, time_commitment,
-      deadline, instructions, question, positions, status, is_demo
+      deadline, instructions, question, positions, status
     ) values (
-      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20,false
+      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20
     )`,
     [
       id, owner, value.projectName, value.projectLogoUrl, value.title, value.summary, value.description,
@@ -253,7 +251,6 @@ export async function updateOpportunity(
 ): Promise<{ ok: true; opportunity: OpportunityDetail } | { ok: false; error: string; fieldErrors?: BoardErrors }> {
   const current = await readDetail(sql, id, owner);
   if (!current || !current.mine) return { ok: false, error: "You can only edit an opportunity you published." };
-  if (current.isDemo) return { ok: false, error: "Example listings cannot be edited." };
   const parsed = validateOpportunity(input);
   if (!parsed.ok) return { ok: false, error: "Check the highlighted fields.", fieldErrors: parsed.errors };
   const value = parsed.value;
@@ -264,7 +261,7 @@ export async function updateOpportunity(
       deliverables = $9, required_skills = $10::jsonb, preferred_skills = $11::jsonb, category = $12,
       compensation_type = $13, compensation_details = $14, time_commitment = $15, deadline = $16,
       instructions = $17, question = $18, positions = $19, status = $20, updated_at = now()
-     where id = $1 and owner_wallet = $2 and is_demo = false
+     where id = $1 and owner_wallet = $2
      returning id`,
     [
       id, owner, value.projectName, value.projectLogoUrl, value.title, value.summary, value.description,
@@ -287,7 +284,7 @@ export async function setOpportunityStatus(
 ): Promise<{ ok: true; opportunity: OpportunityDetail } | { ok: false; error: string }> {
   const updated = await sql.query<{ id: string }>(
     `update opportunities set status = $3, updated_at = now()
-     where id = $1 and owner_wallet = $2 and is_demo = false and status <> 'draft'
+     where id = $1 and owner_wallet = $2 and status <> 'draft'
      returning id`,
     [id, owner, status],
   );
@@ -297,8 +294,7 @@ export async function setOpportunityStatus(
   return { ok: true, opportunity };
 }
 
-function closedReason(row: { status: string; is_demo: boolean; deadline: string | null; owner_wallet: string }, wallet: string): string | null {
-  if (row.is_demo) return "This is an example listing. It does not accept applications.";
+function closedReason(row: { status: string; deadline: string | null; owner_wallet: string }, wallet: string): string | null {
   if (row.owner_wallet === wallet) return "You cannot apply to an opportunity you published.";
   if (row.status === "closed") return "Applications are closed.";
   if (row.status === "filled") return "This opportunity is filled.";
@@ -315,8 +311,8 @@ export async function applyToOpportunity(
 ): Promise<{ ok: true; applicationId: string } | { ok: false; error: string; fieldErrors?: BoardErrors }> {
   const parsed = validateApplication(input);
   if (!parsed.ok) return { ok: false, error: "Check the highlighted fields.", fieldErrors: parsed.errors };
-  const rows = await sql<{ owner_wallet: string; status: string; is_demo: boolean; deadline: string | null }>`
-    select owner_wallet, status, is_demo,
+  const rows = await sql<{ owner_wallet: string; status: string; deadline: string | null }>`
+    select owner_wallet, status,
       to_char(deadline at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as deadline
     from opportunities where id = ${opportunityId}
   `;
@@ -425,7 +421,6 @@ type AppRow = {
   updated_at: string;
   title: string;
   project_name: string;
-  is_demo: boolean;
   owner_wallet: string;
   username: string | null;
   display_name: string | null;
@@ -447,7 +442,6 @@ function toApplication(row: AppRow, viewer: "contributor" | "creator", events: {
     opportunityId: row.opportunity_id,
     opportunityTitle: row.title,
     projectName: row.project_name,
-    isDemo: row.is_demo,
     introduction: row.introduction,
     suitability: row.suitability,
     experience: row.experience,
@@ -470,7 +464,7 @@ const APP_SELECT = `
   a.extra_answer, a.status, a.feedback,
   to_char(a.created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
   to_char(a.updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as updated_at,
-  o.title, o.project_name, o.is_demo, o.owner_wallet,
+  o.title, o.project_name, o.owner_wallet,
   p.username, p.display_name, p.skills
 `;
 

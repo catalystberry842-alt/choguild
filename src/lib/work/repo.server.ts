@@ -130,7 +130,7 @@ export async function listEligible(sql: Sql, wallet: string): Promise<EligibleWo
      from applications a
      join opportunities o on o.id = a.opportunity_id
      left join work_submissions w on w.application_id = a.id
-     where a.contributor_wallet = $1 and a.status = 'accepted' and o.is_demo = false and w.id is null
+     where a.contributor_wallet = $1 and a.status = 'accepted' and w.id is null
      order by a.updated_at desc`,
     [wallet],
   );
@@ -231,7 +231,7 @@ async function acceptedApplication(sql: Sql, wallet: string, applicationId: stri
     `select o.id as opportunity_id, o.owner_wallet
      from applications a
      join opportunities o on o.id = a.opportunity_id
-     where a.id = $1 and a.contributor_wallet = $2 and a.status = 'accepted' and o.is_demo = false`,
+     where a.id = $1 and a.contributor_wallet = $2 and a.status = 'accepted'`,
     [applicationId, wallet],
   );
   return rows[0] ?? null;

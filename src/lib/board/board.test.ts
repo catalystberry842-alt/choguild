@@ -82,6 +82,9 @@ describe("collaboration board", () => {
     sql = toSql(pg);
     await pg.exec(readFileSync(new URL("../../../migrations/0002_passport.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0003_board.sql", import.meta.url), "utf8"));
+    await pg.exec(readFileSync(new URL("../../../migrations/0004_work.sql", import.meta.url), "utf8"));
+    await pg.exec(readFileSync(new URL("../../../migrations/0005_indexes.sql", import.meta.url), "utf8"));
+    await pg.exec(readFileSync(new URL("../../../migrations/0006_remove_demo_data.sql", import.meta.url), "utf8"));
   });
 
   it("publishes, hides drafts, and blocks edits from another wallet", async () => {
@@ -116,8 +119,8 @@ describe("collaboration board", () => {
     const id = created.opportunity.id;
     const own = await applyToOpportunity(sql, OWNER, id, application());
     assert.equal(own.ok, false);
-    const demo = await applyToOpportunity(sql, OTHER, "demo-writer", application());
-    assert.equal(demo.ok, false);
+    const missing = await applyToOpportunity(sql, OTHER, "missing-id", application());
+    assert.equal(missing.ok, false);
     const sent = await applyToOpportunity(sql, OTHER, id, application());
     assert.equal(sent.ok, true);
     if (!sent.ok) return;

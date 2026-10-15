@@ -12,7 +12,6 @@ export type OpportunityCard = {
   compensationDetails: string | null;
   deadline: string | null;
   status: string;
-  isDemo: boolean;
   accepting: boolean;
   myApplicationStatus: ApplicationStatus | null;
   myApplicationId: string | null;
@@ -38,7 +37,6 @@ export type ApplicationView = {
   opportunityId: string;
   opportunityTitle: string;
   projectName: string;
-  isDemo: boolean;
   introduction: string;
   suitability: string;
   experience: string | null;

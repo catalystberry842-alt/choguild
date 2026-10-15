@@ -20,7 +20,7 @@ import {
   type CompensationType,
   type OpportunityStatus,
 } from "@/lib/board/copy";
-import { listingSummary, plainCopy, projectLabel } from "@/lib/board/display";
+import { plainCopy, projectLabel } from "@/lib/board/display";
 import { getBoardOpportunity, sendApplication, updateBoardStatus, withdrawBoardApplication } from "@/lib/board/functions";
 import type { BoardErrors } from "@/lib/board/validate";
 import { formatStamp } from "@/lib/passport/format";
@@ -111,7 +111,6 @@ function OpportunityPage() {
         <ProjectMark name={project} logoUrl={opportunity.projectLogoUrl} />
         <div className="min-w-0">
           <div className="flex flex-wrap gap-2">
-            {opportunity.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status}</Badge>
           </div>
           <h1 className="t-title mt-3">{opportunity.title}</h1>
@@ -121,7 +120,7 @@ function OpportunityPage() {
         </div>
       </header>
 
-      <p className="t-lead mt-8">{listingSummary(opportunity.summary, opportunity.isDemo)}</p>
+      <p className="t-lead mt-8">{plainCopy(opportunity.summary)}</p>
 
       <dl className="mt-8 grid gap-4 sm:grid-cols-2">
         <div className="surface px-6 py-5">
@@ -161,7 +160,7 @@ function OpportunityPage() {
           </p>
         ) : null}
         {done ? <p className="t-body mt-3 text-ink">Application sent. You'll see the decision under Applications.</p> : null}
-        {opportunity.mine && !opportunity.isDemo ? (
+        {opportunity.mine ? (
           <div className="mt-5 flex flex-wrap gap-2">
             <Button asChild variant="secondary"><Link to="/opportunities/$opportunityId/edit" params={{ opportunityId: opportunity.id }}>Edit</Link></Button>
             <Button asChild variant="secondary"><Link to="/opportunities/$opportunityId/applications" params={{ opportunityId: opportunity.id }}>Review applications</Link></Button>
@@ -172,19 +171,17 @@ function OpportunityPage() {
         ) : null}
         {unavailable && !opportunity.mine ? (
           <p className="t-body mt-3">
-            {opportunity.isDemo
-              ? "This is a demo listing, so it doesn't take applications."
-              : opportunity.status === "filled"
+            {opportunity.status === "filled"
                 ? "This opportunity is filled."
                 : opportunity.status === "closed" || (opportunity.deadline && new Date(opportunity.deadline).getTime() <= Date.now())
                   ? "Applications are closed."
                   : "Applications are not open."}
           </p>
         ) : null}
-        {!opportunity.mine && !opportunity.isDemo && opportunity.accepting && !sessionAddress ? (
+        {!opportunity.mine && opportunity.accepting && !sessionAddress ? (
           <p className="t-body mt-3">Sign in on your <Link to="/passport" className="t-link">Passport</Link> to apply.</p>
         ) : null}
-        {!opportunity.mine && !opportunity.isDemo && opportunity.accepting && sessionAddress && !profile ? (
+        {!opportunity.mine && opportunity.accepting && sessionAddress && !profile ? (
           <p className="t-body mt-3">Save your <Link to="/passport" className="t-link">Passport</Link> first, then apply.</p>
         ) : null}
         {!opportunity.mine && opportunity.accepting && profile && !opportunity.myApplicationStatus && !done ? (
