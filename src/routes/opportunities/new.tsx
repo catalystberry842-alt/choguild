@@ -18,7 +18,7 @@ function NewOpportunityPage() {
   if (!sessionAddress || !profile) {
     return (
       <div>
-        <PageHeader eyebrow="Work — Publish" title="Publish work" />
+        <PageHeader eyebrow="Publish" title="Publish work" />
         <div className="mt-10">
           <EmptyState
             title="Save your Passport to publish"
@@ -34,7 +34,7 @@ function NewOpportunityPage() {
   }
   return (
     <div>
-      <PageHeader eyebrow="Work — Publish" title="Publish work" description="Describe the work clearly. You can save a draft and publish later." />
+      <PageHeader eyebrow="Publish" title="Publish work" description="Describe the work clearly. You can save a draft and publish later." />
       <div className="mt-10">
         <OpportunityForm />
       </div>

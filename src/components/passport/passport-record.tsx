@@ -20,10 +20,10 @@ export function PassportRecord({ profile, address }: { profile: PublicProfile | 
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.2 }}
-      className="relative overflow-hidden rounded-md border border-line-strong bg-elevated"
+      className="relative overflow-hidden rounded-[1.25rem] border border-line-strong bg-elevated"
     >
       <div className="flex items-center justify-between border-b border-line px-5 py-3">
-        <span className="flex items-center gap-2 font-mono text-[11px] tracking-[0.12em] text-body uppercase">
+        <span className="flex items-center gap-2 text-[13px] font-medium text-ink">
           <LogoMark className="size-3.5 text-ink" /> Choguild passport
         </span>
         <span className={"font-mono text-[10px] tracking-[0.1em] uppercase " + (profile ? "text-signal" : "text-muted")}>{status}</span>

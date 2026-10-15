@@ -56,7 +56,7 @@ export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenCh
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/80" />
-        <Dialog.Content className="rise fixed top-[12vh] right-4 left-4 z-50 mx-auto max-w-lg overflow-hidden rounded-md border border-line bg-elevated">
+        <Dialog.Content className="rise fixed top-[12vh] right-4 left-4 z-50 mx-auto max-w-lg overflow-hidden rounded-2xl border border-line bg-elevated">
           <Dialog.Title className="sr-only">Jump to</Dialog.Title>
           <Dialog.Description className="sr-only">Search pages and actions.</Dialog.Description>
           <Command label="Jump to" loop>

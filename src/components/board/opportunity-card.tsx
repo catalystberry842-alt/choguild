@@ -20,7 +20,7 @@ function label<T extends string>(map: Record<T, string>, value: string): string 
 }
 
 /** One listing as a ruled row: index, project, title and summary, terms, arrow. */
-export function OpportunityCardView({ item, index }: { item: OpportunityCard; index?: number }) {
+export function OpportunityCardView({ item }: { item: OpportunityCard; index?: number }) {
   const project = projectLabel(item.projectName);
   const category = label(CATEGORY_LABEL, item.category as Category);
 
@@ -29,15 +29,12 @@ export function OpportunityCardView({ item, index }: { item: OpportunityCard; in
       <Link
         to="/discover/$opportunityId"
         params={{ opportunityId: item.id }}
-        className="row-link group grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-3 py-6 md:grid-cols-[3rem_minmax(0,1fr)_14rem_2rem] md:items-start"
+        className="row-link group grid grid-cols-[auto_minmax(0,1fr)] gap-x-5 gap-y-3 py-6 md:grid-cols-[auto_minmax(0,1fr)_13rem_1.5rem] md:items-start"
       >
-        <span className="hidden pt-1 font-mono text-[11px] text-faint md:block">
-          {index !== undefined ? String(index + 1).padStart(2, "0") : "—"}
-        </span>
-        <ProjectMark name={project} logoUrl={item.projectLogoUrl} className="md:hidden" />
+        <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
         <div className="min-w-0">
-          <p className="t-label">{project} · {category}</p>
-          <h3 className="t-display mt-2 text-[1.5rem] leading-[1.15] transition-colors group-hover:text-signal">{item.title}</h3>
+          <p className="text-[13px] text-muted">{project} · {category}</p>
+          <h3 className="mt-1 text-[1.125rem] font-semibold tracking-[-0.02em] text-ink transition-colors group-hover:text-signal">{item.title}</h3>
           <p className="t-body mt-2 line-clamp-2 max-w-2xl">{cardSummary(item.summary)}</p>
           {item.myApplicationStatus ? (
             <p className="mt-3 font-mono text-[11px] text-signal">
@@ -61,10 +58,10 @@ export function OpportunityCardView({ item, index }: { item: OpportunityCard; in
 export function ProjectMark({ name, logoUrl, className = "" }: { name: string; logoUrl: string | null; className?: string }) {
   const initial = name.slice(0, 1).toUpperCase();
   if (logoUrl) {
-    return <img src={logoUrl} alt="" className={"size-9 shrink-0 rounded-md border border-line object-cover " + className} />;
+    return <img src={logoUrl} alt="" className={"size-9 shrink-0 rounded-xl border border-line object-cover " + className} />;
   }
   return (
-    <span className={"t-display flex size-9 shrink-0 items-center justify-center rounded-md border border-line-strong text-[1.1rem] text-ink " + className}>
+    <span className={"flex size-9 shrink-0 items-center justify-center rounded-xl border border-line-strong bg-secondary text-[14px] font-semibold text-ink " + className}>
       {initial}
     </span>
   );

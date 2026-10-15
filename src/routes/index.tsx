@@ -85,7 +85,7 @@ function Hero() {
 
       <h1
         id="hero-title"
-        className="t-display mt-10 max-w-[11ch] text-[clamp(3.4rem,1.2rem+9vw,9.5rem)] leading-[0.92] tracking-[-0.035em] sm:mt-14"
+        className="t-display mt-10 max-w-[13ch] text-[clamp(2.75rem,1.4rem+5.6vw,6.25rem)] leading-[1] tracking-[-0.05em] text-balance sm:mt-14"
       >
         <WordReveal delay={0.1} wrap lines={[HEADLINE.split(" ")]} />
       </h1>
@@ -108,14 +108,14 @@ function Hero() {
           <Link
             to="/discover"
             search={emptyBoardSearch()}
-            className="sheen group inline-flex h-12 items-center justify-between gap-6 rounded-md bg-signal px-5 text-[15px] font-medium text-on-accent transition-colors hover:bg-[#ff7f58]"
+            className="sheen group inline-flex h-12 items-center justify-between gap-6 rounded-full bg-signal px-6 text-[15px] font-medium text-on-accent transition-colors hover:bg-[#ff7f58]"
           >
             Explore opportunities
             <span aria-hidden="true" className="arrow-slide">→</span>
           </Link>
           <Link
             to="/passport"
-            className="group inline-flex h-12 items-center justify-between gap-6 rounded-md border border-line-strong px-5 text-[15px] text-ink transition-colors hover:border-ink/40 hover:bg-elevated"
+            className="group inline-flex h-12 items-center justify-between gap-6 rounded-full border border-line-strong bg-canvas/40 px-6 text-[15px] text-ink transition-colors hover:border-ink/40 hover:bg-elevated"
           >
             {profile ? "Open your passport" : "Create your passport"}
             <span aria-hidden="true" className="arrow-slide text-muted">→</span>
@@ -128,7 +128,7 @@ function Hero() {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1 }}
-        className="relative mt-20 grid grid-cols-2 border-t border-line md:grid-cols-4 lg:mt-28"
+        className="relative mt-20 grid grid-cols-2 overflow-hidden rounded-[1.25rem] border border-line bg-elevated/70 md:grid-cols-4 lg:mt-28"
       >
         {[
           ["Open work", stats.openOpportunities],
@@ -139,17 +139,16 @@ function Hero() {
           <div
             key={label}
             className={
-              "py-6 pr-4 " +
-              (index % 2 === 1 ? "border-l border-line pl-5 " : "") +
+              "px-5 py-6 sm:px-6 " +
+              (index % 2 === 1 ? "border-l border-line " : "") +
               (index >= 2 ? "border-t border-line md:border-t-0 " : "") +
-              (index === 2 ? "md:border-l md:pl-5 " : "")
+              (index === 2 ? "md:border-l " : "")
             }
           >
-            <dt className="t-label">
-              <span className="text-faint">0{index + 1} </span>
+            <dt className="text-[13px] text-muted">
               {label}
             </dt>
-            <dd className="t-display mt-4 text-[clamp(2.4rem,1.6rem+2.4vw,3.6rem)] leading-none tabular-nums">
+            <dd className="t-display mt-3 text-[clamp(2rem,1.5rem+1.8vw,3rem)] leading-none tabular-nums">
               <CountUp value={Number(value)} />
             </dd>
           </div>
@@ -199,7 +198,7 @@ function Ticker({ stats, titles }: { stats: { openOpportunities: number; passpor
   const row = (hidden: boolean) => (
     <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
       {items.map((item, index) => (
-        <li key={index} className="flex items-center gap-6 pr-6 font-mono text-[11px] tracking-[0.12em] whitespace-nowrap text-muted uppercase">
+        <li key={index} className="flex items-center gap-6 pr-6 text-[13px] whitespace-nowrap text-body">
           <span className="text-signal" aria-hidden="true">◆</span>
           {item}
         </li>
@@ -207,7 +206,7 @@ function Ticker({ stats, titles }: { stats: { openOpportunities: number; passpor
     </ul>
   );
   return (
-    <div className="ticker relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-y border-line py-3.5">
+    <div className="ticker relative mt-4 overflow-hidden rounded-full border border-line bg-elevated/70 py-3">
       <div className="ticker-track">
         {row(false)}
         {row(true)}
@@ -216,11 +215,12 @@ function Ticker({ stats, titles }: { stats: { openOpportunities: number; passpor
   );
 }
 
-function SectionHead({ index, label, title, aside }: { index: string; label: string; title: string; aside?: ReactNode }) {
+function SectionHead({ label, title, aside }: { index?: string; label: string; title: string; aside?: ReactNode }) {
   return (
     <Reveal className="grid gap-5 border-t border-line-strong pt-6 lg:grid-cols-12">
-      <p className="t-eyebrow lg:col-span-3">
-        <span className="text-signal">{index}</span> — {label}
+      <p className="t-eyebrow flex items-center gap-2 lg:col-span-3">
+        <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
+        {label}
       </p>
       <h2 className="t-h2 max-w-[18ch] lg:col-span-6">{title}</h2>
       {aside ? <div className="lg:col-span-3 lg:text-right">{aside}</div> : null}
@@ -241,16 +241,16 @@ function Steps() {
           </Link>
         }
       />
-      <ol className="mt-14 grid sm:grid-cols-2 lg:grid-cols-4">
+      <ol className="mt-14 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         {STEPS.map((step, index) => (
-          <Reveal as="li" key={step.label} delay={index * 0.08} className="border-t border-line sm:[&:nth-child(even)]:border-l lg:border-l lg:first:border-l-0">
+          <Reveal as="li" key={step.label} delay={index * 0.08} className="h-full">
             <Link
               to={step.to}
               search={step.to === "/discover" ? emptyBoardSearch() : undefined}
-              className="group flex h-full flex-col justify-between gap-16 py-6 transition-colors sm:px-6"
+              className="surface group flex h-full flex-col justify-between gap-14 p-6 transition-[border-color,transform] duration-300 hover:-translate-y-0.5 hover:border-line-strong"
             >
               <span className="flex items-baseline justify-between">
-                <span className="t-display text-[3.25rem] leading-none text-faint transition-colors duration-300 group-hover:text-signal">
+                <span className="t-display text-[2.5rem] leading-none text-faint transition-colors duration-300 group-hover:text-signal">
                   {index + 1}
                 </span>
                 <span aria-hidden="true" className="arrow-slide text-muted group-hover:text-ink">→</span>
@@ -280,7 +280,7 @@ function Ladder() {
       />
       <div className="mt-14 lg:ml-[25%]">
         {leaders.length > 0 ? (
-          <ol className="border-t border-line">
+          <ol className="panel">
             {leaders.map((person, index) => (
               <Reveal as="li" key={person.username} delay={index * 0.05} className="border-b border-line">
                 <Link
@@ -288,7 +288,7 @@ function Ladder() {
                   params={{ username: person.username }}
                   className="row-link group grid grid-cols-[2.5rem_auto_minmax(0,1fr)_auto] items-center gap-4 py-4"
                 >
-                  <span className={"t-display text-[1.75rem] leading-none " + (person.rank === 1 ? "text-signal" : "text-faint")}>
+                  <span className={"t-display text-[1.25rem] leading-none tabular-nums " + (person.rank === 1 ? "text-signal" : "text-faint")}>
                     {person.rank}
                   </span>
                   <Avatar name={person.displayName} url={person.avatarUrl} />
@@ -341,7 +341,7 @@ function Board() {
             cta="Publish the first listing"
           />
         ) : (
-          <ul className="border-t border-line">
+          <ul className="panel">
             {featured.map((item, index) => (
               <Reveal as="li" key={item.id} delay={index * 0.05} className="border-b border-line">
                 <Link
@@ -372,15 +372,15 @@ function Board() {
 
 function InlineEmpty({ title, body, to, cta }: { title: string; body: string; to: "/passport" | "/opportunities/new"; cta: string }) {
   return (
-    <Reveal className="flex flex-col gap-6 border-y border-dashed border-line-strong py-10 sm:flex-row sm:items-center">
+    <Reveal className="surface flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-center sm:px-8">
       <AnimatedMark size={48} className="shrink-0 text-ink" />
       <div className="flex-1">
-        <p className="t-display text-[1.75rem] leading-tight">{title}</p>
+        <p className="text-[1.25rem] font-semibold tracking-[-0.025em] text-ink">{title}</p>
         <p className="mt-1.5 max-w-sm text-[14px] leading-6 text-body">{body}</p>
       </div>
       <Link
         to={to}
-        className="group inline-flex h-10 items-center gap-4 self-start rounded-md border border-line-strong px-4 text-[14px] text-ink transition-colors hover:border-ink/40 sm:self-auto"
+        className="group inline-flex h-10 items-center gap-4 self-start rounded-full border border-line-strong px-4 text-[14px] text-ink transition-colors hover:border-ink/40 sm:self-auto"
       >
         {cta}
         <span aria-hidden="true" className="arrow-slide">→</span>

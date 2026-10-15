@@ -28,7 +28,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
         </Link>
 
         <nav aria-label="Main" className="hidden h-full items-stretch lg:flex">
-          {PRIMARY.map((item, index) => {
+          {PRIMARY.map((item) => {
             const active = isNavActive(pathname, item.to);
             return (
               <Link
@@ -40,7 +40,6 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
                   active ? "text-ink" : "nav-hover text-muted hover:text-ink",
                 )}
               >
-                <span className="font-mono text-[10px] text-faint">{String(index + 1).padStart(2, "0")}</span>
                 {item.label}
                 {active ? (
                   <motion.span
@@ -59,14 +58,14 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
             type="button"
             onClick={onOpenPalette}
             aria-label="Search pages and actions"
-            className="hidden h-8 items-center gap-3 rounded-md border border-line px-2.5 text-[12px] text-muted transition-colors hover:border-line-strong hover:text-ink md:flex"
+            className="hidden h-8 items-center gap-3 rounded-full border border-line px-3.5 text-[12px] text-muted transition-colors hover:border-line-strong hover:text-ink md:flex"
           >
             Jump to
             <kbd className="font-mono text-[10px] text-faint">⌘K</kbd>
           </button>
           <Link
             to="/passport"
-            className="hidden h-8 items-center rounded-md px-2.5 text-[13px] text-muted transition-colors hover:text-ink sm:flex"
+            className="hidden h-8 items-center rounded-full px-3 text-[13px] text-muted transition-colors hover:text-ink sm:flex"
           >
             {profile ? `@${profile.username}` : "Passport"}
           </Link>
@@ -93,7 +92,7 @@ function MobileMenu() {
         <button
           type="button"
           aria-label="Open menu"
-          className="flex h-8 w-9 flex-col items-center justify-center gap-[5px] rounded-md border border-line lg:hidden"
+          className="flex h-8 w-9 flex-col items-center justify-center gap-[5px] rounded-full border border-line lg:hidden"
         >
           <span className="h-px w-4 bg-ink" />
           <span className="h-px w-4 bg-ink" />
@@ -107,7 +106,7 @@ function MobileMenu() {
           <div className="flex h-14 items-center justify-between border-b border-line px-5 sm:px-8">
             <Wordmark />
             <Dialog.Close asChild>
-              <button type="button" aria-label="Close menu" className="flex h-8 w-9 items-center justify-center rounded-md border border-line">
+              <button type="button" aria-label="Close menu" className="flex h-8 w-9 items-center justify-center rounded-full border border-line">
                 <span className="relative block size-4">
                   <span className="absolute top-1/2 left-0 h-px w-4 rotate-45 bg-ink" />
                   <span className="absolute top-1/2 left-0 h-px w-4 -rotate-45 bg-ink" />
@@ -115,8 +114,8 @@ function MobileMenu() {
               </button>
             </Dialog.Close>
           </div>
-          <nav aria-label="All pages" className="flex-1 overflow-y-auto px-5 py-6 sm:px-8">
-            <ul>
+          <nav aria-label="All pages" className="flex-1 overflow-y-auto px-4 py-5 sm:px-8">
+            <ul className="panel">
               {NAV_ITEMS.map((item, index) => (
                 <motion.li
                   key={item.to}
@@ -130,10 +129,9 @@ function MobileMenu() {
                     search={item.to === "/discover" ? emptyBoardSearch() : undefined}
                     className="group flex items-baseline gap-4 py-3.5"
                   >
-                    <span className="w-6 font-mono text-[11px] text-faint">{String(index + 1).padStart(2, "0")}</span>
                     <span
                       className={cn(
-                        "t-display text-[2rem] leading-none",
+                        "t-display text-[1.75rem] leading-tight",
                         isNavActive(pathname, item.to) ? "text-signal" : "text-ink",
                       )}
                     >
@@ -144,7 +142,7 @@ function MobileMenu() {
               ))}
             </ul>
           </nav>
-          <div className="grid grid-cols-2 gap-px border-t border-line bg-line pb-[env(safe-area-inset-bottom,0px)]">
+          <div className="mx-4 mb-[max(1rem,env(safe-area-inset-bottom))] grid grid-cols-2 gap-px overflow-hidden rounded-[1.25rem] border border-line bg-line">
             <div className="bg-canvas px-5 py-4">
               <p className="t-label">Passport</p>
               <p className="mt-1 truncate text-sm text-ink">

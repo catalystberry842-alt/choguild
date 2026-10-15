@@ -41,9 +41,9 @@ function RankingPage() {
 
   return (
     <div className="flex flex-col gap-14">
-      <PageHeader eyebrow="02 — Ranking" title="The ladder." description="XP from accepted guild work and activity on Monad." />
+      <PageHeader eyebrow="Ranking" title="The ladder." description="XP from accepted guild work and activity on Monad." />
 
-      <dl className="-mt-14 grid grid-cols-3 border-b border-line">
+      <dl className="-mt-4 grid grid-cols-3 overflow-hidden rounded-[1.25rem] border border-line bg-elevated/70">
         <Stat label="Passports" value={stats.passports} index={1} />
         <Stat label="Accepted" value={stats.acceptedWork} index={2} />
         <Stat label="Onchain txs" value={stats.onchainTxs} index={3} />
@@ -88,14 +88,14 @@ function RankingPage() {
 
           {rest.length > 0 ? (
             <section aria-label="The ladder">
-              <div className="hidden grid-cols-[4rem_minmax(0,1fr)_8rem_7rem_7rem] gap-4 border-b border-line-strong pb-3 sm:grid">
+              <div className="hidden grid-cols-[4rem_minmax(0,1fr)_8rem_7rem_7rem] gap-4 px-6 pb-3 sm:grid">
                 <span className="t-label">Rank</span>
                 <span className="t-label">Contributor</span>
                 <span className="t-label">Tier</span>
                 <span className="t-label text-right">Guild / Chain</span>
                 <span className="t-label text-right">XP</span>
               </div>
-              <ol>
+              <ol className="panel">
                 {rest.map((person, index) => (
                   <Reveal as="li" key={person.username} delay={Math.min(index, 8) * 0.03} y={6} className="border-b border-line">
                     <Link
@@ -103,8 +103,8 @@ function RankingPage() {
                       params={{ username: person.username }}
                       className="row-link group grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-4 py-4 sm:grid-cols-[4rem_minmax(0,1fr)_8rem_7rem_7rem]"
                     >
-                      <span className={cn("t-display text-[1.75rem] leading-none tabular-nums", person.rank <= 3 ? "text-ink" : "text-faint")}>
-                        {String(person.rank).padStart(2, "0")}
+                      <span className={cn("t-display text-[1.25rem] leading-none tabular-nums", person.rank <= 3 ? "text-ink" : "text-faint")}>
+                        {person.rank}
                       </span>
                       <span className="flex min-w-0 items-center gap-3">
                         <Avatar name={person.displayName} url={person.avatarUrl} />
@@ -137,9 +137,8 @@ function RankingPage() {
 
 function Stat({ label, value, index }: { label: string; value: number; index: number }) {
   return (
-    <div className={cn("min-w-0 py-6", index > 1 && "border-l border-line pl-4 sm:pl-6")}>
-      <dt className="t-label truncate">
-        <span className="text-faint">0{index} </span>
+    <div className={cn("min-w-0 px-4 py-6 sm:px-6", index > 1 && "border-l border-line")}>
+      <dt className="truncate text-[13px] text-muted">
         {label}
       </dt>
       <dd className="t-display mt-3 text-[clamp(2rem,1.4rem+2vw,3rem)] leading-none tabular-nums">
@@ -156,15 +155,15 @@ function Leader({ person, by }: { person: RankedContributor; by: RankBy }) {
       <Link
         to="/passport/$username"
         params={{ username: person.username }}
-        className="group grid gap-8 border-y border-line-strong py-10 md:grid-cols-12 md:items-end"
+        className="surface group grid gap-8 p-6 sm:p-10 md:grid-cols-12 md:items-end"
       >
-        <span className="t-display text-[clamp(6rem,4rem+8vw,11rem)] leading-[0.8] text-signal md:col-span-3">1</span>
+        <span className="t-display text-[clamp(5rem,3.5rem+6vw,8.5rem)] leading-[0.85] text-signal md:col-span-3">1</span>
         <span className="flex min-w-0 flex-col gap-4 md:col-span-5">
           <span className="t-label">Top of the ladder</span>
           <span className="flex items-center gap-4">
             <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
             <span className="min-w-0">
-              <span className="t-display block truncate text-[2.25rem] leading-tight transition-colors group-hover:text-signal">{person.displayName}</span>
+              <span className="t-display block truncate text-[1.75rem] leading-tight transition-colors group-hover:text-signal">{person.displayName}</span>
               <span className="block font-mono text-[12px] text-muted">@{person.username}</span>
             </span>
           </span>

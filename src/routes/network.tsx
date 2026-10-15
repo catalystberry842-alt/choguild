@@ -20,7 +20,7 @@ function NetworkPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="About — Network" title="Network" description="Choguild runs on Monad mainnet. Testnet isn't used." />
+      <PageHeader eyebrow="Network" title="Network" description="Choguild runs on Monad mainnet. Testnet isn't used." />
 
       <dl className="mt-10 grid gap-4 sm:grid-cols-3">
         <Fact label="Chain">
@@ -28,7 +28,7 @@ function NetworkPage() {
         </Fact>
         <Fact label="Public RPC">
           <span className="flex items-center gap-2">
-            <span className={probe.ok ? "size-2 rounded-md bg-success" : "size-2 rounded-md bg-warning"} aria-hidden="true" />
+            <span className={probe.ok ? "size-2 rounded-full bg-success" : "size-2 rounded-full bg-warning"} aria-hidden="true" />
             {probe.ok ? "Online" : "Not responding"}
           </span>
           <span className="t-meta mt-1 block font-mono">{probe.ok ? `Block ${probe.blockNumber}` : probe.rpcHost}</span>

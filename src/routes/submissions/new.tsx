@@ -20,7 +20,7 @@ function NewSubmissionPage() {
   if (!data.ok || data.eligible.length === 0) {
     return (
       <div>
-        <PageHeader eyebrow="Work — Submit" title="Submit work" />
+        <PageHeader eyebrow="Submit" title="Submit work" />
         <div className="mt-10">
           <EmptyState
             title={data.ok ? "No accepted applications yet" : "Sign in to submit work"}
@@ -37,7 +37,7 @@ function NewSubmissionPage() {
   }
   return (
     <div>
-      <PageHeader eyebrow="Work — Submit" title="Submit work" description="Share links to what you delivered. The publisher reviews it." />
+      <PageHeader eyebrow="Submit" title="Submit work" description="Share links to what you delivered. The publisher reviews it." />
       <div className="mt-10 flex flex-col gap-10">
         <Field label="For" htmlFor="eligible">
           <SelectInput id="eligible" value={applicationId} onChange={(event) => setApplicationId(event.target.value)}>

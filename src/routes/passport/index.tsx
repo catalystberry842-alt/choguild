@@ -27,7 +27,7 @@ function PassportPage() {
     <div className="flex flex-col gap-12">
       <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
       <PageHeader
-        eyebrow="Guild — Passport"
+        eyebrow="Passport"
         title="Your passport"
         description="The public profile people see when they review your work. Sign once with your wallet to create or edit it."
         actions={

@@ -14,7 +14,7 @@ export function TierBadge({ tier, className }: { tier: string; className?: strin
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-[10px] tracking-[0.06em] uppercase ring-1",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium ring-1",
         TIER_STYLE[tier] ?? TIER_STYLE.Hatchling,
         className,
       )}
@@ -27,10 +27,10 @@ export function TierBadge({ tier, className }: { tier: string; className?: strin
 
 export function Avatar({ name, url, size = "md" }: { name: string; url: string | null; size?: "md" | "lg" }) {
   const box = size === "lg" ? "size-16 text-xl" : "size-9 text-sm";
-  if (url) return <img src={url} alt="" className={cn(box, "shrink-0 rounded-md object-cover ring-1 ring-line")} />;
+  if (url) return <img src={url} alt="" className={cn(box, "shrink-0 rounded-full object-cover ring-1 ring-line")} />;
   return (
     <span
-      className={cn(box, "flex shrink-0 items-center justify-center rounded-md bg-secondary font-display text-ink ring-1 ring-line")}
+      className={cn(box, "flex shrink-0 items-center justify-center rounded-full bg-secondary font-medium text-ink ring-1 ring-line")}
       aria-hidden="true"
     >
       {name.slice(0, 1).toUpperCase()}

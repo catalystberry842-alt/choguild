@@ -4,7 +4,7 @@
 @import "@fontsource/geist-sans/600.css";
 @import "@fontsource/geist-mono/400.css";
 @import "@fontsource/geist-mono/500.css";
-@import "@fontsource-variable/newsreader/opsz.css";
+@import "@fontsource/geist-sans/700.css";
 
 /*
  * Choguild — editorial dark.
@@ -15,7 +15,7 @@
 @theme {
   --font-sans: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
-  --font-display: "Newsreader Variable", "Newsreader", ui-serif, Georgia, serif;
+  --font-display: "Geist Sans", ui-sans-serif, system-ui, sans-serif;
 
   --color-canvas: #0b0b0a;
   --color-sidebar: #0b0b0a;
@@ -42,9 +42,9 @@
   --color-danger: #ff7a6b;
   --color-scrim: #000000;
 
-  --radius-sm: 0.25rem;
-  --radius-md: 0.375rem;
-  --radius-lg: 0.5rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1.25rem;
 
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
 }
@@ -113,13 +113,17 @@
   /* ---------- Type ---------- */
   .t-display {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
-    font-weight: 400;
-    letter-spacing: -0.035em;
-    line-height: 0.95;
+    font-weight: 600;
+    letter-spacing: -0.04em;
+    line-height: 1.02;
     color: var(--color-ink);
   }
-  .t-eyebrow,
+  .t-eyebrow {
+    font-size: 0.8125rem;
+    line-height: 1.25rem;
+    font-weight: 500;
+    color: var(--color-body);
+  }
   .t-label {
     font-family: var(--font-mono);
     font-size: 0.6875rem;
@@ -131,11 +135,10 @@
   }
   .t-title {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
-    font-size: clamp(2.5rem, 1.6rem + 2.8vw, 4rem);
-    line-height: 1;
-    font-weight: 400;
-    letter-spacing: -0.03em !important;
+    font-size: clamp(2.25rem, 1.6rem + 2.2vw, 3.5rem);
+    line-height: 1.05;
+    font-weight: 600;
+    letter-spacing: -0.045em !important;
     color: var(--color-ink);
   }
   .t-lead {
@@ -145,11 +148,10 @@
   }
   .t-h2 {
     font-family: var(--font-display);
-    font-optical-sizing: auto;
-    font-size: 1.75rem;
-    line-height: 1.1;
-    font-weight: 400;
-    letter-spacing: -0.02em;
+    font-size: clamp(1.5rem, 1.2rem + 1vw, 2rem);
+    line-height: 1.15;
+    font-weight: 600;
+    letter-spacing: -0.035em;
     color: var(--color-ink);
   }
   .t-h3 {
@@ -509,4 +511,17 @@
 @media (prefers-reduced-motion: reduce) {
   .hero-img, .hero-light, .hero-light-2, .accent-line, .ticker-track { animation: none !important; }
   .logo-anim .logo-ring { stroke-dashoffset: 0; animation: none !important; }
+}
+
+/* v7: rounded list panels */
+@layer components {
+  .panel {
+    border-radius: 1.25rem;
+    border: 1px solid var(--color-line);
+    background-color: rgb(18 18 17 / 0.72);
+    padding: 0.25rem 1.25rem;
+  }
+  @media (min-width: 640px) { .panel { padding: 0.25rem 1.5rem; } }
+  .panel > li:last-child, .panel > ol > li:last-child, .panel > ul > li:last-child { border-bottom-width: 0; }
+  .panel .row-link:hover { padding-left: 0.5rem; background-color: transparent; }
 }

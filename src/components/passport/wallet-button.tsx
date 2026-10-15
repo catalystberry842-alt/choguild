@@ -28,7 +28,7 @@ export function WalletButton({
       <Dialog.Trigger asChild>
         <Button size="compact" className={className}>
           {connected ? (
-            <span className="pulse-dot size-2 rounded-md bg-success" aria-hidden="true" />
+            <span className="pulse-dot size-2 rounded-full bg-success" aria-hidden="true" />
           ) : (
             <Wallet className="size-4" aria-hidden="true" />
           )}
@@ -48,7 +48,7 @@ export function WalletButton({
         <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/80" />
         <Dialog.Content
           className={cn(
-            "fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-md border border-line bg-elevated p-6",
+            "fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-line bg-elevated p-6",
           )}
         >
           <Dialog.Title className="text-lg font-semibold text-ink">Wallet</Dialog.Title>

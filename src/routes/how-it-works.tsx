@@ -49,13 +49,13 @@ const FAQ = [
 function HowItWorksPage() {
   return (
     <div className="flex flex-col gap-14">
-      <PageHeader eyebrow="05 — How it works" title="How it works" description="From wallet to accepted work, and how that becomes rank." />
+      <PageHeader eyebrow="How it works" title="How it works" description="From wallet to accepted work, and how that becomes rank." />
 
       <Section title="The loop" description="Six steps, one record.">
-        <ol className="border-t border-line">
+        <ol className="panel">
           {FLOW.map((step, index) => (
             <Reveal as="li" key={step.title} delay={index * 0.04} y={8} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-4 border-b border-line py-5 sm:grid-cols-[4rem_16rem_minmax(0,1fr)]">
-              <span className="t-display text-[2rem] leading-none text-faint">{index + 1}</span>
+              <span className="t-display text-[1.5rem] leading-none text-faint">{index + 1}</span>
               <h3 className="text-[16px] font-medium text-ink">{step.title}</h3>
               <p className="t-body col-start-2 sm:col-start-3">{step.body}</p>
             </Reveal>
@@ -138,7 +138,7 @@ function HowItWorksPage() {
 
       <section className="flex flex-col items-start justify-between gap-6 border-t border-line-strong pt-10 md:flex-row md:items-end">
         <div>
-          <h2 className="t-display text-[clamp(2.5rem,1.5rem+3vw,4rem)] leading-none">Ready to start?</h2>
+          <h2 className="t-display text-[clamp(2rem,1.4rem+2vw,3rem)] leading-tight">Ready to start?</h2>
           <p className="mt-1 text-body">It takes one signature and a short bio.</p>
         </div>
         <div className="flex flex-wrap gap-3">
