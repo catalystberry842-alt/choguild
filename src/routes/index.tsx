@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useRef } from "react";
+import { useRef, type ReactNode } from "react";
 import { AnimatedMark } from "@/components/brand/animated-mark";
 import { Reveal, WordReveal } from "@/components/fx/reveal";
 import { ProjectMark } from "@/components/board/opportunity-card";
@@ -79,7 +79,7 @@ function Hero() {
           <WordReveal
             delay={0.25}
             wrap
-            lines={[["Get", "work", "and", "earn", "your", <em key="r" className="pr-[0.05em] text-signal">rank.</em>]]}
+            lines={[["Get", "work", "and", "earn", "your", <em key="r">rank.</em>]]}
           />
         </h1>
         <motion.p
@@ -99,7 +99,7 @@ function Hero() {
           <Link
             to="/discover"
             search={emptyBoardSearch()}
-            className="sheen signal-glow group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-signal px-7 text-[15px] font-medium text-on-accent"
+            className="sheen signal-glow group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[linear-gradient(180deg,#9a89ff,#7058f0)] px-7 text-[15px] font-medium text-on-accent"
           >
             Explore opportunities
             <span aria-hidden="true" className="arrow-slide">→</span>
@@ -121,12 +121,12 @@ function MarkOrbit() {
   return (
     <div className="float-y relative size-28 sm:size-32" aria-hidden="true">
       <svg viewBox="0 0 100 100" className="orbit absolute inset-0 size-full">
-        <circle cx="50" cy="50" r="48" fill="none" stroke="rgb(236 233 226 / 0.12)" strokeDasharray="1 5" />
-        <circle cx="50" cy="2" r="2" fill="#ff6a3d" />
+        <circle cx="50" cy="50" r="48" fill="none" stroke="rgb(228 222 255 / 0.12)" strokeDasharray="1 5" />
+        <circle cx="50" cy="2" r="2" fill="#836ef9" />
       </svg>
       <svg viewBox="0 0 100 100" className="orbit-rev absolute inset-3 size-[calc(100%-1.5rem)]">
-        <circle cx="50" cy="50" r="47" fill="none" stroke="rgb(236 233 226 / 0.08)" />
-        <circle cx="97" cy="50" r="1.6" fill="rgb(236 233 226 / 0.6)" />
+        <circle cx="50" cy="50" r="47" fill="none" stroke="rgb(228 222 255 / 0.08)" />
+        <circle cx="97" cy="50" r="1.6" fill="rgb(228 222 255 / 0.6)" />
       </svg>
       <div className="absolute inset-7 flex items-center justify-center rounded-full border border-line-strong bg-elevated/80 backdrop-blur sm:inset-8">
         <AnimatedMark size={40} className="text-ink" />
@@ -149,8 +149,8 @@ function HeroBackdrop({ y, opacity }: { y: MotionValue<string>; opacity: MotionV
         <div className="hero-light absolute top-[5%] left-1/2 size-[50vmax] -translate-x-1/2 rounded-full" />
         <div className="hero-light-2 absolute top-[30%] left-[5%] size-[40vmax] rounded-full" />
       </motion.div>
-      <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgb(11_11_10/0.78),rgb(11_11_10/0.35)_70%,rgb(11_11_10/0.2))]" />
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,#0b0b0a,transparent)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgb(14_11_31/0.78),rgb(14_11_31/0.35)_70%,rgb(14_11_31/0.2))]" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,#0e0b1f,transparent)]" />
     </div>
   );
 }
@@ -184,7 +184,7 @@ function Bento() {
 
       {/* How it works */}
       <Reveal delay={0.06} className="bento p-6 sm:p-8 md:col-span-6 lg:col-span-5">
-        <CardHead label="The loop" title="Four steps to rank." to="/how-it-works" cta="Details" />
+        <CardHead label="The loop" title={<>Four steps to <em>rank.</em></>} to="/how-it-works" cta="Details" />
         <ol className="mt-6 flex flex-col gap-1.5">
           {STEPS.map((step, index) => (
             <li key={step.label}>
@@ -256,7 +256,7 @@ function Bento() {
       {/* CTA */}
       <Reveal className="bento flex flex-col items-start justify-between gap-6 p-6 sm:p-10 md:col-span-6 md:flex-row md:items-center lg:col-span-12">
         <p className="t-display max-w-xl text-[clamp(2rem,1.4rem+2vw,3rem)] leading-[1.05]">
-          One passport. Every piece of work, <em className="text-signal">on the record.</em>
+          One passport. Every piece of work, <em>on the record.</em>
         </p>
         <Link to="/passport" className="sheen group inline-flex h-12 shrink-0 items-center gap-3 rounded-full bg-ink px-7 text-[15px] font-medium text-canvas">
           Get your passport <span aria-hidden="true" className="arrow-slide">→</span>
@@ -266,7 +266,7 @@ function Bento() {
   );
 }
 
-function CardHead({ label, title, to, cta }: { label: string; title: string; to?: "/ranking" | "/discover" | "/how-it-works"; cta?: string }) {
+function CardHead({ label, title, to, cta }: { label: string; title: ReactNode; to?: "/ranking" | "/discover" | "/how-it-works"; cta?: string }) {
   return (
     <div className="flex items-start justify-between gap-4">
       <div>

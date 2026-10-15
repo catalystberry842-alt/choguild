@@ -10,7 +10,7 @@ export function SiteFooter() {
       <div className="bento flex flex-col items-center px-6 py-16 text-center sm:py-20">
         <LogoMark className="size-9 text-ink" />
         <p className="t-display mt-6 text-[clamp(2.5rem,1.6rem+3.5vw,4.5rem)] leading-[0.95]">
-          Get work and earn your <em className="text-signal">rank.</em>
+          Get work and earn your <em>rank.</em>
         </p>
         <nav aria-label="Footer" className="mt-10 flex flex-wrap justify-center gap-2">
           <Link to="/discover" search={emptyBoardSearch()} className={pill}>Discover</Link>

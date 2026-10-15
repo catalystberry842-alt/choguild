@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none" role="img" aria-label="Choguild">
-  <rect width="32" height="32" rx="8" fill="#0a0a0b"/>
+  <rect width="32" height="32" rx="8" fill="#1a1240"/>
   <g transform="translate(4 4)">
     <path d="M17.66 6.34A8 8 0 1 0 17.66 17.66" stroke="#f4f3f7" stroke-width="2.6"/>
-    <path d="M12 9.25 14.75 12 12 14.75 9.25 12Z" fill="#f4f3f7"/>
+    <path d="M12 9.25 14.75 12 12 14.75 9.25 12Z" fill="#836ef9"/>
   </g>
 </svg>

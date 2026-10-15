@@ -8,8 +8,8 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "sheen bg-signal text-on-accent hover:bg-[#ff7f58]",
-        secondary: "border border-line-strong bg-transparent text-ink hover:border-ink/40 hover:bg-elevated",
+        primary: "sheen signal-glow bg-[linear-gradient(180deg,#9a89ff,#7058f0)] text-white hover:brightness-110",
+        secondary: "border border-line-strong bg-white/[0.03] text-ink hover:border-signal/50 hover:bg-signal/10",
         ghost: "bg-transparent text-body hover:bg-elevated hover:text-ink",
       },
       size: {
