@@ -15,7 +15,14 @@ export function getRouter() {
     routeTree,
     defaultErrorComponent: AppErrorComponent,
     defaultPendingComponent: () => <LoadingState label="Loading page" />,
-    defaultPendingMs: 400,
+    // Navigation should feel instant: preload on hover/touch, keep loader data warm,
+    // and never flash a skeleton for fast loads.
+    defaultPreload: "intent",
+    defaultPreloadDelay: 40,
+    defaultStaleTime: 30_000,
+    defaultPreloadStaleTime: 30_000,
+    defaultPendingMs: 800,
+    defaultPendingMinMs: 300,
     scrollRestoration: true,
   });
 }
