@@ -59,7 +59,7 @@ export function PublicPassport({
           />
         ) : (
           <span
-            className="flex size-16 items-center justify-center rounded-2xl border border-line bg-elevated text-xl text-ink"
+            className="flex size-16 items-center justify-center rounded-md border border-line bg-elevated text-xl text-ink"
             aria-hidden="true"
           >
             {initial}

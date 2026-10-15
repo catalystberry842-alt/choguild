@@ -47,7 +47,8 @@ function DiscoverPage() {
   return (
     <div>
       <PageHeader
-        title="Opportunities"
+        eyebrow="01 — Discover"
+        title="Open work, on the record."
         description="Open work from contributors with a Chog Passport."
         actions={
           <>
@@ -62,7 +63,7 @@ function DiscoverPage() {
       />
 
       <form
-        className="surface mt-12 grid gap-4 rounded-2xl p-2"
+        className="mt-8 grid gap-4"
         role="search"
         aria-label="Filter opportunities"
         onSubmit={(event) => event.preventDefault()}
@@ -73,7 +74,7 @@ function DiscoverPage() {
           </label>
           <div className="relative flex-1">
             <Search
-              className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-muted"
+              className="pointer-events-none absolute top-1/2 left-0 size-4 -translate-y-1/2 text-muted"
               aria-hidden="true"
             />
             <TextInput
@@ -81,7 +82,7 @@ function DiscoverPage() {
               value={search.q}
               onChange={(event) => update({ q: event.target.value })}
               placeholder="Search the board"
-              className="rounded-xl border-transparent bg-white/[0.04] pl-10 focus:bg-white/[0.06]"
+              className="h-12 rounded-none border-x-0 border-t-0 bg-transparent pl-8 text-[16px] hover:border-ink/40"
             />
           </div>
           <Button
@@ -94,16 +95,16 @@ function DiscoverPage() {
             <SlidersHorizontal className="size-4" aria-hidden="true" />
             <span className="hidden sm:inline">Filters</span>
             {activeFilters > 0 ? (
-              <span className="flex size-5 items-center justify-center rounded-full bg-ink text-[11px] text-canvas">
+              <span className="flex size-5 items-center justify-center rounded-sm bg-signal font-mono text-[10px] text-on-accent">
                 {activeFilters}
               </span>
             ) : null}
           </Button>
         </div>
         {showFilters ? (
-          <div id="board-filters" className="rise grid gap-4 px-2 pt-2 pb-3">
+          <div id="board-filters" className="rise grid gap-5 border-b border-line pt-2 pb-6">
             <fieldset>
-              <legend className="text-sm font-medium text-ink">Required skills</legend>
+              <legend className="t-label text-body">Required skills</legend>
               <div className="mt-2 flex flex-wrap gap-2">
                 {BOARD_SKILLS.map((skill) => {
                   const on = search.skills.some(
@@ -124,10 +125,10 @@ function DiscoverPage() {
                         })
                       }
                       className={cn(
-                        "min-h-10 rounded-full border px-4 text-sm transition-colors",
+                        "min-h-9 rounded-sm border px-3 font-mono text-[11px] tracking-[0.04em] uppercase transition-colors",
                         on
-                          ? "border-ink bg-ink text-canvas"
-                          : "border-line text-body hover:border-muted",
+                          ? "border-signal bg-signal text-on-accent"
+                          : "border-line-strong text-body hover:border-ink/40 hover:text-ink",
                       )}
                     >
                       {skill}
@@ -208,14 +209,14 @@ function DiscoverPage() {
         ) : null}
       </form>
 
-      <p className="t-meta mt-8" aria-live="polite">
+      <p className="t-label mt-10 border-b border-line pb-3" aria-live="polite">
         {result.total} {result.total === 1 ? "opportunity" : "opportunities"}
       </p>
 
       {result.items.length > 0 ? (
-        <ul className="mt-4 grid gap-4 lg:grid-cols-2">
-          {result.items.map((item) => (
-            <OpportunityCardView key={item.id} item={item} />
+        <ul>
+          {result.items.map((item, index) => (
+            <OpportunityCardView key={item.id} item={item} index={(result.page - 1) * result.pageSize + index} />
           ))}
         </ul>
       ) : (

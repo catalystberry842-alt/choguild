@@ -310,7 +310,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
         </SelectInput>
       </Field>
 
-      <div className="rounded-2xl bg-secondary px-5 py-4">
+      <div className="rounded-md bg-secondary px-5 py-4">
         <p className="t-h3">{completionSummary(completion)}</p>
         <ul className="mt-3 flex flex-wrap gap-1.5">
           {completion.map((item) => (

@@ -1,6 +1,8 @@
 import * as Accordion from "@radix-ui/react-accordion";
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { ChevronDown, Compass, FileCheck2, IdCard, Inbox, Trophy, Wallet } from "lucide-react";
+import { ChevronDown } from "lucide-react";
+import { Reveal } from "@/components/fx/reveal";
+import { Section } from "@/components/ui/section";
 import { TierBadge } from "@/components/ranking/bits";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
@@ -13,12 +15,12 @@ export const Route = createFileRoute("/how-it-works")({
 });
 
 const FLOW = [
-  { icon: Wallet, title: "Connect a wallet", body: "Any browser wallet works. Connecting only shares an address, nothing else." },
-  { icon: IdCard, title: "Sign and save a passport", body: "Sign one message (free, not a transaction). Add a username, bio, skills and links." },
-  { icon: Compass, title: "Find work on the board", body: "Filter opportunities by skill, category and pay. Apply with a short pitch." },
-  { icon: Inbox, title: "Get accepted", body: "The publisher reviews applications and accepts the people they want to work with." },
-  { icon: FileCheck2, title: "Submit the evidence", body: "Send links to the repo, doc or post. The publisher accepts it or asks for changes." },
-  { icon: Trophy, title: "Climb the ranking", body: "Accepted work turns into XP on your passport and moves you up the ladder." },
+  { title: "Connect a wallet", body: "Any browser wallet works. Connecting only shares an address, nothing else." },
+  { title: "Sign and save a passport", body: "Sign one message (free, not a transaction). Add a username, bio, skills and links." },
+  { title: "Find work on the board", body: "Filter opportunities by skill, category and pay. Apply with a short pitch." },
+  { title: "Get accepted", body: "The publisher reviews applications and accepts the people they want to work with." },
+  { title: "Submit the evidence", body: "Send links to the repo, doc or post. The publisher accepts it or asks for changes." },
+  { title: "Climb the ranking", body: "Accepted work turns into XP on your passport and moves you up the ladder." },
 ] as const;
 
 const FAQ = [
@@ -47,114 +49,101 @@ const FAQ = [
 function HowItWorksPage() {
   return (
     <div className="flex flex-col gap-14">
-      <PageHeader title="How it works" description="From wallet to accepted work, and how that becomes rank." />
+      <PageHeader eyebrow="05 — How it works" title="How it works" description="From wallet to accepted work, and how that becomes rank." />
 
-      <section>
-        <h2 className="t-h2">The loop</h2>
-        <ol className="stagger relative mt-6 grid gap-5 sm:grid-cols-2">
-          {FLOW.map((step, index) => {
-            const Icon = step.icon;
-            return (
-              <li key={step.title} className="surface p-6">
-                <div className="flex items-center justify-between">
-                  <span className="flex size-10 items-center justify-center rounded-xl bg-secondary text-ink">
-                    <Icon className="size-5" aria-hidden="true" />
-                  </span>
-                  <span className="t-meta tabular-nums">{String(index + 1).padStart(2, "0")}</span>
-                </div>
-                <h3 className="t-h3 mt-5">{step.title}</h3>
-                <p className="t-body mt-1.5">{step.body}</p>
-              </li>
-            );
-          })}
+      <Section title="The loop" description="Six steps, one record.">
+        <ol className="border-t border-line">
+          {FLOW.map((step, index) => (
+            <Reveal as="li" key={step.title} delay={index * 0.04} y={8} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-4 border-b border-line py-5 sm:grid-cols-[4rem_16rem_minmax(0,1fr)]">
+              <span className="t-display text-[2rem] leading-none text-faint">{index + 1}</span>
+              <h3 className="text-[16px] font-medium text-ink">{step.title}</h3>
+              <p className="t-body col-start-2 sm:col-start-3">{step.body}</p>
+            </Reveal>
+          ))}
         </ol>
-      </section>
+      </Section>
 
-      <section id="xp" className="scroll-mt-24">
-        <h2 className="t-h2">XP</h2>
-        <p className="t-body mt-1.5">Recalculated live for every public passport.</p>
-        <div className="surface mt-6 overflow-hidden">
+      <Section id="xp" title="XP" description="Recalculated live for every public passport.">
+        <div className="scroll-mt-24 border-t border-line-strong">
           <table className="w-full text-left text-sm">
-            <thead className="t-meta">
+            <thead className="t-label">
               <tr>
-                <th className="px-4 py-3 font-medium">Action</th>
-                <th className="hidden px-4 py-3 font-medium sm:table-cell">When it counts</th>
-                <th className="px-4 py-3 text-right font-medium">XP</th>
+                <th className="py-3 pr-4 font-medium">Action</th>
+                <th className="hidden py-3 pr-4 font-medium sm:table-cell">When it counts</th>
+                <th className="py-3 pr-4 text-right font-medium">XP</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
               {XP_RULES.map((rule) => (
-                <tr key={rule.key} className="transition-colors hover:bg-elevated">
-                  <td className="px-4 py-3 font-medium text-ink">
+                <tr key={rule.key} className="transition-colors hover:text-ink">
+                  <td className="py-3 pr-4 font-medium text-ink">
                     {rule.label}
                     <span className="mt-0.5 block text-xs font-normal text-muted sm:hidden">{rule.detail}</span>
                   </td>
-                  <td className="hidden px-4 py-3 text-body sm:table-cell">{rule.detail}</td>
-                  <td className="px-4 py-3 text-right font-semibold tabular-nums text-ink">+{rule.points}</td>
+                  <td className="hidden py-3 pr-4 text-body sm:table-cell">{rule.detail}</td>
+                  <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">+{rule.points}</td>
                 </tr>
               ))}
-              <tr className="transition-colors hover:bg-elevated">
-                <td className="px-4 py-3 font-medium text-ink">
+              <tr className="transition-colors hover:text-ink">
+                <td className="py-3 pr-4 font-medium text-ink">
                   Onchain activity
                   <span className="mt-0.5 block text-xs font-normal text-muted sm:hidden">
                     10 × √(transactions your wallet sent on Monad), up to {ONCHAIN_XP_CAP}.
                   </span>
                 </td>
-                <td className="hidden px-4 py-3 text-body sm:table-cell">
+                <td className="hidden py-3 pr-4 text-body sm:table-cell">
                   10 × √(transactions your wallet sent on Monad mainnet), up to {ONCHAIN_XP_CAP}. 25 txs = 50 XP.
                 </td>
-                <td className="px-4 py-3 text-right font-semibold tabular-nums text-ink">≤{ONCHAIN_XP_CAP}</td>
+                <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">≤{ONCHAIN_XP_CAP}</td>
               </tr>
             </tbody>
           </table>
         </div>
-      </section>
+      </Section>
 
-      <section>
-        <h2 className="t-h2">Ranks</h2>
-        <ol className="stagger mt-6 grid gap-4 sm:grid-cols-2">
+      <Section title="Ranks" description="Five tiers. Every one is earned.">
+        <ol className="grid border-t border-line sm:grid-cols-2">
           {TIERS.map((tier, index) => (
-            <li key={tier.name} className="surface p-5">
+            <li key={tier.name} className="border-b border-line py-5 sm:odd:pr-6 sm:even:border-l sm:even:pl-6">
               <div className="flex items-center justify-between gap-2">
                 <TierBadge tier={tier.name} />
-                <span className="text-xs tabular-nums text-muted">{tier.min}+ XP</span>
+                <span className="font-mono text-[11px] tabular-nums text-muted">{tier.min}+ XP</span>
               </div>
               <div className="mt-3 flex gap-1" aria-hidden="true">
                 {TIERS.map((_, dot) => (
-                  <span key={dot} className={dot <= index ? "h-1 flex-1 rounded-full bg-action" : "h-1 flex-1 rounded-full bg-secondary"} />
+                  <span key={dot} className={dot <= index ? "h-px flex-1 bg-signal" : "h-px flex-1 bg-line-strong"} />
                 ))}
               </div>
               <p className="mt-3 text-sm leading-6 text-body">{tier.blurb}</p>
             </li>
           ))}
         </ol>
-      </section>
+      </Section>
 
-      <section>
-        <h2 className="t-h2">Questions</h2>
-        <Accordion.Root type="single" collapsible className="surface mt-6 divide-y divide-line overflow-hidden">
+      <Section title="Questions">
+        <Accordion.Root type="single" collapsible className="divide-y divide-line border-y border-line">
           {FAQ.map((item) => (
             <Accordion.Item key={item.q} value={item.q}>
               <Accordion.Header>
-                <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 px-4 py-4 text-left font-medium text-ink transition-colors hover:bg-elevated sm:px-6 sm:py-5">
+                <Accordion.Trigger className="group flex w-full items-center justify-between gap-4 py-5 text-left text-[15px] text-ink transition-colors hover:text-signal">
                   {item.q}
                   <ChevronDown className="size-4 shrink-0 text-muted transition-transform duration-200 group-data-[state=open]:rotate-180" aria-hidden="true" />
                 </Accordion.Trigger>
               </Accordion.Header>
-              <Accordion.Content className="px-4 pb-5 text-sm leading-7 text-body sm:px-6">{item.a}</Accordion.Content>
+              <Accordion.Content className="max-w-2xl pb-5 text-sm leading-7 text-body">{item.a}</Accordion.Content>
             </Accordion.Item>
           ))}
         </Accordion.Root>
-      </section>
+      </Section>
 
-      <section className="surface flex flex-col items-start gap-6 p-7 sm:p-10">
+      <section className="flex flex-col items-start justify-between gap-6 border-t border-line-strong pt-10 md:flex-row md:items-end">
         <div>
-          <h2 className="t-h2">Ready to start?</h2>
+          <h2 className="t-display text-[clamp(2.5rem,1.5rem+3vw,4rem)] leading-none">Ready to start?</h2>
           <p className="mt-1 text-body">It takes one signature and a short bio.</p>
         </div>
         <div className="flex flex-wrap gap-3">
           <Button asChild>
-            <Link to="/passport">Create your Passport</Link>
+            <Link to="/passport">Create your passport</Link>
           </Button>
           <Button asChild variant="secondary">
             <Link to="/ranking">See the ranking</Link>

@@ -4,18 +4,18 @@ export type NavItem = {
   to: "/" | "/passport" | "/discover" | "/submissions" | "/applications" | "/network" | "/ranking" | "/how-it-works";
   label: string;
   icon: LucideIcon;
-  /** Shown as a tab in the floating dock; everything else lives in its More panel. */
-  dock?: boolean;
+  /** Shown in the desktop header; everything else lives in the menu and footer. */
+  primary?: boolean;
 };
 
 export const NAV_ITEMS: NavItem[] = [
-  { to: "/", label: "Home", icon: House, dock: true },
-  { to: "/discover", label: "Discover", icon: Compass, dock: true },
-  { to: "/ranking", label: "Ranking", icon: Trophy, dock: true },
-  { to: "/passport", label: "Passport", icon: IdCard, dock: true },
-  { to: "/submissions", label: "Submissions", icon: ScrollText },
-  { to: "/applications", label: "Applications", icon: Inbox },
-  { to: "/how-it-works", label: "How it works", icon: BookOpen },
+  { to: "/", label: "Home", icon: House },
+  { to: "/discover", label: "Discover", icon: Compass, primary: true },
+  { to: "/ranking", label: "Ranking", icon: Trophy, primary: true },
+  { to: "/passport", label: "Passport", icon: IdCard },
+  { to: "/submissions", label: "Submissions", icon: ScrollText, primary: true },
+  { to: "/applications", label: "Applications", icon: Inbox, primary: true },
+  { to: "/how-it-works", label: "How it works", icon: BookOpen, primary: true },
   { to: "/network", label: "Network", icon: Activity },
 ];
 

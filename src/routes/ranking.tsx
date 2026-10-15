@@ -1,8 +1,7 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Activity } from "lucide-react";
-import { motion } from "motion/react";
 import { Reveal } from "@/components/fx/reveal";
-import { Avatar, RankMedal, TierBadge, XpBar } from "@/components/ranking/bits";
+import { Avatar, TierBadge, XpBar } from "@/components/ranking/bits";
 import { CountUp } from "@/components/ranking/count-up";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -37,96 +36,81 @@ function RankingPage() {
   const { contributors, stats, onchainAvailable } = Route.useLoaderData();
   const by: RankBy = Route.useSearch().by ?? "overall";
   const ranking = rankContributors(contributors, by);
-  const podium = ranking.slice(0, 3);
-  const rest = ranking.slice(3);
+  const leader = ranking[0];
+  const rest = ranking.slice(1);
 
   return (
-    <div className="flex flex-col gap-12">
-      <PageHeader title="Ranking" description="XP from accepted guild work and activity on Monad." />
+    <div className="flex flex-col gap-14">
+      <PageHeader eyebrow="02 — Ranking" title="The ladder." description="XP from accepted guild work and activity on Monad." />
 
-      <dl className="surface grid grid-cols-3 divide-x divide-line overflow-hidden rounded-2xl">
-        <Stat label="Passports" value={stats.passports} />
-        <Stat label="Accepted" value={stats.acceptedWork} />
-        <Stat label="Onchain txs" value={stats.onchainTxs} />
+      <dl className="-mt-14 grid grid-cols-3 border-b border-line">
+        <Stat label="Passports" value={stats.passports} index={1} />
+        <Stat label="Accepted" value={stats.acceptedWork} index={2} />
+        <Stat label="Onchain txs" value={stats.onchainTxs} index={3} />
       </dl>
 
-      <section className="flex flex-col gap-6">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div role="tablist" aria-label="Rank by" className="inline-flex w-fit rounded-full border border-white/10 bg-white/[0.03] p-1 backdrop-blur">
-            {RANK_BY.map((option) => {
-              const active = option.id === by;
-              return (
-                <Link
-                  key={option.id}
-                  role="tab"
-                  aria-selected={active}
-                  to="/ranking"
-                  search={option.id === "overall" ? {} : { by: option.id }}
-                  replace
-                  className={cn(
-                    "relative rounded-full px-4 py-2 text-sm font-medium transition-colors",
-                    active ? "text-canvas" : "text-body hover:text-ink",
-                  )}
-                >
-                  {active ? (
-                    <motion.span
-                      layoutId="rank-by"
-                      className="absolute inset-0 rounded-full bg-ink"
-                      transition={{ type: "spring", bounce: 0, duration: 0.35 }}
-                    />
-                  ) : null}
-                  <span className="relative">{option.label}</span>
-                </Link>
-              );
-            })}
+      <section className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+          <div role="tablist" aria-label="Rank by" className="seg">
+            {RANK_BY.map((option) => (
+              <Link
+                key={option.id}
+                role="tab"
+                aria-selected={option.id === by}
+                to="/ranking"
+                search={option.id === "overall" ? {} : { by: option.id }}
+                replace
+                className="seg-item"
+              >
+                {option.label}
+              </Link>
+            ))}
           </div>
-          <Link to="/how-it-works" hash="xp" className="text-sm font-medium text-ink underline-offset-4 hover:underline">
+          <Link to="/how-it-works" hash="xp" className="t-link text-[13px]">
             How XP works
           </Link>
         </div>
-        <p className="t-meta -mt-2">{BLURB[by]}</p>
+        <p className="t-meta">{BLURB[by]}</p>
 
         {!onchainAvailable && by !== "guild" ? (
-          <p className="surface t-body flex items-start gap-3 px-5 py-4">
+          <p className="t-body flex items-start gap-3 border-l-2 border-warning py-1 pl-4">
             <Activity className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
             The Monad RPC did not answer just now, so onchain XP is missing and the ladder uses guild XP for the moment.
           </p>
         ) : null}
       </section>
 
-      {ranking.length === 0 ? (
+      {!leader ? (
         <EmptyLadder />
       ) : (
         <>
-          <ol className="grid gap-5 pt-2 md:grid-cols-3 md:items-end md:pt-8">
-            {podium.map((person) => (
-              <PodiumCard key={person.username} person={person} by={by} />
-            ))}
-          </ol>
+          <Leader person={leader} by={by} />
 
           {rest.length > 0 ? (
-            <section className="flex flex-col gap-4">
-              <h2 className="text-[12px] font-medium tracking-[0.18em] text-muted uppercase">The ladder</h2>
-              <ol className="surface overflow-hidden rounded-2xl">
-                <li className="hidden grid-cols-[3rem_minmax(0,1fr)_7rem_6rem] gap-4 border-b border-line px-5 py-3 text-[11px] tracking-wide text-muted uppercase sm:grid">
-                  <span>Rank</span>
-                  <span>Contributor</span>
-                  <span>Tier</span>
-                  <span className="text-right">XP</span>
-                </li>
+            <section aria-label="The ladder">
+              <div className="hidden grid-cols-[4rem_minmax(0,1fr)_8rem_7rem_7rem] gap-4 border-b border-line-strong pb-3 sm:grid">
+                <span className="t-label">Rank</span>
+                <span className="t-label">Contributor</span>
+                <span className="t-label">Tier</span>
+                <span className="t-label text-right">Guild / Chain</span>
+                <span className="t-label text-right">XP</span>
+              </div>
+              <ol>
                 {rest.map((person, index) => (
-                  <Reveal as="li" key={person.username} delay={Math.min(index, 8) * 0.03} y={8} className="border-b border-line last:border-b-0">
+                  <Reveal as="li" key={person.username} delay={Math.min(index, 8) * 0.03} y={6} className="border-b border-line">
                     <Link
                       to="/passport/$username"
                       params={{ username: person.username }}
-                      className="grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-4 px-5 py-3.5 transition-colors hover:bg-white/[0.03] sm:grid-cols-[3rem_minmax(0,1fr)_7rem_6rem]"
+                      className="row-link group grid grid-cols-[3rem_minmax(0,1fr)_auto] items-center gap-4 py-4 sm:grid-cols-[4rem_minmax(0,1fr)_8rem_7rem_7rem]"
                     >
-                      <RankMedal rank={person.rank} />
+                      <span className={cn("t-display text-[1.75rem] leading-none tabular-nums", person.rank <= 3 ? "text-ink" : "text-faint")}>
+                        {String(person.rank).padStart(2, "0")}
+                      </span>
                       <span className="flex min-w-0 items-center gap-3">
                         <Avatar name={person.displayName} url={person.avatarUrl} />
                         <span className="min-w-0">
-                          <span className="block truncate text-[15px] font-medium text-ink">{person.displayName}</span>
-                          <span className="mt-0.5 block truncate text-xs text-muted">
+                          <span className="block truncate text-[15px] text-ink transition-colors group-hover:text-signal">{person.displayName}</span>
+                          <span className="block truncate font-mono text-[11px] text-muted">
                             @{person.username}
                             {person.txCount !== null ? ` · ${formatXp(person.txCount)} txs` : ""}
                           </span>
@@ -135,7 +119,10 @@ function RankingPage() {
                       <span className="hidden sm:block">
                         <TierBadge tier={person.tier} />
                       </span>
-                      <span className="text-right text-sm font-semibold tabular-nums text-ink">{formatXp(person.xp)} XP</span>
+                      <span className="hidden text-right font-mono text-[12px] text-muted tabular-nums sm:block">
+                        {formatXp(person.guildXp)} / {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
+                      </span>
+                      <span className="text-right font-mono text-[14px] tabular-nums text-ink">{formatXp(person.xp)}</span>
                     </Link>
                   </Reveal>
                 ))}
@@ -148,57 +135,54 @@ function RankingPage() {
   );
 }
 
-function Stat({ label, value }: { label: string; value: number }) {
+function Stat({ label, value, index }: { label: string; value: number; index: number }) {
   return (
-    <div className="min-w-0 px-4 py-5 sm:px-6">
-      <dt className="truncate text-[11px] tracking-wide text-muted uppercase sm:text-[12px]">{label}</dt>
-      <dd className="mt-2 text-2xl font-semibold sm:text-[1.75rem] tracking-[-0.03em] tabular-nums text-ink">
+    <div className={cn("min-w-0 py-6", index > 1 && "border-l border-line pl-4 sm:pl-6")}>
+      <dt className="t-label truncate">
+        <span className="text-faint">0{index} </span>
+        {label}
+      </dt>
+      <dd className="t-display mt-3 text-[clamp(2rem,1.4rem+2vw,3rem)] leading-none tabular-nums">
         <CountUp value={value} />
       </dd>
     </div>
   );
 }
 
-const PODIUM = [
-  { order: "md:order-2", lift: "md:-translate-y-6", glow: "rgb(212 175 90 / 0.18)" },
-  { order: "md:order-1", lift: "", glow: "rgb(190 195 210 / 0.12)" },
-  { order: "md:order-3", lift: "", glow: "rgb(190 120 70 / 0.14)" },
-] as const;
-
-function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
-  const style = PODIUM[person.rank - 1];
+/** First place gets the editorial treatment: a huge numeral, the name set in serif, and the split. */
+function Leader({ person, by }: { person: RankedContributor; by: RankBy }) {
   return (
-    <Reveal as="li" className={style.order} delay={person.rank * 0.06}>
+    <Reveal>
       <Link
         to="/passport/$username"
         params={{ username: person.username }}
-        className={cn("surface spotlight card-pop relative flex flex-col items-center gap-4 overflow-hidden px-6 py-8 text-center", style.lift)}
+        className="group grid gap-8 border-y border-line-strong py-10 md:grid-cols-12 md:items-end"
       >
-        <span
-          className="pointer-events-none absolute inset-x-0 top-0 h-32"
-          style={{ background: `radial-gradient(70% 100% at 50% 0%, ${style.glow}, transparent)` }}
-          aria-hidden="true"
-        />
-        <RankMedal rank={person.rank} size="lg" />
-        <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
-        <span>
-          <span className="block text-[16px] font-semibold tracking-[-0.02em] text-ink">{person.displayName}</span>
-          <span className="mt-0.5 block text-xs text-muted">@{person.username}</span>
-        </span>
-        <TierBadge tier={person.tier} />
-        <span className="text-[2rem] leading-none font-semibold tracking-[-0.04em] tabular-nums text-ink">
-          <CountUp value={person.xp} /> <span className="text-sm font-normal tracking-normal text-muted">XP</span>
-        </span>
-        <span className="flex gap-3 text-xs text-muted">
-          <span>Guild {formatXp(person.guildXp)}</span>
-          <span aria-hidden="true">·</span>
-          <span>Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}</span>
-        </span>
-        {by === "overall" ? (
-          <span className="w-full">
-            <XpBar xp={person.xp} />
+        <span className="t-display text-[clamp(6rem,4rem+8vw,11rem)] leading-[0.8] text-signal md:col-span-3">1</span>
+        <span className="flex min-w-0 flex-col gap-4 md:col-span-5">
+          <span className="t-label">Top of the ladder</span>
+          <span className="flex items-center gap-4">
+            <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
+            <span className="min-w-0">
+              <span className="t-display block truncate text-[2.25rem] leading-tight transition-colors group-hover:text-signal">{person.displayName}</span>
+              <span className="block font-mono text-[12px] text-muted">@{person.username}</span>
+            </span>
           </span>
-        ) : null}
+          <TierBadge tier={person.tier} className="self-start" />
+        </span>
+        <span className="flex flex-col gap-3 md:col-span-4 md:items-end md:text-right">
+          <span className="t-display text-[3rem] leading-none tabular-nums">
+            <CountUp value={person.xp} /> <span className="font-mono text-[12px] text-muted">XP</span>
+          </span>
+          <span className="font-mono text-[11px] text-muted">
+            Guild {formatXp(person.guildXp)} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
+          </span>
+          {by === "overall" ? (
+            <span className="w-full md:max-w-64">
+              <XpBar xp={person.xp} />
+            </span>
+          ) : null}
+        </span>
       </Link>
     </Reveal>
   );
@@ -207,8 +191,8 @@ function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
 function EmptyLadder() {
   return (
     <EmptyState
-      title="First place is open"
-      body="Save a public Passport to join. Accepted work moves you up."
+      title="First place is open."
+      body="Save a public passport to join. Accepted work moves you up."
       action={
         <>
           <Button asChild>

@@ -7,7 +7,7 @@ const EASE = [0.22, 1, 0.36, 1] as const;
 export function Reveal({
   children,
   delay = 0,
-  y = 18,
+  y = 14,
   className,
   as = "div",
   ...rest
@@ -19,8 +19,8 @@ export function Reveal({
   return (
     <Comp
       className={className}
-      initial={{ opacity: 0, y, filter: "blur(6px)" }}
-      whileInView={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
+      initial={{ opacity: 0, y }}
+      whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "0px 0px -8% 0px" }}
       transition={{ duration: 0.7, ease: EASE, delay }}
       {...rest}
@@ -54,15 +54,16 @@ export function WordReveal({
             const d = delay + index++ * 0.07;
             return [
               i > 0 ? " " : null,
-              <motion.span
-                key={i}
-                className={`inline-block will-change-transform ${wordClassName}`}
-                initial={{ opacity: 0, y: "0.45em", filter: "blur(10px)" }}
-                animate={{ opacity: 1, y: 0, filter: "blur(0px)", transitionEnd: { filter: "none" } }}
-                transition={{ duration: 0.9, ease: EASE, delay: d }}
-              >
-                {word}
-              </motion.span>,
+              <span key={i} className="-my-[0.12em] inline-block overflow-hidden py-[0.12em] align-bottom">
+                <motion.span
+                  className={`inline-block will-change-transform ${wordClassName}`}
+                  initial={{ y: "110%" }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 1, ease: EASE, delay: d }}
+                >
+                  {word}
+                </motion.span>
+              </span>,
             ];
           })}
         </span>

@@ -7,14 +7,14 @@ const TIER_STYLE: Record<string, string> = {
   Apprentice: "text-success ring-success/30",
   Artisan: "text-ink ring-muted",
   Guildmaster: "text-warning ring-warning/40",
-  Legend: "text-ink ring-ink/60",
+  Legend: "text-signal ring-signal/50",
 };
 
 export function TierBadge({ tier, className }: { tier: string; className?: string }) {
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-full bg-white/[0.03] px-2 py-0.5 text-[11px] font-medium tracking-wide ring-1",
+        "inline-flex items-center gap-1 rounded-sm px-1.5 py-0.5 font-mono text-[10px] tracking-[0.06em] uppercase ring-1",
         TIER_STYLE[tier] ?? TIER_STYLE.Hatchling,
         className,
       )}
@@ -27,10 +27,10 @@ export function TierBadge({ tier, className }: { tier: string; className?: strin
 
 export function Avatar({ name, url, size = "md" }: { name: string; url: string | null; size?: "md" | "lg" }) {
   const box = size === "lg" ? "size-16 text-xl" : "size-9 text-sm";
-  if (url) return <img src={url} alt="" className={cn(box, "shrink-0 rounded-full object-cover ring-1 ring-line")} />;
+  if (url) return <img src={url} alt="" className={cn(box, "shrink-0 rounded-md object-cover ring-1 ring-line")} />;
   return (
     <span
-      className={cn(box, "flex shrink-0 items-center justify-center rounded-full bg-secondary font-bold text-ink ring-1 ring-line")}
+      className={cn(box, "flex shrink-0 items-center justify-center rounded-md bg-secondary font-display text-ink ring-1 ring-line")}
       aria-hidden="true"
     >
       {name.slice(0, 1).toUpperCase()}
@@ -42,10 +42,10 @@ export function XpBar({ xp }: { xp: number }) {
   const { next, progress } = tierFor(xp);
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1.5 flex-1 overflow-hidden rounded-full bg-secondary">
-        <div className="h-full rounded-full bg-gradient-to-r from-action to-[#a59cf0] transition-[width] duration-1000" style={{ width: `${Math.round(progress * 100)}%` }} />
+      <div className="h-px flex-1 overflow-hidden bg-line-strong">
+        <div className="h-full bg-signal transition-[width] duration-1000" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
-      <span className="text-[11px] tabular-nums text-muted">{next ? `${next.min - xp} to ${next.name}` : "Max tier"}</span>
+      <span className="font-mono text-[10px] tabular-nums text-muted">{next ? `${next.min - xp} to ${next.name}` : "Max tier"}</span>
     </div>
   );
 }

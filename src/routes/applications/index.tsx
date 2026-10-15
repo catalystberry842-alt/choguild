@@ -20,7 +20,7 @@ function ApplicationsPage() {
 
   return (
     <div>
-      <PageHeader title="Applications" description="Everything you've applied to and where it stands." />
+      <PageHeader eyebrow="04 — Applications" title="Applications" description="Everything you've applied to and where it stands." />
 
       <div className="mt-10">
         {!result.ok ? (

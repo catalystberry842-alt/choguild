@@ -1,6 +1,7 @@
 import type { ReactNode } from "react";
+import { Reveal } from "@/components/fx/reveal";
 
-/** A titled block within a page. Sections are separated by a hairline and generous space. */
+/** A titled block: the label sits in a narrow left column on wide screens, content on the right. */
 export function Section({
   title,
   description,
@@ -15,15 +16,13 @@ export function Section({
   id?: string;
 }) {
   return (
-    <section id={id} className="border-t border-line pt-12 first:border-t-0 first:pt-0 [header+&]:border-t-0 [header+&]:pt-0">
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div className="max-w-xl">
-          <h2 className="t-h2">{title}</h2>
-          {description ? <p className="t-body mt-1.5">{description}</p> : null}
-        </div>
-        {action}
+    <Reveal as="section" id={id} className="grid gap-6 border-t border-line pt-8 lg:grid-cols-12 lg:gap-8">
+      <div className="lg:col-span-3">
+        <h2 className="t-h3">{title}</h2>
+        {description ? <p className="t-meta mt-2 max-w-xs">{description}</p> : null}
+        {action ? <div className="mt-4">{action}</div> : null}
       </div>
-      {children}
-    </section>
+      <div className="min-w-0 lg:col-span-9">{children}</div>
+    </Reveal>
   );
 }

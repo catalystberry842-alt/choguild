@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PassportCard } from "@/components/passport/passport-card";
+import { PassportRecord } from "@/components/passport/passport-record";
 import { ProfileForm } from "@/components/passport/profile-form";
 import { usePassport } from "@/components/passport/passport-provider";
 import { WalletPanel } from "@/components/passport/wallet-panel";
@@ -25,9 +25,10 @@ function PassportPage() {
 
   return (
     <div className="flex flex-col gap-12">
-      <div className="grid items-center gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,25rem)]">
+      <div className="grid items-end gap-10 lg:grid-cols-[minmax(0,1fr)_minmax(0,24rem)]">
       <PageHeader
-        title="Your Passport"
+        eyebrow="Guild — Passport"
+        title="Your passport"
         description="The public profile people see when they review your work. Sign once with your wallet to create or edit it."
         actions={
           profile ? (
@@ -42,11 +43,11 @@ function PassportPage() {
           ) : null
         }
       />
-        <PassportCard profile={profile} address={sessionAddress} />
+        <PassportRecord profile={profile} address={sessionAddress} />
       </div>
 
       <Section title="Wallet">
-        <div className="surface p-6">
+        <div>
           <WalletPanel />
         </div>
       </Section>
@@ -62,7 +63,7 @@ function PassportPage() {
           />
         ) : null}
         {status === "ready" && verified ? (
-          <div className="surface p-6">
+          <div>
             <ProfileForm key={profile?.updatedAt ?? "new"} mode={profile ? "update" : "create"} profile={profile} />
           </div>
         ) : null}
