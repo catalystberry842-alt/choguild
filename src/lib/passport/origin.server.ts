@@ -1,3 +1,4 @@
+import { takeToken } from "@/lib/rate-limit";
 import { getRequest, getRequestHost, getRequestProtocol } from "@tanstack/react-start/server";
 import { sameOriginDecision } from "@/lib/passport/origin";
 
@@ -15,4 +16,10 @@ export function assertSameOrigin(): void {
     expectedOrigin: requestAuthority().uri,
   });
   if (!decision.ok) throw new Error(decision.error);
+  const ip =
+    request.headers.get("x-real-ip") ?? request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "local";
+  // 30 writes per minute per client covers real use and blocks scripted floods.
+  if (!takeToken(`write:${ip}`, 30, 60_000)) {
+    throw new Error("Too many requests. Wait a minute and try again.");
+  }
 }

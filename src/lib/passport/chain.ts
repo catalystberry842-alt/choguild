@@ -14,12 +14,19 @@ import { defineChain } from "viem";
  * https://testnet.monadvision.com). It is not configured. Passport sessions in
  * this app already use chain 143, and this is not a faucet sandbox.
  */
+/**
+ * Ordered fallback list. rpc.monad.xyz timed out from Vercel and the box on
+ * 2026-10-15 while the numbered endpoints, monadinfra, dRPC and Ankr all
+ * answered chain 0x8f, so the flaky one goes last.
+ */
 export const MONAD_OFFICIAL_RPCS = [
-  "https://rpc.monad.xyz",
   "https://rpc1.monad.xyz",
   "https://rpc2.monad.xyz",
   "https://rpc3.monad.xyz",
   "https://rpc-mainnet.monadinfra.com",
+  "https://monad-mainnet.drpc.org",
+  "https://rpc.ankr.com/monad_mainnet",
+  "https://rpc.monad.xyz",
 ] as const;
 
 export const MONAD_EXPLORERS = [

@@ -9,6 +9,9 @@ import { MONAD_CHAIN_ID, explorerAddressUrl, monadChainLabel } from "@/lib/passp
 import { shortAddress } from "@/lib/passport/format";
 import { endPassportSession, requestNonce, verifySignature } from "@/lib/passport/functions";
 import { walletErrorMessage } from "@/lib/passport/wallet-error";
+import { REMOTE_CONNECTOR_TYPES } from "@/lib/passport/wagmi";
+
+const DAPP_HOST = "choguild.vercel.app";
 
 export function WalletPanel() {
   const { address, isConnected, chainId, status } = useAccount();
@@ -42,6 +45,10 @@ export function WalletPanel() {
     void (async () => {
       const found: string[] = [];
       for (const connector of current) {
+        if (REMOTE_CONNECTOR_TYPES.has(connector.type)) {
+          found.push(connector.uid);
+          continue;
+        }
         try {
           const provider = await connector.getProvider();
           if (provider) found.push(connector.uid);
@@ -173,6 +180,14 @@ export function WalletPanel() {
                 Connect {connector.name}
               </Button>
             ))}
+            {readyConnectors.every((connector) => REMOTE_CONNECTOR_TYPES.has(connector.type)) ? (
+              <p className="t-meta">
+                On a phone? Open Choguild inside your wallet app:{" "}
+                <a className="t-link" href={`https://metamask.app.link/dapp/${DAPP_HOST}`}>MetaMask</a>
+                {" · "}
+                <a className="t-link" href={`https://rabby.io/`} target="_blank" rel="noreferrer">Rabby</a>
+              </p>
+            ) : null}
           </div>
         ) : (
           <ErrorMessage title="No wallet found">

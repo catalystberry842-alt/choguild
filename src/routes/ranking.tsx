@@ -54,7 +54,7 @@ function RankingPage() {
 
       <div className="flex flex-col items-center gap-3">
         <div role="tablist" aria-label="Rank by" className="inline-flex rounded-full border border-line bg-elevated/70 p-1">
-          {RANK_BY.map((option) => {
+          {RANK_BY.filter((option) => onchainAvailable || option.id !== "onchain").map((option) => {
             const active = option.id === by;
             return (
               <Link
@@ -79,7 +79,7 @@ function RankingPage() {
         {!onchainAvailable && by !== "guild" ? (
           <p className="t-body flex items-start gap-3 rounded-2xl border border-warning/30 bg-warning/5 px-4 py-3">
             <Activity className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
-            The Monad RPC did not answer just now, so onchain XP is missing and the ladder uses guild XP for the moment.
+            Onchain activity is temporarily unavailable (no Monad RPC answered), so the ladder shows guild XP only and the Onchain view is hidden until it is back.
           </p>
         ) : null}
       </div>
@@ -167,12 +167,12 @@ function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
 
 function EmptyLadder() {
   return (
-    <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end">
+    <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end" aria-label="Podium, no one ranked yet">
       {[2, 1, 3].map((rank) => (
         <Reveal as="li" key={rank} delay={rank * 0.08} className={rank === 1 ? "md:order-2 md:pb-14" : rank === 2 ? "md:order-1" : "md:order-3"}>
           <div className={cn("flex flex-col items-center gap-4 rounded-[1.5rem] border border-dashed px-6 py-10 text-center", rank === 1 ? "signal-glow border-signal/40 bg-signal/[0.04]" : "border-line-strong bg-elevated/40")}>
             <span className={cn("t-stat-lg", rank === 1 ? "text-signal" : "text-faint")}>{rank}</span>
-            <span className="flex size-16 items-center justify-center rounded-full border border-dashed border-line-strong text-faint">?</span>
+            <span aria-hidden="true" className="flex size-16 items-center justify-center rounded-full border border-dashed border-line-strong text-faint">?</span>
             <span className="t-h3 text-ink">{rank === 1 ? "First place is open." : "Open spot"}</span>
             <span className="text-small text-muted">{rank === 1 ? "Save a public passport to join. Accepted work moves you up." : "Waiting for accepted work."}</span>
             {rank === 1 ? (

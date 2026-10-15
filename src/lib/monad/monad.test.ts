@@ -24,7 +24,7 @@ function toSql(pg: PGlite): Sql {
 describe("Monad configuration", () => {
   it("keeps mainnet chain 143 and ignores a non-https RPC override", () => {
     assert.equal(MONAD_CHAIN_ID, 143);
-    assert.equal(monadRpcUrls("http://evil.example")[0], "https://rpc.monad.xyz");
+    assert.equal(monadRpcUrls("http://evil.example")[0], "https://rpc1.monad.xyz");
     assert.equal(monadRpcUrls("https://rpc.example")[0], "https://rpc.example");
     assert.equal(explorerAddressUrl("0x1111111111111111111111111111111111111111"), "https://monadvision.com/address/0x1111111111111111111111111111111111111111");
     assert.equal(explorerAddressUrl("not-an-address"), null);
@@ -44,7 +44,7 @@ describe("Monad configuration", () => {
   });
 
   it("reports a dead RPC instead of a successful connection", async () => {
-    const result = await probeMonadRpc("https://127.0.0.1:9");
+    const result = await probeMonadRpc(undefined, ["https://127.0.0.1:9", "https://127.0.0.1:10"]);
     assert.equal(result.ok, false);
     if (result.ok) return;
     assert.match(result.error, /did not respond|not Monad/);

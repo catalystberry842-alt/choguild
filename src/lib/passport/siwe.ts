@@ -1,4 +1,5 @@
-import { verifyMessage, type Hex } from "viem";
+import { createPublicClient, fallback, http, verifyMessage, type Hex } from "viem";
+import { monad } from "@/lib/passport/chain";
 import { createSiweMessage, parseSiweMessage, validateSiweMessage } from "viem/siwe";
 import { SIWE_STATEMENT } from "@/lib/passport/copy";
 
@@ -44,9 +45,20 @@ export async function signatureMatchesMessage(input: {
     time: input.now ?? new Date(),
   });
   if (!fieldsOk || parsed.statement !== SIWE_STATEMENT || !parsed.address) return false;
-  return verifyMessage({
+  const eoa = await verifyMessage({
     address: parsed.address,
     message: input.message,
     signature: input.signature,
-  });
+  }).catch(() => false);
+  if (eoa) return true;
+  // Smart-contract wallets (e.g. Coinbase Smart Wallet) sign with ERC-1271 / ERC-6492; check onchain.
+  try {
+    const client = createPublicClient({
+      chain: monad,
+      transport: fallback(monad.rpcUrls.default.http.slice(0, 4).map((url) => http(url, { timeout: 4_000, retryCount: 0 }))),
+    });
+    return await client.verifyMessage({ address: parsed.address, message: input.message, signature: input.signature });
+  } catch {
+    return false;
+  }
 }
