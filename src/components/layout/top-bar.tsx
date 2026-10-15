@@ -21,7 +21,7 @@ export function TopBar({ title, onOpenPalette }: { title: string; onOpenPalette:
   const nested = pathname.split("/").filter(Boolean).length > 1;
 
   return (
-    <header className="glass sticky top-0 z-30 border-b border-line">
+    <header className="glass sticky top-0 z-30 border-b border-white/[0.06]">
       <div className="h-[env(safe-area-inset-top,0px)]" aria-hidden="true" />
       <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4 sm:gap-3 sm:px-6">
         <Link to="/" className="flex shrink-0 items-center gap-2.5" aria-label="Choguild home">

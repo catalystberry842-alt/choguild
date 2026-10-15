@@ -1,10 +1,14 @@
-import { useEffect, useState } from "react";
+import { useInView } from "motion/react";
+import { useEffect, useRef, useState } from "react";
 
-/** Animates a number from 0 to `value` once on mount. */
-export function CountUp({ value, duration = 900 }: { value: number; duration?: number }) {
+/** Counts from 0 to `value` the first time it scrolls into view. */
+export function CountUp({ value, duration = 1200 }: { value: number; duration?: number }) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
   const [shown, setShown] = useState(value);
 
   useEffect(() => {
+    if (!inView) return;
     if (value === 0 || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       setShown(value);
       return;
@@ -13,13 +17,13 @@ export function CountUp({ value, duration = 900 }: { value: number; duration?: n
     const start = performance.now();
     const tick = (now: number) => {
       const t = Math.min(1, (now - start) / duration);
-      setShown(Math.round(value * (1 - Math.pow(1 - t, 3))));
+      setShown(Math.round(value * (1 - Math.pow(1 - t, 4))));
       if (t < 1) frame = requestAnimationFrame(tick);
     };
     setShown(0);
     frame = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(frame);
-  }, [value, duration]);
+  }, [inView, value, duration]);
 
-  return <>{new Intl.NumberFormat("en-US").format(shown)}</>;
+  return <span ref={ref}>{new Intl.NumberFormat("en-US").format(shown)}</span>;
 }

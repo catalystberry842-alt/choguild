@@ -4,12 +4,12 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-[background-color,box-shadow,filter,transform] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-medium tracking-[-0.01em] whitespace-nowrap transition-[background-color,border-color,box-shadow,filter,transform] duration-200 hover:-translate-y-px active:translate-y-0 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-60",
   {
     variants: {
       variant: {
-        primary: "btn-accent text-on-accent",
-        secondary: "border border-line bg-elevated text-ink hover:border-muted",
+        primary: "btn-accent btn-glow text-on-accent",
+        secondary: "border border-white/10 bg-white/[0.04] text-ink backdrop-blur hover:border-white/20 hover:bg-white/[0.07]",
         ghost: "bg-transparent text-body hover:bg-elevated hover:text-ink",
       },
       size: {

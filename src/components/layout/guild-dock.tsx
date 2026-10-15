@@ -71,7 +71,7 @@ export function GuildDock() {
           layout
           style={{ borderRadius: 28 }}
           className={cn(
-            "pointer-events-auto w-full overflow-hidden border border-line bg-canvas/95 shadow-[0_10px_40px_-12px_rgb(0_0_0_/_0.45)] backdrop-blur-xl",
+            "pointer-events-auto w-full overflow-hidden border border-white/10 bg-canvas/70 shadow-[0_20px_60px_-15px_rgb(0_0_0_/_0.8),inset_0_1px_0_rgb(255_255_255_/_0.06)] backdrop-blur-2xl backdrop-saturate-150",
             panel ? "max-w-[400px]" : "max-w-fit",
           )}
         >
