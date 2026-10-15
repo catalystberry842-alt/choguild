@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /applications
+Disallow: /submissions
+Disallow: /opportunities
+Disallow: /api/
+
+Sitemap: https://choguild.vercel.app/sitemap.xml

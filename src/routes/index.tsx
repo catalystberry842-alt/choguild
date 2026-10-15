@@ -13,6 +13,7 @@ import { emptyBoardSearch } from "@/lib/board/search";
 import { getPassportState } from "@/lib/passport/functions";
 import { getRanking } from "@/lib/ranking/functions";
 import { formatXp, rankContributors } from "@/lib/ranking/xp";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   loader: async () => {
@@ -29,7 +30,7 @@ export const Route = createFileRoute("/")({
     };
   },
   staticData: { title: "Home" },
-  head: () => ({ meta: [{ title: "Choguild · The contributor ecosystem on Monad" }] }),
+  head: () => seo({ title: "Choguild · Get work and earn your rank", description: "Find work, prove it, climb the ladder. The contributor guild on Monad.", path: "/" }),
   component: HomePage,
 });
 
@@ -66,40 +67,31 @@ function Hero() {
         <motion.div initial={{ opacity: 0, scale: 0.6, rotate: -90 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 1.2, ease: EASE }}>
           <MarkOrbit />
         </motion.div>
-        <motion.p
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.2 }}
-          className="mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-label text-body backdrop-blur"
+        <p
+          style={{ animationDelay: "100ms" }}
+          className="fade-up mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-label text-body backdrop-blur"
         >
           <span className="pulse-dot" aria-hidden="true" />
           The contributor guild on Monad
-        </motion.p>
+        </p>
         <h1 id="hero-title" className="t-display mt-7 max-w-[12ch] text-balance">
           <WordReveal
-            delay={0.25}
+            delay={0.1}
             wrap
             lines={[["Get", "work", "and", "earn", "your", <em key="r">rank.</em>]]}
           />
         </h1>
-        <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE, delay: 0.8 }}
-          className="mt-6 text-lead text-body sm:text-lead"
-        >
+        <p className="fade-up mt-6 text-lead text-body" style={{ animationDelay: "350ms" }}>
           Find work, prove it, climb the ladder.
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: EASE, delay: 0.95 }}
-          className="mt-9 flex w-full flex-col gap-2.5 min-[420px]:w-auto min-[420px]:flex-row"
+        </p>
+        <div
+          style={{ animationDelay: "450ms" }}
+          className="fade-up mt-9 flex w-full flex-col gap-2.5 min-[420px]:w-auto min-[420px]:flex-row"
         >
           <Link
             to="/discover"
             search={emptyBoardSearch()}
-            className="sheen signal-glow group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[linear-gradient(180deg,#9a89ff,#7058f0)] px-7 text-base font-medium text-on-accent"
+            className="sheen signal-glow group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[linear-gradient(180deg,#7660f2,#5a40d8)] px-7 text-base font-medium text-on-accent"
           >
             Explore opportunities
             <span aria-hidden="true" className="arrow-slide">→</span>
@@ -110,7 +102,7 @@ function Hero() {
           >
             {profile ? "Open your passport" : "Create your passport"}
           </Link>
-        </motion.div>
+        </div>
       </motion.div>
     </section>
   );
@@ -193,7 +185,7 @@ function Bento() {
                 search={step.to === "/discover" ? emptyBoardSearch() : step.to === "/submissions" ? { view: "mine", status: "all" } : undefined}
                 className="group flex items-center gap-4 rounded-2xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
               >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong text-small font-semibold text-ink transition-colors group-hover:border-signal group-hover:bg-signal group-hover:text-on-accent">
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong text-small font-semibold text-ink transition-colors group-hover:border-signal group-hover:bg-signal-solid group-hover:text-on-accent">
                   {index + 1}
                 </span>
                 <span className="min-w-0 flex-1">
@@ -298,6 +290,10 @@ function EmptyPreview({ body, to, cta }: { body: string; to: "/passport" | "/opp
 }
 
 function Ticker({ stats, titles }: { stats: { openOpportunities: number; passports: number; acceptedWork: number; onchainTxs: number }; titles: string[] }) {
+  const empty =
+    titles.length === 0 && stats.openOpportunities + stats.passports + stats.acceptedWork + stats.onchainTxs === 0;
+  // Nothing real to show yet: no ticker rather than a reel of zeros.
+  if (empty) return null;
   const items = [
     `${formatXp(stats.openOpportunities)} open`,
     `${formatXp(stats.passports)} passports`,

@@ -1,21 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
-import { useAccount } from "wagmi";
+import { useWalletState } from "@/components/passport/wallet-state";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/ui/page-header";
 import { MONAD_CHAIN_ID, MONAD_EXPLORERS, monadChainLabel } from "@/lib/passport/chain";
 import { getMonadStatus } from "@/lib/monad/functions";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/network")({
   loader: () => getMonadStatus(),
   staticData: { title: "Network", crumb: "Network" },
-  head: () => ({ meta: [{ title: "Network · Choguild" }] }),
+  head: () => seo({ title: "Network · Choguild", description: "Live Monad mainnet status and Choguild network activity.", path: "/network" }),
   component: NetworkPage,
 });
 
 function NetworkPage() {
   const probe = Route.useLoaderData();
-  const { isConnected, chainId } = useAccount();
+  const { isConnected, chainId } = useWalletState();
   const wallet = monadChainLabel(isConnected ? chainId : undefined);
 
   return (

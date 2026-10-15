@@ -19,12 +19,12 @@ function label<T extends string>(map: Record<T, string>, value: string): string 
 }
 
 /** A rich listing card: project, status, title, summary, skills, and terms in a footer strip. */
-export function OpportunityCardView({ item }: { item: OpportunityCard; index?: number }) {
+export function OpportunityCardView({ item, animate = true }: { item: OpportunityCard; index?: number; animate?: boolean }) {
   const project = projectLabel(item.projectName);
   const open = item.status === "open";
 
   return (
-    <Reveal as="li" y={14} className="h-full">
+    <Reveal as="li" y={14} className="h-full" {...(animate ? {} : { initial: false })}>
       <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="bento group flex h-full flex-col">
         <div className="flex flex-1 flex-col p-6">
           <div className="flex items-center justify-between gap-3">
@@ -57,7 +57,7 @@ export function OpportunityCardView({ item }: { item: OpportunityCard; index?: n
           <span className="text-ink">{label(COMPENSATION_LABEL, item.compensationType as CompensationType)}</span>
           <span className="flex items-center gap-3 text-muted">
             {item.deadline ? `Due ${formatDay(item.deadline)}` : "No deadline"}
-            <span aria-hidden="true" className="arrow-slide flex size-7 items-center justify-center rounded-full bg-white/[0.06] text-ink group-hover:bg-signal group-hover:text-on-accent">→</span>
+            <span aria-hidden="true" className="arrow-slide flex size-7 items-center justify-center rounded-full bg-white/[0.06] text-ink group-hover:bg-signal-solid group-hover:text-on-accent">→</span>
           </span>
         </div>
       </Link>

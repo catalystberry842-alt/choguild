@@ -24,6 +24,8 @@ import { plainCopy, projectLabel } from "@/lib/board/display";
 import { getBoardOpportunity, sendApplication, updateBoardStatus, withdrawBoardApplication } from "@/lib/board/functions";
 import type { BoardErrors } from "@/lib/board/validate";
 import { formatStamp } from "@/lib/passport/format";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/discover/$opportunityId")({
   loader: async ({ params }) => {
@@ -32,9 +34,13 @@ export const Route = createFileRoute("/discover/$opportunityId")({
     return opportunity;
   },
   staticData: { title: "Opportunity", crumb: "Discover" },
-  head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.title} · Choguild` : "Opportunity · Choguild" }],
-  }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="detail" />,
+  head: ({ loaderData, params }) =>
+    seo({
+      title: loaderData ? `${loaderData.title} · Choguild` : "Opportunity · Choguild",
+      description: loaderData?.summary,
+      path: `/discover/${params.opportunityId}`,
+    }),
   component: OpportunityPage,
   notFoundComponent: () => (
     <EmptyState

@@ -51,18 +51,17 @@ export function WordReveal({
       {lines.map((words, line) => (
         <span key={line} className={wrap ? "inline" : "block whitespace-nowrap"}>
           {words.map((word, i) => {
-            const d = delay + index++ * 0.07;
+            const d = delay + index++ * 0.05;
             return [
               i > 0 ? " " : null,
               <span key={i} className="-my-[0.12em] inline-block overflow-hidden py-[0.12em] align-bottom">
-                <motion.span
-                  className={`inline-block will-change-transform ${wordClassName}`}
-                  initial={{ y: "110%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 1, ease: EASE, delay: d }}
+                {/* CSS animation, so the words rise from the server-rendered HTML before hydration. */}
+                <span
+                  className={`word-rise inline-block ${wordClassName}`}
+                  style={{ animationDelay: `${Math.round(d * 1000)}ms` }}
                 >
                   {word}
-                </motion.span>
+                </span>
               </span>,
             ];
           })}

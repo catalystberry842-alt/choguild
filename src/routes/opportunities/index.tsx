@@ -5,11 +5,12 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { OPPORTUNITY_STATUS_LABEL, type OpportunityStatus } from "@/lib/board/copy";
 import { listMyOpportunities } from "@/lib/board/functions";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/opportunities/")({
   loader: () => listMyOpportunities(),
   staticData: { title: "Your listings", crumb: "Your listings" },
-  head: () => ({ meta: [{ title: "Your opportunities · Choguild" }] }),
+  head: () => seo({ title: "Your opportunities · Choguild", noindex: true }),
   component: OwnedPage,
 });
 

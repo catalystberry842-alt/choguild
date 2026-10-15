@@ -10,6 +10,8 @@ import { Field, SelectInput, TextArea } from "@/components/ui/input";
 import { APPLICATION_STATUS_LABEL, REVIEW_STATUSES, type ReviewStatus } from "@/lib/board/copy";
 import { decideApplication, getBoardApplication, withdrawBoardApplication } from "@/lib/board/functions";
 import { formatStamp } from "@/lib/passport/format";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/applications/$applicationId")({
   loader: async ({ params }) => {
@@ -18,9 +20,9 @@ export const Route = createFileRoute("/applications/$applicationId")({
     return application;
   },
   staticData: { title: "Application", crumb: "Application" },
-  head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.opportunityTitle} · Application` : "Application · Choguild" }],
-  }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="detail" />,
+  head: ({ loaderData }) =>
+    seo({ title: loaderData ? `${loaderData.opportunityTitle} · Application` : "Application · Choguild", noindex: true }),
   component: ApplicationPage,
   notFoundComponent: () => (
     <EmptyState title="Application not found" body="It may have been removed, or it belongs to someone else." />

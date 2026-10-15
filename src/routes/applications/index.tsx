@@ -7,11 +7,14 @@ import { APPLICATION_STATUS_LABEL } from "@/lib/board/copy";
 import { listBoardApplications } from "@/lib/board/functions";
 import { emptyBoardSearch } from "@/lib/board/search";
 import { formatStamp } from "@/lib/passport/format";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/applications/")({
   loader: () => listBoardApplications(),
   staticData: { title: "Applications", crumb: "Applications" },
-  head: () => ({ meta: [{ title: "Applications · Choguild" }] }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="list" />,
+  head: () => seo({ title: "Applications · Choguild", noindex: true }),
   component: ApplicationsPage,
 });
 

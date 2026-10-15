@@ -103,13 +103,21 @@ Copy `.env.example` into your host's environment settings. Do not commit real va
 | --- | --- | --- |
 | `DATABASE_URL` | For persistent data | Postgres connection string (Neon works well). Without it, data lives in memory and resets when the server restarts. |
 | `CHOG_SESSION_SECRET` | Yes, on every deployed build | At least 32 random characters (`openssl rand -hex 32`). Signs passport sessions. |
-| `VITE_MONAD_RPC_URL` | No | Override the public Monad RPC. |
+| `VITE_MONAD_RPC_URL` | No | Preferred Monad RPC (https only). The app falls back through rpc1–3.monad.xyz, monadinfra, dRPC and Ankr automatically. |
+| `VITE_WALLETCONNECT_PROJECT_ID` | No | Project ID from [Reown / WalletConnect Cloud](https://cloud.reown.com). When set, a WalletConnect (QR / mobile wallet) option appears. Browser wallets (EIP-6963) and Coinbase Wallet work without it. |
 
 ## Deploy to Vercel
 
 1. Import the repository in Vercel. The framework preset can stay on **Other**; `vercel.json` and the Nitro build output handle the rest.
 2. Add `CHOG_SESSION_SECRET` and `DATABASE_URL`. Without `DATABASE_URL` the deployed app runs on in-memory PGLite and every cold start wipes the data.
 3. Deploy. `npm run build` runs the database migrations automatically when `DATABASE_URL` is present.
+
+## Security and operations
+
+- Security headers (`nosniff`, frame denial, referrer and permissions policy, a report-only CSP) and long cache headers for static assets live in `vercel.json`.
+- Every server function validates its input with zod (`src/lib/schemas.ts`) and writes are rate limited per client (`src/lib/rate-limit.ts`, in-memory per instance).
+- Client errors are reported to `/api/client-error` and show up in the Vercel function logs as `[client-error]`. Builds emit hidden source maps for symbolicating stacks.
+- `robots.txt` is static; `/sitemap.xml` is generated from public listings and passports.
 
 ## Project layout
 

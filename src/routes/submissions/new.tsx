@@ -6,11 +6,12 @@ import { PageHeader } from "@/components/ui/page-header";
 import { Field, SelectInput } from "@/components/ui/input";
 import { getWorkHome } from "@/lib/work/functions";
 import { useState } from "react";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/submissions/new")({
   loader: () => getWorkHome(),
   staticData: { title: "New submission", crumb: "New submission" },
-  head: () => ({ meta: [{ title: "New submission · Choguild" }] }),
+  head: () => seo({ title: "New submission · Choguild", noindex: true }),
   component: NewSubmissionPage,
 });
 

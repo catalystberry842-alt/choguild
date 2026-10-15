@@ -1,7 +1,7 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { Wallet } from "lucide-react";
-import { useAccount } from "wagmi";
-import { WalletPanel } from "@/components/passport/wallet-panel";
+import { useWalletState } from "@/components/passport/wallet-state";
+import { LazyWalletPanel } from "@/components/passport/lazy-wallet-panel";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/cn";
 import { shortAddress } from "@/lib/passport/format";
@@ -20,7 +20,7 @@ export function WalletButton({
   compactLabel?: string;
   className?: string;
 }) {
-  const { address, isConnected } = useAccount();
+  const { address, isConnected } = useWalletState();
   const connected = isConnected && address;
 
   return (
@@ -56,7 +56,7 @@ export function WalletButton({
             Connect a browser wallet. A connection is not a passport session until you sign.
           </Dialog.Description>
           <div className="mt-5">
-            <WalletPanel />
+            <LazyWalletPanel />
           </div>
           <div className="mt-5 flex justify-end">
             <Dialog.Close asChild>

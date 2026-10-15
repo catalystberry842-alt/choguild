@@ -4,6 +4,8 @@ import { usePassport } from "@/components/passport/passport-provider";
 import { EmptyState } from "@/components/ui/empty-state";
 import { getPublicProfile } from "@/lib/passport/functions";
 import { getPublicContributions } from "@/lib/work/functions";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/passport/$username")({
   loader: async ({ params }) => {
@@ -13,9 +15,13 @@ export const Route = createFileRoute("/passport/$username")({
     return { profile, contributions };
   },
   staticData: { title: "Public passport", crumb: "Passport" },
-  head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.profile.displayName} · Choguild` : "Passport · Choguild" }],
-  }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="detail" />,
+  head: ({ loaderData, params }) =>
+    seo({
+      title: loaderData ? `${loaderData.profile.displayName} · Choguild` : "Passport · Choguild",
+      description: loaderData?.profile.biography || "A Chog Passport on Choguild.",
+      path: `/passport/${params.username}`,
+    }),
   component: PublicPassportPage,
   notFoundComponent: PassportNotFound,
 });

@@ -7,10 +7,11 @@ import { TierBadge } from "@/components/ranking/bits";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { ONCHAIN_XP_CAP, TIERS, XP_RULES } from "@/lib/ranking/xp";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/how-it-works")({
   staticData: { title: "How it works", crumb: "How it works" },
-  head: () => ({ meta: [{ title: "How it works · Choguild" }] }),
+  head: () => seo({ title: "How it works · Choguild", description: "Four steps to rank: claim a passport, find open work, submit proof, and climb the ladder on Monad.", path: "/how-it-works" }),
   component: HowItWorksPage,
 });
 

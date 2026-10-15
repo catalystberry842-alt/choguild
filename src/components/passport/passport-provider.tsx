@@ -1,9 +1,7 @@
 import { useServerFn } from "@tanstack/react-start";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { WagmiProvider } from "wagmi";
 import { getPassportState } from "@/lib/passport/functions";
-import { wagmiConfig } from "@/lib/passport/wagmi";
+import { WalletStateProvider } from "@/components/passport/wallet-state";
 import type { PublicProfile } from "@/lib/passport/types";
 
 type PassportContextValue = {
@@ -17,13 +15,10 @@ type PassportContextValue = {
 const PassportContext = createContext<PassportContextValue | null>(null);
 
 export function PassportProvider({ children }: { children: ReactNode }) {
-  const [queryClient] = useState(() => new QueryClient());
   return (
-    <WagmiProvider config={wagmiConfig}>
-      <QueryClientProvider client={queryClient}>
-        <PassportState>{children}</PassportState>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <WalletStateProvider>
+      <PassportState>{children}</PassportState>
+    </WalletStateProvider>
   );
 }
 

@@ -2,7 +2,7 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { useAccount } from "wagmi";
+import { useWalletState } from "@/components/passport/wallet-state";
 import { LogoMark } from "@/components/brand/logo";
 import { usePassport } from "@/components/passport/passport-provider";
 import { WalletButton } from "@/components/passport/wallet-button";
@@ -56,10 +56,12 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
           <button
             type="button"
             onClick={onOpenPalette}
-            aria-label="Search pages and actions"
+            aria-keyshortcuts="Meta+K Control+K"
+            title="Search pages and actions"
             className="ml-1 hidden size-9 items-center justify-center rounded-full text-label text-muted transition-colors hover:bg-white/[0.06] hover:text-ink md:flex"
           >
-            ⌘K
+            <span className="sr-only">Search pages and actions</span>
+            <span aria-hidden="true">⌘K</span>
           </button>
           <span className="ml-auto lg:ml-1" />
           <WalletButton />
@@ -73,7 +75,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
 function MobileMenu() {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const { address, isConnected, chainId } = useAccount();
+  const { address, isConnected, chainId } = useWalletState();
   const { profile, sessionAddress } = usePassport();
   const network = monadChainLabel(isConnected ? chainId : undefined);
 
@@ -112,7 +114,7 @@ function MobileMenu() {
                 </button>
               </Dialog.Close>
             </div>
-            <nav aria-label="All pages" className="mt-2 grid grid-cols-2 gap-2">
+            <nav aria-label="All pages" className="mt-2 grid grid-cols-1 gap-2 min-[360px]:grid-cols-2">
               {NAV_ITEMS.map((item, index) => {
                 const Icon = item.icon;
                 const active = isNavActive(pathname, item.to);
@@ -133,7 +135,7 @@ function MobileMenu() {
                 );
               })}
             </nav>
-            <div className="mt-2 flex items-center justify-between rounded-2xl bg-white/[0.03] px-4 py-3 text-small">
+            <div className="mt-2 flex flex-col items-start gap-1 rounded-2xl bg-white/[0.03] px-4 py-3 text-small min-[360px]:flex-row min-[360px]:items-center min-[360px]:justify-between">
               <span className="truncate text-ink">{profile ? `@${profile.username}` : sessionAddress ? "Signed in" : "Not signed in"}</span>
               <span className="truncate font-mono text-label text-muted">
                 {isConnected && address ? `${shortAddress(address)} · ${network.label}` : "No wallet"}

@@ -13,6 +13,8 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as NetworkRouteImport } from './routes/network'
 import { Route as RankingRouteImport } from './routes/ranking'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ApiClientErrorRouteImport } from './routes/api/client-error'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsApplicationIdRouteImport } from './routes/applications/$applicationId'
 import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
@@ -45,6 +47,16 @@ const NetworkRoute = NetworkRouteImport.update({
 const RankingRoute = RankingRouteImport.update({
   id: '/ranking',
   path: '/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiClientErrorRoute = ApiClientErrorRouteImport.update({
+  id: '/api/client-error',
+  path: '/api/client-error',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApplicationsIndexRoute = ApplicationsIndexRouteImport.update({
@@ -121,6 +133,8 @@ export interface FileRoutesByFullPath {
   '/how-it-works': typeof HowItWorksRoute
   '/network': typeof NetworkRoute
   '/ranking': typeof RankingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/client-error': typeof ApiClientErrorRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -140,6 +154,8 @@ export interface FileRoutesByTo {
   '/how-it-works': typeof HowItWorksRoute
   '/network': typeof NetworkRoute
   '/ranking': typeof RankingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/client-error': typeof ApiClientErrorRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -160,6 +176,8 @@ export interface FileRoutesById {
   '/how-it-works': typeof HowItWorksRoute
   '/network': typeof NetworkRoute
   '/ranking': typeof RankingRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/client-error': typeof ApiClientErrorRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -181,6 +199,8 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/network'
     | '/ranking'
+    | '/sitemap.xml'
+    | '/api/client-error'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -200,6 +220,8 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/network'
     | '/ranking'
+    | '/sitemap.xml'
+    | '/api/client-error'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -219,6 +241,8 @@ export interface FileRouteTypes {
     | '/how-it-works'
     | '/network'
     | '/ranking'
+    | '/sitemap.xml'
+    | '/api/client-error'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -239,6 +263,8 @@ export interface RootRouteChildren {
   HowItWorksRoute: typeof HowItWorksRoute
   NetworkRoute: typeof NetworkRoute
   RankingRoute: typeof RankingRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiClientErrorRoute: typeof ApiClientErrorRoute
   ApplicationsApplicationIdRoute: typeof ApplicationsApplicationIdRoute
   DiscoverOpportunityIdRoute: typeof DiscoverOpportunityIdRoute
   OpportunitiesNewRoute: typeof OpportunitiesNewRoute
@@ -282,6 +308,20 @@ declare module '@tanstack/react-router' {
       path: '/ranking'
       fullPath: '/ranking'
       preLoaderRoute: typeof RankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/client-error': {
+      id: '/api/client-error'
+      path: '/api/client-error'
+      fullPath: '/api/client-error'
+      preLoaderRoute: typeof ApiClientErrorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/applications/': {
@@ -383,6 +423,8 @@ const rootRouteChildren: RootRouteChildren = {
   HowItWorksRoute: HowItWorksRoute,
   NetworkRoute: NetworkRoute,
   RankingRoute: RankingRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiClientErrorRoute: ApiClientErrorRoute,
   ApplicationsApplicationIdRoute: ApplicationsApplicationIdRoute,
   DiscoverOpportunityIdRoute: DiscoverOpportunityIdRoute,
   OpportunitiesNewRoute: OpportunitiesNewRoute,

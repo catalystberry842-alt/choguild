@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { PassportRecord } from "@/components/passport/passport-record";
 import { ProfileForm } from "@/components/passport/profile-form";
 import { usePassport } from "@/components/passport/passport-provider";
-import { WalletPanel } from "@/components/passport/wallet-panel";
+import { LazyWalletPanel } from "@/components/passport/lazy-wallet-panel";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorMessage } from "@/components/ui/error-message";
@@ -10,12 +10,11 @@ import { LoadingState } from "@/components/ui/loading-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { Section } from "@/components/ui/section";
 import { emptyBoardSearch } from "@/lib/board/search";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/passport/")({
   staticData: { title: "Contributor Passport", crumb: "Passport" },
-  head: () => ({
-    meta: [{ title: "Passport · Choguild" }],
-  }),
+  head: () => seo({ title: "Passport · Choguild", description: "Claim your Chog Passport: one wallet-signed identity for your Monad contributions.", path: "/passport" }),
   component: PassportPage,
 });
 
@@ -48,11 +47,11 @@ function PassportPage() {
 
       <div className="grid gap-3 lg:grid-cols-2">
       <Section title="Wallet">
-        <WalletPanel />
+        <LazyWalletPanel />
       </Section>
 
       <Section title="Profile" description={profile ? undefined : "Username, display name and a short bio are required."}>
-        {status === "loading" ? <LoadingState label="Loading passport" /> : null}
+        {status === "loading" ? <LoadingState label="Loading passport" layout="list" rows={2} /> : null}
         {status === "error" ? <ErrorMessage title="Passport unavailable">{error}</ErrorMessage> : null}
         {status === "ready" && !verified ? (
           <EmptyState

@@ -1,6 +1,6 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, stripSearchParams, useNavigate } from "@tanstack/react-router";
 import { Search, SlidersHorizontal } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { OpportunityCardView } from "@/components/board/opportunity-card";
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -16,13 +16,18 @@ import {
 import { listBoard } from "@/lib/board/functions";
 import { emptyBoardSearch, parseBoardSearch, type BoardSearch } from "@/lib/board/search";
 import { cn } from "@/lib/cn";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/discover/")({
   validateSearch: (search: Record<string, unknown>) => parseBoardSearch(search),
+  // Keep /discover clean: default filter values never appear in the URL.
+  search: { middlewares: [stripSearchParams(emptyBoardSearch())] },
   loaderDeps: ({ search }) => search,
   loader: ({ deps }) => listBoard({ data: deps }),
   staticData: { title: "Discover", crumb: "Discover" },
-  head: () => ({ meta: [{ title: "Discover · Choguild" }] }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="cards" />,
+  head: () => seo({ title: "Discover · Choguild", description: "Open work from contributors with a Choguild passport.", path: "/discover" }),
   component: DiscoverPage,
 });
 
@@ -39,6 +44,11 @@ function DiscoverPage() {
     (search.status !== "open" ? 1 : 0) +
     (search.sort !== "newest" ? 1 : 0);
   const [showFilters, setShowFilters] = useState(activeFilters > 0);
+  // Cards fade in on the first visit only; filter and page changes swap results in place.
+  const firstPaint = useRef(true);
+  useEffect(() => {
+    firstPaint.current = false;
+  }, []);
 
   function update(next: Partial<BoardSearch>) {
     void navigate({ to: "/discover", search: { ...search, page: 1, ...next } });
@@ -90,6 +100,7 @@ function DiscoverPage() {
             variant="secondary"
             aria-expanded={showFilters}
             aria-controls="board-filters"
+            aria-label={activeFilters > 0 ? `Filters, ${activeFilters} active` : "Filters"}
             onClick={() => setShowFilters((open) => !open)}
           >
             <SlidersHorizontal className="size-4" aria-hidden="true" />
@@ -127,7 +138,7 @@ function DiscoverPage() {
                       className={cn(
                         "min-h-9 rounded-full border px-3.5 text-small transition-colors",
                         on
-                          ? "border-signal bg-signal text-on-accent"
+                          ? "border-signal bg-signal-solid text-on-accent"
                           : "border-line-strong text-body hover:border-ink/40 hover:text-ink",
                       )}
                     >
@@ -216,7 +227,12 @@ function DiscoverPage() {
       {result.items.length > 0 ? (
         <ul className="grid gap-3 md:grid-cols-2">
           {result.items.map((item, index) => (
-            <OpportunityCardView key={item.id} item={item} index={(result.page - 1) * result.pageSize + index} />
+            <OpportunityCardView
+              key={item.id}
+              item={item}
+              animate={firstPaint.current}
+              index={(result.page - 1) * result.pageSize + index}
+            />
           ))}
         </ul>
       ) : (

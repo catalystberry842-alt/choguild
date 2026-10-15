@@ -5,16 +5,17 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { LoadingState } from "@/components/ui/loading-state";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/opportunities/new")({
   staticData: { title: "Publish work", crumb: "Publish" },
-  head: () => ({ meta: [{ title: "Publish · Choguild" }] }),
+  head: () => seo({ title: "Publish · Choguild", noindex: true }),
   component: NewOpportunityPage,
 });
 
 function NewOpportunityPage() {
   const { status, sessionAddress, profile } = usePassport();
-  if (status === "loading") return <LoadingState label="Checking passport" />;
+  if (status === "loading") return <LoadingState label="Checking passport" layout="detail" />;
   if (!sessionAddress || !profile) {
     return (
       <div>

@@ -7,6 +7,8 @@ import { SelectInput } from "@/components/ui/input";
 import { WORK_STATUSES, WORK_STATUS_LABEL, type WorkStatus } from "@/lib/work/copy";
 import { getWorkHome } from "@/lib/work/functions";
 import { formatStamp } from "@/lib/passport/format";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 type Search = { view: "mine" | "review"; status: string };
 
@@ -18,7 +20,8 @@ export const Route = createFileRoute("/submissions/")({
   loaderDeps: ({ search }) => search,
   loader: () => getWorkHome(),
   staticData: { title: "Submissions", crumb: "Submissions" },
-  head: () => ({ meta: [{ title: "Submissions · Choguild" }] }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="list" />,
+  head: () => seo({ title: "Submissions · Choguild", noindex: true }),
   component: SubmissionsPage,
 });
 

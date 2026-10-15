@@ -16,13 +16,16 @@ import {
   type RankBy,
   type RankedContributor,
 } from "@/lib/ranking/xp";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/ranking")({
   validateSearch: (search: Record<string, unknown>): { by?: RankBy } =>
     search.by === "guild" || search.by === "onchain" ? { by: search.by } : {},
   loader: () => getRanking(),
   staticData: { title: "Ranking", crumb: "Ranking" },
-  head: () => ({ meta: [{ title: "Ranking · Choguild" }] }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="ladder" />,
+  head: () => seo({ title: "Ranking · Choguild", description: "The Choguild ladder: contributors ranked by accepted work, reviews and onchain activity on Monad.", path: "/ranking" }),
   component: RankingPage,
 });
 
@@ -66,7 +69,7 @@ function RankingPage() {
                 replace
                 className={cn("relative rounded-full px-4 py-1.5 text-small transition-colors", active ? "text-on-accent" : "text-body hover:text-ink")}
               >
-                {active ? <motion.span layoutId="rank-by" className="absolute inset-0 rounded-full bg-signal" transition={{ type: "spring", bounce: 0.15, duration: 0.45 }} /> : null}
+                {active ? <motion.span layoutId="rank-by" className="absolute inset-0 rounded-full bg-signal-solid" transition={{ type: "spring", bounce: 0.15, duration: 0.45 }} /> : null}
                 <span className="relative">{option.label}</span>
               </Link>
             );

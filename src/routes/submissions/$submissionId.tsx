@@ -11,6 +11,8 @@ import { Field, SelectInput, TextArea } from "@/components/ui/input";
 import { REVIEW_ACTIONS, WORK_STATUS_LABEL, type ReviewAction } from "@/lib/work/copy";
 import { getWorkItem, reviewWorkItem } from "@/lib/work/functions";
 import { formatStamp } from "@/lib/passport/format";
+import { seo } from "@/lib/seo";
+import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/submissions/$submissionId")({
   loader: async ({ params }) => {
@@ -19,9 +21,12 @@ export const Route = createFileRoute("/submissions/$submissionId")({
     return work;
   },
   staticData: { title: "Submission", crumb: "Submission" },
-  head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.versions.at(-1)?.title ?? "Submission"} · Choguild` : "Submission · Choguild" }],
-  }),
+  pendingComponent: () => <LoadingState label="Loading page" layout="detail" />,
+  head: ({ loaderData }) =>
+    seo({
+      title: loaderData ? `${loaderData.versions.at(-1)?.title ?? "Submission"} · Choguild` : "Submission · Choguild",
+      noindex: true,
+    }),
   component: SubmissionPage,
   notFoundComponent: () => (
     <EmptyState title="Submission not found" body="Only the contributor and the publisher can open it." />

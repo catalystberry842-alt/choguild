@@ -3,6 +3,7 @@ import { OpportunityForm } from "@/components/board/opportunity-form";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { getBoardOpportunity } from "@/lib/board/functions";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/opportunities/$opportunityId/edit")({
   loader: async ({ params }) => {
@@ -11,7 +12,7 @@ export const Route = createFileRoute("/opportunities/$opportunityId/edit")({
     return opportunity;
   },
   staticData: { title: "Edit opportunity", crumb: "Edit" },
-  head: () => ({ meta: [{ title: "Edit opportunity · Choguild" }] }),
+  head: () => seo({ title: "Edit opportunity · Choguild", noindex: true }),
   component: EditOpportunityPage,
   notFoundComponent: () => (
     <EmptyState title="You can't edit this listing" body="It may be an example, or it belongs to someone else." />

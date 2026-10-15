@@ -4,6 +4,8 @@ import { NotFoundState } from "@/components/layout/not-found";
 import { PassportProvider } from "@/components/passport/passport-provider";
 import geist400 from "@fontsource/geist-sans/files/geist-sans-latin-400-normal.woff2?url";
 import geist600 from "@fontsource/geist-sans/files/geist-sans-latin-600-normal.woff2?url";
+import { useEffect } from "react";
+import { installErrorReporting } from "@/lib/report-error";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Choguild";
@@ -39,6 +41,7 @@ export const Route = createRootRoute({
 });
 
 function RootComponent() {
+  useEffect(() => installErrorReporting(), []);
   return (
     <html lang="en" suppressHydrationWarning>
       <head>

@@ -11,11 +11,12 @@ import { APPLICATION_STATUS_LABEL, REVIEW_STATUSES, type ReviewStatus } from "@/
 import { decideApplication, listBoardReviews } from "@/lib/board/functions";
 import type { ApplicationView } from "@/lib/board/types";
 import { formatStamp } from "@/lib/passport/format";
+import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/opportunities/$opportunityId/applications")({
   loader: ({ params }) => listBoardReviews({ data: params.opportunityId }),
   staticData: { title: "Applications", crumb: "Applications" },
-  head: () => ({ meta: [{ title: "Applications · Choguild" }] }),
+  head: () => seo({ title: "Applications · Choguild", noindex: true }),
   component: ReviewPage,
 });
 

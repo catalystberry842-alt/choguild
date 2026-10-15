@@ -59,6 +59,12 @@ export default defineConfig(({ command, isPreview }) => ({
     strictPort: true,
   },
   resolve: { tsconfigPaths: true },
+  // Hidden source maps: generated for debugging stack traces, not referenced from the shipped JS.
+  build: {
+    sourcemap: "hidden",
+    // Never base64 fonts into the render-blocking stylesheet; they load as separate cached files.
+    assetsInlineLimit: (file: string) => (/\.woff2?$/.test(file) ? false : undefined),
+  },
   plugins: [
     pgliteBootstrapPlugin(),
     tailwindcss(),
