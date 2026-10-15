@@ -5,7 +5,7 @@
 <h1 align="center">Choguild</h1>
 
 <p align="center">
-  <strong>Where Monad contributors find work, prove it, and earn their rank.</strong><br />
+  <strong>Get work and earn your rank.</strong><br />
   A contributor guild for the Monad ecosystem: a passport for your name, a board of open work, and a record of reviewed contributions.
 </p>
 

@@ -55,7 +55,7 @@ function HomePage() {
   );
 }
 
-const HEADLINE = "Where Monad contributors find work, prove it, and earn their rank.";
+const HEADLINE = "Get work and earn your rank.";
 
 function Hero() {
   const { profile, stats } = Route.useLoaderData();
@@ -82,7 +82,7 @@ function Hero() {
 
         <h1
           id="hero-title"
-          className="mt-8 max-w-[15ch] text-[clamp(2.4rem,1.2rem+4.4vw,4.5rem)] lg:max-w-[19ch] leading-[1.02] font-semibold tracking-[-0.05em] text-balance text-ink"
+          className="mt-8 max-w-[12ch] text-[clamp(2.9rem,1.4rem+5.6vw,6rem)] lg:max-w-[18ch] leading-[1.02] font-semibold tracking-[-0.05em] text-balance text-ink"
         >
           <WordReveal
             delay={0.15}
@@ -97,7 +97,7 @@ function Hero() {
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.65 }}
           className="mt-7 max-w-[34rem] text-[16px] leading-7 text-balance text-body sm:text-[18px] sm:leading-8"
         >
-          One passport, open work from the community, and a public record of everything you deliver.
+          Find work, prove it, climb the ladder.
         </motion.p>
 
         <motion.div

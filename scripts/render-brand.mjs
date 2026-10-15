@@ -12,8 +12,8 @@ await p.setViewportSize({ width: 1200, height: 630 });
 await p.setContent(`<html><body style="margin:0;width:1200px;height:630px;background:#050505;font-family:'Geist Sans',system-ui,sans-serif;color:#f4f3f7;display:flex;flex-direction:column;justify-content:space-between;padding:84px 96px;box-sizing:border-box;background-image:radial-gradient(60% 50% at 50% -10%,rgba(140,130,220,.16),transparent 70%)">
 ${FONTS}
 <div style="display:flex;align-items:center;gap:18px"><div style="width:52px;height:52px">${mark("#f4f3f7")}</div><span style="font-size:34px;font-weight:600;letter-spacing:-.02em">Choguild</span></div>
-<div><div style="font-size:72px;font-weight:600;letter-spacing:-.05em;line-height:1.04;max-width:960px">Where Monad contributors find work, prove it, and earn their rank.</div>
-<div style="margin-top:30px;font-size:26px;color:#9a98a4">choguild.vercel.app</div></div></body></html>`);
+<div><div style="font-size:96px;font-weight:600;letter-spacing:-.05em;line-height:1.04;max-width:1040px">Get work and<br>earn your rank.</div>
+<div style="margin-top:30px;font-size:26px;color:#9a98a4">Find work, prove it, climb the ladder.</div></div></body></html>`);
 await p.evaluate(async () => {
   await document.fonts.load('600 84px "Geist Sans"');
   await document.fonts.load('400 26px "Geist Sans"');
