@@ -4,6 +4,7 @@ import { loadTxCounts, resetActivityCache } from "./activity.server.ts";
 
 const A = "0x00000000000000000000000000000000000000AA";
 const B = "0x00000000000000000000000000000000000000bb";
+const C = "0x00000000000000000000000000000000000000cc";
 
 function rpc(handler: (calls: { id: number; params: string[] }[]) => unknown, log: string[] = []) {
   return (async (url: string, init: RequestInit) => {
@@ -57,5 +58,18 @@ test("serves repeat lookups from the cache", async () => {
   await loadTxCounts([A], { fetcher, rpcUrls: ["https://one"], now: 2_000 });
   assert.equal(log.length, 1);
   await loadTxCounts([A], { fetcher, rpcUrls: ["https://one"], now: 1_000 + 11 * 60 * 1000 });
+  assert.equal(log.length, 2);
+});
+
+test("backs off for a minute after every RPC failed", async () => {
+  const log: string[] = [];
+  const down = (async (url: string) => {
+    log.push(url);
+    throw new Error("offline");
+  }) as unknown as typeof fetch;
+  await loadTxCounts([C], { fetcher: down, rpcUrls: ["https://one"], now: 1_000 });
+  await loadTxCounts([C], { fetcher: down, rpcUrls: ["https://one"], now: 30_000 });
+  assert.equal(log.length, 1);
+  await loadTxCounts([C], { fetcher: down, rpcUrls: ["https://one"], now: 62_000 });
   assert.equal(log.length, 2);
 });

@@ -4,13 +4,17 @@ type Fetch = typeof fetch;
 
 const CACHE_TTL_MS = 10 * 60 * 1000;
 const CHUNK = 50;
-const TIMEOUT_MS = 6_000;
+const TIMEOUT_MS = 3_000;
+/** After every RPC failed, don't retry for a minute (keeps renders fast when the RPC is down). */
+const FAILURE_BACKOFF_MS = 60 * 1000;
 
 const cache = new Map<string, { count: number; at: number }>();
+let failedAt = Number.NEGATIVE_INFINITY;
 
 /** Clears the in-memory cache (tests). */
 export function resetActivityCache() {
   cache.clear();
+  failedAt = Number.NEGATIVE_INFINITY;
 }
 
 type RpcReply = { id?: number; result?: unknown; error?: unknown };
@@ -58,14 +62,28 @@ export async function loadTxCounts(
 
   const result = new Map<string, number>();
   const missing: string[] = [];
+  const stale: string[] = [];
   for (const address of unique) {
     const hit = cache.get(address);
-    if (hit && now - hit.at < CACHE_TTL_MS) result.set(address, hit.count);
-    else missing.push(address);
+    if (hit) result.set(address, hit.count);
+    if (!hit) missing.push(address);
+    else if (now - hit.at >= CACHE_TTL_MS) stale.push(address);
   }
 
+  // Stale counts are served as-is and refreshed in the background.
+  if (stale.length > 0 && now - failedAt >= FAILURE_BACKOFF_MS) {
+    void fetchCounts(stale, urls, fetcher, now).catch(() => undefined);
+  }
+  if (missing.length === 0 || now - failedAt < FAILURE_BACKOFF_MS) return result;
+  for (const [address, count] of await fetchCounts(missing, urls, fetcher, now)) result.set(address, count);
+  return result;
+}
+
+async function fetchCounts(missing: string[], urls: string[], fetcher: Fetch, now: number): Promise<Map<string, number>> {
+  const result = new Map<string, number>();
   for (let i = 0; i < missing.length; i += CHUNK) {
     const chunk = missing.slice(i, i + CHUNK);
+    let answered = false;
     for (const url of urls) {
       try {
         const counts = await batchNonces(url, chunk, fetcher);
@@ -73,11 +91,13 @@ export async function loadTxCounts(
           result.set(address, count);
           cache.set(address, { count, at: now });
         }
+        answered = true;
         break;
       } catch {
         // Try the next RPC; if all fail these addresses stay unknown.
       }
     }
+    if (!answered) failedAt = now;
   }
   return result;
 }
