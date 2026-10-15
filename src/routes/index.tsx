@@ -1,9 +1,13 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { ArrowRight, BadgeCheck, Compass, FileCheck2, IdCard, type LucideIcon } from "lucide-react";
+import { motion } from "motion/react";
 import type { ReactNode } from "react";
+import { AnimatedMark } from "@/components/brand/animated-mark";
 import { LogoMark } from "@/components/brand/logo";
+import { Magnetic } from "@/components/fx/magnetic";
+import { Reveal, WordReveal } from "@/components/fx/reveal";
 import { ProjectMark } from "@/components/board/opportunity-card";
-import { Avatar, TierBadge } from "@/components/ranking/bits";
+import { Avatar, RankMedal, TierBadge } from "@/components/ranking/bits";
 import { CountUp } from "@/components/ranking/count-up";
 import { listBoard } from "@/lib/board/functions";
 import { COMPENSATION_LABEL, type CompensationType } from "@/lib/board/copy";
@@ -32,18 +36,19 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-/** What Choguild connects, in order. Real product concepts, not endorsements. */
-const ECOSYSTEM: { label: string; to: "/passport" | "/discover" | "/submissions" | "/ranking"; icon: LucideIcon }[] = [
-  { label: "Identity", to: "/passport", icon: IdCard },
-  { label: "Opportunities", to: "/discover", icon: Compass },
-  { label: "Work submissions", to: "/submissions", icon: FileCheck2 },
-  { label: "Accepted contributions", to: "/ranking", icon: BadgeCheck },
+/** The loop, in order. Real product concepts, not endorsements. */
+const STEPS: { label: string; body: string; to: "/passport" | "/discover" | "/submissions" | "/ranking"; icon: LucideIcon }[] = [
+  { label: "Identity", body: "Sign once with your wallet and save a public passport.", to: "/passport", icon: IdCard },
+  { label: "Opportunities", body: "Browse open work from other passport holders.", to: "/discover", icon: Compass },
+  { label: "Submissions", body: "Deliver the work and submit evidence for review.", to: "/submissions", icon: FileCheck2 },
+  { label: "Reputation", body: "Accepted work earns XP and moves you up the ladder.", to: "/ranking", icon: BadgeCheck },
 ];
 
 function HomePage() {
   return (
     <>
       <Hero />
+      <Steps />
       <Inside />
       <Footer />
     </>
@@ -51,233 +56,289 @@ function HomePage() {
 }
 
 function Hero() {
-  const { profile } = Route.useLoaderData();
+  const { profile, stats } = Route.useLoaderData();
 
   return (
-    <section
-      aria-labelledby="hero-title"
-      className="relative isolate flex min-h-[560px] flex-col md:min-h-[640px] lg:min-h-[720px]"
-    >
-      <div className="landing-hero-bg" aria-hidden="true" />
-
-      <div className="relative flex flex-1 flex-col items-center justify-center px-5 pt-20 pb-12 text-center sm:px-8 sm:pt-24">
-        <p className="rise text-[10px] font-medium tracking-[0.14em] whitespace-nowrap text-[var(--l-muted)] uppercase min-[370px]:text-[11px] min-[370px]:tracking-[0.2em] sm:text-xs">
-          The contributor ecosystem on Monad
-        </p>
+    <section aria-labelledby="hero-title" className="relative isolate">
+      <div className="relative mx-auto flex max-w-5xl flex-col items-center px-5 pt-20 pb-16 text-center sm:px-8 sm:pt-28 lg:pt-32">
+        <motion.div
+          initial={{ opacity: 0, y: 8, scale: 0.98 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <Link
+            to="/how-it-works"
+            className="group inline-flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.03] py-1.5 pr-3.5 pl-2 text-[13px] text-body backdrop-blur transition-colors hover:border-white/20 hover:text-ink"
+          >
+            <span className="flex size-5 items-center justify-center rounded-full bg-white/[0.06]">
+              <LogoMark className="size-3.5 text-ink" />
+            </span>
+            The contributor guild on Monad
+            <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+          </Link>
+        </motion.div>
 
         <h1
           id="hero-title"
-          className="landing-headline rise mt-6 text-[2.25rem] [animation-delay:60ms] min-[370px]:text-[clamp(2.5rem,1.1rem+4.4vw,4.75rem)] sm:mt-7"
+          className="mt-8 text-[clamp(2.6rem,1.2rem+5.6vw,5.75rem)] leading-[0.98] font-semibold tracking-[-0.055em]"
         >
-          {/* Each line is one unbreakable unit, so the headline is always exactly two lines. */}
-          <span className="block whitespace-nowrap">Show the work.</span>
-          <span className="block whitespace-nowrap text-[#8f8d99]">Wear the name.</span>
+          <WordReveal
+            delay={0.15}
+            wordClassName="text-shine pb-[0.08em]"
+            lines={[
+              ["Show", "the", "work."],
+              ["Wear", "the", <span key="n" className="serif-accent pr-[0.06em] text-[1.08em] tracking-[-0.01em]">name.</span>],
+            ]}
+          />
         </h1>
 
-        <p className="rise mt-6 max-w-[33rem] text-[16px] leading-7 text-balance text-[var(--l-body)] [animation-delay:120ms] sm:mt-7 sm:text-[18px] sm:leading-8">
-          Build your identity, find opportunities, and create a record of the work you&rsquo;ve delivered.
-        </p>
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.65 }}
+          className="mt-7 max-w-[34rem] text-[16px] leading-7 text-balance text-body sm:text-[18px] sm:leading-8"
+        >
+          A passport for your name, a board of open work, and a record of every contribution a publisher accepted.
+        </motion.p>
 
-        <div className="rise mt-9 flex w-full flex-col items-stretch justify-center gap-3 [animation-delay:180ms] min-[400px]:w-auto min-[400px]:flex-row min-[400px]:items-center">
-          <Link
-            to="/discover"
-            search={emptyBoardSearch()}
-            className="group inline-flex h-11 items-center justify-center gap-2 rounded-xl bg-[var(--l-violet)] px-5 text-[15px] font-medium text-white transition-colors hover:bg-[var(--color-action-hover)]"
-          >
-            Explore opportunities
-            <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
-          </Link>
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.8 }}
+          className="mt-10 flex w-full flex-col items-stretch justify-center gap-3 min-[420px]:w-auto min-[420px]:flex-row min-[420px]:items-center"
+        >
+          <Magnetic className="flex">
+            <Link
+              to="/discover"
+              search={emptyBoardSearch()}
+              className="btn-accent btn-glow group inline-flex h-12 w-full items-center justify-center gap-2 rounded-full px-6 text-[15px] font-medium text-white"
+            >
+              Explore opportunities
+              <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
+            </Link>
+          </Magnetic>
           <Link
             to="/passport"
-            className="inline-flex h-11 items-center justify-center rounded-xl border border-[var(--l-border)] bg-black/40 px-5 text-[15px] font-medium text-[var(--l-ink)] transition-colors hover:border-white/25 hover:bg-white/5"
+            className="inline-flex h-12 items-center justify-center rounded-full border border-white/10 bg-white/[0.03] px-6 text-[15px] font-medium text-ink backdrop-blur transition-all hover:-translate-y-px hover:border-white/20 hover:bg-white/[0.06]"
           >
             {profile ? "Open your Passport" : "Create your Passport"}
           </Link>
-        </div>
-      </div>
+        </motion.div>
 
-      <EcosystemStrip />
+        <motion.dl
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 1 }}
+          className="surface mt-16 grid w-full max-w-3xl grid-cols-2 overflow-hidden rounded-2xl sm:mt-20 md:grid-cols-4"
+        >
+          {[
+            ["Open work", stats.openOpportunities],
+            ["Passports", stats.passports],
+            ["Accepted", stats.acceptedWork],
+            ["Onchain txs", stats.onchainTxs],
+          ].map(([label, value], index) => (
+            <div
+              key={label}
+              className={
+                "px-5 py-5 text-left sm:px-6 " +
+                (index % 2 === 1 ? "border-l border-line " : "") +
+                (index >= 2 ? "border-t border-line md:border-t-0 " : "") +
+                (index === 2 ? "md:border-l " : "")
+              }
+            >
+              <dt className="text-[12px] tracking-wide text-muted uppercase">{label}</dt>
+              <dd className="mt-2 text-[1.75rem] leading-none font-semibold tracking-[-0.04em] text-ink tabular-nums">
+                <CountUp value={Number(value)} />
+              </dd>
+            </div>
+          ))}
+        </motion.dl>
+        <p className="mt-3 text-[12px] text-muted">Live from the database and Monad mainnet.</p>
+      </div>
     </section>
   );
 }
 
-function EcosystemStrip() {
+function SectionHead({ eyebrow, title, accent, aside }: { eyebrow: string; title: string; accent: string; aside?: ReactNode }) {
   return (
-    <div className="relative px-5 pb-10 sm:px-8 sm:pb-14">
-      <p className="text-center text-[13px] text-[var(--l-muted)]">One record, from identity to accepted work</p>
-      <ol className="mx-auto mt-5 grid max-w-[560px] grid-cols-2 gap-px overflow-hidden rounded-2xl border border-[var(--l-border)] bg-[var(--l-border)] lg:flex lg:max-w-[960px] lg:rounded-full">
-        {ECOSYSTEM.map((item, index) => {
-          const Icon = item.icon;
+    <Reveal className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+      <div className="max-w-2xl">
+        <p className="text-[12px] font-medium tracking-[0.18em] text-muted uppercase">{eyebrow}</p>
+        <h2 className="text-shine mt-4 text-[clamp(1.9rem,1.2rem+2.2vw,2.9rem)] leading-[1.04] font-semibold tracking-[-0.045em]">
+          {title} <span className="serif-accent text-[1.06em]">{accent}</span>
+        </h2>
+      </div>
+      {aside}
+    </Reveal>
+  );
+}
+
+function Steps() {
+  return (
+    <section aria-label="How the guild works" className="mx-auto w-full max-w-6xl px-5 pt-16 sm:px-8 lg:pt-24">
+      <SectionHead
+        eyebrow="How it works"
+        title="One record, from identity to"
+        accent="accepted work."
+        aside={
+          <Link to="/how-it-works" className="text-[14px] text-body underline-offset-4 hover:text-ink hover:underline">
+            The full loop and XP table
+          </Link>
+        }
+      />
+      <ol className="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {STEPS.map((step, index) => {
+          const Icon = step.icon;
           return (
-            <li key={item.label} className="bg-[#08070b]/90 lg:flex-1">
+            <Reveal as="li" key={step.label} delay={index * 0.08}>
               <Link
-                to={item.to}
-                search={item.to === "/discover" ? emptyBoardSearch() : undefined}
-                className="flex h-full items-center gap-2.5 px-4 py-3.5 text-[13px] leading-snug text-[var(--l-body)] transition-colors hover:text-[var(--l-ink)] lg:justify-center lg:px-5 lg:text-[14px] lg:whitespace-nowrap"
+                to={step.to}
+                search={step.to === "/discover" ? emptyBoardSearch() : undefined}
+                className="surface spotlight card-pop group flex h-full flex-col gap-10 p-6"
               >
-                <span className="hidden font-mono text-[11px] text-[var(--l-muted)] xl:inline">0{index + 1}</span>
-                <Icon className="size-4 shrink-0 text-[var(--l-violet-bright)]" aria-hidden="true" />
-                <span>{item.label}</span>
+                <span className="flex items-center justify-between">
+                  <span className="flex size-10 items-center justify-center rounded-xl border border-white/10 bg-white/[0.04]">
+                    <Icon className="size-[18px] text-ink" aria-hidden="true" />
+                  </span>
+                  <span className="font-mono text-[12px] text-muted">0{index + 1}</span>
+                </span>
+                <span>
+                  <span className="block text-[16px] font-semibold tracking-[-0.02em] text-ink">{step.label}</span>
+                  <span className="mt-2 block text-[14px] leading-6 text-body">{step.body}</span>
+                </span>
               </Link>
-            </li>
+            </Reveal>
           );
         })}
       </ol>
-    </div>
+    </section>
   );
 }
 
 function Inside() {
-  const { featured, leaders, stats } = Route.useLoaderData();
+  const { featured, leaders } = Route.useLoaderData();
 
   return (
-    <section aria-labelledby="inside-title" className="relative mx-auto w-full max-w-6xl px-5 pt-20 pb-24 sm:px-8 lg:pt-28">
-      <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-        <div className="max-w-xl">
-          <p className="text-[11px] font-medium tracking-[0.2em] text-[var(--l-muted)] uppercase sm:text-xs">Inside the guild</p>
-          <h2 id="inside-title" className="mt-4 text-[clamp(1.75rem,1.1rem+2vw,2.5rem)] leading-[1.08] font-semibold tracking-[-0.035em] text-[var(--l-ink)]">
-            Live from the board and the ladder.
-          </h2>
-        </div>
-        <Link to="/how-it-works" className="text-[14px] text-[var(--l-body)] underline-offset-4 hover:text-[var(--l-ink)] hover:underline">
-          How the guild works
-        </Link>
-      </div>
+    <section aria-labelledby="inside-title" className="relative mx-auto w-full max-w-6xl px-5 pt-24 pb-24 sm:px-8 lg:pt-32">
+      <SectionHead eyebrow="Inside the guild" title="Live from the board and" accent="the ladder." />
 
-      <dl className="mt-12 grid grid-cols-2 border-y border-[var(--l-border)] md:grid-cols-4">
-        {[
-          ["Open opportunities", stats.openOpportunities],
-          ["Passports", stats.passports],
-          ["Accepted work", stats.acceptedWork],
-          ["Onchain transactions", stats.onchainTxs],
-        ].map(([label, value], index) => (
-          <div
-            key={label}
-            className={
-              "px-1 py-7 md:px-6 " +
-              (index % 2 === 1 ? "border-l border-[var(--l-border)] pl-5 md:pl-6 " : "") +
-              (index >= 2 ? "border-t border-[var(--l-border)] md:border-t-0 " : "") +
-              (index === 2 ? "md:border-l " : "")
-            }
-          >
-            <dt className="text-[13px] text-[var(--l-muted)]">{label}</dt>
-            <dd className="mt-3 text-[2.25rem] leading-none font-semibold tracking-[-0.04em] text-[var(--l-ink)] tabular-nums">
-              <CountUp value={Number(value)} />
-            </dd>
-          </div>
-        ))}
-      </dl>
-
-      <div className="mt-12 grid grid-cols-[minmax(0,1fr)] items-start gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-8">
-        <Panel title="Top of the ladder" to="/ranking">
-          {leaders.length > 0 ? (
-            <ol className="flex flex-col">
-              {leaders.map((person) => (
-                <li key={person.username}>
-                  <Link
-                    to="/passport/$username"
-                    params={{ username: person.username }}
-                    className="flex items-center gap-4 rounded-xl px-3 py-3.5 transition-colors hover:bg-white/[0.04]"
-                  >
-                    <span className="w-5 text-[13px] tabular-nums text-[var(--l-muted)]">{person.rank}</span>
-                    <Avatar name={person.displayName} url={person.avatarUrl} />
-                    <span className="min-w-0 flex-1">
-                      <span className="block truncate text-[15px] text-[var(--l-ink)]">{person.displayName}</span>
-                      <TierBadge tier={person.tier} className="mt-1" />
-                    </span>
-                    <span className="text-[14px] tabular-nums text-[var(--l-ink)]">{formatXp(person.xp)} XP</span>
-                  </Link>
-                </li>
-              ))}
-            </ol>
-          ) : (
-            <div className="flex flex-col items-start gap-5 px-3 py-6">
-              <p className="max-w-sm text-[15px] leading-7 text-[var(--l-body)]">
-                Nobody has claimed the top spot yet, so the first passport with accepted work leads the ladder.
-              </p>
-              <Link
+      <div className="mt-12 grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.15fr)] lg:gap-6">
+        <Reveal>
+          <Panel title="Top of the ladder" to="/ranking">
+            {leaders.length > 0 ? (
+              <ol className="flex flex-col">
+                {leaders.map((person) => (
+                  <li key={person.username}>
+                    <Link
+                      to="/passport/$username"
+                      params={{ username: person.username }}
+                      className="flex items-center gap-4 rounded-xl px-3 py-3 transition-colors hover:bg-white/[0.04]"
+                    >
+                      <RankMedal rank={person.rank} />
+                      <Avatar name={person.displayName} url={person.avatarUrl} />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[15px] text-ink">{person.displayName}</span>
+                        <TierBadge tier={person.tier} className="mt-1" />
+                      </span>
+                      <span className="text-[14px] tabular-nums text-ink">{formatXp(person.xp)} XP</span>
+                    </Link>
+                  </li>
+                ))}
+              </ol>
+            ) : (
+              <InlineEmpty
+                body="Nobody has claimed the top spot yet. The first passport with accepted work leads the ladder."
                 to="/passport"
-                className="inline-flex h-10 items-center rounded-xl border border-[var(--l-border)] px-4 text-[14px] text-[var(--l-ink)] transition-colors hover:border-white/25"
-              >
-                Claim your spot
-              </Link>
-            </div>
-          )}
-        </Panel>
+                cta="Claim your spot"
+              />
+            )}
+          </Panel>
+        </Reveal>
 
-        <Panel title="Open on the board" to="/discover">
-          {featured.length === 0 ? (
-            <div className="flex flex-col items-start gap-5 px-3 py-6">
-              <p className="max-w-sm text-[15px] leading-7 text-[var(--l-body)]">
-                No open work yet. Listings appear here the moment a passport holder publishes one.
-              </p>
-              <Link
+        <Reveal delay={0.08}>
+          <Panel title="Open on the board" to="/discover">
+            {featured.length === 0 ? (
+              <InlineEmpty
+                body="No open work yet. Listings appear here the moment a passport holder publishes one."
                 to="/opportunities/new"
-                className="inline-flex h-10 items-center rounded-xl border border-[var(--l-border)] px-4 text-[14px] text-[var(--l-ink)] transition-colors hover:border-white/25"
-              >
-                Publish the first listing
-              </Link>
-            </div>
-          ) : (
-          <ul className="flex flex-col">
-            {featured.map((item) => (
-              <li key={item.id}>
-                <Link
-                  to="/discover/$opportunityId"
-                  params={{ opportunityId: item.id }}
-                  className="flex items-center gap-4 rounded-xl px-3 py-3.5 transition-colors hover:bg-white/[0.04]"
-                >
-                  <ProjectMark name={projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[15px] text-[var(--l-ink)]">{item.title}</span>
-                    <span className="mt-0.5 block truncate text-[13px] text-[var(--l-muted)]">
-                      {projectLabel(item.projectName)}
-                    </span>
-                  </span>
-                  <span className="hidden shrink-0 text-right text-[13px] text-[var(--l-body)] sm:block">
-                    {COMPENSATION_LABEL[item.compensationType as CompensationType] ?? item.compensationType}
-                  </span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          )}
-        </Panel>
+                cta="Publish the first listing"
+              />
+            ) : (
+              <ul className="flex flex-col">
+                {featured.map((item) => (
+                  <li key={item.id}>
+                    <Link
+                      to="/discover/$opportunityId"
+                      params={{ opportunityId: item.id }}
+                      className="flex items-center gap-4 rounded-xl px-3 py-3 transition-colors hover:bg-white/[0.04]"
+                    >
+                      <ProjectMark name={projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} />
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-[15px] text-ink">{item.title}</span>
+                        <span className="mt-0.5 block truncate text-[13px] text-muted">{projectLabel(item.projectName)}</span>
+                      </span>
+                      <span className="hidden shrink-0 text-right text-[13px] text-body sm:block">
+                        {COMPENSATION_LABEL[item.compensationType as CompensationType] ?? item.compensationType}
+                      </span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </Panel>
+        </Reveal>
       </div>
     </section>
+  );
+}
+
+function InlineEmpty({ body, to, cta }: { body: string; to: "/passport" | "/opportunities/new"; cta: string }) {
+  return (
+    <div className="flex items-center gap-5 px-3 py-6">
+      <AnimatedMark size={64} className="shrink-0 text-ink" />
+      <div className="flex flex-col items-start gap-4">
+        <p className="max-w-sm text-[14px] leading-6 text-body">{body}</p>
+        <Link
+          to={to}
+          className="inline-flex h-9 items-center rounded-full border border-white/10 bg-white/[0.03] px-4 text-[13px] text-ink transition-all hover:-translate-y-px hover:border-white/20"
+        >
+          {cta}
+        </Link>
+      </div>
+    </div>
   );
 }
 
 function Panel({ title, to, children }: { title: string; to: "/ranking" | "/discover"; children: ReactNode }) {
   return (
-    <section className="min-w-0 rounded-3xl border border-[var(--l-border)] bg-[#0a090d] p-3 sm:p-4">
+    <section className="surface spotlight min-w-0 p-3 sm:p-4">
       <div className="flex items-center justify-between px-3 pt-2 pb-3">
-        <h3 className="text-[15px] font-medium tracking-tight text-[var(--l-ink)]">{title}</h3>
+        <h3 className="text-[15px] font-medium tracking-tight text-ink">{title}</h3>
         <Link
           to={to}
           search={to === "/discover" ? emptyBoardSearch() : undefined}
-          className="text-[13px] text-[var(--l-body)] underline-offset-4 hover:text-[var(--l-ink)] hover:underline"
+          className="text-[13px] text-body underline-offset-4 hover:text-ink hover:underline"
         >
           View all
         </Link>
       </div>
-      <div className="border-t border-[var(--l-border)] pt-2">{children}</div>
+      <div className="border-t border-line pt-2">{children}</div>
     </section>
   );
 }
 
 function Footer() {
   return (
-    <footer className="border-t border-[var(--l-border)]">
+    <footer className="border-t border-line">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-6 px-5 py-10 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div className="flex items-center gap-3">
-          <LogoMark className="size-5 text-[var(--l-ink)]" />
-          <span className="text-[14px] text-[var(--l-body)]">Choguild · Built on Monad</span>
+          <LogoMark className="size-5 text-ink" />
+          <span className="text-[14px] text-body">Choguild · Built on Monad</span>
         </div>
-        <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-3 text-[14px] text-[var(--l-muted)]">
-          <Link to="/how-it-works" className="hover:text-[var(--l-ink)]">How it works</Link>
-          <Link to="/ranking" className="hover:text-[var(--l-ink)]">Ranking</Link>
-          <Link to="/network" className="hover:text-[var(--l-ink)]">Network</Link>
+        <nav aria-label="Footer" className="flex flex-wrap gap-x-6 gap-y-3 text-[14px] text-muted">
+          <Link to="/how-it-works" className="hover:text-ink">How it works</Link>
+          <Link to="/ranking" className="hover:text-ink">Ranking</Link>
+          <Link to="/network" className="hover:text-ink">Network</Link>
         </nav>
       </div>
     </footer>
