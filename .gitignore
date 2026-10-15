@@ -1,7 +1,6 @@
 node_modules
 .vercel
 .tanstack
-.grok
 artifacts
 screenshots
 .env
@@ -10,3 +9,5 @@ screenshots
 dist
 *.log
 .DS_Store
+.env*
+!.env.example

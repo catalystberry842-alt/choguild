@@ -1,6 +1,6 @@
 import { randomBytes } from "node:crypto";
 import { getRequestProtocol, useSession as requestSession } from "@tanstack/react-start/server";
-import { env, isWorkspacePreview } from "@/lib/env.server";
+import { env, isLocalDev } from "@/lib/env.server";
 import { resolveSessionSecret } from "@/lib/passport/session-secret";
 
 type PassportSessionData = {
@@ -10,9 +10,9 @@ type PassportSessionData = {
 
 function sessionPassword(): string {
   const resolved = resolveSessionSecret({
-    explicit: env("CHOG_SESSION_SECRET") ?? env("BETTER_AUTH_SECRET"),
+    explicit: env("CHOG_SESSION_SECRET"),
     databaseUrl: env("DATABASE_URL"),
-    preview: isWorkspacePreview(),
+    preview: isLocalDev(),
   });
   if (resolved) return resolved;
   const holder = globalThis as typeof globalThis & { __chogSessionSecret?: string };

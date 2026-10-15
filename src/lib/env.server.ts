@@ -4,11 +4,10 @@ export function env(key: string): string | undefined {
 }
 
 /**
- * Workspace preview vs deployed app. The deployer writes GROK_PROJECT_ID on
- * every publish; the sandbox preview never has it. Single source of truth for
- * the split — gate audience, gate endpoints and connector-token semantics all
- * key off this predicate.
+ * Local development (`npm run dev`) versus a deployed build. Locally a missing
+ * session secret falls back to a per-process random one; deployed builds must
+ * set CHOG_SESSION_SECRET.
  */
-export function isWorkspacePreview(): boolean {
-  return !env("GROK_PROJECT_ID");
+export function isLocalDev(): boolean {
+  return process.env.NODE_ENV !== "production" && !env("VERCEL");
 }

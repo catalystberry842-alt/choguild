@@ -1,8 +1,6 @@
 import { createRootRoute, HeadContent, Outlet, Scripts } from "@tanstack/react-router";
 import { AppShell } from "@/components/layout/app-shell";
 import { NotFoundState } from "@/components/layout/not-found";
-import { PreviewHostBridge } from "@/components/preview-host-bridge";
-import { AuthProvider } from "@/lib/auth/provider";
 import { PassportProvider } from "@/components/passport/passport-provider";
 import { THEME_BOOT_SCRIPT } from "@/lib/theme";
 import appCss from "../styles.css?url";
@@ -20,13 +18,17 @@ export const Route = createRootRoute({
         content:
           "Choguild helps Monad contributors keep an identity, find opportunities, and build a record of reviewed work.",
       },
-      { name: "theme-color", content: "#0b0814" },
+      { name: "theme-color", content: "#050505" },
+      { property: "og:title", content: "Choguild" },
+      { property: "og:description", content: "The contributor guild on Monad: a passport, open work, and a record of reviewed contributions." },
+      { property: "og:image", content: "https://choguild.vercel.app/og.jpg" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
       { rel: "stylesheet", href: appCss },
-      { rel: "manifest", href: "/__grok/manifest.webmanifest" },
-      { rel: "apple-touch-icon", href: "/__grok/icon-180.png" },
+      { rel: "apple-touch-icon", href: "/apple-touch-icon.png" },
     ],
   }),
   component: RootComponent,
@@ -41,14 +43,11 @@ function RootComponent() {
         <HeadContent />
       </head>
       <body>
-        <PreviewHostBridge />
-        <AuthProvider>
           <PassportProvider>
             <AppShell>
               <Outlet />
             </AppShell>
           </PassportProvider>
-        </AuthProvider>
         <Scripts />
       </body>
     </html>
