@@ -14,6 +14,7 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <MotionConfig reducedMotion="user">
       <div className="relative min-h-dvh overflow-x-clip text-ink">
+        <div className={home ? "atmos atmos-home" : "atmos"} aria-hidden="true" />
         <div className="guides" aria-hidden="true">
           <div />
         </div>
@@ -35,9 +36,9 @@ export function AppShell({ children }: { children: ReactNode }) {
         >
           <motion.div
             key={pathname}
-            initial={{ opacity: 0, y: 8 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
           >
             {children}
           </motion.div>

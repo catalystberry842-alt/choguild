@@ -37,7 +37,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
                 search={item.to === "/discover" ? emptyBoardSearch() : undefined}
                 className={cn(
                   "relative flex items-center gap-2 px-3.5 text-[13px] transition-colors",
-                  active ? "text-ink" : "text-muted hover:text-ink",
+                  active ? "text-ink" : "nav-hover text-muted hover:text-ink",
                 )}
               >
                 <span className="font-mono text-[10px] text-faint">{String(index + 1).padStart(2, "0")}</span>

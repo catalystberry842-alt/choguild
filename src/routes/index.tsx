@@ -1,6 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { motion } from "motion/react";
-import type { ReactNode } from "react";
+import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
+import { useRef, type ReactNode } from "react";
 import { AnimatedMark } from "@/components/brand/animated-mark";
 import { Reveal, WordReveal } from "@/components/fx/reveal";
 import { ProjectMark } from "@/components/board/opportunity-card";
@@ -56,15 +56,22 @@ function HomePage() {
 }
 
 function Hero() {
-  const { profile, stats } = Route.useLoaderData();
+  const { profile, stats, featured } = Route.useLoaderData();
+  const ref = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "22%"]);
+  const bgOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.25]);
+  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-12%"]);
 
   return (
-    <section aria-labelledby="hero-title" className="pt-16 sm:pt-24 lg:pt-28">
+    <section ref={ref} aria-labelledby="hero-title" className="relative pt-16 sm:pt-24 lg:pt-28">
+      <HeroBackdrop y={bgY} opacity={bgOpacity} />
+      <motion.div style={{ y: textY }} className="relative">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.8 }}
-        className="flex items-center justify-between border-b border-line pb-4"
+        className="relative flex items-center justify-between border-b border-line pb-4"
       >
         <p className="t-eyebrow flex items-center gap-2.5">
           <span className="pulse-dot" aria-hidden="true" />
@@ -72,6 +79,9 @@ function Hero() {
         </p>
         <p className="t-eyebrow hidden sm:block">Est. 2026 · Index 001</p>
       </motion.div>
+      <div className="relative -mt-px h-px overflow-hidden" aria-hidden="true">
+        <span className="accent-line absolute inset-y-0 left-0 w-40 bg-signal" />
+      </div>
 
       <h1
         id="hero-title"
@@ -98,7 +108,7 @@ function Hero() {
           <Link
             to="/discover"
             search={emptyBoardSearch()}
-            className="group inline-flex h-12 items-center justify-between gap-6 rounded-md bg-signal px-5 text-[15px] font-medium text-on-accent transition-colors hover:bg-[#ff7f58]"
+            className="sheen group inline-flex h-12 items-center justify-between gap-6 rounded-md bg-signal px-5 text-[15px] font-medium text-on-accent transition-colors hover:bg-[#ff7f58]"
           >
             Explore opportunities
             <span aria-hidden="true" className="arrow-slide">→</span>
@@ -112,12 +122,13 @@ function Hero() {
           </Link>
         </motion.div>
       </div>
+      </motion.div>
 
       <motion.dl
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1, delay: 1 }}
-        className="mt-20 grid grid-cols-2 border-t border-line md:grid-cols-4 lg:mt-28"
+        className="relative mt-20 grid grid-cols-2 border-t border-line md:grid-cols-4 lg:mt-28"
       >
         {[
           ["Open work", stats.openOpportunities],
@@ -144,8 +155,64 @@ function Hero() {
           </div>
         ))}
       </motion.dl>
-      <p className="t-meta border-t border-line pt-3">Live from the database and Monad mainnet.</p>
+      <Ticker stats={stats} titles={featured.map((item) => item.title)} />
     </section>
+  );
+}
+
+/** Full-bleed topographic image behind the hero: slow drift, scroll parallax, a drifting light, and a scrim for legibility. */
+function HeroBackdrop({ y, opacity }: { y: MotionValue<string>; opacity: MotionValue<number> }) {
+  return (
+    <div aria-hidden="true" className="pointer-events-none absolute inset-y-0 left-1/2 -z-0 w-screen -translate-x-1/2 overflow-hidden">
+      <motion.div style={{ y, opacity }} className="absolute inset-0">
+        <picture>
+          <source media="(min-width: 768px)" type="image/avif" srcSet="/bg/hero-desktop.avif" />
+          <source media="(min-width: 768px)" type="image/webp" srcSet="/bg/hero-desktop.webp" />
+          <source type="image/avif" srcSet="/bg/hero-mobile.avif" />
+          <img
+            src="/bg/hero-mobile.webp"
+            alt=""
+            fetchPriority="high"
+            decoding="async"
+            className="hero-img absolute inset-0 size-full object-cover object-[70%_30%] md:object-[70%_40%]"
+          />
+        </picture>
+        <div className="hero-light absolute top-[10%] right-[8%] size-[46vmax] rounded-full" />
+        <div className="hero-light-2 absolute top-[30%] left-[10%] size-[40vmax] rounded-full" />
+      </motion.div>
+      <div className="absolute inset-0 bg-[linear-gradient(90deg,rgb(11_11_10/0.82)_0%,rgb(11_11_10/0.45)_55%,rgb(11_11_10/0.1)_100%)]" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,#0b0b0a,transparent)]" />
+    </div>
+  );
+}
+
+/** A live ticker: real counts and the titles of real open work. Hidden entirely if there is nothing to say. */
+function Ticker({ stats, titles }: { stats: { openOpportunities: number; passports: number; acceptedWork: number; onchainTxs: number }; titles: string[] }) {
+  const items = [
+    `${formatXp(stats.openOpportunities)} open`,
+    `${formatXp(stats.passports)} passports`,
+    `${formatXp(stats.acceptedWork)} accepted`,
+    `${formatXp(stats.onchainTxs)} onchain txs`,
+    ...titles.map((title) => `Open — ${title}`),
+    "Live from the database and Monad mainnet",
+  ];
+  const row = (hidden: boolean) => (
+    <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
+      {items.map((item, index) => (
+        <li key={index} className="flex items-center gap-6 pr-6 font-mono text-[11px] tracking-[0.12em] whitespace-nowrap text-muted uppercase">
+          <span className="text-signal" aria-hidden="true">◆</span>
+          {item}
+        </li>
+      ))}
+    </ul>
+  );
+  return (
+    <div className="ticker relative left-1/2 w-screen -translate-x-1/2 overflow-hidden border-y border-line py-3.5">
+      <div className="ticker-track">
+        {row(false)}
+        {row(true)}
+      </div>
+    </div>
   );
 }
 
