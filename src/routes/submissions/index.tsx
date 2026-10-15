@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { SelectInput } from "@/components/ui/input";
-import { WORK_STATUSES, WORK_STATUS_LABEL, type WorkStatus } from "@/lib/work/copy";
+import { WORK_STATUSES, WORK_STATUS_LABEL } from "@/lib/work/copy";
 import { getWorkHome } from "@/lib/work/functions";
 import { formatStamp } from "@/lib/passport/format";
+import { workTone } from "@/lib/status-tone";
 
 type Search = { view: "mine" | "review"; status: string };
 
@@ -21,15 +22,6 @@ export const Route = createFileRoute("/submissions/")({
   head: () => ({ meta: [{ title: "Submissions · Choguild" }] }),
   component: SubmissionsPage,
 });
-
-const tone: Record<WorkStatus, "sand" | "olive" | "warning" | "danger" | "neutral"> = {
-  draft: "neutral",
-  submitted: "sand",
-  under_review: "sand",
-  accepted: "olive",
-  changes_requested: "warning",
-  rejected: "danger",
-};
 
 function SubmissionsPage() {
   const search = Route.useSearch();
@@ -125,7 +117,7 @@ function SubmissionsPage() {
                       </span>
                     </span>
                     <span className="flex shrink-0 flex-col items-end gap-1.5">
-                      <Badge tone={tone[item.status]}>{WORK_STATUS_LABEL[item.status]}</Badge>
+                      <Badge tone={workTone(item.status)}>{WORK_STATUS_LABEL[item.status]}</Badge>
                       <span className="t-meta">{formatStamp(item.updatedAt)}</span>
                     </span>
                   </Link>

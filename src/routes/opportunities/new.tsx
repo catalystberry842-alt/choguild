@@ -8,13 +8,13 @@ import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/opportunities/new")({
   staticData: { title: "Publish work", crumb: "Publish" },
-  head: () => ({ meta: [{ title: "Publish · Choguild" }] }),
+  head: () => ({ meta: [{ title: "Publish work · Choguild" }] }),
   component: NewOpportunityPage,
 });
 
 function NewOpportunityPage() {
   const { status, sessionAddress, profile } = usePassport();
-  if (status === "loading") return <LoadingState label="Checking passport" />;
+  if (status === "loading") return <LoadingState label="Checking your Passport" />;
   if (!sessionAddress || !profile) {
     return (
       <div>

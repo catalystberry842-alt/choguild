@@ -124,7 +124,7 @@ export function WalletPanel() {
     try {
       await endSession();
       await refresh();
-      setMessage("Signed out. Your passport is still saved.");
+      setMessage("Signed out. Your Passport is still saved.");
     } catch (caught) {
       setError(caught instanceof Error ? caught.message : "The session could not be ended.");
     } finally {
@@ -138,12 +138,12 @@ export function WalletPanel() {
         {isConnected && address ? (
           <>
             <p className="text-sm font-medium text-ink">{shortAddress(address)}</p>
-            <Badge tone={onMonad ? "olive" : "warning"}>{isConnected ? network.label : "Not connected"}</Badge>
+            <Badge tone={onMonad ? "success" : "warning"}>{isConnected ? network.label : "Not connected"}</Badge>
           </>
         ) : (
           <p className="text-sm text-body">No wallet connected</p>
         )}
-        {sessionAddress ? <Badge tone="sand">Session {shortAddress(sessionAddress)}</Badge> : null}
+        {sessionAddress ? <Badge>Session {shortAddress(sessionAddress)}</Badge> : null}
       </div>
 
       <p className="t-meta">Choguild never asks for your seed phrase or private key.</p>

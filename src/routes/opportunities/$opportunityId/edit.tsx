@@ -1,6 +1,7 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { OpportunityForm } from "@/components/board/opportunity-form";
-import { EmptyState } from "@/components/ui/empty-state";
+import { NotFoundState } from "@/components/layout/not-found";
+import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { getBoardOpportunity } from "@/lib/board/functions";
 
@@ -10,11 +11,19 @@ export const Route = createFileRoute("/opportunities/$opportunityId/edit")({
     if (!opportunity || !opportunity.mine || opportunity.isDemo) throw notFound();
     return opportunity;
   },
-  staticData: { title: "Edit opportunity", crumb: "Edit" },
-  head: () => ({ meta: [{ title: "Edit opportunity · Choguild" }] }),
+  staticData: { title: "Edit listing", crumb: "Edit" },
+  head: () => ({ meta: [{ title: "Edit listing · Choguild" }] }),
   component: EditOpportunityPage,
   notFoundComponent: () => (
-    <EmptyState title="You can't edit this listing" body="It may be an example, or it belongs to someone else." />
+    <NotFoundState
+      title="You can't edit this listing"
+      body="It may be an example, or it belongs to someone else."
+      action={
+        <Button asChild variant="secondary" size="compact">
+          <Link to="/opportunities">Your listings</Link>
+        </Button>
+      }
+    />
   ),
 });
 

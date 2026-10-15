@@ -34,7 +34,7 @@ function NetworkPage() {
           <span className="t-meta mt-1 block font-mono">{probe.ok ? `Block ${probe.blockNumber}` : probe.rpcHost}</span>
         </Fact>
         <Fact label="Your wallet">
-          <Badge tone={wallet.onMonad ? "olive" : "neutral"}>{isConnected ? wallet.label : "Not connected"}</Badge>
+          <Badge tone={wallet.onMonad ? "success" : "neutral"}>{isConnected ? wallet.label : "Not connected"}</Badge>
         </Fact>
       </dl>
 

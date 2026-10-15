@@ -87,6 +87,7 @@ function DiscoverPage() {
           <Button
             type="button"
             variant="secondary"
+            aria-label={activeFilters > 0 ? `Filters, ${activeFilters} active` : "Filters"}
             aria-expanded={showFilters}
             aria-controls="board-filters"
             onClick={() => setShowFilters((open) => !open)}

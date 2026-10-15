@@ -3,10 +3,10 @@ import { emptyBoardSearch } from "@/lib/board/search";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { ProjectMark } from "@/components/board/opportunity-card";
+import { NotFoundState } from "@/components/layout/not-found";
 import { usePassport } from "@/components/passport/passport-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, TextArea } from "@/components/ui/input";
 import {
@@ -24,6 +24,7 @@ import { listingSummary, plainCopy, projectLabel } from "@/lib/board/display";
 import { getBoardOpportunity, sendApplication, updateBoardStatus, withdrawBoardApplication } from "@/lib/board/functions";
 import type { BoardErrors } from "@/lib/board/validate";
 import { formatStamp } from "@/lib/passport/format";
+import { opportunityTone } from "@/lib/status-tone";
 
 export const Route = createFileRoute("/discover/$opportunityId")({
   loader: async ({ params }) => {
@@ -37,7 +38,7 @@ export const Route = createFileRoute("/discover/$opportunityId")({
   }),
   component: OpportunityPage,
   notFoundComponent: () => (
-    <EmptyState
+    <NotFoundState
       title="Opportunity not found"
       body="It may still be a draft, or it was removed."
       action={
@@ -112,7 +113,7 @@ function OpportunityPage() {
         <div className="min-w-0">
           <div className="flex flex-wrap gap-2">
             {opportunity.isDemo ? <Badge tone="warning">Demo</Badge> : null}
-            <Badge>{OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status}</Badge>
+            <Badge tone={opportunityTone(opportunity.status)}>{OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status}</Badge>
           </div>
           <h1 className="t-title mt-3">{opportunity.title}</h1>
           <p className="t-meta mt-2">

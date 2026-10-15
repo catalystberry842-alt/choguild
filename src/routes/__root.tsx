@@ -10,17 +10,18 @@ import appCss from "../styles.css?url";
 const APP_NAME = "Choguild";
 
 export const Route = createRootRoute({
-  head: () => ({
+  head: ({ matches }) => ({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: APP_NAME },
+      // Pages set their own titles; only an unmatched URL (just the root matched) falls back here.
+      { title: matches.length > 1 ? APP_NAME : `Page not found · ${APP_NAME}` },
       {
         name: "description",
         content:
           "Choguild helps Monad contributors keep an identity, find opportunities, and build a record of reviewed work.",
       },
-      { name: "theme-color", content: "#0b0814" },
+      { name: "theme-color", content: "#050505" },
     ],
     links: [
       { rel: "icon", type: "image/svg+xml", href: "/favicon.svg" },
@@ -30,7 +31,7 @@ export const Route = createRootRoute({
     ],
   }),
   component: RootComponent,
-  notFoundComponent: NotFoundState,
+  notFoundComponent: () => <NotFoundState />,
 });
 
 function RootComponent() {

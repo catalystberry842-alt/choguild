@@ -13,6 +13,7 @@ import {
 import { cardSummary, projectLabel } from "@/lib/board/display";
 import type { OpportunityCard } from "@/lib/board/types";
 import { formatDay } from "@/lib/passport/format";
+import { opportunityTone } from "@/lib/status-tone";
 
 function label<T extends string>(map: Record<T, string>, value: string): string {
   return map[value as T] ?? value;
@@ -45,7 +46,7 @@ export function OpportunityCardView({ item }: { item: OpportunityCard }) {
           <div className="flex flex-wrap gap-1.5">
             {item.isDemo ? <Badge tone="warning">Demo</Badge> : null}
             <Badge>{category}</Badge>
-            <Badge tone={item.status === "open" ? "olive" : "neutral"}>
+            <Badge tone={opportunityTone(item.status)}>
               {label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}
             </Badge>
           </div>

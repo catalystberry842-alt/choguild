@@ -1,7 +1,8 @@
-import { createFileRoute, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { PublicPassport } from "@/components/passport/public-passport";
 import { usePassport } from "@/components/passport/passport-provider";
-import { EmptyState } from "@/components/ui/empty-state";
+import { NotFoundState } from "@/components/layout/not-found";
+import { Button } from "@/components/ui/button";
 import { getPublicProfile } from "@/lib/passport/functions";
 import { getPublicContributions } from "@/lib/work/functions";
 
@@ -12,7 +13,7 @@ export const Route = createFileRoute("/passport/$username")({
     const contributions = await getPublicContributions({ data: params.username });
     return { profile, contributions };
   },
-  staticData: { title: "Public passport", crumb: "Passport" },
+  staticData: { title: "Public Passport", crumb: "Passport" },
   head: ({ loaderData }) => ({
     meta: [{ title: loaderData ? `${loaderData.profile.displayName} · Choguild` : "Passport · Choguild" }],
   }),
@@ -31,9 +32,14 @@ function PublicPassportPage() {
 
 function PassportNotFound() {
   return (
-    <EmptyState
+    <NotFoundState
       title="Passport not found"
       body="Check the username and try again."
+      action={
+        <Button asChild variant="secondary" size="compact">
+          <Link to="/ranking">Browse the ranking</Link>
+        </Button>
+      }
     />
   );
 }

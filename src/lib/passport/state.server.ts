@@ -76,7 +76,7 @@ export async function finishSave(input: { mode: "create" | "update"; profile: Pr
   const live = await readLiveSession(sql, record.sessionId);
   if (!live || live !== record.address) {
     await clearSessionRecord();
-    return { ok: false as const, error: "Your passport session expired. Sign in again." };
+    return { ok: false as const, error: "Your session expired. Sign in again." };
   }
   if (input.mode === "create") return createProfile(sql, live, input.profile);
   return updateProfile(sql, live, input.profile);

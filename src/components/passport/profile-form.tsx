@@ -107,7 +107,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
       }
       await refresh();
     } catch (caught) {
-      setFormError(caught instanceof Error ? caught.message : "The passport could not be saved.");
+      setFormError(caught instanceof Error ? caught.message : "Your Passport couldn't be saved. Try again.");
     } finally {
       setPending(false);
     }
@@ -298,7 +298,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
         label="Visibility"
         htmlFor="passport-visibility"
         error={errors.visibility}
-        hint="Unlisted passports stay off the ranking but open by link."
+        hint="Unlisted Passports stay off the ranking but open by link."
       >
         <SelectInput
           id="passport-visibility"
@@ -315,7 +315,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
         <ul className="mt-3 flex flex-wrap gap-1.5">
           {completion.map((item) => (
             <li key={item.id}>
-              <Badge tone={item.done ? "olive" : "neutral"}>
+              <Badge tone={item.done ? "success" : "neutral"}>
                 {item.done ? "✓ " : ""}
                 {item.label}
               </Badge>
@@ -328,7 +328,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
 
       <div className="flex flex-wrap gap-2">
         <Button type="submit" disabled={pending}>
-          {pending ? "Saving" : mode === "create" ? "Save passport" : "Save changes"}
+          {pending ? "Saving…" : mode === "create" ? "Save Passport" : "Save changes"}
         </Button>
         {profile ? (
           <Button asChild variant="secondary">

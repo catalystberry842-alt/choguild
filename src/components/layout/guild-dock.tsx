@@ -117,7 +117,7 @@ export function GuildDock() {
                   aria-current={isNavActive(pathname, item.to) ? "page" : undefined}
                   className={cn(
                     "relative flex h-11 items-center justify-center gap-2 rounded-full text-sm font-medium transition-colors",
-                    active ? "px-4 text-on-accent" : "w-11 text-muted hover:text-ink",
+                    active ? "px-4 text-canvas" : "w-11 text-muted hover:text-ink",
                   )}
                 >
                   {active ? <motion.span layoutId="dock-active" className="absolute inset-0 rounded-full bg-ink" /> : null}
@@ -148,7 +148,7 @@ export function GuildDock() {
                   aria-controls="dock-panel"
                   className={cn(
                     "relative flex size-11 items-center justify-center rounded-full transition-colors",
-                    open ? "text-on-accent" : "text-muted hover:text-ink",
+                    open ? "text-canvas" : "text-muted hover:text-ink",
                   )}
                 >
                   {open ? <motion.span layoutId="dock-active" className="absolute inset-0 rounded-full bg-ink" /> : null}
@@ -262,8 +262,8 @@ function AccountPanel() {
       : profile
         ? `@${profile.username}`
         : sessionAddress
-          ? "Signed in, passport not saved"
-          : "No passport session";
+          ? "Signed in · Passport not saved"
+          : "Not signed in";
 
   return (
     <div className="flex flex-col gap-5">
@@ -297,7 +297,7 @@ function AccountPanel() {
           to="/passport"
           className="flex h-11 items-center justify-center rounded-full bg-ink text-sm font-semibold text-canvas transition-opacity hover:opacity-90"
         >
-          {profile ? "Edit passport" : "Open passport"}
+          {profile ? "Edit Passport" : "Open Passport"}
         </Link>
         {profile ? (
           <Link

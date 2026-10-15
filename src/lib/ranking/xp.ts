@@ -3,14 +3,14 @@ export const XP_RULES = [
   { key: "acceptedSubmissions", label: "Accepted submission", points: 100, detail: "Work you submitted was reviewed and accepted." },
   { key: "acceptedApplications", label: "Accepted application", points: 25, detail: "A publisher accepted you onto their opportunity." },
   { key: "publishedOpportunities", label: "Published opportunity", points: 15, detail: "You posted open work to the board (drafts do not count)." },
-  { key: "passport", label: "Saved passport", points: 10, detail: "One-time bonus for saving a public Chog Passport." },
+  { key: "passport", label: "Saved Passport", points: 10, detail: "One-time bonus for saving a public Passport." },
 ] as const;
 
 export type XpKey = (typeof XP_RULES)[number]["key"];
 export type XpCounts = Record<XpKey, number>;
 
 export const TIERS = [
-  { name: "Hatchling", min: 0, blurb: "Fresh out of the egg, so save a passport to start." },
+  { name: "Hatchling", min: 0, blurb: "Fresh out of the egg. Save a Passport to start." },
   { name: "Apprentice", min: 50, blurb: "On the board and getting picked." },
   { name: "Artisan", min: 150, blurb: "Shipped and accepted work, more than once." },
   { name: "Guildmaster", min: 400, blurb: "A name people look for on the board." },

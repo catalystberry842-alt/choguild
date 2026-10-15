@@ -14,11 +14,11 @@ export const Route = createFileRoute("/how-it-works")({
 
 const FLOW = [
   { icon: Wallet, title: "Connect a wallet", body: "Any browser wallet works. Connecting only shares an address, nothing else." },
-  { icon: IdCard, title: "Sign and save a passport", body: "Sign one message (free, not a transaction). Add a username, bio, skills and links." },
+  { icon: IdCard, title: "Save your Passport", body: "Sign one free message (not a transaction), then add a username, bio, skills and links." },
   { icon: Compass, title: "Find work on the board", body: "Filter opportunities by skill, category and pay. Apply with a short pitch." },
   { icon: Inbox, title: "Get accepted", body: "The publisher reviews applications and accepts the people they want to work with." },
   { icon: FileCheck2, title: "Submit the evidence", body: "Send links to the repo, doc or post. The publisher accepts it or asks for changes." },
-  { icon: Trophy, title: "Climb the ranking", body: "Accepted work turns into XP on your passport and moves you up the ladder." },
+  { icon: Trophy, title: "Climb the ranking", body: "Accepted work turns into XP on your Passport and moves you up the ladder." },
 ] as const;
 
 const FAQ = [
@@ -27,8 +27,8 @@ const FAQ = [
     a: "No. Signing the Choguild message is not a transaction and never spends gas. Choguild never asks for a seed phrase or private key.",
   },
   {
-    q: "Is a wallet address the same as a passport?",
-    a: "No. An address is only an identifier. You become a guild member when you sign in and save a passport.",
+    q: "Is a wallet address the same as a Passport?",
+    a: "No. An address is only an identifier. You join the guild when you sign in and save a Passport.",
   },
   {
     q: "Can I game the ranking?",
@@ -36,7 +36,7 @@ const FAQ = [
   },
   {
     q: "How does onchain XP work?",
-    a: "We read how many transactions your passport wallet has sent on Monad mainnet. The score grows with the square root of that count and caps at 150 XP, about one accepted job, so steady activity counts but spamming transactions cannot outrank reviewed guild work. Your balance is never used.",
+    a: "We read how many transactions your Passport wallet has sent on Monad mainnet. The score grows with the square root of that count and caps at 150 XP, about one accepted job, so steady activity counts but spamming transactions cannot outrank reviewed guild work. Your balance is never used.",
   },
   {
     q: "Who verifies the work?",
@@ -76,7 +76,7 @@ function HowItWorksPage() {
 
       <section id="xp" className="scroll-mt-24">
         <h2 className="t-h2">XP</h2>
-        <p className="t-body mt-1.5">Recalculated live for every public passport.</p>
+        <p className="t-body mt-1.5">Recalculated live for every public Passport.</p>
         <div className="surface mt-6 overflow-hidden">
           <table className="w-full text-left text-sm">
             <thead className="t-meta">

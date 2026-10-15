@@ -7,6 +7,7 @@ import { APPLICATION_STATUS_LABEL } from "@/lib/board/copy";
 import { listBoardApplications } from "@/lib/board/functions";
 import { emptyBoardSearch } from "@/lib/board/search";
 import { formatStamp } from "@/lib/passport/format";
+import { applicationTone } from "@/lib/status-tone";
 
 export const Route = createFileRoute("/applications/")({
   loader: () => listBoardApplications(),
@@ -54,7 +55,7 @@ function ApplicationsPage() {
                     </span>
                     {item.feedback ? <span className="t-body mt-2 block">{item.feedback}</span> : null}
                   </span>
-                  <Badge tone={item.status === "accepted" ? "olive" : item.status === "rejected" ? "danger" : "neutral"}>
+                  <Badge tone={applicationTone(item.status)}>
                     {APPLICATION_STATUS_LABEL[item.status]}
                   </Badge>
                 </Link>

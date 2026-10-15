@@ -4,13 +4,14 @@ import { useServerFn } from "@tanstack/react-start";
 import { WorkForm } from "@/components/work/work-form";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
+import { NotFoundState } from "@/components/layout/not-found";
 import { PageHeader } from "@/components/ui/page-header";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, SelectInput, TextArea } from "@/components/ui/input";
 import { REVIEW_ACTIONS, WORK_STATUS_LABEL, type ReviewAction } from "@/lib/work/copy";
 import { getWorkItem, reviewWorkItem } from "@/lib/work/functions";
 import { formatStamp } from "@/lib/passport/format";
+import { workTone } from "@/lib/status-tone";
 
 export const Route = createFileRoute("/submissions/$submissionId")({
   loader: async ({ params }) => {
@@ -24,7 +25,17 @@ export const Route = createFileRoute("/submissions/$submissionId")({
   }),
   component: SubmissionPage,
   notFoundComponent: () => (
-    <EmptyState title="Submission not found" body="Only the contributor and the publisher can open it." />
+    <NotFoundState
+      title="Submission not found"
+      body="Only the contributor and the publisher can open it."
+      action={
+        <Button asChild variant="secondary" size="compact">
+          <Link to="/submissions" search={{ view: "mine", status: "all" }}>
+            Your submissions
+          </Link>
+        </Button>
+      }
+    />
   ),
 });
 
@@ -47,7 +58,7 @@ function SubmissionPage() {
     <article className="flex flex-col gap-10">
       <PageHeader eyebrow={work.projectName} title={latest?.title ?? "Submission"}>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge>{WORK_STATUS_LABEL[work.status]}</Badge>
+          <Badge tone={workTone(work.status)}>{WORK_STATUS_LABEL[work.status]}</Badge>
           <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="t-link text-sm">
             {work.opportunityTitle}
           </Link>

@@ -5,11 +5,12 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { PageHeader } from "@/components/ui/page-header";
 import { OPPORTUNITY_STATUS_LABEL, type OpportunityStatus } from "@/lib/board/copy";
 import { listMyOpportunities } from "@/lib/board/functions";
+import { opportunityTone } from "@/lib/status-tone";
 
 export const Route = createFileRoute("/opportunities/")({
   loader: () => listMyOpportunities(),
   staticData: { title: "Your listings", crumb: "Your listings" },
-  head: () => ({ meta: [{ title: "Your opportunities · Choguild" }] }),
+  head: () => ({ meta: [{ title: "Your listings · Choguild" }] }),
   component: OwnedPage,
 });
 
@@ -51,7 +52,7 @@ function OwnedPage() {
                     <h2 className="t-h3">{item.title}</h2>
                     <p className="t-meta mt-1">{item.projectName}</p>
                   </div>
-                  <Badge tone={item.status === "open" ? "olive" : "neutral"}>
+                  <Badge tone={opportunityTone(item.status)}>
                     {OPPORTUNITY_STATUS_LABEL[item.status as OpportunityStatus] ?? item.status}
                   </Badge>
                 </div>

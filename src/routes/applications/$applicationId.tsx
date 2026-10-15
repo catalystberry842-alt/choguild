@@ -3,13 +3,14 @@ import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
+import { NotFoundState } from "@/components/layout/not-found";
 import { PageHeader } from "@/components/ui/page-header";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, SelectInput, TextArea } from "@/components/ui/input";
 import { APPLICATION_STATUS_LABEL, REVIEW_STATUSES, type ReviewStatus } from "@/lib/board/copy";
 import { decideApplication, getBoardApplication, withdrawBoardApplication } from "@/lib/board/functions";
 import { formatStamp } from "@/lib/passport/format";
+import { applicationTone } from "@/lib/status-tone";
 
 export const Route = createFileRoute("/applications/$applicationId")({
   loader: async ({ params }) => {
@@ -19,11 +20,19 @@ export const Route = createFileRoute("/applications/$applicationId")({
   },
   staticData: { title: "Application", crumb: "Application" },
   head: ({ loaderData }) => ({
-    meta: [{ title: loaderData ? `${loaderData.opportunityTitle} · Application` : "Application · Choguild" }],
+    meta: [{ title: loaderData ? `${loaderData.opportunityTitle} · Choguild` : "Application · Choguild" }],
   }),
   component: ApplicationPage,
   notFoundComponent: () => (
-    <EmptyState title="Application not found" body="It may have been removed, or it belongs to someone else." />
+    <NotFoundState
+      title="Application not found"
+      body="It may have been removed, or it belongs to someone else."
+      action={
+        <Button asChild variant="secondary" size="compact">
+          <Link to="/applications">Your applications</Link>
+        </Button>
+      }
+    />
   ),
 });
 
@@ -47,7 +56,7 @@ function ApplicationPage() {
     <article className="flex flex-col gap-10">
       <PageHeader eyebrow={application.projectName} title={application.opportunityTitle}>
         <div className="flex flex-wrap items-center gap-2">
-          <Badge tone={application.status === "accepted" ? "olive" : application.status === "rejected" ? "danger" : "neutral"}>
+          <Badge tone={applicationTone(application.status)}>
             {APPLICATION_STATUS_LABEL[application.status]}
           </Badge>
           {application.isDemo ? <Badge tone="warning">Example</Badge> : null}

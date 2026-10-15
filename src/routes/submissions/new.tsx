@@ -9,8 +9,8 @@ import { useState } from "react";
 
 export const Route = createFileRoute("/submissions/new")({
   loader: () => getWorkHome(),
-  staticData: { title: "New submission", crumb: "New submission" },
-  head: () => ({ meta: [{ title: "New submission · Choguild" }] }),
+  staticData: { title: "Submit work", crumb: "Submit work" },
+  head: () => ({ meta: [{ title: "Submit work · Choguild" }] }),
   component: NewSubmissionPage,
 });
 

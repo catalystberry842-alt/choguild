@@ -35,7 +35,7 @@ async function viewerWallet() {
 async function requireProfile() {
   assertSameOrigin();
   const { sql, wallet } = await viewerWallet();
-  if (!wallet) return { ok: false as const, error: "Sign in with your passport before continuing." };
+  if (!wallet) return { ok: false as const, error: "Sign in with your Passport to continue." };
   const profile = await findProfileForWallet(sql, wallet);
   if (!profile) return { ok: false as const, error: "Save a Chog Passport before you publish or apply." };
   return { ok: true as const, sql, wallet, profile };

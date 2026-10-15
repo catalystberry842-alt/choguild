@@ -109,7 +109,7 @@ export function PublicPassport({
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-sand underline-offset-2 hover:underline"
+                  className="t-link w-fit text-sm"
                 >
                   {link.label}
                 </a>

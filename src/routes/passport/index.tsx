@@ -11,7 +11,7 @@ import { Section } from "@/components/ui/section";
 import { emptyBoardSearch } from "@/lib/board/search";
 
 export const Route = createFileRoute("/passport/")({
-  staticData: { title: "Contributor Passport", crumb: "Passport" },
+  staticData: { title: "Your Passport", crumb: "Passport" },
   head: () => ({
     meta: [{ title: "Passport · Choguild" }],
   }),
@@ -48,7 +48,7 @@ function PassportPage() {
       </Section>
 
       <Section title="Profile" description={profile ? undefined : "Username, display name and a short bio are required."}>
-        {status === "loading" ? <LoadingState label="Loading passport" /> : null}
+        {status === "loading" ? <LoadingState label="Loading your Passport" /> : null}
         {status === "error" ? <ErrorMessage title="Passport unavailable">{error}</ErrorMessage> : null}
         {status === "ready" && !verified ? (
           <EmptyState

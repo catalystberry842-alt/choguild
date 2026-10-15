@@ -4,17 +4,18 @@ import type { ButtonHTMLAttributes } from "react";
 import { cn } from "@/lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex shrink-0 items-center justify-center gap-2 rounded-full font-semibold whitespace-nowrap transition-[background-color,box-shadow,filter,transform] duration-150 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60",
+  "inline-flex shrink-0 items-center justify-center gap-2 rounded-xl font-medium whitespace-nowrap transition-[background-color,border-color,color,transform] duration-150 ease-out active:scale-[0.97] disabled:pointer-events-none disabled:opacity-50",
   {
     variants: {
       variant: {
         primary: "btn-accent text-on-accent",
-        secondary: "border border-line bg-elevated text-ink hover:border-muted",
+        secondary: "border border-line bg-elevated text-ink hover:border-muted hover:bg-secondary",
         ghost: "bg-transparent text-body hover:bg-elevated hover:text-ink",
       },
       size: {
-        md: "min-h-11 px-5 text-sm",
-        compact: "min-h-9 px-4 text-sm",
+        lg: "h-12 px-6 text-[15px]",
+        md: "h-11 px-5 text-sm",
+        compact: "h-9 px-3.5 text-sm",
         icon: "size-11 p-0",
       },
     },

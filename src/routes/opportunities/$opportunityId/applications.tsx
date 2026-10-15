@@ -11,6 +11,7 @@ import { APPLICATION_STATUS_LABEL, REVIEW_STATUSES, type ReviewStatus } from "@/
 import { decideApplication, listBoardReviews } from "@/lib/board/functions";
 import type { ApplicationView } from "@/lib/board/types";
 import { formatStamp } from "@/lib/passport/format";
+import { applicationTone } from "@/lib/status-tone";
 
 export const Route = createFileRoute("/opportunities/$opportunityId/applications")({
   loader: ({ params }) => listBoardReviews({ data: params.opportunityId }),
@@ -75,7 +76,7 @@ function ReviewCard({ item }: { item: ApplicationView }) {
             {formatStamp(item.createdAt)}
           </p>
         </div>
-        <Badge tone={item.status === "accepted" ? "olive" : item.status === "rejected" ? "danger" : "neutral"}>
+        <Badge tone={applicationTone(item.status)}>
           {APPLICATION_STATUS_LABEL[item.status]}
         </Badge>
       </div>

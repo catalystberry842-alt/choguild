@@ -172,13 +172,13 @@ describe("profile completion", () => {
 
 describe("wallet errors", () => {
   it("explains rejection and a missing provider", () => {
-    assert.match(walletErrorMessage({ code: 4001, message: "no" }, "connect"), /rejected the connection/);
+    assert.match(walletErrorMessage({ code: 4001, message: "no" }, "connect"), /Connection cancelled/);
     assert.match(
       walletErrorMessage({ name: "UserRejectedRequestError", message: "User rejected the request." }, "sign"),
-      /rejected the signature/,
+      /Signature cancelled/,
     );
-    assert.match(walletErrorMessage(new Error("Provider not found"), "connect"), /No wallet provider/);
-    assert.match(walletErrorMessage(new Error(""), "switch"), /could not switch/);
+    assert.match(walletErrorMessage(new Error("Provider not found"), "connect"), /No wallet found/);
+    assert.match(walletErrorMessage(new Error(""), "switch"), /switch to Monad/);
   });
 });
 

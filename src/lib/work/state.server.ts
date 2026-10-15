@@ -19,11 +19,11 @@ async function requireProfile() {
   assertSameOrigin();
   const sql = await getSql();
   const record = await readSessionRecord();
-  if (!record) return { ok: false as const, error: "Sign in with your passport before continuing." };
+  if (!record) return { ok: false as const, error: "Sign in with your Passport to continue." };
   const live = await readLiveSession(sql, record.sessionId);
   if (!live || live !== record.address) {
     await clearSessionRecord();
-    return { ok: false as const, error: "Your passport session expired. Sign in again." };
+    return { ok: false as const, error: "Your session expired. Sign in again." };
   }
   const profile = await findProfileForWallet(sql, live);
   if (!profile) return { ok: false as const, error: "Save a Chog Passport before you submit work." };

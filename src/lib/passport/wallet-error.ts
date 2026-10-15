@@ -6,18 +6,18 @@ export function walletErrorMessage(error: unknown, action: "connect" | "sign" | 
     record.name === "UserRejectedRequestError" ||
     /user rejected|rejected the request/i.test(message);
   if (rejected) {
-    if (action === "sign") return "You rejected the signature. Your passport session was not opened.";
-    if (action === "switch") return "You rejected the network switch. The wallet is still on its current network.";
-    return "You rejected the connection request. No wallet was connected.";
+    if (action === "sign") return "Signature cancelled. You're not signed in.";
+    if (action === "switch") return "Network switch cancelled. Your wallet is still on its current network.";
+    return "Connection cancelled. No wallet was connected.";
   }
   if (/provider not found|no provider|ethereum is not defined|could not find connector/i.test(message)) {
-    return "No wallet provider was found in this browser. Install a wallet that exposes an Ethereum provider, then try again.";
+    return "No wallet found in this browser. Install one such as MetaMask or Rabby, then try again.";
   }
   const cleaned = message.replace(/\s+/g, " ").trim();
   if (!cleaned) {
-    if (action === "sign") return "The signature could not be completed.";
-    if (action === "switch") return "The wallet could not switch to Monad.";
-    return "The wallet could not connect.";
+    if (action === "sign") return "The signature didn't go through. Try again.";
+    if (action === "switch") return "Couldn't switch to Monad. Try again from your wallet.";
+    return "The wallet didn't connect. Try again.";
   }
   return cleaned.slice(0, 180);
 }
