@@ -3,7 +3,7 @@ import { LogoMark } from "@/components/brand/logo";
 import { formatDay, shortAddress } from "@/lib/passport/format";
 import type { PublicProfile } from "@/lib/passport/types";
 
-/** The passport as a premium card: warm gradient, ring watermark, gentle tilt. Only real state is shown. */
+/** The passport as a premium card: black glass, purple edge glow, logo watermark, gentle tilt. Only real state is shown. */
 export function PassportRecord({ profile, address }: { profile: PublicProfile | null; address: string | null }) {
   const rx = useSpring(useMotionValue(0), { stiffness: 140, damping: 18 });
   const ry = useSpring(useMotionValue(0), { stiffness: 140, damping: 18 });
@@ -27,10 +27,10 @@ export function PassportRecord({ profile, address }: { profile: PublicProfile | 
           rx.set(0);
           ry.set(0);
         }}
-        className="signal-glow relative aspect-[1.586/1] overflow-hidden rounded-[1.75rem] border border-signal/25 bg-[linear-gradient(135deg,#3a2a9a_0%,#21185a_40%,#120d2c_100%)] p-6 sm:p-7"
+        className="passport-glass relative aspect-[1.586/1] overflow-hidden rounded-[1.75rem] p-6 sm:p-7"
       >
-        <LogoMark className="pointer-events-none absolute -right-12 -bottom-14 size-64 text-signal/[0.08]" />
-        <div className="pointer-events-none absolute -top-24 -left-16 size-64 rounded-full bg-signal/20 blur-3xl" aria-hidden="true" />
+        <LogoMark className="pointer-events-none absolute -right-12 -bottom-14 size-64 text-signal/[0.12]" />
+        
         <div className="relative flex h-full flex-col justify-between">
           <div className="flex items-center justify-between">
             <span className="flex items-center gap-2 text-ink">

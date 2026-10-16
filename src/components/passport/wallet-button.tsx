@@ -48,7 +48,7 @@ export function WalletButton({
         <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/80" />
         <Dialog.Content
           className={cn(
-            "fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 rounded-2xl border border-line bg-elevated p-6",
+            "fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 glass glass-strong rounded-2xl p-6",
           )}
         >
           <Dialog.Title className="text-lead font-semibold text-ink">Wallet</Dialog.Title>

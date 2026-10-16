@@ -21,7 +21,7 @@ export const Route = createRootRoute({
         content:
           "Choguild helps Monad contributors keep an identity, find opportunities, and build a record of reviewed work.",
       },
-      { name: "theme-color", content: "#0e0b1f" },
+      { name: "theme-color", content: "#050507" },
       { property: "og:title", content: "Choguild" },
       { property: "og:description", content: "The contributor guild on Monad: a passport, open work, and a record of reviewed contributions." },
       { property: "og:image", content: "https://choguild.vercel.app/og.jpg" },

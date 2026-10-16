@@ -8,7 +8,7 @@ const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: "sheen signal-glow bg-[linear-gradient(180deg,#7660f2,#5a40d8)] text-white hover:brightness-110",
+        primary: "sheen btn-glass",
         secondary: "border border-line-strong bg-white/[0.03] text-ink hover:border-signal/50 hover:bg-signal/10",
         ghost: "bg-transparent text-body hover:bg-elevated hover:text-ink",
       },

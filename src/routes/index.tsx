@@ -91,7 +91,7 @@ function Hero() {
           <Link
             to="/discover"
             search={emptyBoardSearch()}
-            className="sheen signal-glow group inline-flex h-12 items-center justify-center gap-3 rounded-full bg-[linear-gradient(180deg,#7660f2,#5a40d8)] px-7 text-base font-medium text-on-accent"
+            className="sheen btn-glass group inline-flex h-12 items-center justify-center gap-3 rounded-full px-7 text-base font-medium text-on-accent"
           >
             Explore opportunities
             <span aria-hidden="true" className="arrow-slide">→</span>
@@ -141,8 +141,8 @@ function HeroBackdrop({ y, opacity }: { y: MotionValue<string>; opacity: MotionV
         <div className="hero-light absolute top-[5%] left-1/2 size-[50vmax] -translate-x-1/2 rounded-full" />
         <div className="hero-light-2 absolute top-[30%] left-[5%] size-[40vmax] rounded-full" />
       </motion.div>
-      <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgb(14_11_31/0.78),rgb(14_11_31/0.35)_70%,rgb(14_11_31/0.2))]" />
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,#0e0b1f,transparent)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgb(5_5_7/0.7),rgb(5_5_7/0.25)_70%,rgb(5_5_7/0.1))]" />
+      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,#050507,transparent)]" />
     </div>
   );
 }
@@ -313,7 +313,7 @@ function Ticker({ stats, titles }: { stats: { openOpportunities: number; passpor
     </ul>
   );
   return (
-    <div className="ticker relative mt-4 overflow-hidden rounded-full border border-line bg-canvas/50 py-2.5">
+    <div className="ticker relative mt-4 overflow-hidden rounded-full py-2.5">
       <div className="ticker-track">
         {row(false)}
         {row(true)}
