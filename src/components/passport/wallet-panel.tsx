@@ -29,6 +29,8 @@ export function WalletPanel() {
   const [copied, setCopied] = useState(false);
   const [busy, setBusy] = useState(false);
   const [providerIds, setProviderIds] = useState<string[] | null>(null);
+  /** null = not asked yet; "picker" = several wallets; "none" = tapped and nothing injected. */
+  const [stage, setStage] = useState<null | "picker" | "none">(null);
 
   const network = monadChainLabel(chainId);
   const onMonad = network.onMonad;
@@ -60,6 +62,35 @@ export function WalletPanel() {
   }, [connectorKey]);
 
   const readyConnectors = connectors.filter((connector) => providerIds?.includes(connector.uid));
+
+  async function detectProviders(): Promise<string[]> {
+    const found: string[] = [];
+    for (const connector of connectorsRef.current) {
+      try {
+        if (await connector.getProvider()) found.push(connector.uid);
+      } catch {
+        // No provider for this connector.
+      }
+    }
+    setProviderIds(found);
+    return found;
+  }
+
+  async function startConnect() {
+    setError(null);
+    setMessage(null);
+    // Re-check on tap: EIP-6963 wallets can announce after first render.
+    const found = await detectProviders();
+    const ready = connectorsRef.current.filter((c) => found.includes(c.uid));
+    // Prefer named EIP-6963 wallets over the generic injected fallback when both exist.
+    const named = ready.filter((c) => c.type === "injected" && c.id !== "injected");
+    const choices = named.length > 0 ? named : ready;
+    if (choices.length === 0) setStage("none");
+    else if (choices.length === 1) {
+      setStage(null);
+      await connect(choices[0].uid);
+    } else setStage("picker");
+  }
 
   async function connect(uid: string) {
     setError(null);
@@ -163,28 +194,33 @@ export function WalletPanel() {
       ) : null}
 
       {!isConnected ? (
-        providerIds === null ? (
-          <p className="text-base text-body">Checking for a wallet…</p>
-        ) : readyConnectors.length > 0 ? (
-          <div className="flex flex-col gap-2">
-            {readyConnectors.map((connector) => (
+        stage === "picker" ? (
+          <div className="flex flex-col gap-2" data-testid="wallet-picker">
+            <p className="t-meta">Choose a wallet</p>
+            {(readyConnectors.some((c) => c.id !== "injected")
+              ? readyConnectors.filter((c) => c.id !== "injected")
+              : readyConnectors
+            ).map((connector) => (
               <Button
                 key={connector.uid}
+                variant="secondary"
                 onClick={() => void connect(connector.uid)}
                 disabled={connecting || status === "connecting" || status === "reconnecting"}
               >
-                Connect {connector.name}
+                {connector.name}
               </Button>
             ))}
           </div>
+        ) : stage === "none" ? (
+          <WalletFallback mobile={isMobileUserAgent(navigator.userAgent, navigator.maxTouchPoints)} onRetry={() => void startConnect()} />
         ) : (
-          isMobileUserAgent(navigator.userAgent, navigator.maxTouchPoints) ? (
-            <MobileWalletLinks />
-          ) : (
-            <ErrorMessage title="No wallet found">
-              Install a browser wallet such as MetaMask or Rabby, then reload this page.
-            </ErrorMessage>
-          )
+          <Button
+            data-testid="connect-wallet"
+            onClick={() => void startConnect()}
+            disabled={connecting || status === "connecting" || status === "reconnecting"}
+          >
+            {connecting ? "Connecting…" : "Connect wallet"}
+          </Button>
         )
       ) : (
         <div className="flex flex-wrap gap-2">
@@ -228,15 +264,17 @@ export function WalletPanel() {
   );
 }
 
-/** Phones have no injected wallet in Safari/Chrome: open this page inside a wallet app's browser instead. */
-function MobileWalletLinks() {
+/** Shown only after "Connect wallet" found no injected / EIP-6963 wallet. */
+function WalletFallback({ mobile, onRetry }: { mobile: boolean; onRetry: () => void }) {
   const [copied, setCopied] = useState(false);
   const url = window.location.href;
   const links = walletDeepLinks(url);
   return (
     <div className="flex flex-col gap-3" data-testid="mobile-wallet-links">
       <p className="text-base text-body">
-        Phone browsers can't reach a wallet directly. Open this page inside your wallet app to sign in.
+        {mobile
+          ? "No wallet found in this browser. Open this page inside your wallet app to connect."
+          : "No browser wallet found. Install MetaMask, Rabby or Phantom and reload, or open this page in a wallet app."}
       </p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {links.filter((link) => link.href).map((link) => (
@@ -256,6 +294,7 @@ function MobileWalletLinks() {
       <p className="t-meta">
         {links.filter((link) => !link.href).map((link) => link.note).join(" ")}
       </p>
+      <Button variant="ghost" onClick={onRetry}>Try again</Button>
     </div>
   );
 }

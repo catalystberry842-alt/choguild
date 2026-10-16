@@ -648,3 +648,42 @@
 @keyframes hero-bg { to { transform: translateY(25%); opacity: 0.2; } }
 @keyframes hero-text { to { transform: translateY(-15%); } }
 @media (prefers-reduced-motion: reduce) { .hero-parallax-bg, .hero-parallax-text { animation: none !important; } }
+
+/* ── v16: frosted glass restored, cheaply ─────────────────────────────────
+   The v14 lag came from blurring over animated, filter-blurred orbs. Orbs are
+   now static pre-blurred webp and nothing animates under the glass, so a
+   moderate blur only rasterises once per scroll tile. Rules:
+   · blur 18px + saturate on large surfaces (cards, panels, nav, primary buttons)
+   · tiny chips/badges get a denser translucent fill, no blur
+   · glass nested inside glass never blurs again (that doubles the cost)
+   · each blurred surface is its own isolated, paint-contained layer           */
+@layer components {
+  .glass, .bento, .panel, .surface, .ticker, .pill-nav {
+    background: linear-gradient(180deg, rgb(150 130 255 / 0.13), rgb(110 90 230 / 0.06));
+    border: 1px solid rgb(180 166 255 / 0.22);
+    box-shadow:
+      inset 0 1px 0 rgb(255 255 255 / 0.12),
+      inset 0 0 0 1px rgb(255 255 255 / 0.02),
+      0 24px 60px -36px rgb(0 0 0 / 0.9);
+    -webkit-backdrop-filter: blur(18px) saturate(1.6);
+    backdrop-filter: blur(18px) saturate(1.6);
+    isolation: isolate;
+  }
+  .glass:not(a, button), .bento:not(a), .panel, .surface { contain: paint; }
+  .btn-glass {
+    -webkit-backdrop-filter: blur(16px) saturate(1.6);
+    backdrop-filter: blur(16px) saturate(1.6);
+    isolation: isolate;
+  }
+  /* Nested glass: reuse the parent's blur, just tint. */
+  :is(.glass, .bento, .panel, .surface, .passport-glass, .pill-nav) :is(.glass, .bento, .panel, .surface, .ticker, .btn-glass) {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background: rgb(160 140 255 / 0.10);
+  }
+  /* Small chips: no blur, denser fill reads the same at this size. */
+  .chip, .glass-chip { background: rgb(131 110 249 / 0.16); border: 1px solid rgb(180 166 255 / 0.25); -webkit-backdrop-filter: none; backdrop-filter: none; }
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .glass, .bento, .panel, .pill-nav, .ticker, .surface { background: rgb(18 15 30 / 0.94); }
+  }
+}
