@@ -78,7 +78,7 @@ function RankingPage() {
         </div>
         <p className="t-meta">
           {BLURB[by]}{" "}
-          <Link to="/how-it-works" hash="xp" className="t-link">How XP works</Link>
+          <Link to="/how-it-works" hash="xp" className="t-link inline-flex min-h-6 items-center">How XP works</Link>
         </p>
         {!onchainAvailable && by !== "guild" ? (
           <p className="t-body flex items-start gap-3 rounded-2xl border border-warning/30 bg-warning/5 px-4 py-3">

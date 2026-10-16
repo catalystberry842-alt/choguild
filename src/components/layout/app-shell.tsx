@@ -1,5 +1,5 @@
 import { useRouterState } from "@tanstack/react-router";
-import { MotionConfig, motion } from "motion/react";
+import { MotionConfig } from "motion/react";
 import { useState, type ReactNode } from "react";
 import { CommandPalette } from "@/components/layout/command-palette";
 import { RouteProgress } from "@/components/layout/route-progress";
@@ -36,14 +36,10 @@ export function AppShell({ children }: { children: ReactNode }) {
               : "relative z-10 mx-auto w-full max-w-6xl scroll-mt-16 px-4 pt-14 sm:px-6 md:pt-20"
           }
         >
-          <motion.div
-            key={pathname}
-            initial={{ opacity: 0.4 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.18, ease: "easeOut" }}
-          >
+          {/* CSS fade (no JS animation loop) so navigation commits immediately. */}
+          <div key={pathname} className="route-fade">
             {children}
-          </motion.div>
+          </div>
         </main>
         <SiteFooter />
         <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />

@@ -69,7 +69,7 @@ function Hero() {
         </motion.div>
         <p
           style={{ animationDelay: "100ms" }}
-          className="fade-up mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-label text-body backdrop-blur"
+          className="fade-up mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-label text-body"
         >
           <span className="pulse-dot" aria-hidden="true" />
           The contributor guild on Monad
@@ -98,7 +98,7 @@ function Hero() {
           </Link>
           <Link
             to="/passport"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-line-strong bg-elevated/60 px-7 text-base text-ink backdrop-blur transition-colors hover:border-ink/30"
+            className="inline-flex h-12 items-center justify-center rounded-full border border-line-strong bg-elevated/60 px-7 text-base text-ink transition-colors hover:border-ink/30"
           >
             {profile ? "Open your passport" : "Create your passport"}
           </Link>
@@ -120,7 +120,7 @@ function MarkOrbit() {
         <circle cx="50" cy="50" r="47" fill="none" stroke="rgb(228 222 255 / 0.08)" />
         <circle cx="97" cy="50" r="1.6" fill="rgb(228 222 255 / 0.6)" />
       </svg>
-      <div className="absolute inset-7 flex items-center justify-center rounded-full border border-line-strong bg-elevated/80 backdrop-blur sm:inset-8">
+      <div className="absolute inset-7 flex items-center justify-center rounded-full border border-line-strong bg-elevated/80 sm:inset-8">
         <AnimatedMark size={40} className="text-ink" />
       </div>
     </div>

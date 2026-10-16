@@ -590,3 +590,36 @@
     .passport-glass, .btn-glass { background-color: rgb(16 13 28 / 0.96); }
   }
 }
+
+/* ── v14: interaction performance ─────────────────────────────────────────
+   Root cause of click lag: ~20–40 glass surfaces each ran backdrop-filter:
+   blur(20px) over three fixed, 90px-blurred orbs that animated forever, so
+   every frame the compositor re-blurred every card. The orbs are already
+   soft, so cards get the same frosted look from a translucent fill alone.
+   backdrop-filter stays only on the sticky nav, passport card and overlays. */
+@layer components {
+  .glass, .bento, .panel, .ticker, .surface, .btn-glass {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .glass, .bento, .panel, .surface { background: rgb(131 110 249 / 0.075); }
+  .pill-nav {
+    -webkit-backdrop-filter: blur(12px) saturate(1.3);
+    backdrop-filter: blur(12px) saturate(1.3);
+  }
+  /* Static orbs: rasterised once, never repainted. */
+  /* filter: blur(90px) on three viewport-sized layers was re-applied by the
+     compositor every frame. Same soft orbs, pre-blurred into tiny images. */
+  .orb { animation: none; will-change: auto; filter: none; background: center / 100% 100% no-repeat; transform: scale(1.6); }
+  .orb-1 { background-image: url("/bg/orb-1.webp"); }
+  .orb-2 { background-image: url("/bg/orb-2.webp"); }
+  .orb-3 { background-image: url("/bg/orb-3.webp"); }
+  .orbs { contain: strict; }
+  .hero-light, .hero-light-2 { animation: none; will-change: auto; }
+  .hero-img { will-change: auto; }
+  /* Long lists: skip layout/paint for offscreen cards. */
+  .cv-auto { content-visibility: auto; contain-intrinsic-size: auto 320px; }
+}
+.route-fade { animation: route-fade 160ms ease-out both; }
+@keyframes route-fade { from { opacity: 0.5; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .route-fade { animation: none; } }
