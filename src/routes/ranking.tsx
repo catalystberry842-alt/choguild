@@ -68,9 +68,9 @@ function RankingPage() {
                 to="/ranking"
                 search={option.id === "overall" ? {} : { by: option.id }}
                 replace
-                className={cn("relative rounded-full px-4 py-1.5 text-small transition-colors", active ? "text-on-accent" : "text-body hover:text-ink")}
+                className={cn("relative rounded-full px-4 py-1.5 text-small transition-colors", active ? "text-white" : "text-body hover:text-ink")}
               >
-                {active ? <motion.span layoutId="rank-by" className="absolute inset-0 rounded-full bg-signal-solid" transition={{ type: "spring", bounce: 0.15, duration: 0.45 }} /> : null}
+                {active ? <motion.span layoutId="rank-by" className="absolute inset-0 rounded-full btn-glass" transition={{ type: "spring", bounce: 0.15, duration: 0.45 }} /> : null}
                 <span className="relative">{option.label}</span>
               </Link>
             );

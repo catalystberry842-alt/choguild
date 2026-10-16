@@ -71,11 +71,11 @@ function PassportPage() {
       <Section title="Profile" description={profile ? undefined : "Username, display name and a short bio are required."}>
         {status === "loading" ? <LoadingState label="Loading passport" layout="list" rows={2} /> : null}
         {status === "error" ? <ErrorMessage title="Passport unavailable">{error}</ErrorMessage> : null}
-        {status === "ready" && !verified ? (
+        {status !== "loading" && status !== "error" && !verified ? (
           <EmptyState
             compact
-            title="Sign in to edit your profile"
-            body="Connect a wallet above, then sign the Choguild message. Signing is free."
+            title={sessionAddress ? "Sign in to edit your profile" : "Connect a wallet to start"}
+            body={sessionAddress ? "Sign the Choguild message to prove the wallet is yours. Signing is free." : "Connect a wallet in the Wallet panel, then sign the Choguild message. Signing is free and nothing is sent onchain."}
           />
         ) : null}
         {status === "ready" && verified ? (
