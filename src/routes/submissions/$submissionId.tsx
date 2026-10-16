@@ -147,7 +147,7 @@ function SubmissionPage() {
               .slice(0, -1)
               .reverse()
               .map((version) => (
-                <li key={version.version} className="surface p-5">
+                <li key={version.version} className="surface p-5 sm:p-6">
                   <p className="t-meta">
                     Version {version.version} · {formatStamp(version.createdAt)}
                   </p>

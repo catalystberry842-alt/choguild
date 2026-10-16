@@ -9,13 +9,13 @@ import { MONAD_CHAIN_ID, explorerAddressUrl, monadChainLabel } from "@/lib/passp
 import { shortAddress } from "@/lib/passport/format";
 import { endPassportSession, requestNonce, verifySignature } from "@/lib/passport/functions";
 import { walletErrorMessage } from "@/lib/passport/wallet-error";
-import { REMOTE_CONNECTOR_TYPES } from "@/lib/passport/wagmi";
+import { REMOTE_CONNECTOR_TYPES, isAllowedConnector } from "@/lib/passport/wagmi";
 
 const DAPP_HOST = "choguild.vercel.app";
 
 export function WalletPanel() {
   const { address, isConnected, chainId, status } = useAccount();
-  const connectors = useConnectors();
+  const connectors = useConnectors().filter(isAllowedConnector);
   const { connectAsync, isPending: connecting } = useConnect();
   const { disconnect, isPending: disconnecting } = useDisconnect();
   const { switchChainAsync, isPending: switching } = useSwitchChain();

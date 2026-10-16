@@ -189,7 +189,7 @@ function EmptyLadder() {
     <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end" aria-label="Podium, no one ranked yet">
       {[2, 1, 3].map((rank) => (
         <Reveal as="li" key={rank} delay={rank * 0.08} className={rank === 1 ? "md:order-2 md:pb-14" : rank === 2 ? "md:order-1" : "md:order-3"}>
-          <div className={cn("flex flex-col items-center gap-4 rounded-[1.5rem] border border-dashed px-6 py-10 text-center", rank === 1 ? "signal-glow border-signal/40 bg-signal/[0.04]" : "border-line-strong bg-elevated/40")}>
+          <div className={cn("flex flex-col items-center gap-4 rounded-2xl border border-dashed px-6 py-10 text-center", rank === 1 ? "signal-glow border-signal/40 bg-signal/[0.04]" : "border-line-strong bg-elevated/40")}>
             <span className={cn("t-stat-lg", rank === 1 ? "text-signal" : "text-faint")}>{rank}</span>
             <span aria-hidden="true" className="flex size-16 items-center justify-center rounded-full border border-dashed border-line-strong text-faint">?</span>
             <span className="t-h3 text-ink">{rank === 1 ? "First place is open." : "Open spot"}</span>

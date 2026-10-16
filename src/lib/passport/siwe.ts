@@ -51,7 +51,7 @@ export async function signatureMatchesMessage(input: {
     signature: input.signature,
   }).catch(() => false);
   if (eoa) return true;
-  // Smart-contract wallets (e.g. Coinbase Smart Wallet) sign with ERC-1271 / ERC-6492; check onchain.
+  // Smart-contract wallets sign with ERC-1271 / ERC-6492; check onchain.
   try {
     const client = createPublicClient({
       chain: monad,

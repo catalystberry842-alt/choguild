@@ -246,11 +246,11 @@ function Bento() {
       </Reveal>
 
       {/* CTA */}
-      <Reveal className="bento flex flex-col items-start justify-between gap-6 p-6 sm:p-10 md:col-span-6 md:flex-row md:items-center lg:col-span-12">
+      <Reveal className="bento flex flex-col items-start justify-between gap-6 p-6 sm:p-8 md:col-span-6 md:flex-row md:items-center lg:col-span-12">
         <p className="t-h2 max-w-xl">
           One passport. Every piece of work, <em>on the record.</em>
         </p>
-        <Link to="/passport" className="sheen group inline-flex h-12 shrink-0 items-center gap-3 rounded-full bg-ink px-7 text-base font-medium text-canvas">
+        <Link to="/passport" className="sheen btn-glass group inline-flex h-12 shrink-0 items-center gap-3 rounded-full px-7 text-base font-medium text-on-accent">
           Get your passport <span aria-hidden="true" className="arrow-slide">→</span>
         </Link>
       </Reveal>
@@ -279,7 +279,7 @@ function CardHead({ label, title, to, cta }: { label: string; title: ReactNode; 
 
 function EmptyPreview({ body, to, cta }: { body: string; to: "/passport" | "/opportunities/new"; cta: string }) {
   return (
-    <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-dashed border-line-strong p-5">
+    <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-dashed border-line-strong p-5 sm:p-6">
       <AnimatedMark size={36} className="text-ink" />
       <p className="text-base text-body">{body}</p>
       <Link to={to} className="rounded-full bg-white/[0.06] px-4 py-2 text-small text-ink transition-colors hover:bg-white/[0.1]">

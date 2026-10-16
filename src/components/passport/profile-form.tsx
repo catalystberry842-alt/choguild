@@ -170,7 +170,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
       </Field>
 
       <fieldset>
-        <legend className="text-base font-medium text-ink">Skills</legend>
+        <legend className="text-small font-medium text-ink">Skills</legend>
         <div className="mt-2 flex flex-wrap gap-2">
           {SUGGESTED_SKILLS.map((skill) => {
             const selected = form.skills.some((item) => item.toLowerCase() === skill.toLowerCase());
@@ -246,7 +246,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
       </Field>
 
       <fieldset>
-        <legend className="text-base font-medium text-ink">Other links</legend>
+        <legend className="text-small font-medium text-ink">Other links</legend>
         <div className="mt-3 flex flex-col gap-3">
           {form.otherLinks.map((link, index) => (
             <div key={index} className="grid gap-2 sm:grid-cols-2">
@@ -310,7 +310,7 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
         </SelectInput>
       </Field>
 
-      <div className="rounded-md bg-secondary px-5 py-4">
+      <div className="rounded-md bg-secondary p-5">
         <p className="t-h3">{completionSummary(completion)}</p>
         <ul className="mt-3 flex flex-wrap gap-1.5">
           {completion.map((item) => (

@@ -16,7 +16,7 @@ export function AppErrorComponent({ error }: ErrorComponentProps) {
   return (
     <main className="flex min-h-dvh flex-col items-center justify-center gap-3 bg-canvas px-6 text-center text-ink">
       <TriangleAlert className="size-8 text-danger" aria-hidden="true" />
-      <h1 className="text-lead font-semibold">Something went wrong</h1>
+      <h1 className="t-h3">Something went wrong</h1>
       <p className="max-w-md text-base break-words text-body">{errorMessage(error)}</p>
     </main>
   );

@@ -90,7 +90,7 @@ function SubmissionsPage() {
             </nav>
             <SelectInput
               aria-label="Filter by status"
-              className="ml-auto max-w-44 min-h-10"
+              className="ml-auto max-w-44 min-h-11"
               value={search.status}
               onChange={(event) => void navigate({ to: "/submissions", search: { view: search.view, status: event.target.value } })}
             >

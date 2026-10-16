@@ -57,7 +57,7 @@ export function WorkForm({ applicationId, work }: { applicationId?: string; work
         <TextArea id="work-body" value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} required />
       </Field>
       <fieldset>
-        <legend className="text-base font-medium text-ink">Evidence links</legend>
+        <legend className="text-small font-medium text-ink">Evidence links</legend>
         <div className="mt-2 grid gap-2">
           {form.evidenceLinks.map((link, index) => (
             <TextInput

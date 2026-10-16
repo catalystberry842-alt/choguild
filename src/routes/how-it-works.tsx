@@ -60,7 +60,7 @@ function HowItWorksPage() {
           {FLOW.map((step, index) => (
             <Reveal as="li" key={step.title} delay={index * 0.04} y={8} className="grid grid-cols-[3rem_minmax(0,1fr)] gap-4 border-b border-line py-5 sm:grid-cols-[4rem_16rem_minmax(0,1fr)]">
               <span className="t-h3 text-faint">{index + 1}</span>
-              <h3 className="text-base font-medium text-ink">{step.title}</h3>
+              <h3 className="t-h3">{step.title}</h3>
               <p className="t-body col-start-2 sm:col-start-3">{step.body}</p>
             </Reveal>
           ))}

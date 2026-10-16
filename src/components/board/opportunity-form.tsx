@@ -106,7 +106,7 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
 
   if (step === "review") {
     return (
-      <div className="rounded-3xl border border-line bg-elevated p-6">
+      <div className="rounded-2xl border border-line bg-elevated p-6">
         <h2 className="t-h2">Review before publishing</h2>
         <dl className="mt-4 grid gap-3 text-base">
           <div><dt className="text-muted">Title</dt><dd className="text-ink">{form.title}</dd></div>
@@ -227,7 +227,7 @@ function SkillPicker({
   const [custom, setCustom] = useState("");
   return (
     <fieldset>
-      <legend className="text-base font-medium text-ink">{label}</legend>
+      <legend className="text-small font-medium text-ink">{label}</legend>
       <div className="mt-2 flex flex-wrap gap-2">
         {BOARD_SKILLS.map((skill) => {
           const on = selected.some((item) => item.toLowerCase() === skill.toLowerCase());
@@ -238,7 +238,7 @@ function SkillPicker({
               aria-pressed={on}
               onClick={() => onToggle(skill)}
               className={cn(
-                "min-h-11 rounded-lg border px-3 text-base",
+                "min-h-11 rounded-md border px-3 text-base",
                 on ? "border-action bg-elevated text-ink" : "border-line bg-canvas text-body",
               )}
             >
