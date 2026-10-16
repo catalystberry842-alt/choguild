@@ -2,7 +2,6 @@ import * as Dialog from "@radix-ui/react-dialog";
 import { useNavigate } from "@tanstack/react-router";
 import { Command } from "cmdk";
 import { Briefcase, FilePlus2, Megaphone, Search, type LucideIcon } from "lucide-react";
-import { useEffect } from "react";
 import { emptyBoardSearch } from "@/lib/board/search";
 import { NAV_ITEMS } from "@/lib/navigation";
 
@@ -35,17 +34,6 @@ const itemClass =
 /** Global ⌘K / Ctrl+K jump menu. */
 export function CommandPalette({ open, onOpenChange }: { open: boolean; onOpenChange: (open: boolean) => void }) {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    function onKey(event: KeyboardEvent) {
-      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
-        event.preventDefault();
-        onOpenChange(!open);
-      }
-    }
-    window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
-  }, [open, onOpenChange]);
 
   function run(fn: () => void) {
     onOpenChange(false);

@@ -1,4 +1,5 @@
 import type { Sql } from "@/lib/db";
+import { withTransaction } from "@/lib/tx";
 import type { WorkStatus } from "@/lib/work/copy";
 import { reviewerCan, WORK_STATUSES } from "@/lib/work/copy";
 import type { ContributionSummary, EligibleWork, PublicContribution, WorkDetail, WorkEvent, WorkListItem, WorkVersion } from "@/lib/work/types";
@@ -259,6 +260,7 @@ export async function createWork(
   applicationId: string,
   input: WorkInput,
 ): Promise<{ ok: true; work: WorkDetail } | { ok: false; error: string; fieldErrors?: WorkErrors }> {
+  wallet = wallet.toLowerCase();
   const parsed = validateWork(input);
   if (!parsed.ok) return { ok: false, error: "Check the highlighted fields.", fieldErrors: parsed.errors };
   const application = await acceptedApplication(sql, wallet, applicationId);
@@ -269,11 +271,16 @@ export async function createWork(
   const id = crypto.randomUUID();
   const status = parsed.value.submit ? "submitted" : "draft";
   try {
-    await sql.query(
-      `insert into work_submissions (id, opportunity_id, application_id, contributor_wallet, status, public_evidence)
-       values ($1,$2,$3,$4,$5,$6)`,
-      [id, application.opportunity_id, applicationId, wallet, status, parsed.value.publicEvidence],
-    );
+    // Submission, its first version and its first event land together or not at all.
+    await withTransaction(sql, async (tx) => {
+      await tx.query(
+        `insert into work_submissions (id, opportunity_id, application_id, contributor_wallet, status, public_evidence)
+         values ($1,$2,$3,$4,$5,$6)`,
+        [id, application.opportunity_id, applicationId, wallet, status, parsed.value.publicEvidence],
+      );
+      await writeVersion(tx, id, 1, parsed.value);
+      await writeEvent(tx, id, wallet, null, status, null, null);
+    });
   } catch (error) {
     const message = error instanceof Error ? error.message : String(error);
     if (message.toLowerCase().includes("work_submissions_one_per_application")) {
@@ -281,8 +288,6 @@ export async function createWork(
     }
     throw error;
   }
-  await writeVersion(sql, id, 1, parsed.value);
-  await writeEvent(sql, id, wallet, null, status, null, null);
   const work = await getWork(sql, wallet, id);
   if (!work) return { ok: false, error: "The submission was saved but could not be read back." };
   return { ok: true, work };
@@ -301,22 +306,26 @@ export async function updateDraft(
   if (row.status !== "draft" && row.status !== "changes_requested") {
     return { ok: false, error: "This submission can no longer be edited." };
   }
-  if (row.status === "draft") {
-    await sql.query(
-      `update submission_versions set title = $2, description = $3, repo_url = $4, document_url = $5, notes = $6, evidence_links = $7::jsonb
-       where submission_id = $1 and version = 1`,
-      [id, parsed.value.title, parsed.value.description, parsed.value.repoUrl, parsed.value.documentUrl, parsed.value.notes, JSON.stringify(parsed.value.evidenceLinks)],
-    );
-    const next = parsed.value.submit ? "submitted" : "draft";
-    await sql.query(`update work_submissions set status = $2, public_evidence = $3, updated_at = now() where id = $1`, [id, next, parsed.value.publicEvidence]);
-    if (parsed.value.submit) await writeEvent(sql, id, wallet, "draft", "submitted", null, null);
-  } else {
-    if (!parsed.value.submit) return { ok: false, error: "Send the revision. A requested change cannot go back to a draft." };
-    const count = await sql.query<{ version: number }>(`select max(version)::int as version from submission_versions where submission_id = $1`, [id]);
-    await writeVersion(sql, id, Number(count[0]?.version ?? 1) + 1, parsed.value);
-    await sql.query(`update work_submissions set status = 'submitted', public_evidence = $2, updated_at = now() where id = $1`, [id, parsed.value.publicEvidence]);
-    await writeEvent(sql, id, wallet, "changes_requested", "submitted", null, null);
+  if (row.status !== "draft" && !parsed.value.submit) {
+    return { ok: false, error: "Send the revision. A requested change cannot go back to a draft." };
   }
+  await withTransaction(sql, async (tx) => {
+    if (row.status === "draft") {
+      await tx.query(
+        `update submission_versions set title = $2, description = $3, repo_url = $4, document_url = $5, notes = $6, evidence_links = $7::jsonb
+         where submission_id = $1 and version = 1`,
+        [id, parsed.value.title, parsed.value.description, parsed.value.repoUrl, parsed.value.documentUrl, parsed.value.notes, JSON.stringify(parsed.value.evidenceLinks)],
+      );
+      const next = parsed.value.submit ? "submitted" : "draft";
+      await tx.query(`update work_submissions set status = $2, public_evidence = $3, updated_at = now() where id = $1`, [id, next, parsed.value.publicEvidence]);
+      if (parsed.value.submit) await writeEvent(tx, id, wallet, "draft", "submitted", null, null);
+    } else {
+      const count = await tx.query<{ version: number }>(`select max(version)::int as version from submission_versions where submission_id = $1`, [id]);
+      await writeVersion(tx, id, Number(count[0]?.version ?? 1) + 1, parsed.value);
+      await tx.query(`update work_submissions set status = 'submitted', public_evidence = $2, updated_at = now() where id = $1`, [id, parsed.value.publicEvidence]);
+      await writeEvent(tx, id, wallet, "changes_requested", "submitted", null, null);
+    }
+  });
   const work = await getWork(sql, wallet, id);
   if (!work) return { ok: false, error: "The submission was saved but could not be read back." };
   return { ok: true, work };
@@ -337,13 +346,17 @@ export async function reviewWork(
     return { ok: false, error: "You can only review submissions for opportunities you published." };
   }
   if (!reviewerCan(statusOf(row.status), action)) return { ok: false, error: "That status change is not allowed." };
-  const updated = await sql.query<{ id: string }>(
-    `update work_submissions set status = $3, updated_at = now()
-     where id = $1 and status = $2 returning id`,
-    [id, row.status, action],
-  );
-  if (!updated[0]) return { ok: false, error: "That status change is not allowed." };
-  await writeEvent(sql, id, owner, row.status, action, note.comment, note.note);
+  const changed = await withTransaction(sql, async (tx) => {
+    const updated = await tx.query<{ id: string }>(
+      `update work_submissions set status = $3, updated_at = now()
+       where id = $1 and status = $2 returning id`,
+      [id, row.status, action],
+    );
+    if (!updated[0]) return false;
+    await writeEvent(tx, id, owner, row.status, action, note.comment, note.note);
+    return true;
+  });
+  if (!changed) return { ok: false, error: "That status change is not allowed." };
   const work = await getWork(sql, owner, id);
   if (!work) return { ok: false, error: "The review was saved but could not be read back." };
   return { ok: true, work };

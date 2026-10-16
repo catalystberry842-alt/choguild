@@ -3,7 +3,7 @@ import { monad } from "@/lib/passport/chain";
 import { createSiweMessage, parseSiweMessage, validateSiweMessage } from "viem/siwe";
 import { SIWE_STATEMENT } from "@/lib/passport/copy";
 
-const TEN_MINUTES_MS = 10 * 60 * 1000;
+const TEN_MINUTES_MS = 5 * 60 * 1000; // short-lived challenge (5 min)
 
 export function buildPassportMessage(input: {
   address: `0x${string}`;

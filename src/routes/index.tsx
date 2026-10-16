@@ -1,6 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import { motion, useScroll, useTransform, type MotionValue } from "motion/react";
-import { useRef, type ReactNode } from "react";
+import type { ReactNode } from "react";
 import { AnimatedMark } from "@/components/brand/animated-mark";
 import { Reveal, WordReveal } from "@/components/fx/reveal";
 import { ProjectMark } from "@/components/board/opportunity-card";
@@ -41,8 +40,6 @@ const STEPS: { label: string; body: string; to: "/passport" | "/discover" | "/su
   { label: "Reputation", body: "Accepted work earns XP and rank.", to: "/ranking" },
 ];
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
 function HomePage() {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
@@ -54,19 +51,14 @@ function HomePage() {
 
 function Hero() {
   const { profile } = Route.useLoaderData();
-  const ref = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "25%"]);
-  const bgOpacity = useTransform(scrollYProgress, [0, 0.9], [1, 0.2]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-15%"]);
 
   return (
-    <section ref={ref} aria-labelledby="hero-title" className="relative flex flex-col items-center pt-20 pb-20 text-center sm:pt-28 lg:pt-32">
-      <HeroBackdrop y={bgY} opacity={bgOpacity} />
-      <motion.div style={{ y: textY }} className="relative flex flex-col items-center">
-        <motion.div initial={{ opacity: 0, scale: 0.6, rotate: -90 }} animate={{ opacity: 1, scale: 1, rotate: 0 }} transition={{ duration: 1.2, ease: EASE }}>
+    <section aria-labelledby="hero-title" className="relative flex flex-col items-center pt-20 pb-20 text-center sm:pt-28 lg:pt-32">
+      <HeroBackdrop />
+      <div className="hero-parallax-text relative flex flex-col items-center">
+        <div className="mark-spin-in">
           <MarkOrbit />
-        </motion.div>
+        </div>
         <p
           style={{ animationDelay: "100ms" }}
           className="fade-up mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-label text-body"
@@ -103,7 +95,7 @@ function Hero() {
             {profile ? "Open your passport" : "Create your passport"}
           </Link>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
@@ -128,10 +120,10 @@ function MarkOrbit() {
 }
 
 /** Full-bleed topographic image behind the hero: slow drift, scroll parallax, drifting light, a scrim. */
-function HeroBackdrop({ y, opacity }: { y: MotionValue<string>; opacity: MotionValue<number> }) {
+function HeroBackdrop() {
   return (
     <div aria-hidden="true" className="pointer-events-none absolute -top-24 bottom-0 left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-      <motion.div style={{ y, opacity }} className="absolute inset-0">
+      <div className="hero-parallax-bg absolute inset-0">
         <picture>
           <source media="(min-width: 768px)" type="image/avif" srcSet="/bg/hero-desktop.avif" />
           <source media="(min-width: 768px)" type="image/webp" srcSet="/bg/hero-desktop.webp" />
@@ -140,7 +132,7 @@ function HeroBackdrop({ y, opacity }: { y: MotionValue<string>; opacity: MotionV
         </picture>
         <div className="hero-light absolute top-[5%] left-1/2 size-[50vmax] -translate-x-1/2 rounded-full" />
         <div className="hero-light-2 absolute top-[30%] left-[5%] size-[40vmax] rounded-full" />
-      </motion.div>
+      </div>
       <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgb(5_5_7/0.7),rgb(5_5_7/0.25)_70%,rgb(5_5_7/0.1))]" />
       <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,#050507,transparent)]" />
     </div>
@@ -166,7 +158,7 @@ function Bento() {
             <div key={label} className="rounded-2xl border border-line bg-canvas/50 p-4">
               <dt className="text-label text-muted">{label}</dt>
               <dd className="t-stat mt-3 tabular-nums">
-                <CountUp value={Number(value)} />
+                {value === null ? <span className="text-body text-base">unavailable</span> : <CountUp value={Number(value)} />}
               </dd>
             </div>
           ))}
@@ -190,7 +182,7 @@ function Bento() {
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block text-base font-medium text-ink">{step.label}</span>
-                  <span className="block truncate text-small text-muted">{step.body}</span>
+                  <span className="block text-small text-pretty text-muted">{step.body}</span>
                 </span>
                 <span aria-hidden="true" className="arrow-slide text-muted">→</span>
               </Link>
@@ -289,16 +281,16 @@ function EmptyPreview({ body, to, cta }: { body: string; to: "/passport" | "/opp
   );
 }
 
-function Ticker({ stats, titles }: { stats: { openOpportunities: number; passports: number; acceptedWork: number; onchainTxs: number }; titles: string[] }) {
+function Ticker({ stats, titles }: { stats: { openOpportunities: number; passports: number; acceptedWork: number; onchainTxs: number | null }; titles: string[] }) {
   const empty =
-    titles.length === 0 && stats.openOpportunities + stats.passports + stats.acceptedWork + stats.onchainTxs === 0;
+    titles.length === 0 && stats.openOpportunities + stats.passports + stats.acceptedWork + (stats.onchainTxs ?? 0) === 0;
   // Nothing real to show yet: no ticker rather than a reel of zeros.
   if (empty) return null;
   const items = [
     `${formatXp(stats.openOpportunities)} open`,
     `${formatXp(stats.passports)} passports`,
     `${formatXp(stats.acceptedWork)} accepted`,
-    `${formatXp(stats.onchainTxs)} onchain txs`,
+    stats.onchainTxs === null ? "Onchain txs unavailable" : `${formatXp(stats.onchainTxs)} onchain txs`,
     ...titles.map((title) => `Open: ${title}`),
     "Live from the database and Monad mainnet",
   ];

@@ -1,6 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Activity } from "lucide-react";
-import { motion } from "motion/react";
 import { Reveal } from "@/components/fx/reveal";
 import { Avatar, TierBadge, XpBar } from "@/components/ranking/bits";
 import { CountUp } from "@/components/ranking/count-up";
@@ -49,7 +48,7 @@ function RankingPage() {
         <dl className="mt-8 flex flex-wrap justify-center gap-2">
           {([["Passports", stats.passports], ["Accepted", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value]) => (
             <div key={label} className="flex items-baseline gap-2 rounded-full border border-line bg-elevated/70 px-4 py-2">
-              <dd className="t-stat-sm text-ink"><CountUp value={value} /></dd>
+              <dd className="t-stat-sm text-ink">{value === null ? <span className="text-muted">unavailable</span> : <CountUp value={value} />}</dd>
               <dt className="text-label text-muted">{label}</dt>
             </div>
           ))}
@@ -70,7 +69,7 @@ function RankingPage() {
                 replace
                 className={cn("relative rounded-full px-4 py-1.5 text-small transition-colors", active ? "text-white" : "text-body hover:text-ink")}
               >
-                {active ? <motion.span layoutId="rank-by" className="absolute inset-0 rounded-full btn-glass" transition={{ type: "spring", bounce: 0.15, duration: 0.45 }} /> : null}
+                {active ? <span className="fade-in-soft absolute inset-0 rounded-full btn-glass" /> : null}
                 <span className="relative">{option.label}</span>
               </Link>
             );
@@ -187,7 +186,7 @@ function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
 function EmptyLadder() {
   return (
     <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end" aria-label="Podium, no one ranked yet">
-      {[2, 1, 3].map((rank) => (
+      {[1, 2, 3].map((rank) => (
         <Reveal as="li" key={rank} delay={rank * 0.08} className={rank === 1 ? "md:order-2 md:pb-14" : rank === 2 ? "md:order-1" : "md:order-3"}>
           <div className={cn("flex flex-col items-center gap-4 rounded-2xl border border-dashed px-6 py-10 text-center", rank === 1 ? "signal-glow border-signal/40 bg-signal/[0.04]" : "border-line-strong bg-elevated/40")}>
             <span className={cn("t-stat-lg", rank === 1 ? "text-signal" : "text-faint")}>{rank}</span>

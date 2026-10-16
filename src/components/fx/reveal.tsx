@@ -1,29 +1,58 @@
-import { motion, type HTMLMotionProps } from "motion/react";
-import type { ReactNode } from "react";
+import { useEffect, useRef, type HTMLAttributes, type ReactNode } from "react";
 
-const EASE = [0.22, 1, 0.36, 1] as const;
-
-/** Fades and lifts its children in the first time they scroll into view. */
+/**
+ * Fades and lifts its children in the first time they scroll into view.
+ * Progressive enhancement: the server HTML is fully visible (no-JS users see
+ * everything). After hydration, only elements still below the fold are hidden
+ * and then revealed on scroll; anything already on screen never flickers.
+ */
 export function Reveal({
   children,
   delay = 0,
   y = 10,
   className,
   as = "div",
+  animate = true,
+  style,
   ...rest
-}: { children: ReactNode; delay?: number; y?: number; className?: string; as?: "div" | "section" | "li" } & Omit<
-  HTMLMotionProps<"div">,
-  "children"
->) {
-  const Comp = motion[as] as typeof motion.div;
+}: {
+  children: ReactNode;
+  delay?: number;
+  y?: number;
+  className?: string;
+  as?: "div" | "section" | "li";
+  animate?: boolean;
+} & HTMLAttributes<HTMLElement>) {
+  const ref = useRef<HTMLElement>(null);
+  useEffect(() => {
+    const node = ref.current;
+    if (!animate || !node || typeof IntersectionObserver === "undefined") return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const rect = node.getBoundingClientRect();
+    if (rect.top < window.innerHeight * 0.92) return; // already visible: leave it alone
+    node.dataset.reveal = "pending";
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          node.dataset.reveal = "shown";
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -8% 0px" },
+    );
+    observer.observe(node);
+    return () => {
+      observer.disconnect();
+      node.dataset.reveal = "shown";
+    };
+  }, [animate]);
+  const Comp = as as "div";
   return (
     <Comp
-      className={className}
-      initial={{ opacity: 0, y }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: "0px 0px -8% 0px" }}
-      transition={{ duration: 0.45, ease: EASE, delay: Math.min(delay, 0.2) }}
+      ref={ref as React.Ref<HTMLDivElement>}
       {...rest}
+      className={className}
+      style={{ ["--reveal-y" as string]: `${y}px`, ["--reveal-delay" as string]: `${Math.round(Math.min(delay, 0.2) * 1000)}ms`, ...style }}
     >
       {children}
     </Comp>

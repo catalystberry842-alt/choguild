@@ -73,3 +73,30 @@ test("backs off for a minute after every RPC failed", async () => {
   await loadTxCounts([C], { fetcher: down, rpcUrls: ["https://one"], now: 62_000 });
   assert.equal(log.length, 2);
 });
+
+test("reads every wallet past 500 in batches (no silent cap)", async () => {
+  const wallets = Array.from({ length: 1234 }, (_, i) => `0x${i.toString(16).padStart(40, "0")}`);
+  let calls = 0;
+  const fetcher = rpc((batch) => {
+    calls += 1;
+    return batch.map((c) => ({ id: c.id, result: "0x1" }));
+  });
+  const counts = await loadTxCounts(wallets, { fetcher, rpcUrls: ["https://one"] });
+  assert.equal(counts.size, 1234);
+  assert.equal(calls, Math.ceil(1234 / 50));
+});
+
+test("serves the persistent store instantly and never blocks past the budget", async () => {
+  const stored = new Map([[A.toLowerCase(), { count: 7, at: Date.now() }]]);
+  const writes: Map<string, number>[] = [];
+  const store = {
+    read: async () => stored,
+    write: async (entries: Map<string, number>) => void writes.push(entries),
+  };
+  const slow = (async () => new Promise(() => undefined)) as unknown as typeof fetch;
+  const started = Date.now();
+  const counts = await loadTxCounts([A, B], { fetcher: slow, rpcUrls: ["https://one"], store, budgetMs: 50 });
+  assert.ok(Date.now() - started < 1000);
+  assert.equal(counts.get(A.toLowerCase()), 7);
+  assert.equal(counts.has(B), false);
+});

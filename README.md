@@ -33,7 +33,7 @@ Everything on the site is real: listings, passports, and XP come straight from t
 
 | Area | What you can do |
 | --- | --- |
-| **Passport** | Connect a browser wallet, sign a message (Sign-In with Ethereum, never a transaction), and save a public profile with your skills and links. |
+| **Passport** | Connect a browser wallet (or open the site in your wallet app on a phone), sign a message (Sign-In with Ethereum, never a transaction), and save a public profile with your skills and links. |
 | **Discover** | Browse the opportunity board. Search and filter by skill, category, compensation, and status. |
 | **Opportunities** | Publish open work, edit your listings, and review the applications they receive. |
 | **Applications** | Track what you applied to and where each application stands. |
@@ -52,11 +52,13 @@ XP is calculated live from the database, so it can't drift out of sync with the 
 | --- | --- |
 | Accepted submission | +100 |
 | Accepted application | +25 |
-| Published opportunity (not draft) | +15 |
+| Published opportunity: counts once another wallet's work is accepted on it or it stays open 3 days (max 4 per 30 days) | +15 |
 | Saved public passport | +10 |
 | Onchain activity on Monad mainnet | 10 × √(transactions sent), up to +150 |
 
-Onchain XP reads each passport wallet's transaction count from the public Monad RPC (batched, cached for 10 minutes). The square root and the cap mean steady activity counts, but spamming transactions can't outrank reviewed guild work, and balances are never used. The Ranking page can sort by **Overall**, **Guild work**, or **Onchain**.
+Anti-farming (`src/lib/ranking/farming.ts`): self-dealing earns nothing; jobs between the same two wallets (either direction) earn full XP the first time, half the second, nothing after; guild XP from work and listings is capped at 400 per wallet per 30 days.
+
+Onchain XP reads each passport wallet's transaction count from the public Monad RPC (batched for every wallet, cached for 10 minutes in memory and in Postgres; pages never wait more than ~1.5 s on the RPC and show "unavailable" rather than 0 when it is down). The square root and the cap mean steady activity counts, but spamming transactions can't outrank reviewed guild work, and balances are never used. The Ranking page can sort by **Overall**, **Guild work**, or **Onchain**.
 
 Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Guildmaster** (400) → **Legend** (1000). The rules live in `src/lib/ranking/xp.ts`.
 
@@ -103,14 +105,23 @@ Copy `.env.example` into your host's environment settings. Do not commit real va
 | --- | --- | --- |
 | `DATABASE_URL` | For persistent data | Postgres connection string (Neon works well). Without it, data lives in memory and resets when the server restarts. |
 | `CHOG_SESSION_SECRET` | Yes, on every deployed build | At least 32 random characters (`openssl rand -hex 32`). Signs passport sessions. |
-| `VITE_MONAD_RPC_URL` | No | Preferred Monad RPC (https only). The app falls back through rpc1–3.monad.xyz, monadinfra, dRPC and Ankr automatically. |
-| `VITE_WALLETCONNECT_PROJECT_ID` | No | Project ID from [Reown / WalletConnect Cloud](https://cloud.reown.com). When set, a WalletConnect (QR / mobile wallet) option appears. Browser wallets (EIP-6963) and Coinbase Wallet work without it. |
+| `VITE_MONAD_RPC_URL` | No | Preferred Monad RPC (https only). The app falls back through rpc1–3.monad.xyz, monadinfra, dRPC and Ankr automatically. A custom host must also be added to `connect-src` in `vercel.json` (the CSP is enforced). |
+| `CHOG_RUN_MIGRATIONS` | No | Local/CI only: `1` lets `npm run db:migrate` run outside Vercel. |
 
 ## Deploy to Vercel
 
 1. Import the repository in Vercel. The framework preset can stay on **Other**; `vercel.json` and the Nitro build output handle the rest.
 2. Add `CHOG_SESSION_SECRET` and `DATABASE_URL`. Without `DATABASE_URL` the deployed app runs on in-memory PGLite and every cold start wipes the data.
-3. Deploy. `npm run build` runs the database migrations automatically when `DATABASE_URL` is present.
+3. Deploy. `npm run build` runs the database migrations only on **production** deploys (`VERCEL_ENV=production`) with `DATABASE_URL` set. Preview and development builds never touch the schema. Run them by hand with `CHOG_RUN_MIGRATIONS=1 npm run db:migrate`.
+4. Without `CHOG_SESSION_SECRET` every public page still renders; only sign-in is unavailable.
+
+## Wallets
+
+Browser wallets only (EIP-6963 injected: MetaMask, Rabby, Phantom…). There is no WalletConnect and no Coinbase SDK. On a phone with no injected wallet, the Wallet panel offers buttons that reopen the current page inside MetaMask, Phantom or Trust Wallet, and a copy-link button for Rabby and Rainbow (they publish no open-URL link).
+
+## CI
+
+`.github/workflows/ci.yml` runs typecheck, lint, tests and a build on Node 22 for every push and pull request. Vercel installs production dependencies only, so lint and tests are gated by CI rather than the Vercel build.
 
 ## Chog Genesis holders
 
@@ -121,9 +132,9 @@ Copy `.env.example` into your host's environment settings. Do not commit real va
 
 ## Security and operations
 
-- Security headers (`nosniff`, frame denial, referrer and permissions policy, a report-only CSP) and long cache headers for static assets live in `vercel.json`.
+- Security headers (`nosniff`, frame denial, referrer and permissions policy, an enforced CSP with violations sent to `/api/csp-report`) and long cache headers for static assets live in `vercel.json`.
 - Every server function validates its input with zod (`src/lib/schemas.ts`) and writes are rate limited per client (`src/lib/rate-limit.ts`, in-memory per instance).
-- Client errors are reported to `/api/client-error` and show up in the Vercel function logs as `[client-error]`. Builds emit hidden source maps for symbolicating stacks.
+- Client errors are reported to `/api/client-error` and show up in the Vercel function logs as `[client-error]`. No source maps are shipped.
 - `robots.txt` is static; `/sitemap.xml` is generated from public listings and passports.
 
 ## Project layout

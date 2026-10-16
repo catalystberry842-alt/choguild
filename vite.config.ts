@@ -59,9 +59,9 @@ export default defineConfig(({ command, isPreview }) => ({
     strictPort: true,
   },
   resolve: { tsconfigPaths: true },
-  // Hidden source maps: generated for debugging stack traces, not referenced from the shipped JS.
+  // No source maps in the deployed output (nothing under /assets/*.map is public).
   build: {
-    sourcemap: "hidden",
+    sourcemap: false,
     // Never base64 fonts into the render-blocking stylesheet; they load as separate cached files.
     assetsInlineLimit: (file: string) => (/\.woff2?$/.test(file) ? false : undefined),
   },

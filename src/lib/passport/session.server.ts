@@ -34,18 +34,37 @@ function sessionConfig() {
   };
 }
 
+/** True when sessions can be opened (CHOG_SESSION_SECRET resolved). Public pages never depend on it. */
+function sessionsConfigured(): boolean {
+  try {
+    sessionPassword();
+    return true;
+  } catch (error) {
+    const holder = globalThis as typeof globalThis & { __chogSecretWarned?: boolean };
+    if (!holder.__chogSecretWarned) {
+      holder.__chogSecretWarned = true;
+      console.error("[passport]", error instanceof Error ? error.message : error);
+    }
+    return false;
+  }
+}
+
+/** Reads the signed-in session; null (signed out) when sessions are not configured, so public pages still render. */
 export async function readSessionRecord(): Promise<PassportSessionData | null> {
+  if (!sessionsConfigured()) return null;
   const session = await requestSession<PassportSessionData>(sessionConfig());
   if (!session.data.sessionId || !session.data.address) return null;
   return { sessionId: session.data.sessionId, address: session.data.address };
 }
 
 export async function writeSessionRecord(data: PassportSessionData): Promise<void> {
+  if (!sessionsConfigured()) throw new Error("Passport sign-in is temporarily unavailable. The site is missing its session secret.");
   const session = await requestSession<PassportSessionData>(sessionConfig());
   await session.update(data);
 }
 
 export async function clearSessionRecord(): Promise<void> {
+  if (!sessionsConfigured()) return;
   const session = await requestSession<PassportSessionData>(sessionConfig());
   await session.clear();
 }

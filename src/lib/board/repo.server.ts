@@ -1,4 +1,5 @@
 import type { Sql } from "@/lib/db";
+import { withTransaction } from "@/lib/tx";
 import type { ApplicationListItem, ApplicationView, OpportunityCard, OpportunityDetail } from "@/lib/board/types";
 import {
   APPLICATION_STATUSES,
@@ -224,14 +225,16 @@ export async function createOpportunity(
   const parsed = validateOpportunity(input);
   if (!parsed.ok) return { ok: false, error: "Check the highlighted fields.", fieldErrors: parsed.errors };
   const value = parsed.value;
+  owner = owner.toLowerCase();
   const id = crypto.randomUUID();
   await sql.query(
     `insert into opportunities (
       id, owner_wallet, project_name, project_logo_url, title, summary, description, scope, deliverables,
       required_skills, preferred_skills, category, compensation_type, compensation_details, time_commitment,
-      deadline, instructions, question, positions, status, holders_only
+      deadline, instructions, question, positions, status, holders_only, published_at
     ) values (
-      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21
+      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,
+      case when $20 = 'open' then now() else null end
     )`,
     [
       id, owner, value.projectName, value.projectLogoUrl, value.title, value.summary, value.description,
@@ -262,7 +265,8 @@ export async function updateOpportunity(
       project_name = $3, project_logo_url = $4, title = $5, summary = $6, description = $7, scope = $8,
       deliverables = $9, required_skills = $10::jsonb, preferred_skills = $11::jsonb, category = $12,
       compensation_type = $13, compensation_details = $14, time_commitment = $15, deadline = $16,
-      instructions = $17, question = $18, positions = $19, status = $20, holders_only = $21, updated_at = now()
+      instructions = $17, question = $18, positions = $19, status = $20, holders_only = $21, updated_at = now(),
+      published_at = coalesce(published_at, case when $20 = 'open' then now() else null end)
      where id = $1 and owner_wallet = $2
      returning id`,
     [
@@ -285,7 +289,8 @@ export async function setOpportunityStatus(
   status: "open" | "closed" | "filled",
 ): Promise<{ ok: true; opportunity: OpportunityDetail } | { ok: false; error: string }> {
   const updated = await sql.query<{ id: string }>(
-    `update opportunities set status = $3, updated_at = now()
+    `update opportunities set status = $3, updated_at = now(),
+      closed_at = case when $3 = 'open' then null when status = 'open' then now() else closed_at end
      where id = $1 and owner_wallet = $2 and status <> 'draft'
      returning id`,
     [id, owner, status],
@@ -313,6 +318,7 @@ export async function applyToOpportunity(
   /** Live Chog Genesis check for gated listings: true/false, or null when the chain can't be read. */
   isChogHolder: (wallet: string) => Promise<boolean | null> = async () => null,
 ): Promise<{ ok: true; applicationId: string } | { ok: false; error: string; fieldErrors?: BoardErrors }> {
+  wallet = wallet.toLowerCase();
   const parsed = validateApplication(input);
   if (!parsed.ok) return { ok: false, error: "Check the highlighted fields.", fieldErrors: parsed.errors };
   const rows = await sql<{ owner_wallet: string; status: string; deadline: string | null; holders_only: boolean | null }>`
@@ -338,34 +344,34 @@ export async function applyToOpportunity(
     return { ok: false, error: "You already have an application for this opportunity." };
   }
   const id = existing[0]?.id ?? crypto.randomUUID();
-  if (existing[0]) {
-    await sql.query(
-      `update applications set
-        introduction = $2, suitability = $3, experience = $4, links = $5::jsonb, extra_answer = $6,
-        status = 'submitted', feedback = null, updated_at = now()
-       where id = $1 and status = 'withdrawn'`,
-      [id, value.introduction, value.suitability, value.experience, JSON.stringify(value.links), value.extraAnswer],
-    );
-  } else {
-    try {
-      await sql.query(
-        `insert into applications (
-          id, opportunity_id, contributor_wallet, introduction, suitability, experience, links, extra_answer, status
-        ) values ($1,$2,$3,$4,$5,$6,$7::jsonb,$8,'submitted')`,
-        [id, opportunityId, wallet, value.introduction, value.suitability, value.experience, JSON.stringify(value.links), value.extraAnswer],
-      );
-    } catch (error) {
-      const message = error instanceof Error ? error.message : String(error);
-      if (message.toLowerCase().includes("applications_one_per_contributor")) {
-        return { ok: false, error: "You already have an application for this opportunity." };
+  try {
+    // The application row and its history event are written together.
+    await withTransaction(sql, async (tx) => {
+      if (existing[0]) {
+        await tx.query(
+          `update applications set
+            introduction = $2, suitability = $3, experience = $4, links = $5::jsonb, extra_answer = $6,
+            status = 'submitted', feedback = null, updated_at = now()
+           where id = $1 and status = 'withdrawn'`,
+          [id, value.introduction, value.suitability, value.experience, JSON.stringify(value.links), value.extraAnswer],
+        );
+      } else {
+        await tx.query(
+          `insert into applications (
+            id, opportunity_id, contributor_wallet, introduction, suitability, experience, links, extra_answer, status
+          ) values ($1,$2,$3,$4,$5,$6,$7::jsonb,$8,'submitted')`,
+          [id, opportunityId, wallet, value.introduction, value.suitability, value.experience, JSON.stringify(value.links), value.extraAnswer],
+        );
       }
-      throw error;
+      await tx.query(`insert into application_events (id, application_id, status) values ($1,$2,'submitted')`, [crypto.randomUUID(), id]);
+    });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.toLowerCase().includes("applications_one_per_contributor")) {
+      return { ok: false, error: "You already have an application for this opportunity." };
     }
+    throw error;
   }
-  await sql.query(`insert into application_events (id, application_id, status) values ($1,$2,'submitted')`, [
-    crypto.randomUUID(),
-    id,
-  ]);
   return { ok: true, applicationId: id };
 }
 
@@ -374,17 +380,18 @@ export async function withdrawApplication(
   wallet: string,
   applicationId: string,
 ): Promise<{ ok: true } | { ok: false; error: string }> {
-  const updated = await sql.query<{ id: string }>(
-    `update applications set status = 'withdrawn', updated_at = now()
-     where id = $1 and contributor_wallet = $2 and status in ('submitted', 'under_review', 'shortlisted')
-     returning id`,
-    [applicationId, wallet],
-  );
-  if (!updated[0]) return { ok: false, error: "This application cannot be withdrawn." };
-  await sql.query(`insert into application_events (id, application_id, status) values ($1,$2,'withdrawn')`, [
-    crypto.randomUUID(),
-    applicationId,
-  ]);
+  const done = await withTransaction(sql, async (tx) => {
+    const updated = await tx.query<{ id: string }>(
+      `update applications set status = 'withdrawn', updated_at = now()
+       where id = $1 and contributor_wallet = $2 and status in ('submitted', 'under_review', 'shortlisted')
+       returning id`,
+      [applicationId, wallet],
+    );
+    if (!updated[0]) return false;
+    await tx.query(`insert into application_events (id, application_id, status) values ($1,$2,'withdrawn')`, [crypto.randomUUID(), applicationId]);
+    return true;
+  });
+  if (!done) return { ok: false, error: "This application cannot be withdrawn." };
   return { ok: true };
 }
 
@@ -398,20 +405,20 @@ export async function setApplicationStatus(
   if (!REVIEW_STATUSES.includes(status)) return { ok: false, error: "Choose a review status." };
   const note = validateFeedback(feedback);
   if (!note.ok) return { ok: false, error: note.error };
-  const updated = await sql.query<{ id: string }>(
-    `update applications a set status = $3, feedback = $4, updated_at = now()
-     from opportunities o
-     where a.id = $1 and a.opportunity_id = o.id and o.owner_wallet = $2
-       and a.contributor_wallet <> $2 and a.status <> 'withdrawn'
-     returning a.id`,
-    [applicationId, owner, status, note.feedback],
-  );
-  if (!updated[0]) return { ok: false, error: "You can only review applications for opportunities you published." };
-  await sql.query(`insert into application_events (id, application_id, status) values ($1,$2,$3)`, [
-    crypto.randomUUID(),
-    applicationId,
-    status,
-  ]);
+  const done = await withTransaction(sql, async (tx) => {
+    const updated = await tx.query<{ id: string }>(
+      `update applications a set status = $3, feedback = $4, updated_at = now()
+       from opportunities o
+       where a.id = $1 and a.opportunity_id = o.id and o.owner_wallet = $2
+         and a.contributor_wallet <> $2 and a.status <> 'withdrawn'
+       returning a.id`,
+      [applicationId, owner, status, note.feedback],
+    );
+    if (!updated[0]) return false;
+    await tx.query(`insert into application_events (id, application_id, status) values ($1,$2,$3)`, [crypto.randomUUID(), applicationId, status]);
+    return true;
+  });
+  if (!done) return { ok: false, error: "You can only review applications for opportunities you published." };
   return { ok: true };
 }
 

@@ -1,4 +1,3 @@
-import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
 /** Centred page header: a small pill label, a sans title, a lead and actions. */
@@ -18,32 +17,26 @@ export function PageHeader({
   return (
     <header className="relative mx-auto flex max-w-3xl flex-col items-center pb-12 text-center">
       {eyebrow ? (
-        <motion.p
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3 }}
-          className="mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-elevated/70 px-3 py-1 text-label text-body"
+        <p
+          className="fade-in-soft mb-6 inline-flex items-center gap-2 rounded-full border border-line bg-elevated/70 px-3 py-1 text-label text-body"
         >
           <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
           {eyebrow}
-        </motion.p>
+        </p>
       ) : null}
       <h1 className="t-title text-balance">{title}</h1>
       {description ? (
-        <motion.p
-          initial={{ opacity: 0, y: 4 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-          className="t-lead mt-5 max-w-xl text-balance"
+        <p
+          className="fade-in-soft t-lead mt-5 max-w-xl text-balance"
         >
           {description}
-        </motion.p>
+        </p>
       ) : null}
       {children}
       {actions ? (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }} className="mt-7 flex flex-wrap justify-center gap-2.5">
+        <div className="fade-in-soft mt-7 flex flex-wrap justify-center gap-2.5">
           {actions}
-        </motion.div>
+        </div>
       ) : null}
     </header>
   );

@@ -18,9 +18,6 @@ export const wagmiConfig = createConfig({
   multiInjectedProviderDiscovery: true,
 });
 
-/** Connectors that open their own UI and must not be probed for an injected provider (none today). */
-export const REMOTE_CONNECTOR_TYPES = new Set<string>();
-
 /** Connectors hidden from the picker: Coinbase is never offered, even if its extension announces itself. */
 export function isAllowedConnector(c: { id: string; name: string; type: string }): boolean {
   const s = `${c.id} ${c.name} ${c.type}`.toLowerCase();

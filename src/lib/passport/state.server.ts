@@ -1,6 +1,6 @@
 import { getSql } from "@/lib/db";
 import { getAddress, type Hex } from "viem";
-import { assertSameOrigin, requestAuthority } from "@/lib/passport/origin.server";
+import { assertSameOrigin, requestAuthority, requesterKey } from "@/lib/passport/origin.server";
 import {
   consumeNonce,
   createPassportSession,
@@ -37,7 +37,7 @@ export async function beginNonce(input: { address: string; chainId: number }) {
   assertSameOrigin();
   const { domain, uri } = requestAuthority();
   const sql = await getSql();
-  return issueNonce(sql, { ...input, domain, uri });
+  return issueNonce(sql, { ...input, domain, uri, requester: requesterKey() });
 }
 
 export async function finishSignature(input: { message: string; signature: Hex }) {

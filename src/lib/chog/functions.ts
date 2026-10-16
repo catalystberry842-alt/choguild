@@ -9,5 +9,5 @@ export const getChogHolding = createServerFn({ method: "GET" })
   .validator((wallet: unknown) => parseInput(walletSchema, wallet))
   .handler(async ({ data }) => {
     const { chogSnapshot, holdingFrom } = await import("./holders.server");
-    return holdingFrom(await chogSnapshot(), data);
+    return holdingFrom(await chogSnapshot({ budgetMs: 2_500 }), data);
   });

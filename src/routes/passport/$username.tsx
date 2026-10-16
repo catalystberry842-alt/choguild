@@ -1,7 +1,7 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { PublicPassport } from "@/components/passport/public-passport";
 import { usePassport } from "@/components/passport/passport-provider";
-import { EmptyState } from "@/components/ui/empty-state";
+import { NotFoundState } from "@/components/layout/not-found";
 import { getPublicProfile } from "@/lib/passport/functions";
 import { getPublicContributions } from "@/lib/work/functions";
 import { seo } from "@/lib/seo";
@@ -24,7 +24,9 @@ export const Route = createFileRoute("/passport/$username")({
     seo({
       title: loaderData ? `${loaderData.profile.displayName} · Choguild` : "Passport · Choguild",
       description: loaderData?.profile.biography || "A Chog Passport on Choguild.",
-      path: `/passport/${params.username}`,
+      path: loaderData ? `/passport/${params.username}` : undefined,
+      // Unlisted passports and missing usernames stay out of search engines.
+      noindex: !loaderData || loaderData.profile.visibility === "unlisted",
     }),
   component: PublicPassportPage,
   notFoundComponent: PassportNotFound,
@@ -40,10 +42,5 @@ function PublicPassportPage() {
 }
 
 function PassportNotFound() {
-  return (
-    <EmptyState
-      title="Passport not found"
-      body="Check the username and try again."
-    />
-  );
+  return <NotFoundState title="Passport not found" description="Check the username and try again." />;
 }

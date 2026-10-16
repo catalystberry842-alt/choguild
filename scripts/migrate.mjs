@@ -2,7 +2,7 @@
 /**
  * Deploy-time database migrator (node-postgres, `pg`).
  *
- * Runs during `npm run build` — on every Vercel deploy — applying pending files
+ * Runs during `npm run build` on production Vercel deploys only (VERCEL_ENV=production), applying pending files
  * in ../migrations to DATABASE_URL. Each file is applied in one transaction and
  * recorded in a `_migrations` table, so it runs once and is safe to re-run.
  *
@@ -14,6 +14,16 @@ import { fileURLToPath } from "node:url";
 import { dirname, join } from "node:path";
 import pg from "pg";
 import { pendingMigrations } from "./migration-plan.mjs";
+
+// Only production deploys migrate the shared database. Preview/development
+// builds on Vercel must never run DDL against it (VERCEL_ENV is set by Vercel).
+// Outside Vercel (local, CI) set CHOG_RUN_MIGRATIONS=1 to migrate explicitly.
+const vercelEnv = process.env.VERCEL_ENV;
+const allowed = vercelEnv ? vercelEnv === "production" : process.env.CHOG_RUN_MIGRATIONS === "1";
+if (!allowed) {
+  console.log(`[migrate] skipped (VERCEL_ENV=${vercelEnv ?? "unset"}); migrations run only on production deploys.`);
+  process.exit(0);
+}
 
 // DDL prefers the direct (unpooled) connection the Neon integration provides.
 const databaseUrl =

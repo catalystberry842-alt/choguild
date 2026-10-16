@@ -16,6 +16,9 @@ import { useEffect, useState } from "react";
 import { ChogGallery } from "@/components/chog/chog-bits";
 import { getChogHolding } from "@/lib/chog/functions";
 import type { ChogHolding } from "@/lib/chog/chog";
+import { getPublicContributions } from "@/lib/work/functions";
+import type { ContributionSummary } from "@/lib/work/types";
+import { formatStamp } from "@/lib/passport/format";
 
 export const Route = createFileRoute("/passport/")({
   staticData: { title: "Contributor Passport", crumb: "Passport" },
@@ -39,6 +42,22 @@ function PassportPage() {
     };
   }, [sessionAddress, loadChog]);
   const holding = chog && chog.wallet === sessionAddress ? chog.holding : null;
+
+  // Contribution history: the signed-in passport's real accepted work.
+  const loadWork = useServerFn(getPublicContributions);
+  const username = profile?.username ?? null;
+  const [work, setWork] = useState<{ username: string; summary: ContributionSummary | null; failed: boolean } | null>(null);
+  useEffect(() => {
+    if (!username) return;
+    let live = true;
+    loadWork({ data: username })
+      .then((summary) => live && setWork({ username, summary, failed: false }))
+      .catch(() => live && setWork({ username, summary: null, failed: true }));
+    return () => {
+      live = false;
+    };
+  }, [username, loadWork]);
+  const history = work && work.username === username ? work : null;
 
   return (
     <div className="flex flex-col gap-3">
@@ -92,16 +111,32 @@ function PassportPage() {
       ) : null}
 
       <Section title="Contribution history" className="lg:col-span-2">
-        <EmptyState
-          compact
-          title="No accepted work yet"
-          body="Work a publisher accepts shows up here and on your public page."
-          action={
-            <Button asChild variant="secondary" size="compact">
-              <Link to="/discover" search={emptyBoardSearch()}>Find work</Link>
-            </Button>
-          }
-        />
+        {username && !history ? <LoadingState label="Loading accepted work" layout="list" rows={2} /> : null}
+        {history?.failed ? <ErrorMessage title="History unavailable">Accepted work could not be loaded. Reload to try again.</ErrorMessage> : null}
+        {history?.summary && history.summary.items.length > 0 ? (
+          <ul className="grid gap-3">
+            {history.summary.items.map((item) => (
+              <li key={item.id} className="surface p-5">
+                <Link to="/submissions/$submissionId" params={{ submissionId: item.id }} className="t-h3 hover:underline">
+                  {item.title}
+                </Link>
+                <p className="t-meta mt-1">{item.projectName} · {item.opportunityTitle} · Accepted {formatStamp(item.acceptedAt)}</p>
+              </li>
+            ))}
+          </ul>
+        ) : null}
+        {!username || (history?.summary && history.summary.items.length === 0) ? (
+          <EmptyState
+            compact
+            title="No accepted work yet"
+            body="Work a publisher accepts shows up here and on your public page."
+            action={
+              <Button asChild variant="secondary" size="compact">
+                <Link to="/discover" search={emptyBoardSearch()}>Find work</Link>
+              </Button>
+            }
+          />
+        ) : null}
       </Section>
       </div>
     </div>

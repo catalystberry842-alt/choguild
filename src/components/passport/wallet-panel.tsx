@@ -9,9 +9,9 @@ import { MONAD_CHAIN_ID, explorerAddressUrl, monadChainLabel } from "@/lib/passp
 import { shortAddress } from "@/lib/passport/format";
 import { endPassportSession, requestNonce, verifySignature } from "@/lib/passport/functions";
 import { walletErrorMessage } from "@/lib/passport/wallet-error";
-import { REMOTE_CONNECTOR_TYPES, isAllowedConnector } from "@/lib/passport/wagmi";
+import { isAllowedConnector } from "@/lib/passport/wagmi";
+import { isMobileUserAgent, walletDeepLinks } from "@/lib/passport/mobile-wallets";
 
-const DAPP_HOST = "choguild.vercel.app";
 
 export function WalletPanel() {
   const { address, isConnected, chainId, status } = useAccount();
@@ -45,10 +45,6 @@ export function WalletPanel() {
     void (async () => {
       const found: string[] = [];
       for (const connector of current) {
-        if (REMOTE_CONNECTOR_TYPES.has(connector.type)) {
-          found.push(connector.uid);
-          continue;
-        }
         try {
           const provider = await connector.getProvider();
           if (provider) found.push(connector.uid);
@@ -180,19 +176,15 @@ export function WalletPanel() {
                 Connect {connector.name}
               </Button>
             ))}
-            {readyConnectors.every((connector) => REMOTE_CONNECTOR_TYPES.has(connector.type)) ? (
-              <p className="t-meta">
-                On a phone? Open Choguild inside your wallet app:{" "}
-                <a className="t-link" href={`https://metamask.app.link/dapp/${DAPP_HOST}`}>MetaMask</a>
-                {" · "}
-                <a className="t-link" href={`https://rabby.io/`} target="_blank" rel="noreferrer">Rabby</a>
-              </p>
-            ) : null}
           </div>
         ) : (
-          <ErrorMessage title="No wallet found">
-            Install a browser wallet such as MetaMask or Rabby, then reload this page.
-          </ErrorMessage>
+          isMobileUserAgent(navigator.userAgent, navigator.maxTouchPoints) ? (
+            <MobileWalletLinks />
+          ) : (
+            <ErrorMessage title="No wallet found">
+              Install a browser wallet such as MetaMask or Rabby, then reload this page.
+            </ErrorMessage>
+          )
         )
       ) : (
         <div className="flex flex-wrap gap-2">
@@ -232,6 +224,38 @@ export function WalletPanel() {
 
       {message ? <p className="text-base text-body">{message}</p> : null}
       {error ? <ErrorMessage title="Wallet">{error}</ErrorMessage> : null}
+    </div>
+  );
+}
+
+/** Phones have no injected wallet in Safari/Chrome: open this page inside a wallet app's browser instead. */
+function MobileWalletLinks() {
+  const [copied, setCopied] = useState(false);
+  const url = window.location.href;
+  const links = walletDeepLinks(url);
+  return (
+    <div className="flex flex-col gap-3" data-testid="mobile-wallet-links">
+      <p className="text-base text-body">
+        Phone browsers can't reach a wallet directly. Open this page inside your wallet app to sign in.
+      </p>
+      <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
+        {links.filter((link) => link.href).map((link) => (
+          <Button key={link.id} asChild variant="secondary">
+            <a href={link.href!}>Open in {link.name}</a>
+          </Button>
+        ))}
+      </div>
+      <Button
+        variant="ghost"
+        onClick={() => {
+          void navigator.clipboard?.writeText(url).then(() => setCopied(true)).catch(() => undefined);
+        }}
+      >
+        {copied ? "Link copied" : "Copy link for Rabby or Rainbow"}
+      </Button>
+      <p className="t-meta">
+        {links.filter((link) => !link.href).map((link) => link.note).join(" ")}
+      </p>
     </div>
   );
 }

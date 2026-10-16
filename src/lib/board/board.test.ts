@@ -35,6 +35,8 @@ function toSql(pg: PGlite): Sql {
     const result = await pg.query<T>(text, params);
     return result.rows;
   };
+  (sql as Sql & { transaction?: unknown }).transaction = <R>(fn: (tx: Sql) => Promise<R>) =>
+    pg.transaction((tx) => fn(toSql(tx as unknown as PGlite)));
   return sql;
 }
 
@@ -86,6 +88,7 @@ describe("collaboration board", () => {
     await pg.exec(readFileSync(new URL("../../../migrations/0005_indexes.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0006_remove_demo_data.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0007_chog_gate.sql", import.meta.url), "utf8"));
+    await pg.exec(readFileSync(new URL("../../../migrations/0008_audit_v15.sql", import.meta.url), "utf8"));
   });
 
   it("publishes, hides drafts, and blocks edits from another wallet", async () => {

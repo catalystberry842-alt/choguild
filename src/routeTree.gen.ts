@@ -15,6 +15,7 @@ import { Route as NetworkRouteImport } from './routes/network'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ApiClientErrorRouteImport } from './routes/api/client-error'
+import { Route as ApiCspReportRouteImport } from './routes/api/csp-report'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsApplicationIdRouteImport } from './routes/applications/$applicationId'
 import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
@@ -58,6 +59,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const ApiClientErrorRoute = ApiClientErrorRouteImport.update({
   id: '/api/client-error',
   path: '/api/client-error',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCspReportRoute = ApiCspReportRouteImport.update({
+  id: '/api/csp-report',
+  path: '/api/csp-report',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApplicationsIndexRoute = ApplicationsIndexRouteImport.update({
@@ -141,6 +147,7 @@ export interface FileRoutesByFullPath {
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/client-error': typeof ApiClientErrorRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -163,6 +170,7 @@ export interface FileRoutesByTo {
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/client-error': typeof ApiClientErrorRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -186,6 +194,7 @@ export interface FileRoutesById {
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/api/client-error': typeof ApiClientErrorRoute
+  '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -210,6 +219,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/sitemap.xml'
     | '/api/client-error'
+    | '/api/csp-report'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -232,6 +242,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/sitemap.xml'
     | '/api/client-error'
+    | '/api/csp-report'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -254,6 +265,7 @@ export interface FileRouteTypes {
     | '/ranking'
     | '/sitemap.xml'
     | '/api/client-error'
+    | '/api/csp-report'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
     | '/opportunities/new'
@@ -277,6 +289,7 @@ export interface RootRouteChildren {
   RankingRoute: typeof RankingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   ApiClientErrorRoute: typeof ApiClientErrorRoute
+  ApiCspReportRoute: typeof ApiCspReportRoute
   ApplicationsApplicationIdRoute: typeof ApplicationsApplicationIdRoute
   DiscoverOpportunityIdRoute: typeof DiscoverOpportunityIdRoute
   OpportunitiesNewRoute: typeof OpportunitiesNewRoute
@@ -335,6 +348,13 @@ declare module '@tanstack/react-router' {
       path: '/api/client-error'
       fullPath: '/api/client-error'
       preLoaderRoute: typeof ApiClientErrorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/csp-report': {
+      id: '/api/csp-report'
+      path: '/api/csp-report'
+      fullPath: '/api/csp-report'
+      preLoaderRoute: typeof ApiCspReportRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/applications/': {
@@ -445,6 +465,7 @@ const rootRouteChildren: RootRouteChildren = {
   RankingRoute: RankingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   ApiClientErrorRoute: ApiClientErrorRoute,
+  ApiCspReportRoute: ApiCspReportRoute,
   ApplicationsApplicationIdRoute: ApplicationsApplicationIdRoute,
   DiscoverOpportunityIdRoute: DiscoverOpportunityIdRoute,
   OpportunitiesNewRoute: OpportunitiesNewRoute,

@@ -1,6 +1,5 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { Link, useRouterState } from "@tanstack/react-router";
-import { motion } from "motion/react";
 import { useEffect, useState } from "react";
 import { useWalletState } from "@/components/passport/wallet-state";
 import { LogoMark } from "@/components/brand/logo";
@@ -20,11 +19,8 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
 
   return (
     <header className="sticky top-0 z-40 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
-      <motion.div
-        initial={{ y: -24, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-        className="mx-auto flex max-w-6xl items-center gap-2"
+      <div
+        className="header-drop mx-auto flex max-w-6xl items-center gap-2"
       >
         <div className="pill-nav mx-auto flex h-12 min-w-0 items-center gap-1 pr-1.5 pl-4 lg:pl-5">
           <Link to="/" aria-label="Choguild home" className="logo-anim mr-2 flex items-center gap-2 text-ink">
@@ -42,11 +38,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
                   className={cn("relative rounded-full px-3.5 py-1.5 text-small transition-colors", active ? "text-ink" : "text-muted hover:text-ink")}
                 >
                   {active ? (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 rounded-full bg-white/[0.07]"
-                      transition={{ type: "spring", bounce: 0.15, duration: 0.5 }}
-                    />
+                    <span className="fade-in-soft absolute inset-0 rounded-full bg-white/[0.07]" />
                   ) : null}
                   <span className="relative">{item.label}</span>
                 </Link>
@@ -67,7 +59,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
           <WalletButton />
           <MobileMenu />
         </div>
-      </motion.div>
+      </div>
     </header>
   );
 }
@@ -92,11 +84,8 @@ function MobileMenu() {
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm lg:hidden" />
         <Dialog.Content asChild>
-          <motion.div
-            initial={{ opacity: 0, y: -16, scale: 0.98 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-            className="bento fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 max-h-[calc(100dvh-1.5rem)] overflow-y-auto p-3 lg:hidden"
+          <div
+            className="fade-in bento fixed inset-x-3 top-[max(0.75rem,env(safe-area-inset-top))] z-50 max-h-[calc(100dvh-1.5rem)] overflow-y-auto p-3 lg:hidden"
           >
             <Dialog.Title className="sr-only">Menu</Dialog.Title>
             <Dialog.Description className="sr-only">All Choguild pages and your passport.</Dialog.Description>
@@ -119,7 +108,7 @@ function MobileMenu() {
                 const Icon = item.icon;
                 const active = isNavActive(pathname, item.to);
                 return (
-                  <motion.div key={item.to} initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.03 * index, duration: 0.4 }}>
+                  <div key={item.to} className="fade-in" style={{ animationDelay: `${30 * index}ms` }}>
                     <Link
                       to={item.to}
                       search={item.to === "/discover" ? emptyBoardSearch() : undefined}
@@ -131,7 +120,7 @@ function MobileMenu() {
                       <Icon className={cn("size-4", active ? "text-signal" : "text-muted")} aria-hidden="true" />
                       <span className="t-h3 text-ink">{item.label}</span>
                     </Link>
-                  </motion.div>
+                  </div>
                 );
               })}
             </nav>
@@ -141,7 +130,7 @@ function MobileMenu() {
                 {isConnected && address ? `${shortAddress(address)} · ${network.label}` : "No wallet"}
               </span>
             </div>
-          </motion.div>
+          </div>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>

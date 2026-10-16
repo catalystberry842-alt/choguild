@@ -1,10 +1,24 @@
-import { useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 /** Counts from 0 to `value` the first time it scrolls into view. */
 export function CountUp({ value, duration = 1200 }: { value: number; duration?: number }) {
   const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "0px 0px -10% 0px" });
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const node = ref.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          setInView(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "0px 0px -10% 0px" },
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
   const [shown, setShown] = useState(value);
 
   useEffect(() => {

@@ -25,6 +25,8 @@ export const dbSource: DbSource = databaseUrl ? "neon" : "pglite";
 export interface Sql {
   <T = Record<string, unknown>>(strings: TemplateStringsArray, ...values: unknown[]): Promise<T[]>;
   query<T = Record<string, unknown>>(text: string, params?: unknown[]): Promise<T[]>;
+  /** Run `fn` in one transaction; use the `tx` it receives for every statement. */
+  transaction?<T>(fn: (tx: Sql) => Promise<T>): Promise<T>;
 }
 
 /**
@@ -84,10 +86,27 @@ function createNeonSql(): Promise<Sql> {
     types.setTypeParser(OID_DATE, identity);
     types.setTypeParser(OID_INTERVAL, identity);
     const pool = new Pool({ connectionString: databaseUrl });
-    return toSql(async <T>(text: string, params: unknown[]) => {
+    const sql = toSql(async <T>(text: string, params: unknown[]) => {
       const res = await pool.query(text, params);
       return res.rows as T[];
     });
+    sql.transaction = async <T>(fn: (tx: Sql) => Promise<T>): Promise<T> => {
+      const client = await pool.connect();
+      try {
+        await client.query("begin");
+        const result = await fn(
+          toSql(async <R>(text: string, params: unknown[]) => (await client.query(text, params)).rows as R[]),
+        );
+        await client.query("commit");
+        return result;
+      } catch (error) {
+        await client.query("rollback").catch(() => undefined);
+        throw error;
+      } finally {
+        client.release();
+      }
+    };
+    return sql;
   })().catch((err) => {
     globalRef.__pgSqlPromise__ = undefined;
     throw err;
@@ -148,10 +167,13 @@ async function createPgliteSql(): Promise<Sql> {
   globalRef.__pgliteMigrateChain__ = pass;
   await pass;
 
-  return toSql(async <T>(text: string, params: unknown[]) => {
+  const sql = toSql(async <T>(text: string, params: unknown[]) => {
     const result = await pg.query<T>(text, params);
     return result.rows;
   });
+  sql.transaction = <T>(fn: (tx: Sql) => Promise<T>): Promise<T> =>
+    pg.transaction((tx) => fn(toSql(async <R>(text: string, params: unknown[]) => (await tx.query<R>(text, params)).rows)));
+  return sql;
 }
 
 let sqlPromise: Promise<Sql> | null = null;

@@ -6,7 +6,6 @@ import { ProjectMark } from "@/components/board/opportunity-card";
 import { usePassport } from "@/components/passport/passport-provider";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, TextArea } from "@/components/ui/input";
 import {
@@ -27,6 +26,7 @@ import { formatStamp } from "@/lib/passport/format";
 import { seo } from "@/lib/seo";
 import { HoldersOnlyPill } from "@/components/chog/chog-bits";
 import { LoadingState } from "@/components/ui/loading-state";
+import { NotFoundState } from "@/components/layout/not-found";
 
 export const Route = createFileRoute("/discover/$opportunityId")({
   loader: async ({ params }) => {
@@ -40,14 +40,16 @@ export const Route = createFileRoute("/discover/$opportunityId")({
     seo({
       title: loaderData ? `${loaderData.title} · Choguild` : "Opportunity · Choguild",
       description: loaderData?.summary,
-      path: `/discover/${params.opportunityId}`,
+      // Missing listing: no canonical to a URL that doesn't exist, and keep it out of the index.
+      path: loaderData ? `/discover/${params.opportunityId}` : undefined,
+      noindex: !loaderData,
     }),
   component: OpportunityPage,
   notFoundComponent: () => (
-    <EmptyState
+    <NotFoundState
       title="Opportunity not found"
-      body="It may still be a draft, or it was removed."
-      action={
+      description="It may still be a draft, or it was removed."
+      actions={
         <Button asChild variant="secondary" size="compact">
           <Link to="/discover" search={emptyBoardSearch()}>Back to Discover</Link>
         </Button>

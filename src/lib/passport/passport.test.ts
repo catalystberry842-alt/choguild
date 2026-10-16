@@ -291,6 +291,9 @@ describe("passport database", { concurrency: 1 }, () => {
     const pg = new PGlite();
     await pg.waitReady;
     await pg.exec(readFileSync(new URL("../../../migrations/0002_passport.sql", import.meta.url), "utf8"));
+    for (const file of ["0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql"]) {
+      await pg.exec(readFileSync(new URL(`../../../migrations/${file}`, import.meta.url), "utf8"));
+    }
     sql = toSql(pg);
   });
 
@@ -402,21 +405,25 @@ describe("passport database", { concurrency: 1 }, () => {
     });
     assert.equal(expired.ok, false);
 
-    let blocked = false;
-    for (let i = 0; i < 9; i += 1) {
-      const next = await issueNonce(sql, {
-        address: account.address,
-        chainId: 143,
-        domain: DOMAIN,
-        uri: URI,
-      });
-      if ("error" in next) {
-        blocked = true;
-        assert.match(next.error, /Too many sign-in challenges/);
+    // An attacker spamming challenges for this wallet from their own IP gets limited,
+    // and the real owner (different requester) can still get a fresh challenge.
+    let attackerBlocked = false;
+    for (let i = 0; i < 40; i += 1) {
+      const spam = await issueNonce(sql, { address: account.address, chainId: 143, domain: DOMAIN, uri: URI, requester: "attacker" });
+      if ("error" in spam) {
+        attackerBlocked = true;
+        assert.match(spam.error, /Too many sign-in requests/);
         break;
       }
     }
-    assert.equal(blocked, true);
+    assert.equal(attackerBlocked, true);
+    const open = await sql<{ count: number }>`select count(*)::int as count from passport_nonces where address = ${account.address.toLowerCase()} and used_at is null and expires_at > now()`;
+    assert.ok(Number(open[0].count) <= 3);
+    const owner = await issueNonce(sql, { address: account.address, chainId: 143, domain: DOMAIN, uri: URI, requester: "owner" });
+    assert.ok("message" in owner);
+    if (!("message" in owner)) return;
+    const signed = await consumeNonce(sql, { message: owner.message, signature: await account.signMessage({ message: owner.message }), domain: DOMAIN });
+    assert.equal(signed.ok, true, JSON.stringify(signed));
 
     assert.equal(await findPublicProfile(sql, "not-a-real-user"), null);
     assert.equal(await findPublicProfile(sql, "no"), null);

@@ -50,13 +50,41 @@ async function buildSnapshot(): Promise<Snapshot> {
   return { at: Date.now(), owners };
 }
 
-/** Current holder snapshot (cached 5 min). Null only if the chain has never been readable. */
-export async function chogSnapshot(): Promise<Snapshot | null> {
-  const cached = holder.__chogSnapshot;
-  if (cached && Date.now() - cached.at < SNAPSHOT_TTL_MS) return cached;
-  if (Date.now() - (holder.__chogFailedAt ?? -Infinity) < FAILURE_BACKOFF_MS) return cached ?? null;
+async function loadPersisted(): Promise<Snapshot | null> {
+  try {
+    const { getSql } = await import("@/lib/db");
+    const sql = await getSql();
+    const rows = await sql<{ owners: unknown; built_at: string }>`select owners, built_at::text as built_at from chog_snapshot where id = 1`;
+    const row = rows[0];
+    if (!row) return null;
+    const raw = (typeof row.owners === "string" ? JSON.parse(row.owners) : row.owners) as Record<string, number[]>;
+    return { at: Date.parse(row.built_at), owners: new Map(Object.entries(raw)) };
+  } catch {
+    return null;
+  }
+}
+
+async function persist(snapshot: Snapshot): Promise<void> {
+  try {
+    const { getSql } = await import("@/lib/db");
+    const sql = await getSql();
+    const owners = JSON.stringify(Object.fromEntries(snapshot.owners));
+    await sql`
+      insert into chog_snapshot (id, owners, built_at) values (1, ${owners}::jsonb, ${new Date(snapshot.at).toISOString()})
+      on conflict (id) do update set owners = excluded.owners, built_at = excluded.built_at
+    `;
+  } catch {
+    // Persistence is best effort; the in-memory snapshot still serves this instance.
+  }
+}
+
+function refresh(cached: Snapshot | undefined): Promise<Snapshot | null> {
   holder.__chogInflight ??= buildSnapshot()
-    .then((snap) => (holder.__chogSnapshot = snap))
+    .then((snap) => {
+      holder.__chogSnapshot = snap;
+      void persist(snap);
+      return snap;
+    })
     .catch(() => {
       holder.__chogFailedAt = Date.now();
       return cached ?? null;
@@ -67,14 +95,36 @@ export async function chogSnapshot(): Promise<Snapshot | null> {
   return holder.__chogInflight;
 }
 
+/**
+ * Current holder snapshot. Never blocks a render on the ~2k-call rebuild:
+ * memory first, then the last snapshot persisted in Postgres (stale is fine),
+ * and a background rebuild when older than 5 minutes. With nothing cached at
+ * all it waits at most `budgetMs` and then returns null (shown as unavailable).
+ */
+export async function chogSnapshot(options: { budgetMs?: number } = {}): Promise<Snapshot | null> {
+  let cached = holder.__chogSnapshot;
+  if (cached && Date.now() - cached.at < SNAPSHOT_TTL_MS) return cached;
+  if (!cached) {
+    const stored = await loadPersisted();
+    if (stored) cached = holder.__chogSnapshot = stored;
+    if (cached && Date.now() - cached.at < SNAPSHOT_TTL_MS) return cached;
+  }
+  const backingOff = Date.now() - (holder.__chogFailedAt ?? -Infinity) < FAILURE_BACKOFF_MS;
+  if (backingOff) return cached ?? null;
+  const inflight = refresh(cached);
+  if (cached) return cached; // stale-while-revalidate
+  if (options.budgetMs === undefined) return inflight;
+  return Promise.race([inflight, new Promise<null>((resolve) => setTimeout(() => resolve(null), options.budgetMs))]);
+}
+
 export function holdingFrom(snapshot: Snapshot | null, wallet: string): ChogHolding | null {
   if (!snapshot) return null;
   const tokenIds = snapshot.owners.get(wallet.toLowerCase()) ?? [];
   return { count: tokenIds.length, tokenIds: tokenIds.slice(0, 12) };
 }
 
-export async function holdingsFor(wallets: string[]): Promise<Map<string, ChogHolding> | null> {
-  const snapshot = await chogSnapshot();
+export async function holdingsFor(wallets: string[], options: { budgetMs?: number } = {}): Promise<Map<string, ChogHolding> | null> {
+  const snapshot = await chogSnapshot(options);
   if (!snapshot) return null;
   return new Map(wallets.map((wallet) => [wallet.toLowerCase(), holdingFrom(snapshot, wallet)!]));
 }

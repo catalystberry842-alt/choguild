@@ -198,9 +198,14 @@ export function updateProfile(sql: Sql, sessionAddress: string, input: ProfileIn
   return writeProfile(sql, sessionAddress, input, "update");
 }
 
+/** Sign-in challenges: per-requester budget, and only the newest few stay open per wallet. */
+export const NONCE_REQUESTER_LIMIT = 20;
+export const NONCE_WINDOW_SECONDS = 10 * 60;
+export const NONCE_OPEN_PER_ADDRESS = 3;
+
 export async function issueNonce(
   sql: Sql,
-  input: { address: string; chainId: number; domain: string; uri: string },
+  input: { address: string; chainId: number; domain: string; uri: string; requester?: string },
 ): Promise<{ message: string } | { error: string }> {
   const checksum = storedAddress(input.address);
   const normalized = checksum ? getAddress(checksum) : null;
@@ -228,20 +233,29 @@ export async function issueNonce(
         "This site address cannot be used for a sign-in message. Open Choguild on its public address and try again.",
     };
   }
-  await sql`delete from passport_nonces where expires_at < now()`;
-  const open = await sql<{ count: string }>`
-    select count(*)::text as count
-    from passport_nonces
-    where address = ${checksum} and used_at is null and expires_at > now()
+  await sql`delete from passport_nonces where expires_at < now() - interval '1 hour'`;
+  // Limit by who is asking (hashed client IP), never by the target wallet, so
+  // nobody can lock another wallet out by spamming challenges for it.
+  const requester = input.requester ?? "unknown";
+  const recent = await sql<{ count: string }>`
+    select count(*)::text as count from passport_nonces
+    where requester = ${requester} and created_at > now() - make_interval(secs => ${NONCE_WINDOW_SECONDS})
   `;
-  if (Number(open[0]?.count ?? 0) >= 8) {
-    return {
-      error: "Too many sign-in challenges are waiting for this wallet. Use the latest one or wait for them to expire.",
-    };
+  if (Number(recent[0]?.count ?? 0) >= NONCE_REQUESTER_LIMIT) {
+    return { error: "Too many sign-in requests from this network. Wait a few minutes and try again." };
   }
+  // A new challenge always succeeds: older open ones for the wallet beyond the newest few are evicted.
   await sql`
-    insert into passport_nonces (id, address, nonce, message, expires_at)
-    values (${crypto.randomUUID()}, ${checksum}, ${nonce}, ${message}, ${expiresAt.toISOString()})
+    update passport_nonces set used_at = now(), expires_at = now() where id in (
+      select id from passport_nonces
+      where address = ${checksum} and used_at is null and expires_at > now()
+      order by created_at desc
+      offset ${NONCE_OPEN_PER_ADDRESS - 1}
+    )
+  `;
+  await sql`
+    insert into passport_nonces (id, address, nonce, message, expires_at, requester)
+    values (${crypto.randomUUID()}, ${checksum}, ${nonce}, ${message}, ${expiresAt.toISOString()}, ${requester})
   `;
   return { message };
 }

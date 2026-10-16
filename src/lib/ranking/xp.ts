@@ -2,11 +2,14 @@ import type { ChogHolding } from "@/lib/chog/chog";
 
 /** How XP is earned. Shared by the ranking query and the How it works page. */
 export const XP_RULES = [
-  { key: "acceptedSubmissions", label: "Accepted submission", points: 100, detail: "Work you submitted was reviewed and accepted." },
-  { key: "acceptedApplications", label: "Accepted application", points: 25, detail: "A publisher accepted you onto their opportunity." },
-  { key: "publishedOpportunities", label: "Published opportunity", points: 15, detail: "You posted open work to the board (drafts do not count)." },
+  { key: "acceptedSubmissions", label: "Accepted submission", points: 100, detail: "Work you submitted was reviewed and accepted. Repeat jobs with the same wallet earn half, then nothing." },
+  { key: "acceptedApplications", label: "Accepted application", points: 25, detail: "A publisher accepted you onto their opportunity. Same repeat rule as submissions." },
+  { key: "publishedOpportunities", label: "Published opportunity", points: 15, detail: "Counts once someone else's work is accepted on it or it stays open 3 days. Up to 4 a month." },
   { key: "passport", label: "Saved passport", points: 10, detail: "One-time bonus for saving a public Chog Passport." },
 ] as const;
+
+/** Guild XP from work and listings is capped per wallet per 30 days. */
+export const MONTHLY_XP_CAP = 400;
 
 export type XpKey = (typeof XP_RULES)[number]["key"];
 export type XpCounts = Record<XpKey, number>;

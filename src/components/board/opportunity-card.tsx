@@ -25,7 +25,7 @@ export function OpportunityCardView({ item, animate = true }: { item: Opportunit
   const open = item.status === "open";
 
   return (
-    <Reveal as="li" y={14} className="h-full" {...(animate ? {} : { initial: false })}>
+    <Reveal as="li" y={14} className="h-full" animate={animate}>
       <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="bento group flex h-full flex-col">
         <div className="flex flex-1 flex-col p-6">
           <div className="flex items-center justify-between gap-3">
