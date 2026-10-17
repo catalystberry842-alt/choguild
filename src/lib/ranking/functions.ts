@@ -1,6 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
+import * as S from "@/lib/schemas";
+import type { Contributor } from "./xp";
 
-export const getRanking = createServerFn({ method: "GET" }).handler(async () => {
+async function loadRanking(): Promise<{
+  contributors: Contributor[];
+  stats: { passports: number; openOpportunities: number; acceptedWork: number; onchainTxs: number | null };
+  onchainAvailable: boolean;
+}> {
   const { getSql } = await import("@/lib/db");
   const { listContributors, loadGuildStats } = await import("./repo.server");
   const { loadTxCounts, txCountStore } = await import("@/lib/monad/activity.server");
@@ -31,4 +37,31 @@ export const getRanking = createServerFn({ method: "GET" }).handler(async () => 
   const onchainTxs = onchainAvailable ? contributors.reduce((total, person) => total + (person.txCount ?? 0), 0) : null;
 
   return { contributors, stats: { ...stats, onchainTxs }, onchainAvailable };
-});
+}
+
+export const getRanking = createServerFn({ method: "GET" }).handler(async () => loadRanking());
+
+/** Rank, XP and activity for one public passport username. Null when the username is not on the ladder. */
+export const getPassportStanding = createServerFn({ method: "GET" })
+  .validator((username: unknown) => S.parseInput(S.usernameSchema, username))
+  .handler(async ({ data }) => {
+    const { contributors, onchainAvailable } = await loadRanking();
+    const { rankContributors, tierFor } = await import("./xp");
+    const ranked = rankContributors(contributors, "overall", Math.max(contributors.length, 1));
+    const person = ranked.find((row) => row.username.toLowerCase() === data.toLowerCase());
+    if (!person) return null;
+    const overallXp = person.guildXp + (person.onchainXp ?? 0);
+    const { tier, next, progress } = tierFor(overallXp);
+    return {
+      rank: person.rank,
+      xp: overallXp,
+      tier: tier.name,
+      nextTier: next?.name ?? null,
+      progress,
+      guildXp: person.guildXp,
+      onchainXp: person.onchainXp,
+      txCount: onchainAvailable ? person.txCount : null,
+      acceptedSubmissions: person.counts.acceptedSubmissions,
+      publishedOpportunities: person.counts.publishedOpportunities,
+    };
+  });

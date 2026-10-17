@@ -5,8 +5,9 @@ import { monad } from "@/lib/passport/chain";
 const rpcUrls = monad.rpcUrls.default.http;
 
 /**
- * Connectors: browser wallets only. Every EIP-6963 wallet (MetaMask, Rabby, Phantom…) is
- * discovered automatically, plus a generic injected fallback. No Coinbase SDK, no WalletConnect.
+ * Connectors: browser wallets only. Every EIP-6963 wallet (MetaMask, Rabby…) is
+ * discovered automatically, plus a generic injected fallback. No Coinbase SDK,
+ * no WalletConnect, no Phantom.
  */
 export const wagmiConfig = createConfig({
   chains: [monad],
@@ -18,8 +19,17 @@ export const wagmiConfig = createConfig({
   multiInjectedProviderDiscovery: true,
 });
 
-/** Connectors hidden from the picker: Coinbase is never offered, even if its extension announces itself. */
-export function isAllowedConnector(c: { id: string; name: string; type: string }): boolean {
-  const s = `${c.id} ${c.name} ${c.type}`.toLowerCase();
-  return !s.includes("coinbase") && !s.includes("walletconnect");
+/**
+ * Connectors hidden from the picker: Coinbase, WalletConnect, and Phantom
+ * (matched by name, id, or EIP-6963 rdns such as app.phantom).
+ */
+export function isAllowedConnector(c: {
+  id: string;
+  name: string;
+  type: string;
+  rdns?: string | readonly string[] | null;
+}): boolean {
+  const rdns = Array.isArray(c.rdns) ? c.rdns.join(" ") : (c.rdns ?? "");
+  const s = `${c.id} ${c.name} ${c.type} ${rdns}`.toLowerCase();
+  return !s.includes("coinbase") && !s.includes("walletconnect") && !s.includes("phantom");
 }

@@ -117,7 +117,7 @@ Copy `.env.example` into your host's environment settings. Do not commit real va
 
 ## Wallets
 
-Browser wallets only (EIP-6963 injected: MetaMask, Rabby, Phantom…). There is no WalletConnect and no Coinbase SDK. On a phone with no injected wallet, the Wallet panel offers buttons that reopen the current page inside MetaMask, Phantom or Trust Wallet, and a copy-link button for Rabby and Rainbow (they publish no open-URL link).
+Browser wallets only (EIP-6963 injected: MetaMask, Rabby…). There is no WalletConnect, no Coinbase SDK, and no Phantom. On a phone with no injected wallet, the Wallet panel offers buttons that reopen the current page inside MetaMask or Trust Wallet, and a copy-link button for Rabby and Rainbow (they publish no open-URL link). Phantom is filtered out of the connector picker (name / id / `app.phantom` rdns) and is not offered as a deep link.
 
 ## CI
 

@@ -13,7 +13,6 @@ export function walletDeepLinks(currentUrl: string): WalletLink[] {
   const full = encodeURIComponent(url.toString());
   return [
     { id: "metamask", name: "MetaMask", href: `https://metamask.app.link/dapp/${hostAndPath}` },
-    { id: "phantom", name: "Phantom", href: `https://phantom.app/ul/browse/${full}?ref=${encodeURIComponent(url.origin)}` },
     { id: "trust", name: "Trust Wallet", href: `https://link.trustwallet.com/open_url?coin_id=60&url=${full}` },
     // Rabby and Rainbow publish no "open this URL" link: copy it and paste in their in-app browser.
     { id: "rabby", name: "Rabby", href: null, note: "Copy the link, open Rabby, tap Dapps and paste it." },

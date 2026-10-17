@@ -274,7 +274,7 @@ function WalletFallback({ mobile, onRetry }: { mobile: boolean; onRetry: () => v
       <p className="text-base text-body">
         {mobile
           ? "No wallet found in this browser. Open this page inside your wallet app to connect."
-          : "No browser wallet found. Install MetaMask, Rabby or Phantom and reload, or open this page in a wallet app."}
+          : "No browser wallet found. Install MetaMask or Rabby and reload, or open this page in a wallet app."}
       </p>
       <div className="grid grid-cols-1 gap-2 sm:grid-cols-3">
         {links.filter((link) => link.href).map((link) => (
