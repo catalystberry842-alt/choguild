@@ -1,4 +1,5 @@
 import { getAddress, isAddress } from "viem";
+import { parseAvatarRef } from "@/lib/passport/avatar";
 
 export const LIMITS = {
   usernameMin: 3,
@@ -36,7 +37,6 @@ export type ProfileInput = {
   biography: string;
   avatarUrl: string;
   skills: string[];
-  portfolioUrl: string;
   githubUrl: string;
   xUrl: string;
   otherLinks: OtherLink[];
@@ -50,7 +50,6 @@ export type ProfileRecord = {
   biography: string;
   avatarUrl: string | null;
   skills: string[];
-  portfolioUrl: string | null;
   githubUrl: string | null;
   xUrl: string | null;
   otherLinks: OtherLink[];
@@ -121,8 +120,15 @@ export function validateProfile(input: ProfileInput): { ok: true; value: Profile
     errors.biography = `Biography must be ${LIMITS.biographyMax} characters or fewer.`;
   }
 
-  const avatarUrl = optionalHttps(input.avatarUrl, "Avatar URL", errors, "avatarUrl");
-  const portfolioUrl = optionalHttps(input.portfolioUrl, "Portfolio URL", errors, "portfolioUrl");
+  // Avatars are uploaded images (/api/avatar/:id), a Chog (/api/chog/:id), or a
+  // legacy https URL already on the passport (the server checks ownership/history).
+  const avatarRef = parseAvatarRef(input.avatarUrl);
+  let avatarUrl: string | null = null;
+  if (avatarRef.kind === "invalid") errors.avatarUrl = "Upload an image for your avatar.";
+  else if (avatarRef.kind === "external") {
+    if (avatarRef.url.length > LIMITS.urlMax) errors.avatarUrl = "Upload an image for your avatar.";
+    else avatarUrl = avatarRef.url;
+  } else if (avatarRef.kind !== "none") avatarUrl = input.avatarUrl.trim();
 
   let githubUrl = optionalHttps(input.githubUrl, "GitHub URL", errors, "githubUrl");
   if (githubUrl && !errors.githubUrl) {
@@ -200,7 +206,6 @@ export function validateProfile(input: ProfileInput): { ok: true; value: Profile
       biography,
       avatarUrl,
       skills,
-      portfolioUrl,
       githubUrl,
       xUrl,
       otherLinks,

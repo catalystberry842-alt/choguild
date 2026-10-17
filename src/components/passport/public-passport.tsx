@@ -43,7 +43,6 @@ export function PublicPassport({
   }
 
   const links = [
-    profile.portfolioUrl ? { label: "Portfolio", url: profile.portfolioUrl } : null,
     profile.githubUrl ? { label: "GitHub", url: profile.githubUrl } : null,
     profile.xUrl ? { label: "X", url: profile.xUrl } : null,
     ...profile.otherLinks,
@@ -58,7 +57,7 @@ export function PublicPassport({
             alt=""
             width={72}
             height={72}
-            className="size-16 rounded-lg border border-line object-cover"
+            className="size-16 rounded-full border border-line object-cover"
             onError={() => setAvatarFailed(true)}
           />
         ) : (

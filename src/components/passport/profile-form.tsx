@@ -2,6 +2,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { usePassport } from "@/components/passport/passport-provider";
+import { AvatarField } from "@/components/passport/avatar-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
@@ -24,7 +25,6 @@ function fromProfile(profile: PublicProfile | null): ProfileInput {
     biography: profile?.biography ?? "",
     avatarUrl: profile?.avatarUrl ?? "",
     skills: profile?.skills ?? [],
-    portfolioUrl: profile?.portfolioUrl ?? "",
     githubUrl: profile?.githubUrl ?? "",
     xUrl: profile?.xUrl ?? "",
     otherLinks: profile?.otherLinks.length ? profile.otherLinks : [emptyLink()],
@@ -33,7 +33,15 @@ function fromProfile(profile: PublicProfile | null): ProfileInput {
   };
 }
 
-export function ProfileForm({ mode, profile }: { mode: "create" | "update"; profile: PublicProfile | null }) {
+export function ProfileForm({
+  mode,
+  profile,
+  chogTokenIds = [],
+}: {
+  mode: "create" | "update";
+  profile: PublicProfile | null;
+  chogTokenIds?: number[];
+}) {
   const save = useServerFn(saveProfile);
   const { refresh } = usePassport();
   const [form, setForm] = useState<ProfileInput>(() => fromProfile(profile));
@@ -45,7 +53,6 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
   const completion = profileCompletion({
     biography: form.biography,
     skills: form.skills,
-    portfolioUrl: form.portfolioUrl.trim() || null,
     githubUrl: form.githubUrl.trim() || null,
     xUrl: form.xUrl.trim() || null,
     otherLinks: form.otherLinks.filter((link) => link.url.trim()),
@@ -158,16 +165,13 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
           required
         />
       </Field>
-      <Field label="Avatar URL" htmlFor="passport-avatar" error={errors.avatarUrl} hint="Optional https image URL.">
-        <TextInput
-          id="passport-avatar"
-          value={form.avatarUrl}
-          onChange={(event) => patch({ avatarUrl: event.target.value })}
-          inputMode="url"
-          maxLength={LIMITS.urlMax}
-          aria-invalid={Boolean(errors.avatarUrl)}
-        />
-      </Field>
+      <AvatarField
+        value={form.avatarUrl}
+        name={form.displayName || form.username}
+        onChange={(avatarUrl) => patch({ avatarUrl })}
+        error={errors.avatarUrl}
+        chogTokenIds={chogTokenIds}
+      />
 
       <fieldset>
         <legend className="text-small font-medium text-ink">Skills</legend>
@@ -214,16 +218,6 @@ export function ProfileForm({ mode, profile }: { mode: "create" | "update"; prof
         ) : null}
       </fieldset>
 
-      <Field label="Portfolio URL" htmlFor="passport-portfolio" error={errors.portfolioUrl} hint="Optional https URL.">
-        <TextInput
-          id="passport-portfolio"
-          value={form.portfolioUrl}
-          onChange={(event) => patch({ portfolioUrl: event.target.value })}
-          inputMode="url"
-          maxLength={LIMITS.urlMax}
-          aria-invalid={Boolean(errors.portfolioUrl)}
-        />
-      </Field>
       <Field label="GitHub URL" htmlFor="passport-github" error={errors.githubUrl} hint="Optional https://github.com/username">
         <TextInput
           id="passport-github"

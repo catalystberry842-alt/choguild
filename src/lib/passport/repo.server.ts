@@ -4,6 +4,8 @@ import type { PublicProfile } from "@/lib/passport/types";
 import { getAddress, type Hex } from "viem";
 import { generateSiweNonce } from "viem/siwe";
 import { buildPassportMessage, signatureMatchesMessage } from "@/lib/passport/siwe";
+import { avatarOwnedBy } from "@/lib/passport/avatar.server";
+import { parseAvatarRef } from "@/lib/passport/avatar";
 import {
   normalizeUsername,
   storedAddress,
@@ -21,7 +23,6 @@ type ProfileRow = {
   biography: string;
   avatar_url: string | null;
   skills: unknown;
-  portfolio_url: string | null;
   github_url: string | null;
   x_url: string | null;
   other_links: unknown;
@@ -57,7 +58,6 @@ function toPublic(row: ProfileRow): PublicProfile {
     biography: row.biography,
     avatarUrl: row.avatar_url,
     skills: asArray<string>(row.skills),
-    portfolioUrl: row.portfolio_url,
     githubUrl: row.github_url,
     xUrl: row.x_url,
     otherLinks: asArray<{ label: string; url: string }>(row.other_links),
@@ -71,7 +71,7 @@ function toPublic(row: ProfileRow): PublicProfile {
 
 async function selectByUsername(sql: Sql, username: string): Promise<PublicProfile | null> {
   const rows = await sql<ProfileRow>`
-    select id, username, display_name, biography, avatar_url, skills, portfolio_url,
+    select id, username, display_name, biography, avatar_url, skills,
       github_url, x_url, other_links, interests, wallet_address, visibility,
       to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
       to_char(updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as updated_at
@@ -83,7 +83,7 @@ async function selectByUsername(sql: Sql, username: string): Promise<PublicProfi
 
 async function selectByWallet(sql: Sql, address: string): Promise<PublicProfile | null> {
   const rows = await sql<ProfileRow>`
-    select id, username, display_name, biography, avatar_url, skills, portfolio_url,
+    select id, username, display_name, biography, avatar_url, skills,
       github_url, x_url, other_links, interests, wallet_address, visibility,
       to_char(created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
       to_char(updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as updated_at
@@ -112,6 +112,21 @@ function conflictField(error: unknown): "username" | "wallet" | null {
   return null;
 }
 
+/** Uploaded avatars must belong to this wallet; external URLs only survive if already saved. */
+async function checkAvatarOwnership(sql: Sql, wallet: string, avatarUrl: string | null): Promise<string | null> {
+  const ref = parseAvatarRef(avatarUrl);
+  if (ref.kind === "upload") {
+    return (await avatarOwnedBy(sql, ref.id, wallet)) ? null : "Upload the avatar again from this wallet.";
+  }
+  if (ref.kind === "external") {
+    const rows = await sql<{ avatar_url: string | null }>`
+      select avatar_url from contributor_profiles where wallet_address = ${wallet}
+    `;
+    return rows[0]?.avatar_url === avatarUrl ? null : "Upload an image for your avatar.";
+  }
+  return null;
+}
+
 async function writeProfile(
   sql: Sql,
   sessionAddress: string,
@@ -124,6 +139,8 @@ async function writeProfile(
   if (!parsed.ok) return { ok: false, error: "Check the highlighted fields.", fieldErrors: parsed.errors };
 
   const value = parsed.value;
+  const avatarError = await checkAvatarOwnership(sql, stored, value.avatarUrl);
+  if (avatarError) return { ok: false, error: avatarError, fieldErrors: { avatarUrl: avatarError } };
   const skills = JSON.stringify(value.skills);
   const links = JSON.stringify(value.otherLinks);
 
@@ -140,11 +157,11 @@ async function writeProfile(
       const id = crypto.randomUUID();
       await sql`
         insert into contributor_profiles (
-          id, username, display_name, biography, avatar_url, skills, portfolio_url,
+          id, username, display_name, biography, avatar_url, skills,
           github_url, x_url, other_links, interests, wallet_address, visibility
         ) values (
           ${id}, ${value.username}, ${value.displayName}, ${value.biography}, ${value.avatarUrl},
-          ${skills}::jsonb, ${value.portfolioUrl}, ${value.githubUrl}, ${value.xUrl},
+          ${skills}::jsonb, ${value.githubUrl}, ${value.xUrl},
           ${links}::jsonb, ${value.interests}, ${stored}, ${value.visibility}
         )
       `;
@@ -156,7 +173,6 @@ async function writeProfile(
           biography = ${value.biography},
           avatar_url = ${value.avatarUrl},
           skills = ${skills}::jsonb,
-          portfolio_url = ${value.portfolioUrl},
           github_url = ${value.githubUrl},
           x_url = ${value.xUrl},
           other_links = ${links}::jsonb,

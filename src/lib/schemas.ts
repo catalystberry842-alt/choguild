@@ -31,7 +31,7 @@ export const workSchema = z.object({
 
 export const profileSchema = z.object({
   username: text(40), displayName: text(80), biography: text(2_000), avatarUrl: text(2_000),
-  skills: z.array(text(60)).max(30), portfolioUrl: text(2_000), githubUrl: text(2_000), xUrl: text(2_000),
+  skills: z.array(text(60)).max(30), githubUrl: text(2_000), xUrl: text(2_000),
   otherLinks: z.array(z.object({ label: text(60), url: text(2_000) })).max(10),
   interests: text(1_000), visibility: z.enum(["public", "unlisted"]),
 });

@@ -7,6 +7,8 @@ import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { createSiweMessage, generateSiweNonce } from "viem/siwe";
 import type { Hex } from "viem";
 import { completionSummary, profileCompletion } from "./completion.ts";
+import { checkAvatarSource, checkAvatarUpload, parseAvatarRef, sniffImageType, squareCrop, AVATAR_MAX_BYTES } from "./avatar.ts";
+import { readAvatar, storeAvatar } from "./avatar.server.ts";
 import { sameOriginDecision } from "./origin.ts";
 import {
   consumeNonce,
@@ -57,7 +59,6 @@ function profile(overrides: Partial<ProfileInput> = {}): ProfileInput {
     biography: "I write field notes for contributors.",
     avatarUrl: "",
     skills: ["Research"],
-    portfolioUrl: "",
     githubUrl: "",
     xUrl: "",
     otherLinks: [],
@@ -97,7 +98,9 @@ describe("profile validation", () => {
       [{ githubUrl: "https://github.com" }, "githubUrl"],
       [{ githubUrl: "https://example.com/octo" }, "githubUrl"],
       [{ xUrl: "https://example.com/ada" }, "xUrl"],
-      [{ portfolioUrl: "not a url" }, "portfolioUrl"],
+      [{ avatarUrl: "/api/avatar/not-a-uuid" }, "avatarUrl"],
+      [{ avatarUrl: "/api/chog/99999" }, "avatarUrl"],
+      [{ avatarUrl: "javascript:alert(1)" }, "avatarUrl"],
       [{ interests: "i".repeat(161) }, "interests"],
       [{ visibility: "secret" as "public" }, "visibility"],
     ];
@@ -115,7 +118,6 @@ describe("profile validation", () => {
         skills: ["Design", "design", "Development"],
         githubUrl: "https://github.com/ada",
         xUrl: "https://x.com/ada",
-        portfolioUrl: "https://example.com/ada",
         otherLinks: [{ label: "Site", url: "https://example.com/notes" }],
       }),
     );
@@ -143,30 +145,71 @@ describe("profile validation", () => {
 });
 
 describe("profile completion", () => {
-  it("counts five profile details and is not a score", () => {
+  it("counts four profile details and is not a score", () => {
     const empty = profileCompletion({
       biography: "Short",
       skills: [],
-      portfolioUrl: null,
       githubUrl: null,
       xUrl: null,
       otherLinks: [],
       avatarUrl: null,
     });
-    assert.equal(empty.length, 5);
-    assert.equal(completionSummary(empty), "0 of 5 profile details");
+    assert.equal(empty.length, 4);
+    assert.equal(completionSummary(empty), "0 of 4 profile details");
 
     const full = profileCompletion({
       biography: "This biography is long enough to count as a profile detail.",
       skills: ["Design"],
-      portfolioUrl: "https://example.com",
       githubUrl: null,
       xUrl: null,
       otherLinks: [{ url: "https://example.com/other" }],
       avatarUrl: "https://example.com/a.png",
     });
-    assert.equal(completionSummary(full), "5 of 5 profile details");
+    assert.equal(completionSummary(full), "4 of 4 profile details");
     assert.ok(full.every((item) => item.done));
+  });
+});
+
+describe("avatar rules", () => {
+  const webp = new Uint8Array([0x52, 0x49, 0x46, 0x46, 1, 0, 0, 0, 0x57, 0x45, 0x42, 0x50, 0x56, 0x50]);
+  const jpeg = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 0, 0x10]);
+  const png = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a]);
+  const gif = new TextEncoder().encode("GIF89a....");
+
+  it("sniffs image bytes instead of trusting the declared type", () => {
+    assert.equal(sniffImageType(webp), "image/webp");
+    assert.equal(sniffImageType(jpeg), "image/jpeg");
+    assert.equal(sniffImageType(png), "image/png");
+    assert.equal(sniffImageType(gif), "image/gif");
+    assert.equal(sniffImageType(new TextEncoder().encode("<svg onload=alert(1)>")), null);
+  });
+
+  it("accepts compressed WebP/JPEG/PNG uploads and rejects empty, oversized, GIF and non-image bodies", () => {
+    assert.deepEqual(checkAvatarUpload(webp), { ok: true, type: "image/webp" });
+    assert.deepEqual(checkAvatarUpload(jpeg), { ok: true, type: "image/jpeg" });
+    assert.equal(checkAvatarUpload(new Uint8Array()).ok, false);
+    assert.equal(checkAvatarUpload(gif).ok, false);
+    const big = new Uint8Array(AVATAR_MAX_BYTES + 1);
+    big.set(jpeg);
+    const tooBig = checkAvatarUpload(big);
+    assert.equal(tooBig.ok, false);
+    if (!tooBig.ok) assert.equal(tooBig.status, 413);
+    const svg = checkAvatarUpload(new TextEncoder().encode("<svg/>"));
+    if (!svg.ok) assert.equal(svg.status, 415);
+  });
+
+  it("checks picked files and parses stored avatar values", () => {
+    assert.equal(checkAvatarSource({ type: "image/gif", size: 1000 }), null);
+    assert.equal(checkAvatarSource({ type: "", size: 1000, name: "me.JPG" }), null);
+    assert.match(checkAvatarSource({ type: "image/svg+xml", size: 1000 }) ?? "", /PNG, JPG, WebP or GIF/);
+    assert.match(checkAvatarSource({ type: "image/png", size: 11 * 1024 * 1024 }) ?? "", /10 MB/);
+    assert.deepEqual(parseAvatarRef(""), { kind: "none" });
+    assert.equal(parseAvatarRef("/api/avatar/3b241101-e2bb-4255-8caf-4136c566a962").kind, "upload");
+    assert.deepEqual(parseAvatarRef("/api/chog/42"), { kind: "chog", tokenId: 42 });
+    assert.equal(parseAvatarRef("https://example.com/a.png").kind, "external");
+    assert.equal(parseAvatarRef("http://example.com/a.png").kind, "invalid");
+    assert.deepEqual(squareCrop(1200, 800), { sx: 200, sy: 0, side: 800, out: 512 });
+    assert.deepEqual(squareCrop(300, 400), { sx: 0, sy: 50, side: 300, out: 300 });
   });
 });
 
@@ -291,7 +334,7 @@ describe("passport database", { concurrency: 1 }, () => {
     const pg = new PGlite();
     await pg.waitReady;
     await pg.exec(readFileSync(new URL("../../../migrations/0002_passport.sql", import.meta.url), "utf8"));
-    for (const file of ["0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql"]) {
+    for (const file of ["0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql", "0009_avatars.sql"]) {
       await pg.exec(readFileSync(new URL(`../../../migrations/${file}`, import.meta.url), "utf8"));
     }
     sql = toSql(pg);
@@ -345,6 +388,48 @@ describe("passport database", { concurrency: 1 }, () => {
     await deletePassportSession(sql, sessionId);
     assert.equal(await readLiveSession(sql, sessionId), null);
     assert.equal((await findProfileForWallet(sql, ada.address))?.displayName, "Ada L.");
+  });
+
+  it("stores uploaded avatars per wallet, blocks other wallets' uploads, and keeps legacy URLs", async () => {
+    const cleo = privateKeyToAccount(generatePrivateKey());
+    const dan = privateKeyToAccount(generatePrivateKey());
+    const cleoWallet = cleo.address.toLowerCase();
+    const bytes = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, 1, 2, 3]);
+    const first = await storeAvatar(sql, cleoWallet, bytes, "image/jpeg");
+    const read = await readAvatar(sql, first.id);
+    assert.equal(read?.type, "image/jpeg");
+    assert.deepEqual(Array.from(read?.bytes ?? []), Array.from(bytes));
+
+    const external = await createProfile(sql, cleo.address, profile({ username: "cleo_ext", avatarUrl: "https://example.com/c.png" }));
+    assert.equal(external.ok, false);
+    if (!external.ok) assert.ok(external.fieldErrors?.avatarUrl);
+
+    const created = await createProfile(sql, cleo.address, profile({ username: "cleo_av", avatarUrl: first.url }));
+    assert.equal(created.ok, true);
+    if (created.ok) assert.equal(created.profile.avatarUrl, first.url);
+
+    const theft = await createProfile(sql, dan.address, profile({ username: "dan_av", avatarUrl: first.url }));
+    assert.equal(theft.ok, false);
+    if (!theft.ok) assert.ok(theft.fieldErrors?.avatarUrl);
+
+    // A new upload prunes unsaved ones but keeps the one the passport points at.
+    const draft = await storeAvatar(sql, cleoWallet, bytes, "image/jpeg");
+    const replacement = await storeAvatar(sql, cleoWallet, bytes, "image/jpeg");
+    assert.equal(await readAvatar(sql, draft.id), null);
+    assert.ok(await readAvatar(sql, first.id));
+    const swapped = await updateProfile(sql, cleo.address, profile({ username: "cleo_av", avatarUrl: replacement.url }));
+    assert.equal(swapped.ok, true);
+
+    // Legacy https avatars already on a passport keep working on later edits.
+    await sql`update contributor_profiles set avatar_url = 'https://example.com/old.png' where wallet_address = ${cleoWallet}`;
+    const legacy = await updateProfile(sql, cleo.address, profile({ username: "cleo_av", avatarUrl: "https://example.com/old.png", displayName: "Cleo" }));
+    assert.equal(legacy.ok, true);
+    if (legacy.ok) assert.equal(legacy.profile.avatarUrl, "https://example.com/old.png");
+    const swappedExternal = await updateProfile(sql, cleo.address, profile({ username: "cleo_av", avatarUrl: "https://example.com/new.png" }));
+    assert.equal(swappedExternal.ok, false);
+    const cleared = await updateProfile(sql, cleo.address, profile({ username: "cleo_av", avatarUrl: "" }));
+    assert.equal(cleared.ok, true);
+    if (cleared.ok) assert.equal(cleared.profile.avatarUrl, null);
   });
 
   it("verifies a real signature once and rejects reuse, expiry, tampering, and a bad signature", async () => {

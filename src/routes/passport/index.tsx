@@ -99,7 +99,7 @@ function PassportPage() {
         ) : null}
         {status === "ready" && verified ? (
           <div>
-            <ProfileForm key={profile?.updatedAt ?? "new"} mode={profile ? "update" : "create"} profile={profile} />
+            <ProfileForm key={profile?.updatedAt ?? "new"} mode={profile ? "update" : "create"} profile={profile} chogTokenIds={holding?.tokenIds ?? []} />
           </div>
         ) : null}
       </Section>

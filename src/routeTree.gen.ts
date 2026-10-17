@@ -14,6 +14,7 @@ import { Route as HowItWorksRouteImport } from './routes/how-it-works'
 import { Route as NetworkRouteImport } from './routes/network'
 import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as ApiAvatarUploadRouteImport } from './routes/api/avatar-upload'
 import { Route as ApiClientErrorRouteImport } from './routes/api/client-error'
 import { Route as ApiCspReportRouteImport } from './routes/api/csp-report'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
@@ -27,6 +28,7 @@ import { Route as PassportUsernameRouteImport } from './routes/passport/$usernam
 import { Route as SubmissionsIndexRouteImport } from './routes/submissions/index'
 import { Route as SubmissionsSubmissionIdRouteImport } from './routes/submissions/$submissionId'
 import { Route as SubmissionsNewRouteImport } from './routes/submissions/new'
+import { Route as ApiAvatarAvatarIdRouteImport } from './routes/api/avatar.$avatarId'
 import { Route as ApiChogTokenIdRouteImport } from './routes/api/chog.$tokenId'
 import { Route as OpportunitiesOpportunityIdApplicationsRouteImport } from './routes/opportunities/$opportunityId/applications'
 import { Route as OpportunitiesOpportunityIdEditRouteImport } from './routes/opportunities/$opportunityId/edit'
@@ -54,6 +56,11 @@ const RankingRoute = RankingRouteImport.update({
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
   id: '/sitemap.xml',
   path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAvatarUploadRoute = ApiAvatarUploadRouteImport.update({
+  id: '/api/avatar-upload',
+  path: '/api/avatar-upload',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiClientErrorRoute = ApiClientErrorRouteImport.update({
@@ -122,6 +129,11 @@ const SubmissionsNewRoute = SubmissionsNewRouteImport.update({
   path: '/submissions/new',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAvatarAvatarIdRoute = ApiAvatarAvatarIdRouteImport.update({
+  id: '/api/avatar/$avatarId',
+  path: '/api/avatar/$avatarId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiChogTokenIdRoute = ApiChogTokenIdRouteImport.update({
   id: '/api/chog/$tokenId',
   path: '/api/chog/$tokenId',
@@ -146,6 +158,7 @@ export interface FileRoutesByFullPath {
   '/network': typeof NetworkRoute
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/avatar-upload': typeof ApiAvatarUploadRoute
   '/api/client-error': typeof ApiClientErrorRoute
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
@@ -159,6 +172,7 @@ export interface FileRoutesByFullPath {
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/passport/': typeof PassportIndexRoute
   '/submissions/': typeof SubmissionsIndexRoute
+  '/api/avatar/$avatarId': typeof ApiAvatarAvatarIdRoute
   '/api/chog/$tokenId': typeof ApiChogTokenIdRoute
   '/opportunities/$opportunityId/applications': typeof OpportunitiesOpportunityIdApplicationsRoute
   '/opportunities/$opportunityId/edit': typeof OpportunitiesOpportunityIdEditRoute
@@ -169,6 +183,7 @@ export interface FileRoutesByTo {
   '/network': typeof NetworkRoute
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/avatar-upload': typeof ApiAvatarUploadRoute
   '/api/client-error': typeof ApiClientErrorRoute
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
@@ -182,6 +197,7 @@ export interface FileRoutesByTo {
   '/opportunities': typeof OpportunitiesIndexRoute
   '/passport': typeof PassportIndexRoute
   '/submissions': typeof SubmissionsIndexRoute
+  '/api/avatar/$avatarId': typeof ApiAvatarAvatarIdRoute
   '/api/chog/$tokenId': typeof ApiChogTokenIdRoute
   '/opportunities/$opportunityId/applications': typeof OpportunitiesOpportunityIdApplicationsRoute
   '/opportunities/$opportunityId/edit': typeof OpportunitiesOpportunityIdEditRoute
@@ -193,6 +209,7 @@ export interface FileRoutesById {
   '/network': typeof NetworkRoute
   '/ranking': typeof RankingRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/api/avatar-upload': typeof ApiAvatarUploadRoute
   '/api/client-error': typeof ApiClientErrorRoute
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
@@ -206,6 +223,7 @@ export interface FileRoutesById {
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/passport/': typeof PassportIndexRoute
   '/submissions/': typeof SubmissionsIndexRoute
+  '/api/avatar/$avatarId': typeof ApiAvatarAvatarIdRoute
   '/api/chog/$tokenId': typeof ApiChogTokenIdRoute
   '/opportunities/$opportunityId/applications': typeof OpportunitiesOpportunityIdApplicationsRoute
   '/opportunities/$opportunityId/edit': typeof OpportunitiesOpportunityIdEditRoute
@@ -218,6 +236,7 @@ export interface FileRouteTypes {
     | '/network'
     | '/ranking'
     | '/sitemap.xml'
+    | '/api/avatar-upload'
     | '/api/client-error'
     | '/api/csp-report'
     | '/applications/$applicationId'
@@ -231,6 +250,7 @@ export interface FileRouteTypes {
     | '/opportunities/'
     | '/passport/'
     | '/submissions/'
+    | '/api/avatar/$avatarId'
     | '/api/chog/$tokenId'
     | '/opportunities/$opportunityId/applications'
     | '/opportunities/$opportunityId/edit'
@@ -241,6 +261,7 @@ export interface FileRouteTypes {
     | '/network'
     | '/ranking'
     | '/sitemap.xml'
+    | '/api/avatar-upload'
     | '/api/client-error'
     | '/api/csp-report'
     | '/applications/$applicationId'
@@ -254,6 +275,7 @@ export interface FileRouteTypes {
     | '/opportunities'
     | '/passport'
     | '/submissions'
+    | '/api/avatar/$avatarId'
     | '/api/chog/$tokenId'
     | '/opportunities/$opportunityId/applications'
     | '/opportunities/$opportunityId/edit'
@@ -264,6 +286,7 @@ export interface FileRouteTypes {
     | '/network'
     | '/ranking'
     | '/sitemap.xml'
+    | '/api/avatar-upload'
     | '/api/client-error'
     | '/api/csp-report'
     | '/applications/$applicationId'
@@ -277,6 +300,7 @@ export interface FileRouteTypes {
     | '/opportunities/'
     | '/passport/'
     | '/submissions/'
+    | '/api/avatar/$avatarId'
     | '/api/chog/$tokenId'
     | '/opportunities/$opportunityId/applications'
     | '/opportunities/$opportunityId/edit'
@@ -288,6 +312,7 @@ export interface RootRouteChildren {
   NetworkRoute: typeof NetworkRoute
   RankingRoute: typeof RankingRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  ApiAvatarUploadRoute: typeof ApiAvatarUploadRoute
   ApiClientErrorRoute: typeof ApiClientErrorRoute
   ApiCspReportRoute: typeof ApiCspReportRoute
   ApplicationsApplicationIdRoute: typeof ApplicationsApplicationIdRoute
@@ -301,6 +326,7 @@ export interface RootRouteChildren {
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
   PassportIndexRoute: typeof PassportIndexRoute
   SubmissionsIndexRoute: typeof SubmissionsIndexRoute
+  ApiAvatarAvatarIdRoute: typeof ApiAvatarAvatarIdRoute
   ApiChogTokenIdRoute: typeof ApiChogTokenIdRoute
   OpportunitiesOpportunityIdApplicationsRoute: typeof OpportunitiesOpportunityIdApplicationsRoute
   OpportunitiesOpportunityIdEditRoute: typeof OpportunitiesOpportunityIdEditRoute
@@ -341,6 +367,13 @@ declare module '@tanstack/react-router' {
       path: '/sitemap.xml'
       fullPath: '/sitemap.xml'
       preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/avatar-upload': {
+      id: '/api/avatar-upload'
+      path: '/api/avatar-upload'
+      fullPath: '/api/avatar-upload'
+      preLoaderRoute: typeof ApiAvatarUploadRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/client-error': {
@@ -434,6 +467,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SubmissionsNewRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/avatar/$avatarId': {
+      id: '/api/avatar/$avatarId'
+      path: '/api/avatar/$avatarId'
+      fullPath: '/api/avatar/$avatarId'
+      preLoaderRoute: typeof ApiAvatarAvatarIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/chog/$tokenId': {
       id: '/api/chog/$tokenId'
       path: '/api/chog/$tokenId'
@@ -464,6 +504,7 @@ const rootRouteChildren: RootRouteChildren = {
   NetworkRoute: NetworkRoute,
   RankingRoute: RankingRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  ApiAvatarUploadRoute: ApiAvatarUploadRoute,
   ApiClientErrorRoute: ApiClientErrorRoute,
   ApiCspReportRoute: ApiCspReportRoute,
   ApplicationsApplicationIdRoute: ApplicationsApplicationIdRoute,
@@ -477,6 +518,7 @@ const rootRouteChildren: RootRouteChildren = {
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
   PassportIndexRoute: PassportIndexRoute,
   SubmissionsIndexRoute: SubmissionsIndexRoute,
+  ApiAvatarAvatarIdRoute: ApiAvatarAvatarIdRoute,
   ApiChogTokenIdRoute: ApiChogTokenIdRoute,
   OpportunitiesOpportunityIdApplicationsRoute:
     OpportunitiesOpportunityIdApplicationsRoute,

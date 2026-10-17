@@ -69,7 +69,7 @@ function OpportunityPage() {
   const [suitability, setSuitability] = useState("");
   const [experience, setExperience] = useState(profile?.skills.join(", ") ?? "");
   const [links, setLinks] = useState(
-    [profile?.portfolioUrl, profile?.githubUrl, profile?.xUrl].filter(Boolean).join("\n"),
+    [profile?.githubUrl, profile?.xUrl].filter(Boolean).join("\n"),
   );
   const [extra, setExtra] = useState("");
   const [errors, setErrors] = useState<BoardErrors>({});

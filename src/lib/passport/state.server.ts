@@ -14,6 +14,7 @@ import {
 } from "@/lib/passport/repo.server";
 import { clearSessionRecord, readSessionRecord, writeSessionRecord } from "@/lib/passport/session.server";
 import type { ProfileInput } from "@/lib/passport/validate";
+import { parseAvatarRef } from "@/lib/passport/avatar";
 
 export async function loadPassportState() {
   const sql = await getSql();
@@ -78,6 +79,28 @@ export async function finishSave(input: { mode: "create" | "update"; profile: Pr
     await clearSessionRecord();
     return { ok: false as const, error: "Your passport session expired. Sign in again." };
   }
+  const chogError = await checkChogAvatar(live, input.profile.avatarUrl);
+  if (chogError) return { ok: false as const, error: chogError, fieldErrors: { avatarUrl: chogError } };
   if (input.mode === "create") return createProfile(sql, live, input.profile);
   return updateProfile(sql, live, input.profile);
+}
+
+/** A Chog avatar must be a token this wallet holds (skipped when the chain is unreachable). */
+async function checkChogAvatar(wallet: string, avatarUrl: string): Promise<string | null> {
+  const ref = parseAvatarRef(avatarUrl);
+  if (ref.kind !== "chog") return null;
+  const { chogSnapshot, holdingFrom } = await import("@/lib/chog/holders.server");
+  const holding = holdingFrom(await chogSnapshot({ budgetMs: 2_500 }).catch(() => null), wallet);
+  if (holding && !holding.tokenIds.includes(ref.tokenId)) return "That Chog is not held by this wallet.";
+  return null;
+}
+
+/** Signed-in wallet for a raw API route, or null. Same-origin + rate limits apply. */
+export async function liveSessionWallet(): Promise<string | null> {
+  assertSameOrigin();
+  const sql = await getSql();
+  const record = await readSessionRecord();
+  if (!record) return null;
+  const live = await readLiveSession(sql, record.sessionId);
+  return live && live === record.address ? live : null;
 }
