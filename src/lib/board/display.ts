@@ -31,6 +31,8 @@ export function deadlineCountdown(deadline: string | null | undefined, now = Dat
 export function usableImageUrl(url: string | null | undefined): string | null {
   if (!url) return null;
   const trimmed = url.trim();
+  // Same-origin avatar/API paths (e.g. /api/avatar/:id) are fine.
+  if (trimmed.startsWith("/") && !trimmed.startsWith("//")) return trimmed;
   if (!/^https?:\/\//i.test(trimmed)) return null;
   try {
     const host = new URL(trimmed).hostname.replace(/^www\./, "").toLowerCase();

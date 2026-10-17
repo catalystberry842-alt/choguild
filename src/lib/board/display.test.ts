@@ -14,5 +14,6 @@ test("usableImageUrl rejects social profile pages", () => {
   assert.equal(usableImageUrl("https://x.com/heistruthx"), null);
   assert.equal(usableImageUrl("https://twitter.com/foo"), null);
   assert.equal(usableImageUrl("https://cdn.example.com/logo.png"), "https://cdn.example.com/logo.png");
+  assert.equal(usableImageUrl("/api/avatar/83bfa82f-f8be-4f15-9f80-d3a09f390756"), "/api/avatar/83bfa82f-f8be-4f15-9f80-d3a09f390756");
   assert.equal(usableImageUrl(null), null);
 });
