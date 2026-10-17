@@ -1,18 +1,19 @@
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
+import { ExternalLink } from "lucide-react";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
+import { NotFoundState } from "@/components/layout/not-found";
 import { WorkForm } from "@/components/work/work-form";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { EmptyState } from "@/components/ui/empty-state";
-import { PageHeader } from "@/components/ui/page-header";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, SelectInput, TextArea } from "@/components/ui/input";
+import { FormSection } from "@/components/ui/form-section";
+import { LoadingState } from "@/components/ui/loading-state";
+import { cn } from "@/lib/cn";
 import { REVIEW_ACTIONS, WORK_STATUS_LABEL, type ReviewAction } from "@/lib/work/copy";
 import { getWorkItem, reviewWorkItem } from "@/lib/work/functions";
 import { formatStamp } from "@/lib/passport/format";
 import { seo } from "@/lib/seo";
-import { LoadingState } from "@/components/ui/loading-state";
 
 export const Route = createFileRoute("/submissions/$submissionId")({
   loader: async ({ params }) => {
@@ -29,9 +30,16 @@ export const Route = createFileRoute("/submissions/$submissionId")({
     }),
   component: SubmissionPage,
   notFoundComponent: () => (
-    <EmptyState title="Submission not found" body="Only the contributor and the publisher can open it." />
+    <NotFoundState title="Submission not found" description="Only the contributor and the publisher can open it." />
   ),
 });
+
+function statusTone(status: string): string {
+  if (status === "accepted") return "bg-success/10 text-success";
+  if (status === "rejected") return "bg-danger/10 text-danger";
+  if (status === "changes_requested") return "bg-warning/10 text-warning";
+  return "bg-white/[0.06] text-body";
+}
 
 function SubmissionPage() {
   const work = Route.useLoaderData();
@@ -45,43 +53,71 @@ function SubmissionPage() {
   const [error, setError] = useState<string | null>(null);
   const [pending, setPending] = useState(false);
   const editable = work.viewer === "contributor" && (work.status === "draft" || work.status === "changes_requested");
-
   const canReview = work.viewer === "reviewer" && (work.status === "submitted" || work.status === "under_review");
 
+  async function onReview() {
+    if (!confirm) {
+      setConfirm(true);
+      return;
+    }
+    setPending(true);
+    const result = await review({ data: { id: work.id, action, comment, privateNote: note } });
+    setPending(false);
+    setError(result.ok ? null : result.error);
+    if (result.ok) await router.invalidate();
+  }
+
   return (
-    <article className="flex flex-col gap-10">
-      <PageHeader eyebrow={work.projectName} title={latest?.title ?? "Submission"}>
+    <article className="mx-auto flex w-full max-w-3xl flex-col gap-6 pb-28 sm:gap-8 sm:pb-10">
+      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8">
         <div className="flex flex-wrap items-center gap-2">
-          <Badge>{WORK_STATUS_LABEL[work.status]}</Badge>
-          <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="t-link text-base">
+          <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-label", statusTone(work.status))}>
+            <span className="size-1.5 rounded-full bg-current opacity-80" aria-hidden="true" />
+            {WORK_STATUS_LABEL[work.status]}
+          </span>
+          <span className="glass-chip rounded-full px-2.5 py-1 text-label text-ink">{work.projectName}</span>
+        </div>
+        <h1 className="t-title mt-5 tracking-tight">{latest?.title ?? "Submission"}</h1>
+        <p className="t-meta mt-2 flex flex-wrap items-center gap-x-2 gap-y-1">
+          <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }} className="t-link">
             {work.opportunityTitle}
           </Link>
-        </div>
-      </PageHeader>
-
-      <section className="surface flex flex-col gap-6 p-6 sm:p-8">
-        {latest?.description ? <p className="t-lead whitespace-pre-wrap">{latest.description}</p> : null}
-        <Evidence links={latest?.evidenceLinks ?? []} repo={latest?.repoUrl} document={latest?.documentUrl} notes={latest?.notes} />
+          <span aria-hidden="true">·</span>
+          <span>Updated {formatStamp(work.updatedAt)}</span>
+        </p>
+        <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <Stat label="Status" value={WORK_STATUS_LABEL[work.status]} />
+          <Stat label="Version" value={String(latest?.version ?? work.versions.length)} />
+          <Stat label="Role" value={work.viewer === "reviewer" ? "Reviewer" : "Contributor"} />
+          <Stat label="Evidence" value={work.publicEvidence ? "Public" : "Private"} />
+        </dl>
       </section>
+
+      {latest?.description ? (
+        <FormSection title="What was delivered">
+          <p className="t-lead whitespace-pre-wrap text-pretty text-ink">{latest.description}</p>
+        </FormSection>
+      ) : null}
+
+      <EvidenceSection
+        links={latest?.evidenceLinks ?? []}
+        repo={latest?.repoUrl}
+        document={latest?.documentUrl}
+        notes={latest?.notes}
+      />
 
       {canReview ? (
         <form
-          className="surface grid gap-5 p-6 sm:p-8"
+          id="review-form"
+          className="surface grid gap-5 rounded-[1.5rem] p-6 sm:p-8"
           onSubmit={(event) => {
             event.preventDefault();
-            if (!confirm) {
-              setConfirm(true);
-              return;
-            }
-            setPending(true);
-            void review({ data: { id: work.id, action, comment, privateNote: note } }).then(async (result) => {
-              setPending(false);
-              setError(result.ok ? null : result.error);
-              if (result.ok) await router.invalidate();
-            });
+            void onReview();
           }}
         >
-          <h2 className="t-h2">Review</h2>
+          <h2 className="t-h2">
+            Review <em>work</em>
+          </h2>
           {error ? <ErrorMessage title="That didn't save">{error}</ErrorMessage> : null}
           <Field label="Decision" htmlFor="decision">
             <SelectInput
@@ -105,26 +141,24 @@ function SubmissionPage() {
           <Field label="Private note" htmlFor="note" hint="Only you see this.">
             <TextArea id="note" value={note} onChange={(event) => setNote(event.target.value)} />
           </Field>
-          <Button type="submit" disabled={pending} className="justify-self-start">
+          <Button type="submit" disabled={pending} className="hidden justify-self-start sm:inline-flex">
             {pending ? "Saving…" : confirm ? `Confirm: ${WORK_STATUS_LABEL[action]}` : "Save review"}
           </Button>
         </form>
       ) : null}
 
       {editable ? (
-        <section className="flex flex-col gap-6">
-          <div>
-            <h2 className="t-h2">{work.status === "draft" ? "Finish your draft" : "Send a revision"}</h2>
-            <p className="t-body mt-1.5">Earlier versions are kept.</p>
-          </div>
+        <FormSection
+          title={work.status === "draft" ? "Finish your draft" : "Send a revision"}
+          description="Earlier versions are kept."
+        >
           <WorkForm work={work} />
-        </section>
+        </FormSection>
       ) : null}
 
       {work.history.length > 0 ? (
-        <section>
-          <h2 className="t-h3">History</h2>
-          <ol className="mt-4 flex flex-col gap-4">
+        <FormSection title="History">
+          <ol className="flex flex-col gap-4">
             {work.history.map((event, index) => (
               <li key={`${event.createdAt}-${index}`} className="border-l border-line pl-4">
                 <p className="t-body text-ink">
@@ -136,18 +170,17 @@ function SubmissionPage() {
               </li>
             ))}
           </ol>
-        </section>
+        </FormSection>
       ) : null}
 
       {work.versions.length > 1 ? (
-        <section>
-          <h2 className="t-h3">Earlier versions</h2>
-          <ol className="mt-4 flex flex-col gap-3">
+        <FormSection title="Earlier versions">
+          <ol className="flex flex-col gap-3">
             {work.versions
               .slice(0, -1)
               .reverse()
               .map((version) => (
-                <li key={version.version} className="surface p-5 sm:p-6">
+                <li key={version.version} className="rounded-2xl border border-white/10 bg-black/20 p-4 sm:p-5">
                   <p className="t-meta">
                     Version {version.version} · {formatStamp(version.createdAt)}
                   </p>
@@ -156,33 +189,79 @@ function SubmissionPage() {
                 </li>
               ))}
           </ol>
-        </section>
+        </FormSection>
       ) : null}
+
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-[rgb(8_7_12/0.92)] px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
+        {canReview ? (
+          <Button className="w-full" disabled={pending} onClick={() => void onReview()}>
+            {pending ? "Saving…" : confirm ? `Confirm: ${WORK_STATUS_LABEL[action]}` : "Save review"}
+          </Button>
+        ) : editable ? (
+          <Button
+            className="w-full"
+            onClick={() => document.getElementById("work-title")?.scrollIntoView({ behavior: "smooth", block: "center" })}
+          >
+            {work.status === "draft" ? "Continue draft" : "Revise submission"}
+          </Button>
+        ) : (
+          <Button asChild className="w-full" variant="secondary">
+            <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }}>
+              View opportunity
+            </Link>
+          </Button>
+        )}
+      </div>
     </article>
   );
 }
 
-function Evidence({ links, repo, document, notes }: { links: string[]; repo?: string | null; document?: string | null; notes?: string | null }) {
+function Stat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 sm:px-4">
+      <dt className="t-meta">{label}</dt>
+      <dd className="mt-1 text-base font-medium text-ink">{value}</dd>
+    </div>
+  );
+}
+
+function EvidenceSection({
+  links,
+  repo,
+  document,
+  notes,
+}: {
+  links: string[];
+  repo?: string | null;
+  document?: string | null;
+  notes?: string | null;
+}) {
   const items = [
     ...(repo ? [{ label: "Repository", url: repo }] : []),
     ...(document ? [{ label: "Document", url: document }] : []),
-    ...links.map((url) => ({ label: "Link", url })),
+    ...links.filter(Boolean).map((url) => ({ label: "Link", url })),
   ];
   if (items.length === 0 && !notes) return null;
   return (
-    <div className="border-t border-line pt-6">
-      <p className="t-meta">Evidence · links are provided by the contributor</p>
-      <ul className="mt-3 flex flex-col gap-2">
-        {items.map((item) => (
-          <li key={item.url} className="flex gap-3 text-base">
-            <span className="t-meta w-20 shrink-0 pt-px">{item.label}</span>
-            <a className="t-link min-w-0 break-all" href={item.url} target="_blank" rel="noreferrer">
-              {item.url}
-            </a>
-          </li>
-        ))}
-      </ul>
-      {notes ? <p className="t-body mt-4">{notes}</p> : null}
-    </div>
+    <FormSection title="Evidence" description="Links provided by the contributor.">
+      {items.length > 0 ? (
+        <ul className="flex flex-col gap-2">
+          {items.map((item) => (
+            <li key={item.url}>
+              <a
+                className="inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-line-strong bg-white/[0.03] px-4 text-small text-ink transition-colors hover:border-signal/50 hover:bg-signal/10"
+                href={item.url}
+                target="_blank"
+                rel="noreferrer"
+              >
+                <ExternalLink className="size-3.5 shrink-0" aria-hidden="true" />
+                <span className="truncate">{item.label}: {item.url}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      ) : null}
+      {notes ? <p className="t-body text-pretty">{notes}</p> : null}
+    </FormSection>
   );
 }

@@ -6,6 +6,7 @@ import { AvatarField } from "@/components/passport/avatar-field";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
+import { FormSection } from "@/components/ui/form-section";
 import { Field, SelectInput, TextArea, TextInput } from "@/components/ui/input";
 import { completionSummary, profileCompletion } from "@/lib/passport/completion";
 import { SUGGESTED_SKILLS, USERNAME_HINT } from "@/lib/passport/copy";
@@ -121,61 +122,62 @@ export function ProfileForm({
   }
 
   return (
-    <form className="flex flex-col gap-5" onSubmit={onSubmit} noValidate>
-      <Field label="Username" htmlFor="passport-username" hint={USERNAME_HINT} error={errors.username}>
-        <TextInput
-          id="passport-username"
-          value={form.username}
-          onChange={(event) => patch({ username: event.target.value })}
-          autoCapitalize="none"
-          autoCorrect="off"
-          spellCheck={false}
-          maxLength={LIMITS.usernameMax}
-          aria-invalid={Boolean(errors.username)}
-          required
+    <form className="flex flex-col gap-6" onSubmit={onSubmit} noValidate>
+      <FormSection title="Identity" description="How you appear on the board and ranking.">
+        <Field label="Username" htmlFor="passport-username" hint={USERNAME_HINT} error={errors.username}>
+          <TextInput
+            id="passport-username"
+            value={form.username}
+            onChange={(event) => patch({ username: event.target.value })}
+            autoCapitalize="none"
+            autoCorrect="off"
+            spellCheck={false}
+            maxLength={LIMITS.usernameMax}
+            aria-invalid={Boolean(errors.username)}
+            required
+          />
+        </Field>
+        <Field
+          label="Display name"
+          htmlFor="passport-display-name"
+          error={errors.displayName}
+          hint={`Up to ${LIMITS.displayNameMax} characters.`}
+        >
+          <TextInput
+            id="passport-display-name"
+            value={form.displayName}
+            onChange={(event) => patch({ displayName: event.target.value })}
+            maxLength={LIMITS.displayNameMax}
+            aria-invalid={Boolean(errors.displayName)}
+            required
+          />
+        </Field>
+        <Field
+          label="Biography"
+          htmlFor="passport-bio"
+          error={errors.biography}
+          hint={`Up to ${LIMITS.biographyMax} characters.`}
+        >
+          <TextArea
+            id="passport-bio"
+            value={form.biography}
+            onChange={(event) => patch({ biography: event.target.value })}
+            maxLength={LIMITS.biographyMax}
+            aria-invalid={Boolean(errors.biography)}
+            required
+          />
+        </Field>
+        <AvatarField
+          value={form.avatarUrl}
+          name={form.displayName || form.username}
+          onChange={(avatarUrl) => patch({ avatarUrl })}
+          error={errors.avatarUrl}
+          chogTokenIds={chogTokenIds}
         />
-      </Field>
-      <Field
-        label="Display name"
-        htmlFor="passport-display-name"
-        error={errors.displayName}
-        hint={`Up to ${LIMITS.displayNameMax} characters.`}
-      >
-        <TextInput
-          id="passport-display-name"
-          value={form.displayName}
-          onChange={(event) => patch({ displayName: event.target.value })}
-          maxLength={LIMITS.displayNameMax}
-          aria-invalid={Boolean(errors.displayName)}
-          required
-        />
-      </Field>
-      <Field
-        label="Biography"
-        htmlFor="passport-bio"
-        error={errors.biography}
-        hint={`Up to ${LIMITS.biographyMax} characters.`}
-      >
-        <TextArea
-          id="passport-bio"
-          value={form.biography}
-          onChange={(event) => patch({ biography: event.target.value })}
-          maxLength={LIMITS.biographyMax}
-          aria-invalid={Boolean(errors.biography)}
-          required
-        />
-      </Field>
-      <AvatarField
-        value={form.avatarUrl}
-        name={form.displayName || form.username}
-        onChange={(avatarUrl) => patch({ avatarUrl })}
-        error={errors.avatarUrl}
-        chogTokenIds={chogTokenIds}
-      />
+      </FormSection>
 
-      <fieldset>
-        <legend className="text-small font-medium text-ink">Skills</legend>
-        <div className="mt-2 flex flex-wrap gap-2">
+      <FormSection title="Skills" description="What people hire you for.">
+        <div className="flex flex-wrap gap-2">
           {SUGGESTED_SKILLS.map((skill) => {
             const selected = form.skills.some((item) => item.toLowerCase() === skill.toLowerCase());
             return (
@@ -185,10 +187,10 @@ export function ProfileForm({
                 aria-pressed={selected}
                 onClick={() => toggleSkill(skill)}
                 className={cn(
-                  "min-h-11 rounded-md border px-3 text-base",
+                  "min-h-11 rounded-full border px-3.5 text-base transition-colors",
                   selected
-                    ? "border-action bg-elevated text-ink"
-                    : "border-line bg-canvas text-body hover:text-ink",
+                    ? "border-signal/60 bg-signal/15 text-ink"
+                    : "border-line bg-black/20 text-body hover:border-signal/40 hover:text-ink",
                 )}
               >
                 {skill}
@@ -196,7 +198,7 @@ export function ProfileForm({
             );
           })}
         </div>
-        <div className="mt-3 flex flex-col gap-2 sm:flex-row">
+        <div className="flex flex-col gap-2 sm:flex-row">
           <TextInput
             aria-label="Custom skill"
             value={skillDraft}
@@ -209,102 +211,105 @@ export function ProfileForm({
           </Button>
         </div>
         {form.skills.length > 0 ? (
-          <p className="mt-2 text-base text-body">{form.skills.join(", ")}</p>
+          <p className="text-base text-body">{form.skills.join(", ")}</p>
         ) : null}
         {errors.skills ? (
-          <p className="mt-2 text-label text-danger" role="alert">
+          <p className="text-label text-danger" role="alert">
             {errors.skills}
           </p>
         ) : null}
-      </fieldset>
+      </FormSection>
 
-      <Field label="GitHub URL" htmlFor="passport-github" error={errors.githubUrl} hint="Optional https://github.com/username">
-        <TextInput
-          id="passport-github"
-          value={form.githubUrl}
-          onChange={(event) => patch({ githubUrl: event.target.value })}
-          inputMode="url"
-          maxLength={LIMITS.urlMax}
-          aria-invalid={Boolean(errors.githubUrl)}
-        />
-      </Field>
-      <Field label="X URL" htmlFor="passport-x" error={errors.xUrl} hint="Optional https://x.com/username">
-        <TextInput
-          id="passport-x"
-          value={form.xUrl}
-          onChange={(event) => patch({ xUrl: event.target.value })}
-          inputMode="url"
-          maxLength={LIMITS.urlMax}
-          aria-invalid={Boolean(errors.xUrl)}
-        />
-      </Field>
+      <FormSection title="Links" description="Optional profiles and work samples.">
+        <Field label="GitHub URL" htmlFor="passport-github" error={errors.githubUrl} hint="Optional https://github.com/username">
+          <TextInput
+            id="passport-github"
+            value={form.githubUrl}
+            onChange={(event) => patch({ githubUrl: event.target.value })}
+            inputMode="url"
+            maxLength={LIMITS.urlMax}
+            aria-invalid={Boolean(errors.githubUrl)}
+          />
+        </Field>
+        <Field label="X URL" htmlFor="passport-x" error={errors.xUrl} hint="Optional https://x.com/username">
+          <TextInput
+            id="passport-x"
+            value={form.xUrl}
+            onChange={(event) => patch({ xUrl: event.target.value })}
+            inputMode="url"
+            maxLength={LIMITS.urlMax}
+            aria-invalid={Boolean(errors.xUrl)}
+          />
+        </Field>
+        <fieldset>
+          <legend className="text-small font-medium text-ink">Other links</legend>
+          <div className="mt-3 flex flex-col gap-3">
+            {form.otherLinks.map((link, index) => (
+              <div key={index} className="grid gap-2 sm:grid-cols-2">
+                <TextInput
+                  aria-label={`Link ${index + 1} label`}
+                  value={link.label}
+                  onChange={(event) => updateLink(index, { label: event.target.value })}
+                  maxLength={LIMITS.linkLabelMax}
+                  placeholder="Label"
+                />
+                <TextInput
+                  aria-label={`Link ${index + 1} URL`}
+                  value={link.url}
+                  onChange={(event) => updateLink(index, { url: event.target.value })}
+                  inputMode="url"
+                  maxLength={LIMITS.urlMax}
+                  placeholder="https://"
+                />
+              </div>
+            ))}
+          </div>
+          {form.otherLinks.length < LIMITS.otherLinkCount ? (
+            <Button
+              type="button"
+              variant="ghost"
+              className="mt-2"
+              onClick={() => patch({ otherLinks: [...form.otherLinks, emptyLink()] })}
+            >
+              Add another link
+            </Button>
+          ) : null}
+          {errors.otherLinks ? (
+            <p className="mt-2 text-label text-danger" role="alert">
+              {errors.otherLinks}
+            </p>
+          ) : null}
+        </fieldset>
+      </FormSection>
 
-      <fieldset>
-        <legend className="text-small font-medium text-ink">Other links</legend>
-        <div className="mt-3 flex flex-col gap-3">
-          {form.otherLinks.map((link, index) => (
-            <div key={index} className="grid gap-2 sm:grid-cols-2">
-              <TextInput
-                aria-label={`Link ${index + 1} label`}
-                value={link.label}
-                onChange={(event) => updateLink(index, { label: event.target.value })}
-                maxLength={LIMITS.linkLabelMax}
-                placeholder="Label"
-              />
-              <TextInput
-                aria-label={`Link ${index + 1} URL`}
-                value={link.url}
-                onChange={(event) => updateLink(index, { url: event.target.value })}
-                inputMode="url"
-                maxLength={LIMITS.urlMax}
-                placeholder="https://"
-              />
-            </div>
-          ))}
-        </div>
-        {form.otherLinks.length < LIMITS.otherLinkCount ? (
-          <Button
-            type="button"
-            variant="ghost"
-            className="mt-2"
-            onClick={() => patch({ otherLinks: [...form.otherLinks, emptyLink()] })}
-          >
-            Add another link
-          </Button>
-        ) : null}
-        {errors.otherLinks ? (
-          <p className="mt-2 text-label text-danger" role="alert">
-            {errors.otherLinks}
-          </p>
-        ) : null}
-      </fieldset>
-
-      <Field label="Interests" htmlFor="passport-interests" error={errors.interests} hint="Optional.">
-        <TextInput
-          id="passport-interests"
-          value={form.interests}
-          onChange={(event) => patch({ interests: event.target.value })}
-          maxLength={LIMITS.interestsMax}
-          aria-invalid={Boolean(errors.interests)}
-        />
-      </Field>
-      <Field
-        label="Visibility"
-        htmlFor="passport-visibility"
-        error={errors.visibility}
-        hint="Unlisted passports stay off the ranking but open by link."
-      >
-        <SelectInput
-          id="passport-visibility"
-          value={form.visibility}
-          onChange={(event) => patch({ visibility: event.target.value as ProfileInput["visibility"] })}
+      <FormSection title="Preferences">
+        <Field label="Interests" htmlFor="passport-interests" error={errors.interests} hint="Optional.">
+          <TextInput
+            id="passport-interests"
+            value={form.interests}
+            onChange={(event) => patch({ interests: event.target.value })}
+            maxLength={LIMITS.interestsMax}
+            aria-invalid={Boolean(errors.interests)}
+          />
+        </Field>
+        <Field
+          label="Visibility"
+          htmlFor="passport-visibility"
+          error={errors.visibility}
+          hint="Unlisted passports stay off the ranking but open by link."
         >
-          <option value="public">Public</option>
-          <option value="unlisted">Unlisted</option>
-        </SelectInput>
-      </Field>
+          <SelectInput
+            id="passport-visibility"
+            value={form.visibility}
+            onChange={(event) => patch({ visibility: event.target.value as ProfileInput["visibility"] })}
+          >
+            <option value="public">Public</option>
+            <option value="unlisted">Unlisted</option>
+          </SelectInput>
+        </Field>
+      </FormSection>
 
-      <div className="rounded-md bg-secondary p-5">
+      <div className="surface rounded-[1.5rem] p-6 sm:p-7">
         <p className="t-h3">{completionSummary(completion)}</p>
         <ul className="mt-3 flex flex-wrap gap-1.5">
           {completion.map((item) => (

@@ -58,12 +58,29 @@ function Ladder() {
 
 function Detail() {
   return (
-    <div className="mx-auto max-w-3xl">
-      <div className="skeleton h-4 w-32" />
-      <div className="skeleton mt-6 h-10 w-4/5" />
-      <div className="skeleton mt-8 h-5 w-full" />
-      <div className="skeleton mt-3 h-5 w-11/12" />
-      <div className="bento mt-10 flex h-48 flex-col gap-3 p-6">
+    <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+      <div className="passport-glass rounded-[1.75rem] p-6 sm:p-8">
+        <div className="flex gap-2">
+          <div className="skeleton h-6 w-16 rounded-full" />
+          <div className="skeleton h-6 w-24 rounded-full" />
+        </div>
+        <div className="mt-6 flex items-start gap-4">
+          <div className="skeleton size-14 shrink-0 rounded-full" />
+          <div className="min-w-0 flex-1">
+            <div className="skeleton h-9 w-3/4 max-w-sm" />
+            <div className="skeleton mt-3 h-4 w-40" />
+          </div>
+        </div>
+        <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {Array.from({ length: 4 }, (_, i) => (
+            <div key={i} className="rounded-2xl border border-white/10 bg-black/20 p-3">
+              <div className="skeleton h-3 w-16" />
+              <div className="skeleton mt-2 h-5 w-20" />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="surface flex h-40 flex-col gap-3 rounded-[1.5rem] p-6">
         <div className="skeleton h-4 w-24" />
         <div className="skeleton h-4 w-full" />
         <div className="skeleton h-4 w-5/6" />

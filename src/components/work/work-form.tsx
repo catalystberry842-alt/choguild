@@ -48,7 +48,7 @@ export function WorkForm({ applicationId, work }: { applicationId?: string; work
   }
 
   return (
-    <form className="grid gap-4" onSubmit={(event) => { event.preventDefault(); void send(true); }}>
+    <form className="grid gap-5" onSubmit={(event) => { event.preventDefault(); void send(true); }}>
       {formError ? <ErrorMessage title="That didn't save">{formError}</ErrorMessage> : null}
       <Field label="Title" htmlFor="work-title" error={errors.title}>
         <TextInput id="work-title" value={form.title} onChange={(event) => setForm({ ...form, title: event.target.value })} required />
