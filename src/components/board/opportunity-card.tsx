@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useState } from "react";
 import { Reveal } from "@/components/fx/reveal";
 import {
   APPLICATION_STATUS_LABEL,
@@ -10,9 +11,10 @@ import {
   type CompensationType,
   type OpportunityStatus,
 } from "@/lib/board/copy";
-import { cardSummary, projectLabel } from "@/lib/board/display";
+import { cardSummary, deadlineCountdown, projectLabel, usableImageUrl } from "@/lib/board/display";
 import type { OpportunityCard } from "@/lib/board/types";
 import { HoldersOnlyPill } from "@/components/chog/chog-bits";
+import { cn } from "@/lib/cn";
 import { formatDay } from "@/lib/passport/format";
 
 function label<T extends string>(map: Record<T, string>, value: string): string {
@@ -23,6 +25,8 @@ function label<T extends string>(map: Record<T, string>, value: string): string 
 export function OpportunityCardView({ item, animate = true }: { item: OpportunityCard; index?: number; animate?: boolean }) {
   const project = projectLabel(item.projectName);
   const open = item.status === "open";
+  const posterName = item.poster.displayName || item.poster.username || project;
+  const due = deadlineCountdown(item.deadline);
 
   return (
     <Reveal as="li" y={14} className="h-full" animate={animate}>
@@ -30,10 +34,16 @@ export function OpportunityCardView({ item, animate = true }: { item: Opportunit
         <div className="flex flex-1 flex-col p-6">
           <div className="flex items-center justify-between gap-3">
             <span className="flex min-w-0 items-center gap-2.5">
-              <ProjectMark name={project} logoUrl={item.projectLogoUrl} />
+              <PosterMark
+                name={posterName}
+                logoUrl={item.projectLogoUrl}
+                avatarUrl={item.poster.avatarUrl}
+              />
               <span className="min-w-0">
                 <span className="block truncate text-small text-ink">{project}</span>
-                <span className="block truncate text-label text-muted">{label(CATEGORY_LABEL, item.category as Category)}</span>
+                <span className="block truncate text-label text-muted">
+                  {item.poster.username ? `@${item.poster.username}` : label(CATEGORY_LABEL, item.category as Category)}
+                </span>
               </span>
             </span>
             <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-label " + (open ? "bg-success/10 text-success" : "bg-white/[0.05] text-muted")}>
@@ -47,7 +57,7 @@ export function OpportunityCardView({ item, animate = true }: { item: Opportunit
           {item.requiredSkills.length > 0 ? (
             <ul className="mt-5 flex flex-wrap gap-1.5">
               {item.requiredSkills.slice(0, 4).map((skill) => (
-                <li key={skill} className="rounded-full border border-line px-2.5 py-0.5 text-label text-body">{skill}</li>
+                <li key={skill} className="glass-chip rounded-full px-2.5 py-0.5 text-label text-ink">{skill}</li>
               ))}
             </ul>
           ) : null}
@@ -55,10 +65,10 @@ export function OpportunityCardView({ item, animate = true }: { item: Opportunit
             <p className="mt-4 text-label text-signal">You applied · {APPLICATION_STATUS_LABEL[item.myApplicationStatus as ApplicationStatus]}</p>
           ) : null}
         </div>
-        <div className="flex items-center justify-between gap-3 border-t border-line bg-canvas/40 px-6 py-3.5 text-small">
+        <div className="flex items-center justify-between gap-3 border-t border-line bg-black/20 px-6 py-3.5 text-small">
           <span className="text-ink">{label(COMPENSATION_LABEL, item.compensationType as CompensationType)}</span>
           <span className="flex items-center gap-3 text-muted">
-            {item.deadline ? `Due ${formatDay(item.deadline)}` : "No deadline"}
+            {due ?? (item.deadline ? `Due ${formatDay(item.deadline)}` : "No deadline")}
             <span aria-hidden="true" className="arrow-slide flex size-7 items-center justify-center rounded-full bg-white/[0.06] text-ink group-hover:bg-signal-solid group-hover:text-on-accent">→</span>
           </span>
         </div>
@@ -67,14 +77,54 @@ export function OpportunityCardView({ item, animate = true }: { item: Opportunit
   );
 }
 
-export function ProjectMark({ name, logoUrl, className = "" }: { name: string; logoUrl: string | null; className?: string }) {
-  const initial = name.slice(0, 1).toUpperCase();
-  if (logoUrl) {
-    return <img src={logoUrl} alt="" className={"size-9 shrink-0 rounded-full border border-line object-cover " + className} />;
+/**
+ * Avatar for a listing: project logo if it is a real image, else poster passport
+ * avatar / Chog, else a letter initial. Broken images fall back to the initial.
+ */
+export function PosterMark({
+  name,
+  logoUrl,
+  avatarUrl,
+  size = "md",
+  className = "",
+}: {
+  name: string;
+  logoUrl?: string | null;
+  avatarUrl?: string | null;
+  size?: "md" | "lg";
+  className?: string;
+}) {
+  const src = usableImageUrl(logoUrl) ?? usableImageUrl(avatarUrl);
+  const [failed, setFailed] = useState(false);
+  const initial = (name.trim().slice(0, 1) || "?").toUpperCase();
+  const box = size === "lg" ? "size-14 text-lead" : "size-9 text-small";
+
+  if (src && !failed) {
+    return (
+      <img
+        src={src}
+        alt=""
+        className={cn(box, "shrink-0 rounded-full border border-line object-cover", className)}
+        onError={() => setFailed(true)}
+      />
+    );
   }
   return (
-    <span className={"flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong bg-secondary text-small font-semibold text-ink" + className}>
+    <span
+      className={cn(
+        box,
+        "flex shrink-0 items-center justify-center rounded-full border border-line-strong bg-secondary font-semibold text-ink",
+        className,
+      )}
+      aria-hidden="true"
+    >
       {initial}
     </span>
   );
 }
+
+/** @deprecated Prefer PosterMark; kept for any remaining imports. */
+export function ProjectMark({ name, logoUrl, className = "" }: { name: string; logoUrl: string | null; className?: string }) {
+  return <PosterMark name={name} logoUrl={logoUrl} className={className} />;
+}
+

@@ -47,7 +47,7 @@ function OwnedPage() {
         ) : (
           <ul className="flex flex-col gap-4">
             {result.items.map((item) => (
-              <li key={item.id} className="surface p-5 sm:p-6">
+              <li key={item.id} className="surface rounded-[1.25rem] p-5 sm:p-6">
                 <div className="flex items-start justify-between gap-4">
                   <div className="min-w-0">
                     <h2 className="t-h3">{item.title}</h2>

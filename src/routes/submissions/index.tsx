@@ -117,10 +117,14 @@ function SubmissionsPage() {
               />
             </div>
           ) : (
-            <ul className="surface row-list mt-6 overflow-hidden">
+            <ul className="mt-6 grid gap-3">
               {visible.map((item) => (
                 <li key={item.id}>
-                  <Link to="/submissions/$submissionId" params={{ submissionId: item.id }} className="row-link">
+                  <Link
+                    to="/submissions/$submissionId"
+                    params={{ submissionId: item.id }}
+                    className="surface flex items-start gap-4 rounded-[1.25rem] p-5 transition-colors hover:border-signal/40 sm:p-6"
+                  >
                     <span className="min-w-0 flex-1">
                       <span className="t-h3 block truncate">{item.title}</span>
                       <span className="t-meta mt-1 block truncate">

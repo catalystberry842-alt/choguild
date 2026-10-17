@@ -2,7 +2,7 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import type { ReactNode } from "react";
 import { AnimatedMark } from "@/components/brand/animated-mark";
 import { Reveal, WordReveal } from "@/components/fx/reveal";
-import { ProjectMark } from "@/components/board/opportunity-card";
+import { PosterMark } from "@/components/board/opportunity-card";
 import { Avatar, RankMedal } from "@/components/ranking/bits";
 import { CountUp } from "@/components/ranking/count-up";
 import { listBoard } from "@/lib/board/functions";
@@ -221,7 +221,7 @@ function Bento() {
               <li key={item.id}>
                 <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="group flex h-full flex-col gap-4 rounded-2xl border border-line bg-canvas/50 p-4 transition-colors hover:border-line-strong">
                   <span className="flex items-center gap-2.5">
-                    <ProjectMark name={projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} />
+                    <PosterMark name={item.poster.displayName || item.poster.username || projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} avatarUrl={item.poster.avatarUrl} />
                     <span className="truncate text-label text-muted">{projectLabel(item.projectName)}</span>
                   </span>
                   <span className="t-h3 text-ink group-hover:text-signal">{item.title}</span>

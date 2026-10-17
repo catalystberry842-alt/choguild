@@ -1,5 +1,11 @@
 import type { ApplicationStatus } from "@/lib/board/copy";
 
+export type PosterInfo = {
+  username: string | null;
+  displayName: string | null;
+  avatarUrl: string | null;
+};
+
 export type OpportunityCard = {
   id: string;
   projectName: string;
@@ -18,6 +24,13 @@ export type OpportunityCard = {
   createdAt: string;
   /** Only Chog Genesis holders may apply (checked onchain at apply time). */
   holdersOnly: boolean;
+  /** Publisher passport, when they have one. */
+  poster: PosterInfo;
+  /** Applications received (any status). */
+  applicantCount: number;
+  /** Accepted applications (used for filled/total positions). */
+  acceptedCount: number;
+  positions: number | null;
 };
 
 export type OpportunityDetail = OpportunityCard & {
@@ -29,7 +42,6 @@ export type OpportunityDetail = OpportunityCard & {
   timeCommitment: string | null;
   instructions: string;
   question: string | null;
-  positions: number | null;
   updatedAt: string;
   mine: boolean;
 };

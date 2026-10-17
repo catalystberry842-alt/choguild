@@ -565,7 +565,7 @@
   .orb-1 { width: 42vmax; height: 42vmax; top: -14vmax; right: -8vmax; background: rgb(131 110 249 / 0.22); }
   .orb-2 { width: 30vmax; height: 30vmax; top: 38vh; left: -12vmax; background: rgb(110 84 240 / 0.14); animation-duration: 46s; animation-delay: -12s; }
   .orb-3 { width: 24vmax; height: 24vmax; bottom: -10vmax; right: 18vw; background: rgb(165 148 255 / 0.10); animation-duration: 54s; animation-delay: -25s; }
-  .atmos { opacity: 0.7; }
+  .atmos { opacity: 0.28; }
 }
 @keyframes orb-drift {
   0% { transform: translate3d(0, 0, 0) scale(1); }

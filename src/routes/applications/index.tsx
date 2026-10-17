@@ -46,10 +46,14 @@ function ApplicationsPage() {
             }
           />
         ) : (
-          <ul className="surface row-list overflow-hidden">
+          <ul className="grid gap-3">
             {result.items.map((item) => (
               <li key={item.id}>
-                <Link to="/applications/$applicationId" params={{ applicationId: item.id }} className="row-link">
+                <Link
+                  to="/applications/$applicationId"
+                  params={{ applicationId: item.id }}
+                  className="surface flex items-start gap-4 rounded-[1.25rem] p-5 transition-colors hover:border-signal/40 sm:p-6"
+                >
                   <span className="min-w-0 flex-1">
                     <span className="t-h3 block truncate">{item.opportunityTitle}</span>
                     <span className="t-meta mt-1 block truncate">

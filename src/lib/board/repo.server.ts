@@ -45,6 +45,11 @@ type OppRow = {
   updated_at: string;
   my_status: string | null;
   my_application_id: string | null;
+  poster_username: string | null;
+  poster_display_name: string | null;
+  poster_avatar_url: string | null;
+  applicant_count: number | string | null;
+  accepted_count: number | string | null;
 };
 
 function asStrings(value: unknown): string[] {
@@ -88,6 +93,14 @@ function toCard(row: OppRow, viewer: string | null): OpportunityCard {
     myApplicationId: mine ? null : row.my_application_id,
     createdAt: row.created_at,
     holdersOnly: row.holders_only === true,
+    poster: {
+      username: row.poster_username,
+      displayName: row.poster_display_name,
+      avatarUrl: row.poster_avatar_url,
+    },
+    applicantCount: Number(row.applicant_count ?? 0),
+    acceptedCount: Number(row.accepted_count ?? 0),
+    positions: row.positions == null ? null : Number(row.positions),
   };
 }
 
@@ -102,7 +115,6 @@ function toDetail(row: OppRow, viewer: string | null): OpportunityDetail {
     timeCommitment: row.time_commitment,
     instructions: row.instructions,
     question: row.question,
-    positions: row.positions == null ? null : Number(row.positions),
     updatedAt: row.updated_at,
     mine: viewer != null && viewer === row.owner_wallet,
   };
@@ -117,7 +129,12 @@ const CARD_COLUMNS = `
   to_char(o.created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
   to_char(o.updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as updated_at,
   a.status as my_status,
-  a.id as my_application_id
+  a.id as my_application_id,
+  p.username as poster_username,
+  p.display_name as poster_display_name,
+  p.avatar_url as poster_avatar_url,
+  (select count(*)::int from applications ax where ax.opportunity_id = o.id) as applicant_count,
+  (select count(*)::int from applications ax where ax.opportunity_id = o.id and ax.status = 'accepted') as accepted_count
 `;
 
 function likeTerm(value: string): string {
@@ -179,6 +196,7 @@ export async function listOpportunities(
     `select ${CARD_COLUMNS}
      from opportunities o
      left join applications a on a.opportunity_id = o.id and a.contributor_wallet = ${viewerHolder}
+     left join contributor_profiles p on lower(p.wallet_address) = o.owner_wallet
      where ${whereSql}
      order by ${order}
      limit ${limit} offset ${offsetHolder}`,
@@ -192,6 +210,7 @@ export async function listOwnedOpportunities(sql: Sql, owner: string): Promise<O
     `select ${CARD_COLUMNS}
      from opportunities o
      left join applications a on false
+     left join contributor_profiles p on lower(p.wallet_address) = o.owner_wallet
      where o.owner_wallet = $1
      order by o.updated_at desc`,
     [owner],
@@ -204,6 +223,7 @@ export async function getOpportunity(sql: Sql, id: string, viewer: string | null
     `select ${CARD_COLUMNS}
      from opportunities o
      left join applications a on a.opportunity_id = o.id and a.contributor_wallet = $2
+     left join contributor_profiles p on lower(p.wallet_address) = o.owner_wallet
      where o.id = $1`,
     [id, viewer ?? ""],
   );
