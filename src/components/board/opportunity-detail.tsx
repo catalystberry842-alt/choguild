@@ -172,7 +172,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
               value={countdown ?? (opportunity.deadline ? formatDay(opportunity.deadline) : "No deadline")}
               hint={opportunity.deadline && countdown ? formatDay(opportunity.deadline) : undefined}
             />
-            <Stat label="Positions" value={positionsLabel} hint={opportunity.positions == null ? undefined : "filled / total"} />
+            <Stat label="Positions" value={positionsLabel} hint={opportunity.positions == null ? undefined : "accepted / total"} />
             <Stat
               label="Applicants"
               value={String(opportunity.applicantCount)}
