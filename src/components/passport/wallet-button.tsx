@@ -11,8 +11,8 @@ import { shortAddress } from "@/lib/passport/format";
  * header and the landing nav so both use the same connection flow.
  */
 export function WalletButton({
-  label = "Wallet",
-  compactLabel,
+  label = "Connect wallet",
+  compactLabel = "Connect",
   className,
 }: {
   label?: string;
