@@ -108,7 +108,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-6 pb-28 sm:gap-8 sm:pb-10 lg:max-w-6xl 2xl:max-w-7xl lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-x-8">
-      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8 lg:col-span-2 lg:p-10">
+      <section className="relative pt-2 lg:col-span-2">
         <div className="relative flex flex-col gap-5">
           <div className="flex flex-wrap items-center gap-2">
             <span
@@ -165,7 +165,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
             <p className="t-lead max-w-2xl text-pretty">{plainCopy(opportunity.summary)}</p>
           ) : null}
 
-          <dl className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <dl className="mt-4 grid grid-cols-2 gap-y-6 border-y border-line py-6 sm:grid-cols-4">
             <Stat label="Compensation" value={pay} />
             <Stat
               label="Due date"
@@ -187,8 +187,8 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
       <GlassBlock title="The work" body={plainCopy(opportunity.description)} />
       {plainCopy(opportunity.scope) ? <GlassBlock title="Requirements" body={plainCopy(opportunity.scope)} /> : null}
 
-      <section className="surface rounded-[1.5rem] p-6 sm:p-7 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-6 lg:row-start-2">
-        <h2 className="t-meta">Required skills</h2>
+      <section className="surface p-6 lg:sticky lg:top-20 lg:col-start-2 lg:row-span-6 lg:row-start-2">
+        <h2 className="t-kicker">Required skills</h2>
         {opportunity.requiredSkills.length > 0 ? (
           <div className="mt-4 flex flex-wrap gap-2">
             {opportunity.requiredSkills.map((skill) => (
@@ -202,7 +202,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
         )}
         {opportunity.preferredSkills.length > 0 ? (
           <>
-            <h3 className="t-meta mt-6">Preferred</h3>
+            <h3 className="t-kicker mt-6">Preferred</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {opportunity.preferredSkills.map((skill) => (
                 <span key={skill} className="rounded-full border border-line px-3 py-1 text-small text-body">
@@ -221,7 +221,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
         <GlassBlock title="How to apply" body={plainCopy(opportunity.instructions)} />
       ) : null}
 
-      <section id="apply" className="surface scroll-mt-28 rounded-[1.5rem] p-6 sm:p-8">
+      <section id="apply" className="surface scroll-mt-28 p-6 sm:p-8">
         <h2 className="t-h2">
           Apply <em>here</em>
         </h2>
@@ -358,7 +358,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
       </section>
 
       {/* Mobile sticky primary CTA — one glass bar, no nested blur. */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-[rgb(8_7_12/0.92)] px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-[rgb(10_10_10/0.95)] px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
         {cta.kind === "link" ? (
           <Button asChild className="w-full">
             <Link to={cta.to}>{cta.label}</Link>
@@ -391,18 +391,18 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
 function GlassBlock({ title, body }: { title: string; body: string }) {
   if (!body) return null;
   return (
-    <section className="surface rounded-[1.5rem] p-6 sm:p-7">
-      <h2 className="t-meta">{title}</h2>
-      <p className="t-lead mt-3 whitespace-pre-wrap text-pretty text-ink">{body}</p>
+    <section className="grid gap-3 border-t border-line pt-6 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-8">
+      <h2 className="t-kicker sm:pt-1">{title}</h2>
+      <p className="t-lead whitespace-pre-wrap text-pretty text-ink">{body}</p>
     </section>
   );
 }
 
 function Stat({ label, value, hint }: { label: string; value: string; hint?: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 sm:px-4">
-      <dt className="t-meta">{label}</dt>
-      <dd className="mt-1 text-base font-medium text-ink sm:text-lead">{value}</dd>
+    <div className="border-l border-line pl-4 first:border-l-0 first:pl-0 max-sm:[&:nth-child(3)]:border-l-0 max-sm:[&:nth-child(3)]:pl-0">
+      <dt className="t-kicker">{label}</dt>
+      <dd className="mt-2 text-lead font-medium tracking-[-0.02em] text-ink">{value}</dd>
       {hint ? <p className="mt-0.5 text-label text-muted">{hint}</p> : null}
     </div>
   );

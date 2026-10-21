@@ -58,7 +58,7 @@ function DiscoverPage() {
     <div>
       <PageHeader
         eyebrow="Discover"
-        title="Open work, on the record."
+        title={<>Open work, on the <em>record.</em></>}
         description="Open work from contributors with a Choguild passport."
         actions={
           <>
@@ -73,7 +73,7 @@ function DiscoverPage() {
       />
 
       <form
-        className="mx-auto grid max-w-3xl gap-4"
+        className="grid gap-4"
         role="search"
         aria-label="Filter opportunities"
         onSubmit={(event) => event.preventDefault()}
@@ -92,7 +92,7 @@ function DiscoverPage() {
               value={search.q}
               onChange={(event) => update({ q: event.target.value })}
               placeholder="Search the board"
-              className="h-12 rounded-full bg-elevated pl-11 text-base"
+              className="h-11 rounded-full bg-elevated pl-11 text-small"
             />
           </div>
           <Button
@@ -220,12 +220,18 @@ function DiscoverPage() {
         ) : null}
       </form>
 
-      <p className="t-meta mt-10 mb-4 px-1" aria-live="polite">
-        {result.total} {result.total === 1 ? "opportunity" : "opportunities"}
+      <div className="mt-8 mb-3 hidden grid-cols-[minmax(0,1fr)_10rem_8rem_6.5rem_1rem] gap-6 px-6 md:grid" aria-hidden="true">
+        <span className="t-kicker">{result.total} {result.total === 1 ? "listing" : "listings"}</span>
+        <span className="t-kicker">Terms</span>
+        <span className="t-kicker">Due</span>
+        <span className="t-kicker">Status</span>
+      </div>
+      <p className="t-kicker mt-8 mb-3 md:sr-only" aria-live="polite">
+        {result.total} {result.total === 1 ? "listing" : "listings"}
       </p>
 
       {result.items.length > 0 ? (
-        <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        <ul className="surface divide-y divide-line overflow-hidden">
           {result.items.map((item, index) => (
             <OpportunityCardView
               key={item.id}
