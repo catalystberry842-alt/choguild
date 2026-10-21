@@ -62,7 +62,7 @@ function Hero() {
   return (
     <section aria-labelledby="hero-title" className="px-2.5 pt-2.5 sm:px-4 sm:pt-4">
       <div className="stage mx-auto max-w-[1400px]">
-        <div className="mx-auto grid max-w-6xl gap-12 px-5 pt-20 pb-8 sm:px-8 sm:pt-28 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-end lg:gap-16 lg:pt-36 lg:pb-14 2xl:max-w-7xl">
+        <div className="mx-auto grid max-w-6xl gap-12 px-5 pt-20 pb-8 sm:px-8 sm:pt-28 lg:grid-cols-[minmax(0,1fr)_23rem] lg:items-end lg:gap-16 lg:pt-44 lg:pb-16 2xl:max-w-7xl">
           <div>
             <Link to="/discover" search={emptyBoardSearch()} className="pill-glass rise group inline-flex items-center gap-2.5 rounded-full py-1.5 pr-3 pl-3 text-small text-ink">
               <span className="livedot" aria-hidden="true" />

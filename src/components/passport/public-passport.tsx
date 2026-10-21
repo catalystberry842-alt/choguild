@@ -83,7 +83,7 @@ export function PublicPassport({
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-6 sm:gap-8 lg:max-w-6xl 2xl:max-w-7xl lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-x-8">
       {/* Hero: single passport-glass surface (blur once; no nested blur stacks). */}
-      <section className="relative pt-2 lg:col-span-2">
+      <section className="stage rise relative px-5 pt-10 pb-6 sm:px-10 sm:pt-12 lg:col-span-2">
 
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
           <div className="relative mx-auto shrink-0 sm:mx-0">
@@ -166,7 +166,7 @@ export function PublicPassport({
           </div>
         </div>
 
-        <dl className="relative mt-10 grid grid-cols-2 gap-y-6 border-t border-line pt-6 sm:grid-cols-4">
+        <dl className="relative mt-10 grid grid-cols-2 gap-y-6 border-t border-line pt-6 sm:grid-cols-4 [&_dd]:font-light [&_dd]:tracking-[-0.04em]">
           <Stat label="Accepted work" value={String(accepted)} />
           <Stat label="Listings" value={String(listings)} />
           <Stat label="XP" value={xp === null ? "—" : formatXp(xp)} />
