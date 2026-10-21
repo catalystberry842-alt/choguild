@@ -69,7 +69,7 @@ function SubmissionPage() {
 
   return (
     <article className="mx-auto flex w-full max-w-3xl flex-col gap-6 pb-28 sm:gap-8 sm:pb-10">
-      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8">
+      <section className="passport-glass relative overflow-hidden rounded-2xl p-6 sm:p-8">
         <div className="flex flex-wrap items-center gap-2">
           <span className={cn("inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-label", statusTone(work.status))}>
             <span className="size-1.5 rounded-full bg-current opacity-80" aria-hidden="true" />
@@ -109,7 +109,7 @@ function SubmissionPage() {
       {canReview ? (
         <form
           id="review-form"
-          className="surface grid gap-5 rounded-[1.5rem] p-6 sm:p-8"
+          className="surface grid gap-5 rounded-2xl p-6 sm:p-8"
           onSubmit={(event) => {
             event.preventDefault();
             void onReview();

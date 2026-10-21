@@ -53,7 +53,7 @@ function ApplicationsPage() {
                 <Link
                   to="/applications/$applicationId"
                   params={{ applicationId: item.id }}
-                  className="surface flex items-start gap-4 rounded-[1.25rem] p-5 transition-colors hover:border-signal/40 sm:p-6"
+                  className="surface flex items-start gap-4 rounded-2xl p-5 transition-colors hover:border-signal/40 sm:p-6"
                 >
                   <span className="min-w-0 flex-1">
                     <span className="t-h3 block truncate">{item.opportunityTitle}</span>
