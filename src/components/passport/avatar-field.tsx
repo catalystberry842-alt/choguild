@@ -83,7 +83,7 @@ export function AvatarField({
         onDragLeave={() => setDragging(false)}
         onDrop={onDrop}
         className={cn(
-          "flex flex-col gap-4 rounded-2xl border border-dashed bg-white/[0.02] p-4 transition-colors sm:flex-row sm:items-center",
+          "flex flex-col gap-4 rounded-2xl border border-dashed bg-line/50 p-4 transition-colors sm:flex-row sm:items-center",
           dragging ? "border-signal bg-signal/10" : "border-line-strong",
         )}
       >

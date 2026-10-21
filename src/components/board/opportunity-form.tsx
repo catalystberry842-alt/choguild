@@ -193,7 +193,7 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
         <Field label="Positions" htmlFor="opp-positions" hint="Optional. 1–20." error={errors.positions}>
           <TextInput id="opp-positions" inputMode="numeric" value={form.positions} onChange={(event) => set("positions", event.target.value)} />
         </Field>
-        <label htmlFor="opp-holders-only" className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line-strong bg-black/20 p-4 transition-colors hover:border-signal/40">
+        <label htmlFor="opp-holders-only" className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line-strong bg-canvas/60 p-4 transition-colors hover:border-signal/40">
           <input
             id="opp-holders-only"
             type="checkbox"
@@ -252,7 +252,7 @@ function SkillPicker({
               onClick={() => onToggle(skill)}
               className={cn(
                 "min-h-11 rounded-full border px-3.5 text-base transition-colors",
-                on ? "border-signal/60 bg-signal/15 text-ink" : "border-line bg-black/20 text-body hover:border-signal/40",
+                on ? "border-signal/60 bg-signal/15 text-ink" : "border-line bg-canvas/60 text-body hover:border-signal/40",
               )}
             >
               {skill}

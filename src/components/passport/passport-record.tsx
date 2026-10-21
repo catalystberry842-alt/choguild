@@ -31,7 +31,7 @@ export function PassportRecord({ profile, address }: { profile: PublicProfile | 
               <LogoMark className="size-5" />
               <span className="t-h3">Choguild passport</span>
             </span>
-            <span className="rounded-full border border-white/10 bg-black/20 px-2.5 py-1 text-label text-body">{status}</span>
+            <span className="rounded-full border border-line bg-canvas/60 px-2.5 py-1 text-label text-body">{status}</span>
           </div>
           <div>
             <p className="t-h2 text-ink">

@@ -34,7 +34,7 @@ export function OpportunityCardView({ item }: { item: OpportunityCard; index?: n
       <Link
         to="/discover/$opportunityId"
         params={{ opportunityId: item.id }}
-        className="group grid gap-3 px-5 py-5 transition-colors hover:bg-white/[0.02] sm:px-6 md:grid-cols-[minmax(0,1fr)_10rem_8rem_6.5rem_1rem] md:items-center md:gap-6"
+        className="group grid gap-3 px-5 py-5 transition-colors hover:bg-line/50 sm:px-6 md:grid-cols-[minmax(0,1fr)_10rem_8rem_6.5rem_1rem] md:items-center md:gap-6"
       >
         <span className="flex min-w-0 items-start gap-3.5">
           <PosterMark name={posterName} logoUrl={item.projectLogoUrl} avatarUrl={item.poster.avatarUrl} />
