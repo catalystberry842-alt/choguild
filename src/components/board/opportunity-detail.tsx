@@ -52,7 +52,8 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
       : pay;
   const unavailable = !opportunity.accepting;
   const countdown = deadlineCountdown(opportunity.deadline);
-  const statusLabel = OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status;
+  const isPastDue = opportunity.status === "open" && !!opportunity.deadline && new Date(opportunity.deadline).getTime() <= Date.now();
+  const statusLabel = isPastDue ? "Past due" : (OPPORTUNITY_STATUS_LABEL[opportunity.status as OpportunityStatus] ?? opportunity.status);
   const categoryLabel = CATEGORY_LABEL[opportunity.category as Category] ?? opportunity.category;
   const posterName = opportunity.poster.displayName || opportunity.poster.username || project;
   const posterHandle = opportunity.poster.username;
@@ -114,11 +115,11 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
             <span
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-label",
-                opportunity.status === "open" ? "bg-success/10 text-success" : "bg-white/[0.06] text-muted",
+                opportunity.status === "open" && !isPastDue ? "bg-success/10 text-success" : "bg-white/[0.06] text-muted",
               )}
             >
               <span
-                className={cn("size-1.5 rounded-full", opportunity.status === "open" ? "bg-success" : "bg-muted")}
+                className={cn("size-1.5 rounded-full", opportunity.status === "open" && !isPastDue ? "bg-success" : "bg-muted")}
                 aria-hidden="true"
               />
               {statusLabel}
@@ -165,7 +166,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
             <p className="t-lead max-w-2xl text-pretty">{plainCopy(opportunity.summary)}</p>
           ) : null}
 
-          <dl className="mt-4 grid grid-cols-2 gap-y-6 border-y border-line py-6 sm:grid-cols-4">
+          <dl className="mt-4 grid grid-cols-2 gap-y-6 border-t border-line pt-6 sm:grid-cols-4">
             <Stat label="Compensation" value={pay} />
             <Stat
               label="Due date"

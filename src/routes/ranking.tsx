@@ -1,8 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { Activity } from "lucide-react";
-import { Reveal } from "@/components/fx/reveal";
 import { Avatar, TierBadge, XpBar } from "@/components/ranking/bits";
-import { CountUp } from "@/components/ranking/count-up";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
 import { cn } from "@/lib/cn";
@@ -13,11 +11,11 @@ import {
   formatXp,
   rankContributors,
   type RankBy,
-  type RankedContributor,
 } from "@/lib/ranking/xp";
 import { seo } from "@/lib/seo";
 import { ChogBadge, ChogImage } from "@/components/chog/chog-bits";
 import { LoadingState } from "@/components/ui/loading-state";
+import { EmptyState } from "@/components/ui/empty-state";
 
 export const Route = createFileRoute("/ranking")({
   validateSearch: (search: Record<string, unknown>): { by?: RankBy } =>
@@ -39,24 +37,22 @@ function RankingPage() {
   const { contributors, stats, onchainAvailable } = Route.useLoaderData();
   const by: RankBy = Route.useSearch().by ?? "overall";
   const ranking = rankContributors(contributors, by);
-  const podium = ranking.slice(0, 3);
-  const rest = ranking.slice(3);
 
   return (
-    <div className="flex flex-col gap-10">
-      <PageHeader eyebrow="Ranking" title="The ladder." description="XP from accepted guild work and activity on Monad.">
-        <dl className="mt-8 flex flex-wrap justify-center gap-2">
+    <div className="flex flex-col">
+      <PageHeader eyebrow="Ranking" title={<>The <em>ladder.</em></>} description="XP from accepted guild work and activity on Monad.">
+        <dl className="mt-10 grid grid-cols-3 gap-y-6 border-t border-line pt-6 sm:max-w-xl">
           {([["Passports", stats.passports], ["Accepted", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value]) => (
-            <div key={label} className="flex items-baseline gap-2 rounded-full border border-line bg-elevated/70 px-4 py-2">
-              <dd className="t-stat-sm text-ink">{value === null ? <span className="text-muted">unavailable</span> : <CountUp value={value} />}</dd>
-              <dt className="text-label text-muted">{label}</dt>
+            <div key={label} className="border-l border-line pl-4 first:border-l-0 first:pl-0">
+              <dt className="t-kicker">{label}</dt>
+              <dd className="mt-2 text-2xl font-medium tracking-[-0.04em] tabular-nums text-ink">{value === null ? <span className="text-base text-muted">unavailable</span> : value.toLocaleString("en-US")}</dd>
             </div>
           ))}
         </dl>
       </PageHeader>
 
-      <div className="flex flex-col items-center gap-3">
-        <div role="tablist" aria-label="Rank by" className="inline-flex rounded-full border border-line bg-elevated/70 p-1">
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div role="tablist" aria-label="Rank by" className="inline-flex self-start rounded-full border border-line p-1">
           {RANK_BY.filter((option) => onchainAvailable || option.id !== "onchain").map((option) => {
             const active = option.id === by;
             return (
@@ -67,143 +63,94 @@ function RankingPage() {
                 to="/ranking"
                 search={option.id === "overall" ? {} : { by: option.id }}
                 replace
-                className={cn("relative rounded-full px-4 py-1.5 text-small transition-colors", active ? "text-white" : "text-body hover:text-ink")}
+                className={cn("rounded-full px-4 py-1.5 text-small transition-colors", active ? "bg-ink text-canvas" : "text-body hover:text-ink")}
               >
-                {active ? <span className="fade-in-soft absolute inset-0 rounded-full btn-glass" /> : null}
-                <span className="relative">{option.label}</span>
+                {option.label}
               </Link>
             );
           })}
         </div>
         <p className="t-meta">
           {BLURB[by]}{" "}
-          <Link to="/how-it-works" hash="xp" className="t-link inline-flex min-h-6 items-center">How XP works</Link>
+          <Link to="/how-it-works" hash="xp" className="t-link">How XP works</Link>
         </p>
-        {!onchainAvailable && by !== "guild" ? (
-          <p className="t-body flex items-start gap-3 rounded-2xl border border-warning/30 bg-warning/5 px-4 py-3">
-            <Activity className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
-            Onchain activity is temporarily unavailable (no Monad RPC answered), so the ladder shows guild XP only and the Onchain view is hidden until it is back.
-          </p>
-        ) : null}
       </div>
+      {!onchainAvailable && by !== "guild" ? (
+        <p className="t-body mb-6 flex items-start gap-3 rounded-xl border border-warning/30 px-4 py-3">
+          <Activity className="mt-0.5 size-4 shrink-0 text-warning" aria-hidden="true" />
+          Onchain activity is temporarily unavailable (no Monad RPC answered), so the ladder shows guild XP only and the Onchain view is hidden until it is back.
+        </p>
+      ) : null}
 
-      {podium.length === 0 ? (
+      {ranking.length === 0 ? (
         <EmptyLadder />
       ) : (
-        <>
-          <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end">
-            {podium.map((person) => (
-              <PodiumCard key={person.username} person={person} by={by} />
+        <section aria-label="The ladder" className="surface overflow-hidden">
+          <div className="hidden grid-cols-[3rem_minmax(0,1fr)_8rem_6rem_6rem_9rem] gap-6 border-b border-line px-6 py-3 md:grid" aria-hidden="true">
+            <span className="t-kicker">Rank</span>
+            <span className="t-kicker">Contributor</span>
+            <span className="t-kicker">Tier</span>
+            <span className="t-kicker text-right">Guild</span>
+            <span className="t-kicker text-right">Onchain</span>
+            <span className="t-kicker text-right">XP</span>
+          </div>
+          <ol className="divide-y divide-line">
+            {ranking.map((person) => (
+              <li key={person.username}>
+                <Link
+                  to="/passport/$username"
+                  params={{ username: person.username }}
+                  className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-white/[0.02] sm:px-6 md:grid-cols-[3rem_minmax(0,1fr)_8rem_6rem_6rem_9rem] md:gap-6"
+                >
+                  <span className={cn("tabular-nums tracking-[-0.04em]", person.rank <= 3 ? "text-2xl font-medium text-ink" : "text-lead text-muted")}>{person.rank}</span>
+                  <span className="flex min-w-0 items-center gap-3">
+                    {person.chog?.tokenIds[0] ? (
+                      <ChogImage tokenId={person.chog.tokenIds[0]} size="sm" className="rounded-full" />
+                    ) : (
+                      <Avatar name={person.displayName} url={person.avatarUrl} />
+                    )}
+                    <span className="min-w-0">
+                      <span className="flex min-w-0 items-center gap-2">
+                        <span className="truncate text-base font-medium text-ink">{person.displayName}</span>
+                        <ChogBadge count={person.chog?.count ?? 0} className="shrink-0" />
+                      </span>
+                      <span className="block truncate text-small text-muted">
+                        @{person.username}
+                        <span className="md:hidden"> · {person.tier}</span>
+                      </span>
+                    </span>
+                  </span>
+                  <span className="hidden md:block"><TierBadge tier={person.tier} /></span>
+                  <span className="hidden text-right text-small tabular-nums text-body md:block">
+                    {formatXp(person.guildXp)}
+                    {person.chogBonus ? <span className="block text-label text-muted">incl. +{person.chogBonus} Chog</span> : null}
+                  </span>
+                  <span className="hidden text-right text-small tabular-nums text-body md:block">{person.onchainXp === null ? "—" : formatXp(person.onchainXp)}</span>
+                  <span className="text-right">
+                    <span className="text-lead font-medium tabular-nums tracking-[-0.03em] text-ink">{formatXp(person.xp)}</span>
+                    {by === "overall" ? <span className="mt-2 hidden md:block"><XpBar xp={person.xp} compact /></span> : null}
+                  </span>
+                </Link>
+              </li>
             ))}
           </ol>
-
-          {rest.length > 0 ? (
-            <section aria-label="The ladder" className="bento p-2 sm:p-3">
-              <div className="hidden grid-cols-[3.5rem_minmax(0,1fr)_8rem_7rem] gap-4 px-4 py-3 text-label text-muted sm:grid">
-                <span>Rank</span>
-                <span>Contributor</span>
-                <span>Tier</span>
-                <span className="text-right">XP</span>
-              </div>
-              <ol className="flex flex-col gap-0.5">
-                {rest.map((person, index) => (
-                  <Reveal as="li" key={person.username} delay={Math.min(index, 8) * 0.03} y={6}>
-                    <Link
-                      to="/passport/$username"
-                      params={{ username: person.username }}
-                      className="group grid grid-cols-[2.5rem_minmax(0,1fr)_auto] items-center gap-4 rounded-2xl px-4 py-3 transition-colors hover:bg-white/[0.04] sm:grid-cols-[3.5rem_minmax(0,1fr)_8rem_7rem]"
-                    >
-                      <span className="t-stat-sm text-muted">{person.rank}</span>
-                      <span className="flex min-w-0 items-center gap-3">
-                        {person.chog?.tokenIds[0] ? (
-                          <ChogImage tokenId={person.chog.tokenIds[0]} size="sm" className="rounded-full" />
-                        ) : (
-                          <Avatar name={person.displayName} url={person.avatarUrl} />
-                        )}
-                        <span className="min-w-0">
-                          <span className="flex min-w-0 items-center gap-2">
-                            <span className="truncate text-base text-ink group-hover:text-signal">{person.displayName}</span>
-                            <ChogBadge count={person.chog?.count ?? 0} className="shrink-0" />
-                          </span>
-                          <span className="block truncate text-label text-muted">
-                            @{person.username}
-                            {person.txCount !== null ? ` · ${formatXp(person.txCount)} txs` : ""}
-                          </span>
-                        </span>
-                      </span>
-                      <span className="hidden sm:block"><TierBadge tier={person.tier} /></span>
-                      <span className="text-right font-medium text-small tabular-nums text-ink">{formatXp(person.xp)}</span>
-                    </Link>
-                  </Reveal>
-                ))}
-              </ol>
-            </section>
-          ) : null}
-        </>
+        </section>
       )}
     </div>
   );
 }
 
-const PODIUM = ["md:order-2 md:pb-14", "md:order-1", "md:order-3"] as const;
-
-function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
-  const first = person.rank === 1;
-  return (
-    <Reveal as="li" delay={person.rank * 0.08} className={PODIUM[person.rank - 1]}>
-      <Link
-        to="/passport/$username"
-        params={{ username: person.username }}
-        className={cn("bento group flex items-center gap-4 px-5 py-5 text-left md:flex-col md:px-6 md:py-8 md:text-center", first && "signal-glow border-signal/30")}
-      >
-        <span className={cn("w-8 shrink-0 text-center text-3xl font-semibold leading-none tracking-[-0.05em] tabular-nums md:w-auto md:text-7xl", first ? "text-signal" : "text-faint")}>{person.rank}</span>
-        {person.chog?.tokenIds[0] ? (
-          <ChogImage tokenId={person.chog.tokenIds[0]} size="md" className="size-12 shrink-0 rounded-full md:size-16" />
-        ) : (
-          <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
-        )}
-        <span className="flex min-w-0 flex-1 flex-col gap-2 md:flex-none md:items-center md:gap-4">
-          <span className="min-w-0">
-            <span className="t-h3 block truncate text-ink">{person.displayName}</span>
-            <span className="block truncate text-label text-muted">@{person.username}</span>
-          </span>
-          <span className="flex flex-wrap gap-1.5 md:justify-center">
-            <TierBadge tier={person.tier} />
-            <ChogBadge count={person.chog?.count ?? 0} />
-          </span>
-          <span className="hidden text-label text-muted md:block">
-            Guild {formatXp(person.guildXp)}
-            {person.chogBonus ? ` (incl. +${person.chogBonus} Chog)` : ""} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
-          </span>
-        </span>
-        <span className="shrink-0 text-2xl font-semibold leading-none tracking-[-0.045em] tabular-nums text-ink md:text-[2.5rem]">
-          <CountUp value={person.xp} /> <span className="font-sans text-label text-muted">XP</span>
-        </span>
-        {by === "overall" ? <span className="hidden w-full md:block"><XpBar xp={person.xp} /></span> : null}
-      </Link>
-    </Reveal>
-  );
-}
-
 function EmptyLadder() {
   return (
-    <ol className="grid gap-3 pt-4 md:grid-cols-3 md:items-end" aria-label="Podium, no one ranked yet">
-      {[1, 2, 3].map((rank) => (
-        <Reveal as="li" key={rank} delay={rank * 0.08} className={rank === 1 ? "md:order-2 md:pb-14" : rank === 2 ? "md:order-1" : "md:order-3"}>
-          <div className={cn("flex flex-col items-center gap-4 rounded-2xl border border-dashed px-6 py-10 text-center", rank === 1 ? "signal-glow border-signal/40 bg-signal/[0.04]" : "border-line-strong bg-elevated/40")}>
-            <span className={cn("t-stat-lg", rank === 1 ? "text-signal" : "text-faint")}>{rank}</span>
-            <span aria-hidden="true" className="flex size-16 items-center justify-center rounded-full border border-dashed border-line-strong text-faint">?</span>
-            <span className="t-h3 text-ink">{rank === 1 ? "First place is open." : "Open spot"}</span>
-            <span className="text-small text-muted">{rank === 1 ? "Save a public passport to join. Accepted work moves you up." : "Waiting for accepted work."}</span>
-            {rank === 1 ? (
-              <span className="mt-2 flex flex-wrap justify-center gap-2">
-                <Button asChild size="compact"><Link to="/passport">Claim your spot</Link></Button>
-                <Button asChild size="compact" variant="secondary"><Link to="/how-it-works">How it works</Link></Button>
-              </span>
-            ) : null}
-          </div>
-        </Reveal>
-      ))}
-    </ol>
+    <EmptyState
+      title="Nobody is ranked yet"
+      body="Save a public passport to join the ladder. Accepted work moves you up."
+      action={
+        <>
+          <Button asChild size="compact"><Link to="/passport">Claim your spot</Link></Button>
+          <Button asChild size="compact" variant="secondary"><Link to="/how-it-works">How it works</Link></Button>
+        </>
+      }
+    />
   );
 }

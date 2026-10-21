@@ -83,22 +83,13 @@ export function PublicPassport({
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-6 sm:gap-8 lg:max-w-6xl 2xl:max-w-7xl lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-x-8">
       {/* Hero: single passport-glass surface (blur once; no nested blur stacks). */}
-      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8 lg:col-span-2 lg:p-10">
-        {/* Intentional soft ring behind the avatar — replaces the odd stray circle. */}
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-10 -top-16 size-56 rounded-full border border-signal/25 sm:size-72"
-        />
-        <div
-          aria-hidden="true"
-          className="pointer-events-none absolute -left-4 -top-10 size-44 rounded-full border border-signal/10 sm:size-56"
-        />
+      <section className="relative pt-2 lg:col-span-2">
 
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
           <div className="relative mx-auto shrink-0 sm:mx-0">
             <span
               aria-hidden="true"
-              className="absolute -inset-1.5 rounded-full bg-signal/20 ring-1 ring-signal/40"
+              className="absolute -inset-1 rounded-full ring-1 ring-line-strong"
             />
             {profile.avatarUrl && !avatarFailed ? (
               <img
@@ -175,7 +166,7 @@ export function PublicPassport({
           </div>
         </div>
 
-        <dl className="relative mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
+        <dl className="relative mt-10 grid grid-cols-2 gap-y-6 border-t border-line pt-6 sm:grid-cols-4">
           <Stat label="Accepted work" value={String(accepted)} />
           <Stat label="Listings" value={String(listings)} />
           <Stat label="XP" value={xp === null ? "—" : formatXp(xp)} />
@@ -183,19 +174,19 @@ export function PublicPassport({
         </dl>
       </section>
 
-      <aside className="flex min-w-0 flex-col gap-6 sm:gap-8 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-2">
+      <aside className="flex min-w-0 flex-col gap-6 sm:gap-8 lg:sticky lg:top-20 lg:col-start-2 lg:row-start-2">
       {profile.biography ? (
-        <section className="surface rounded-[1.5rem] p-6 sm:p-7">
-          <h2 className="t-meta">Bio</h2>
-          <p className="t-lead mt-3 max-w-2xl text-pretty">{profile.biography}</p>
+        <section className="surface p-6">
+          <h2 className="t-kicker">Bio</h2>
+          <p className="t-body mt-3 text-pretty text-ink">{profile.biography}</p>
         </section>
       ) : null}
 
       {profile.skills.length > 0 || profile.interests?.trim() || links.length > 0 ? (
-        <section className="surface divide-y divide-line rounded-[1.5rem] px-6 sm:px-7">
+        <section className="surface divide-y divide-line px-6">
           {profile.skills.length > 0 ? (
             <div className="py-6">
-              <h2 className="t-meta">Skills</h2>
+              <h2 className="t-kicker">Skills</h2>
               <div className="mt-3 flex flex-wrap gap-2">
                 {profile.skills.map((skill) => (
                   <span key={skill} className="glass-chip rounded-full px-3 py-1 text-small text-ink">
@@ -207,13 +198,13 @@ export function PublicPassport({
           ) : null}
           {profile.interests?.trim() ? (
             <div className="py-6">
-              <h2 className="t-meta">Interests</h2>
+              <h2 className="t-kicker">Interests</h2>
               <p className="t-body mt-3 text-pretty text-ink">{profile.interests}</p>
             </div>
           ) : null}
           {links.length > 0 ? (
             <div className="py-6">
-              <h2 className="t-meta">Links</h2>
+              <h2 className="t-kicker">Links</h2>
               <ul className="mt-3 flex flex-wrap gap-2">
                 {links.map((link) => (
                   <li key={link.url}>
@@ -265,7 +256,7 @@ export function PublicPassport({
         {contributions.items.length > 0 ? (
           <ul className="grid gap-3">
             {contributions.items.map((item) => (
-              <li key={item.id} className="surface rounded-[1.25rem] p-5 sm:p-6">
+              <li key={item.id} className="surface p-5 sm:p-6">
                 <h3 className="t-h3">{item.title}</h3>
                 <p className="t-meta mt-1.5">
                   {item.projectName} · {item.opportunityTitle} · Accepted {formatStamp(item.acceptedAt)}
@@ -319,9 +310,9 @@ export function PublicPassport({
 
 function Stat({ label, value, muted }: { label: string; value: string; muted?: boolean }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 sm:px-4">
-      <dt className="t-meta">{label}</dt>
-      <dd className={cn("mt-1.5 text-lead font-semibold tracking-tight tabular-nums text-ink sm:text-xl", muted && "text-muted")}>
+    <div className="border-l border-line pl-4 first:border-l-0 first:pl-0 max-sm:[&:nth-child(3)]:border-l-0 max-sm:[&:nth-child(3)]:pl-0">
+      <dt className="t-kicker">{label}</dt>
+      <dd className={cn("mt-2 text-2xl font-medium tracking-[-0.04em] tabular-nums text-ink", muted && "text-base text-muted")}>
         {value}
       </dd>
     </div>

@@ -38,12 +38,19 @@ export function Avatar({ name, url, size = "md" }: { name: string; url: string |
   );
 }
 
-export function XpBar({ xp }: { xp: number }) {
+export function XpBar({ xp, compact = false }: { xp: number; compact?: boolean }) {
   const { next, progress } = tierFor(xp);
+  if (compact) {
+    return (
+      <div className="ml-auto h-px w-24 overflow-hidden bg-line-strong" title={next ? `${next.min - xp} XP to ${next.name}` : "Max tier"}>
+        <div className="h-full bg-ink" style={{ width: `${Math.round(progress * 100)}%` }} />
+      </div>
+    );
+  }
   return (
     <div className="flex items-center gap-2">
       <div className="h-px flex-1 overflow-hidden bg-line-strong">
-        <div className="h-full bg-signal transition-[width] duration-1000" style={{ width: `${Math.round(progress * 100)}%` }} />
+        <div className="h-full bg-ink transition-[width] duration-1000" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
       <span className="font-medium text-label tabular-nums text-muted">{next ? `${next.min - xp} to ${next.name}` : "Max tier"}</span>
     </div>
