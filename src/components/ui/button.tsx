@@ -13,10 +13,10 @@ const buttonVariants = cva(
         ghost: "bg-transparent text-body hover:bg-elevated hover:text-ink",
       },
       size: {
-        md: "min-h-11 px-5 text-small",
-        lg: "min-h-12 px-7 text-small",
-        compact: "min-h-9 px-3.5 text-small",
-        icon: "size-11 p-0",
+        md: "min-h-10 px-4 text-[0.875rem]",
+        lg: "min-h-10 px-4 text-[0.875rem]",
+        compact: "min-h-9 px-3.5 text-[0.8125rem]",
+        icon: "size-10 p-0",
       },
     },
     defaultVariants: {

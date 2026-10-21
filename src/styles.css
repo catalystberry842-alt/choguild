@@ -1,5 +1,7 @@
 @import "tailwindcss";
 @import "@fontsource/geist-sans/latin-300.css";
+@import "@fontsource/dm-sans/latin-400.css";
+@import "@fontsource/dm-sans/latin-500.css";
 @import "@fontsource/geist-sans/latin-400.css";
 @import "@fontsource/geist-sans/latin-500.css";
 @import "@fontsource/geist-sans/latin-600.css";
@@ -1042,4 +1044,21 @@ html[data-theme="light"] .t-link { text-decoration-color: #c4c4c4; }
   .t-stat-sm { font-size: 1.25rem; }
   .ix { font-size: var(--text-label); }
   .t-kicker { font-size: 0.6875rem; }
+}
+
+/* ── v27: text face + compact buttons ─────────────────────────────────────────
+   Body/lede/sub copy: DM Sans (closest free match to the reference: single-storey
+   g, double-storey a, slant-cut t, straight-tailed y, round geometric bowls).
+   Headings, buttons, nav and numerals stay Geist; labels stay Geist Mono.      */
+@theme { --font-text: "DM Sans", ui-sans-serif, system-ui, sans-serif; }
+@layer base {
+  body { font-family: var(--font-text); letter-spacing: -0.005em; }
+  h1, h2, h3, h4, button, nav, label, dt, dd, th, .t-display, .t-title, .t-h1, .t-h2, .t-h3, .t-sub,
+  .t-stat, .t-stat-sm, .t-stat-lg, .t-stat-num, .btn-glass, .btn-ghost, .btn-white, .tag-p,
+  a[class*="rounded-full"], [class*="t-kicker"] { font-family: var(--font-sans); letter-spacing: -0.012em; }
+  .t-display { letter-spacing: -0.05em; } .t-title, .t-h1 { letter-spacing: -0.045em; } .t-h2 { letter-spacing: -0.04em; }
+  .ix, .tag, code, kbd { font-family: var(--font-mono); letter-spacing: 0; }
+}
+@layer components {
+  .t-body, .t-lead, .t-body-lg, .t-meta, .t-small { font-family: var(--font-text); }
 }
