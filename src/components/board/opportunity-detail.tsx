@@ -115,7 +115,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
             <span
               className={cn(
                 "inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-label",
-                opportunity.status === "open" && !isPastDue ? "bg-success/10 text-success" : "bg-white/[0.06] text-muted",
+                opportunity.status === "open" && !isPastDue ? "bg-success/10 text-success" : "bg-line/50 text-muted",
               )}
             >
               <span
