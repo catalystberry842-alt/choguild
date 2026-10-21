@@ -1007,3 +1007,39 @@ html[data-theme="light"] .spine::before { background: #e4e4e0; }
 html[data-theme="light"] .rule-top { border-top-color: #d2d2cd; }
 html[data-theme="light"] input, html[data-theme="light"] textarea, html[data-theme="light"] select { background-color: #fff; color: #0a0a0a; }
 html[data-theme="light"] .t-link { text-decoration-color: #c4c4c4; }
+
+/* ── v26: one type scale, site-wide ────────────────────────────────────────────
+   display  hero h1 only          36px → 58px
+   title    inner-page h1         30px → 44px
+   h2       every section title   26px → 38px
+   sub      sub-headings (docs)   20px → 24px
+   h3       item / card titles    17px → 18px
+   body     body + lede copy      15px → 16px, lh 1.55 (text-base = text-lead)
+   small    secondary copy        13px
+   label    tags, mono indexes    12px;  kicker 11px uppercase
+   stat     big numerals          28px → 40px                                   */
+@theme {
+  --text-base: 0.9375rem;
+  --text-base--line-height: 1.55;
+  --text-lead: 0.9375rem;
+  --text-lead--line-height: 1.55;
+  --text-small: 0.8125rem;
+  --text-small--line-height: 1.25rem;
+  --text-label: 0.75rem;
+  --text-label--line-height: 1rem;
+}
+@media (min-width: 640px) {
+  :root { --text-base: 1rem; --text-lead: 1rem; }
+}
+@layer components {
+  .t-display { font-size: clamp(2.25rem, 1.55rem + 2.9vw, 3.625rem); line-height: 1; letter-spacing: -0.05em; font-weight: 500; }
+  .t-h1, .t-title { font-size: clamp(1.875rem, 1.45rem + 1.75vw, 2.75rem); line-height: 1.05; letter-spacing: -0.045em !important; font-weight: 500; }
+  .t-h2 { font-size: clamp(1.625rem, 1.25rem + 1.2vw, 2.375rem); line-height: 1.08; letter-spacing: -0.04em; font-weight: 500; }
+  .t-sub { font-size: clamp(1.25rem, 1.1rem + 0.5vw, 1.5rem); line-height: 1.2; letter-spacing: -0.03em; font-weight: 500; color: var(--color-ink); }
+  .t-h3 { font-size: clamp(1.0625rem, 1rem + 0.2vw, 1.125rem); line-height: 1.35; letter-spacing: -0.02em; font-weight: 500; }
+  .t-lead, .t-body-lg, .t-body { font-size: var(--text-base); line-height: 1.55; }
+  .t-stat, .t-stat-lg, .t-stat-num { font-size: clamp(1.75rem, 1.35rem + 1.6vw, 2.5rem); line-height: 1; letter-spacing: -0.045em; font-weight: 500; font-variant-numeric: tabular-nums; }
+  .t-stat-sm { font-size: 1.25rem; }
+  .ix { font-size: var(--text-label); }
+  .t-kicker { font-size: 0.6875rem; }
+}

@@ -49,12 +49,12 @@ export function DocsLayout({ page }: { page: DocPage }) {
       <article className="min-w-0">
         <p className="ix flex items-center gap-3"><span className="text-purple-ink">0{index + 1}</span><span className="h-px w-8 bg-line-strong" />DOCUMENTATION</p>
         <h1 className="t-title mt-5 text-ink">{page.title}</h1>
-        <p className="mt-4 max-w-2xl text-lead text-body">{page.lead}</p>
+        <p className="t-body mt-4 max-w-2xl">{page.lead}</p>
         <div className="mt-12 flex flex-col gap-12">
           {page.sections.map((s) => (
             <section key={s.id} id={s.id} className="scroll-mt-24 border-t border-line pt-8">
-              <h2 className="text-2xl font-medium tracking-[-0.035em] text-ink">{s.title}</h2>
-              <div className="mt-4 max-w-2xl text-base leading-relaxed text-body">{s.body}</div>
+              <h2 className="t-sub">{s.title}</h2>
+              <div className="t-body mt-4 max-w-2xl">{s.body}</div>
             </section>
           ))}
         </div>

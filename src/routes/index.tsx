@@ -66,8 +66,8 @@ function Entry({ id, n, kicker, title, body, children, cta }: { id: string; n: s
       <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="ix flex items-center gap-3"><span className="text-purple-ink">{n}</span><span className="h-px w-8 bg-line-strong" />{kicker}</p>
-          <h2 id={`${id}-t`} className="t-h2 mt-5 text-ink">{title}</h2>
-          <div className="mt-5 max-w-md text-base leading-relaxed text-body">{body}</div>
+          <h2 id={`${id}-t`} className="t-h2 mt-4 text-ink">{title}</h2>
+          <div className="t-body mt-4 max-w-md">{body}</div>
           {cta ? <div className="mt-8 flex flex-wrap gap-2.5">{cta}</div> : null}
         </div>
         <div className="min-w-0">{children}</div>
@@ -104,10 +104,10 @@ function Hero() {
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16">
         <div>
           <p className="ix rise flex items-center gap-3"><span className="sq a-blink" aria-hidden="true" />CONTRIBUTOR LEDGER · MONAD MAINNET</p>
-          <h1 id="hero-title" className="t-display rise rise-1 mt-8 text-ink">
+          <h1 id="hero-title" className="t-display rise rise-1 mt-6 text-ink">
             Ship work.<br />Earn your <em>rank.</em>
           </h1>
-          <p className="rise rise-2 mt-8 max-w-md text-lead text-body">A wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.</p>
+          <p className="t-body rise rise-2 mt-6 max-w-md">A wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.</p>
           <div className="rise rise-3 mt-8 flex flex-col gap-2.5 min-[420px]:flex-row">
             <Go to="/discover" primary>Browse open work</Go>
             <Go to="/passport">{profile ? "Open your passport" : "Claim a passport"}</Go>
@@ -133,7 +133,7 @@ function Hero() {
         {([["Open listings", stats.openOpportunities], ["Passports", stats.passports], ["Accepted work", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value], i) => (
           <div key={label} className={"py-6 pr-4 " + (i > 0 ? "sm:border-l sm:border-line sm:pl-6" : "") + (i % 2 === 1 ? " border-l border-line pl-4 sm:pl-6" : "") + (i > 1 ? " border-t border-line sm:border-t-0" : "")}>
             <dt className="ix">{label}</dt>
-            <dd className="mt-2 text-4xl font-medium tracking-[-0.05em] tabular-nums text-ink sm:text-5xl">{fmt(value)}</dd>
+            <dd className="t-stat-num mt-2 text-ink">{fmt(value)}</dd>
           </div>
         ))}
       </dl>
@@ -361,7 +361,7 @@ function NetworkEntry() {
               <li key={`${p.username}-${i}`} aria-hidden={i >= rows.length ? true : undefined} className="cell w-40 shrink-0 p-3">
                 <p className="ix">BLOCK · TX</p>
                 <p className="mt-2 truncate text-small text-ink">@{p.username}</p>
-                <p className="mt-1 text-2xl font-medium tracking-[-0.04em] tabular-nums text-ink">{fmt(p.txCount)}</p>
+                <p className="t-h3 mt-1 tabular-nums text-ink">{fmt(p.txCount)}</p>
                 <span className="mt-2 block h-1 w-8 rounded-full bg-purple" />
               </li>
             ))}
@@ -420,7 +420,7 @@ function HowEntry() {
         {steps.map(([t, b], i) => (
           <li key={t} className="bento anim a-in p-5" style={{ animationDelay: `${i * 0.12}s` }}>
             <p className="ix text-purple-ink">0{i + 1}</p>
-            <p className="mt-6 text-lead tracking-[-0.02em] text-ink">{t}</p>
+            <p className="t-h3 mt-6 text-ink">{t}</p>
             <p className="mt-1 text-small text-body">{b}</p>
           </li>
         ))}
@@ -436,7 +436,7 @@ function Cta() {
     <section id="start" className="mt-28 grid gap-8 rounded-[1.25rem] bg-purple px-6 py-12 text-white sm:mt-40 sm:px-12 sm:py-16 md:grid-cols-[1fr_auto] md:items-end">
       <div>
         <p className="font-mono text-label text-white/70">09 · START</p>
-        <h2 className="mt-4 max-w-2xl [&_em]:!text-white/65 text-[clamp(2.25rem,1.4rem+3vw,4.5rem)] leading-[0.95] font-medium tracking-[-0.055em]">Your work deserves a <em className="italic">record.</em></h2>
+        <h2 className="t-h2 mt-4 max-w-2xl !text-white [&_em]:!text-white/65">Your work deserves a <em className="italic">record.</em></h2>
       </div>
       <Link to="/passport" className="btn-white group inline-flex h-12 shrink-0 items-center gap-2.5 rounded-full px-6 text-small font-medium">
         {profile ? "Open your passport" : "Claim your passport"} <span aria-hidden="true" className="arrow-slide">→</span>
