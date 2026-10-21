@@ -27,12 +27,6 @@ export function AppShell({ children }: { children: ReactNode }) {
   return (
     <>
       <div className="relative min-h-dvh overflow-x-clip text-ink">
-        <div className="orbs" aria-hidden="true">
-          <div className="orb orb-1" />
-          <div className="orb orb-2" />
-          <div className="orb orb-3" />
-        </div>
-        <div className={home ? "atmos atmos-home" : "atmos"} aria-hidden="true" />
         <RouteProgress />
         <a
           href="#content"
@@ -46,7 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           className={
             home
               ? "relative z-10 scroll-mt-16"
-              : "relative z-10 mx-auto w-full max-w-6xl 2xl:max-w-7xl scroll-mt-16 px-4 pt-14 sm:px-6 md:pt-20"
+              : "relative z-10 mx-auto w-full max-w-6xl 2xl:max-w-7xl scroll-mt-16 px-4 pt-10 sm:px-6 md:pt-16"
           }
         >
           {/* CSS fade (no JS animation loop) so navigation commits immediately. */}

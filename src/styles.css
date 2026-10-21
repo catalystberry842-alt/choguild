@@ -17,24 +17,24 @@
   --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
   --font-display: "Geist Sans", ui-sans-serif, system-ui, sans-serif; /* alias of sans; no serif */
 
-  --color-canvas: #050507;
-  --color-elevated: #0c0b12;
-  --color-secondary: #16131f;
-  --color-ink: #f4f1ff;
-  --color-body: #bcb4e0;
-  --color-muted: #8a84b0;
-  --color-faint: #3e3669;
-  --color-sand: #f4f1ff;
-  --color-action: #836ef9;
-  --color-action-hover: #9a89ff;
-  --color-signal: #836ef9;
-  --color-signal-solid: #6b52ec;
-  --color-on-accent: #ffffff;
-  --color-line: #1d1a2b;
-  --color-line-strong: #2e2946;
-  --color-success: #9be7b4;
-  --color-warning: #f0c36a;
-  --color-danger: #ff7aa8;
+  --color-canvas: #0a0a0a;
+  --color-elevated: #111111;
+  --color-secondary: #171717;
+  --color-ink: #fafafa;
+  --color-body: #a1a1a1;
+  --color-muted: #737373;
+  --color-faint: #3a3a3a;
+  --color-sand: #fafafa;
+  --color-action: #fafafa;
+  --color-action-hover: #e5e5e5;
+  --color-signal: #fafafa;
+  --color-signal-solid: #fafafa;
+  --color-on-accent: #0a0a0a;
+  --color-line: #1f1f1f;
+  --color-line-strong: #2e2e2e;
+  --color-success: #7ccf9a;
+  --color-warning: #d9b25f;
+  --color-danger: #ef7a7a;
   --color-scrim: #000000;
 
   --radius-sm: 0.5rem;
@@ -686,4 +686,64 @@
   @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
     .glass, .bento, .panel, .pill-nav, .ticker, .surface { background: rgb(18 15 30 / 0.94); }
   }
+}
+
+/* ── v23: basic colors, flat craft ─────────────────────────────────────────
+   Neutral ramp, flat surfaces, hairlines. The header is the only blur.
+   No gradients, glows, orbs or nested blur.                                  */
+@layer base {
+  body { background: #0a0a0a; color: var(--color-body); }
+  ::selection { background: #fafafa; color: #0a0a0a; }
+}
+@layer components {
+  .glass, .bento, .panel, .surface, .ticker, .passport-glass {
+    background: #111111;
+    border: 1px solid var(--color-line);
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    isolation: auto;
+  }
+  .passport-glass { border-color: var(--color-line-strong); }
+  .bento, .surface, .panel { border-radius: 1rem; }
+  :is(.glass, .bento, .panel, .surface, .passport-glass, .pill-nav) :is(.glass, .bento, .panel, .surface, .ticker) {
+    background: #161616;
+  }
+  a.bento:hover, .bento-hover:hover, .glass-hover:hover { border-color: var(--color-line-strong); box-shadow: none; transform: none; background: #141414; }
+  .signal-glow { box-shadow: none; border-color: var(--color-line-strong) !important; }
+  .chip, .glass-chip { background: #1a1a1a; border: 1px solid var(--color-line-strong); color: var(--color-ink); }
+  .pill-nav {
+    background: rgb(10 10 10 / 0.75);
+    border: 0;
+    border-bottom: 1px solid var(--color-line);
+    border-radius: 0;
+    box-shadow: none;
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+  }
+  .btn-glass, :is(.glass, .bento, .panel, .surface, .passport-glass, .pill-nav) .btn-glass {
+    background: #fafafa;
+    color: #0a0a0a;
+    border: 1px solid #fafafa;
+    box-shadow: none;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  .btn-glass:hover, :is(.glass, .bento, .panel, .surface, .passport-glass, .pill-nav) .btn-glass:hover { background: #e5e5e5; border-color: #e5e5e5; box-shadow: none; }
+  .sheen::before { display: none; }
+  .orbs, .orb, .hero-light, .hero-light-2 { display: none !important; }
+  .t-display em, .t-title em, .t-h1 em, .t-h2 em, .t-h3 em, h1 em, h2 em {
+    font-style: italic; font-weight: inherit; color: inherit; background: none; padding-right: 0.04em;
+  }
+  .t-display { font-weight: 500; letter-spacing: -0.055em; line-height: 0.95; font-size: clamp(2.75rem, 1.2rem + 5.4vw, 6.5rem); }
+  .t-h1, .t-title { font-weight: 500; letter-spacing: -0.045em !important; line-height: 1.02; font-size: clamp(2.25rem, 1.6rem + 2.2vw, 3.5rem); }
+  .t-h2 { font-weight: 500; letter-spacing: -0.04em; font-size: clamp(1.5rem, 1.25rem + 0.9vw, 2rem); }
+  .t-h3 { font-weight: 500; letter-spacing: -0.025em; font-size: 1.0625rem; }
+  .t-stat, .t-stat-sm, .t-stat-lg { font-weight: 500; }
+  .t-kicker { font-size: 0.6875rem; line-height: 1rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted); }
+  .t-link { color: var(--color-ink); text-decoration: underline; text-decoration-color: var(--color-line-strong); text-underline-offset: 3px; }
+  .t-link:hover { text-decoration-color: var(--color-ink); }
+  .rule-top { border-top: 1px solid var(--color-line-strong); padding-top: 1.25rem; }
+  .arrow-slide { transition: transform 150ms ease-out; }
+  .group:hover .arrow-slide { transform: translateX(4px); }
 }

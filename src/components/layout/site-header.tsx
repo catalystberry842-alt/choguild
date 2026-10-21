@@ -18,47 +18,44 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
 
   return (
-    <header className="sticky top-0 z-40 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
-      <div
-        className="header-drop mx-auto flex max-w-6xl 2xl:max-w-7xl items-center gap-2"
-      >
-        <div className="pill-nav mx-auto flex h-12 min-w-0 items-center gap-1 pr-1.5 pl-4 lg:pl-5">
-          <Link to="/" aria-label="Choguild home" className="logo-anim mr-2 flex items-center gap-2 text-ink">
-            <LogoMark className="size-5" />
-            <span className="t-h3">Choguild</span>
-          </Link>
-          <nav aria-label="Main" className="hidden items-center lg:flex">
-            {PRIMARY.map((item) => {
-              const active = isNavActive(pathname, item.to);
-              return (
-                <Link
-                  key={item.to}
-                  to={item.to}
-                  search={item.to === "/discover" ? emptyBoardSearch() : undefined}
-                  className={cn("relative rounded-full px-3.5 py-1.5 text-small transition-colors", active ? "text-ink" : "text-muted hover:text-ink")}
-                >
-                  {active ? (
-                    <span className="fade-in-soft absolute inset-0 rounded-full bg-white/[0.07]" />
-                  ) : null}
-                  <span className="relative">{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
-          <button
-            type="button"
-            onClick={onOpenPalette}
-            aria-keyshortcuts="Meta+K Control+K"
-            title="Search pages and actions"
-            className="ml-1 hidden size-9 items-center justify-center rounded-full text-label text-muted transition-colors hover:bg-white/[0.06] hover:text-ink md:flex"
-          >
-            <span className="sr-only">Search pages and actions</span>
-            <span aria-hidden="true">⌘K</span>
-          </button>
-          <span className="ml-auto lg:ml-1" />
-          <WalletButton />
-          <MobileMenu />
-        </div>
+    <header className="pill-nav sticky top-0 z-40 pt-[env(safe-area-inset-top)]">
+      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4 sm:px-6 2xl:max-w-7xl">
+        <Link to="/" aria-label="Choguild home" className="mr-4 flex items-center gap-2 text-ink">
+          <LogoMark className="size-5" />
+          <span className="text-base font-medium tracking-[-0.03em]">Choguild</span>
+        </Link>
+        <nav aria-label="Main" className="hidden items-center gap-0.5 lg:flex">
+          {PRIMARY.map((item) => {
+            const active = isNavActive(pathname, item.to);
+            return (
+              <Link
+                key={item.to}
+                to={item.to}
+                search={item.to === "/discover" ? emptyBoardSearch() : undefined}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "rounded-full px-3 py-1.5 text-small transition-colors",
+                  active ? "bg-white/[0.07] text-ink" : "text-muted hover:text-ink",
+                )}
+              >
+                {item.label}
+              </Link>
+            );
+          })}
+        </nav>
+        <span className="ml-auto" />
+        <button
+          type="button"
+          onClick={onOpenPalette}
+          aria-keyshortcuts="Meta+K Control+K"
+          title="Search pages and actions"
+          className="mr-1 hidden h-8 items-center gap-2 rounded-full border border-line px-3 text-label text-muted transition-colors hover:border-line-strong hover:text-ink md:flex"
+        >
+          <span>Search</span>
+          <kbd className="text-[10px] text-faint">⌘K</kbd>
+        </button>
+        <WalletButton />
+        <MobileMenu />
       </div>
     </header>
   );
