@@ -53,7 +53,7 @@ const FAQ = [
 function HowItWorksPage() {
   return (
     <div className="flex flex-col gap-16">
-      <PageHeader eyebrow="How it works" title="How it works" description="From wallet to accepted work, and how that becomes rank." />
+      <PageHeader eyebrow="How it works" title={<>From wallet to <em>rank</em> in four steps.</>} description="From wallet to accepted work, and how that becomes rank." />
 
       <Section title="The loop" description="Six steps, one record.">
         <ol className="flex flex-col">

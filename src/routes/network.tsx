@@ -21,7 +21,7 @@ function NetworkPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Network" title={<>Monad <em>mainnet.</em></>} description="Choguild runs on Monad mainnet. Testnet isn't used." />
+      <PageHeader eyebrow="Network" title={<>Live from Monad <em>mainnet.</em></>} description="Choguild runs on Monad mainnet. Testnet isn't used." />
 
       <dl className="grid gap-y-8 sm:grid-cols-3">
         <Fact label="Chain">

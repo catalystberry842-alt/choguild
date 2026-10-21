@@ -40,7 +40,7 @@ function RankingPage() {
 
   return (
     <div className="flex flex-col">
-      <PageHeader eyebrow="Ranking" title={<>The <em>ladder.</em></>} description="XP from accepted guild work and activity on Monad.">
+      <PageHeader eyebrow="Ranking" title={<>Who shipped the most <em>accepted</em> work.</>} description="XP from accepted guild work and activity on Monad.">
         <dl className="mt-10 grid grid-cols-3 gap-y-6 border-t border-line pt-6 sm:max-w-xl">
           {([["Passports", stats.passports], ["Accepted", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value]) => (
             <div key={label} className="border-l border-line pl-4 first:border-l-0 first:pl-0">

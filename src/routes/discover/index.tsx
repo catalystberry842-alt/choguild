@@ -58,7 +58,7 @@ function DiscoverPage() {
     <div>
       <PageHeader
         eyebrow="Discover"
-        title={<>Open work, on the <em>record.</em></>}
+        title={<>Find work worth <em>shipping.</em></>}
         description="Open work from contributors with a Choguild passport."
         actions={
           <>
