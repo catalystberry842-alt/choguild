@@ -92,31 +92,39 @@ function Go({ to, children, primary, hash }: { to: string; children: ReactNode; 
 /* ── hero ───────────────────────────────────────────────── */
 function Hero() {
   const { profile, stats } = Route.useLoaderData();
-  const chain = ["Passport", "Apply", "Accepted", "+XP", "Rank"];
+  const chain: [string, string, boolean][] = [
+    ["Passport", "wallet signs once", false],
+    ["Apply", "to an open listing", false],
+    ["Accepted", "publisher reviews your evidence", false],
+    ["+100 XP", "written to your passport", true],
+    ["Rank", "you move up the ladder", true],
+  ];
   return (
-    <InView as="section" aria-labelledby="hero-title" className="pt-16 sm:pt-24 lg:pt-28">
-      <p className="ix rise flex items-center gap-3"><span className="sq a-blink" aria-hidden="true" />CHOGUILD · CONTRIBUTOR LEDGER · MONAD MAINNET</p>
-      <h1 id="hero-title" className="t-display rise rise-1 mt-8 max-w-[11ch] text-ink">
-        Ship work. Earn your <em>rank.</em>
-      </h1>
-      <div className="mt-10 grid gap-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end">
-        <div className="rise rise-2">
-          <p className="max-w-md text-lead text-body">A wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.</p>
-          <div className="mt-8 flex flex-col gap-2.5 min-[420px]:flex-row">
+    <InView as="section" aria-labelledby="hero-title" className="pt-14 sm:pt-20 lg:pt-24">
+      <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16">
+        <div>
+          <p className="ix rise flex items-center gap-3"><span className="sq a-blink" aria-hidden="true" />CONTRIBUTOR LEDGER · MONAD MAINNET</p>
+          <h1 id="hero-title" className="t-display rise rise-1 mt-8 text-ink">
+            Ship work.<br />Earn your <em>rank.</em>
+          </h1>
+          <p className="rise rise-2 mt-8 max-w-md text-lead text-body">A wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.</p>
+          <div className="rise rise-3 mt-8 flex flex-col gap-2.5 min-[420px]:flex-row">
             <Go to="/discover" primary>Browse open work</Go>
             <Go to="/passport">{profile ? "Open your passport" : "Claim a passport"}</Go>
           </div>
         </div>
-        {/* the loop, drawn */}
-        <ol aria-label="How a contribution flows" className="rise rise-3 flex flex-wrap items-center gap-y-3">
-          {chain.map((step, i) => (
-            <li key={step} className="flex items-center">
-              <span className={"anim a-pop tag " + (i === chain.length - 1 || step === "+XP" ? "tag-p" : "")} style={{ animationDelay: `${i * 0.35}s` }}>{step}</span>
-              {i < chain.length - 1 ? (
-                <span className="relative mx-1.5 block h-px w-6 bg-line-strong sm:w-8" aria-hidden="true">
-                  <span className="anim a-line absolute inset-0 block bg-purple" style={{ animationDelay: `${i * 0.35 + 0.2}s` }} />
-                </span>
-              ) : null}
+        {/* the loop, drawn: each step lights up in turn */}
+        <ol aria-label="How a contribution flows" className="diagram rise rise-3 relative p-5">
+          <span className="absolute top-9 bottom-9 left-[1.95rem] w-px bg-line-strong" aria-hidden="true">
+            <span className="anim a-grow absolute inset-0 block origin-top bg-purple" />
+          </span>
+          {chain.map(([step, sub, hot], i) => (
+            <li key={step} className="relative flex items-center gap-4 py-2.5">
+              <span className={"anim a-pop relative z-10 flex size-6 shrink-0 items-center justify-center rounded-md border text-[10px] font-mono " + (hot ? "border-purple bg-purple text-white" : "border-line-strong bg-elevated text-body")} style={{ animationDelay: `${i * 0.45}s` }}>{i + 1}</span>
+              <span className="anim a-pop min-w-0" style={{ animationDelay: `${i * 0.45 + 0.1}s` }}>
+                <span className={"block text-small font-medium " + (hot ? "text-purple-ink" : "text-ink")}>{step}</span>
+                <span className="ix block">{sub}</span>
+              </span>
             </li>
           ))}
         </ol>
@@ -195,7 +203,7 @@ function WorkEntry() {
         {featured.length > 0 ? featured.slice(0, 4).map((item, i) => {
           const due = deadlineCountdown(item.deadline);
           return (
-            <li key={item.id} className="anim a-pop" style={{ animationDelay: `${i * 0.15}s`, animationIterationCount: 1 }}>
+            <li key={item.id} className="anim a-in" style={{ animationDelay: `${i * 0.12}s` }}>
               <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="bento group flex items-center gap-4 p-4 sm:p-5">
                 <PosterMark name={item.poster.displayName || item.poster.username || projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} avatarUrl={item.poster.avatarUrl} />
                 <span className="min-w-0 flex-1">
@@ -410,7 +418,7 @@ function HowEntry() {
     >
       <ol className="grid gap-2 sm:grid-cols-2">
         {steps.map(([t, b], i) => (
-          <li key={t} className="bento anim a-pop p-5" style={{ animationDelay: `${i * 0.2}s`, animationIterationCount: 1 }}>
+          <li key={t} className="bento anim a-in p-5" style={{ animationDelay: `${i * 0.12}s` }}>
             <p className="ix text-purple-ink">0{i + 1}</p>
             <p className="mt-6 text-lead tracking-[-0.02em] text-ink">{t}</p>
             <p className="mt-1 text-small text-body">{b}</p>
@@ -428,7 +436,7 @@ function Cta() {
     <section id="start" className="mt-28 grid gap-8 rounded-[1.25rem] bg-purple px-6 py-12 text-white sm:mt-40 sm:px-12 sm:py-16 md:grid-cols-[1fr_auto] md:items-end">
       <div>
         <p className="font-mono text-label text-white/70">09 · START</p>
-        <h2 className="mt-4 max-w-2xl text-[clamp(2.25rem,1.4rem+3vw,4.5rem)] leading-[0.95] font-medium tracking-[-0.055em]">Your work deserves a <em className="italic">record.</em></h2>
+        <h2 className="mt-4 max-w-2xl [&_em]:!text-white/65 text-[clamp(2.25rem,1.4rem+3vw,4.5rem)] leading-[0.95] font-medium tracking-[-0.055em]">Your work deserves a <em className="italic">record.</em></h2>
       </div>
       <Link to="/passport" className="btn-white group inline-flex h-12 shrink-0 items-center gap-2.5 rounded-full px-6 text-small font-medium">
         {profile ? "Open your passport" : "Claim your passport"} <span aria-hidden="true" className="arrow-slide">→</span>

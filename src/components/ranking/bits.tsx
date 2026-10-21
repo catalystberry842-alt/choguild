@@ -42,14 +42,14 @@ export function XpBar({ xp, compact = false }: { xp: number; compact?: boolean }
   const { next, progress } = tierFor(xp);
   if (compact) {
     return (
-      <div className="ml-auto h-1 w-24 overflow-hidden rounded-full bg-white/[0.08]" title={next ? `${next.min - xp} XP to ${next.name}` : "Max tier"}>
+      <div className="ml-auto h-1 w-24 overflow-hidden rounded-full bg-line-strong" title={next ? `${next.min - xp} XP to ${next.name}` : "Max tier"}>
         <div className="h-full rounded-full bg-ink" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
     );
   }
   return (
     <div className="flex items-center gap-2">
-      <div className="h-1 flex-1 overflow-hidden rounded-full bg-white/[0.08]">
+      <div className="h-1 flex-1 overflow-hidden rounded-full bg-line-strong">
         <div className="h-full rounded-full bg-ink transition-[width] duration-1000" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
       <span className="font-medium text-label tabular-nums text-muted">{next ? `${next.min - xp} to ${next.name}` : "Max tier"}</span>

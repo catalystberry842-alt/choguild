@@ -212,7 +212,7 @@ export function PublicPassport({
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-white/[0.03] px-4 text-small text-ink transition-colors hover:border-signal/50 hover:bg-signal/10"
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-line/50 px-4 text-small text-ink transition-colors hover:border-signal/50 hover:bg-signal/10"
                       aria-label={link.label}
                       title={link.label}
                     >
