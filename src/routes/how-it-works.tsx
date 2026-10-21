@@ -52,7 +52,7 @@ const FAQ = [
 
 function HowItWorksPage() {
   return (
-    <div className="flex flex-col gap-14">
+    <div className="flex flex-col gap-16">
       <PageHeader eyebrow="How it works" title="How it works" description="From wallet to accepted work, and how that becomes rank." />
 
       <Section title="The loop" description="Six steps, one record.">
@@ -120,11 +120,10 @@ function HowItWorksPage() {
         </div>
       </Section>
 
-      <div className="grid gap-14 lg:grid-cols-2 lg:items-start lg:gap-6">
       <Section title="Ranks" description="Five tiers. Every one is earned.">
-        <ol className="grid border-t border-line sm:grid-cols-2 lg:grid-cols-1">
+        <ol className="grid gap-x-6 border-t border-line sm:grid-cols-2 xl:grid-cols-3">
           {TIERS.map((tier, index) => (
-            <li key={tier.name} className="border-b border-line py-5 sm:odd:pr-6 sm:even:border-l sm:even:pl-6 lg:odd:pr-0 lg:even:border-l-0 lg:even:pl-0">
+            <li key={tier.name} className="border-b border-line py-5">
               <div className="flex items-center justify-between gap-2">
                 <TierBadge tier={tier.name} />
                 <span className="font-medium text-label tabular-nums text-muted">{tier.min}+ XP</span>
@@ -155,8 +154,6 @@ function HowItWorksPage() {
           ))}
         </Accordion.Root>
       </Section>
-
-      </div>
 
       <section className="flex flex-col items-start justify-between gap-6 border-t border-line-strong pt-10 md:flex-row md:items-end">
         <div>
