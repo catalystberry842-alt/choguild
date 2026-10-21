@@ -1,174 +1,183 @@
 <p align="center">
-  <img src="public/favicon.svg" alt="Choguild" width="64" />
+  <img src="public/favicon.svg" alt="Choguild" width="56" />
 </p>
 
 <h1 align="center">Choguild</h1>
 
 <p align="center">
-  <strong>Get work and earn your rank.</strong><br />
-  A contributor guild for the Monad ecosystem: a passport for your name, a board of open work, and a record of reviewed contributions.
+  <strong>Ship work. Earn your <em>rank.</em></strong><br />
+  The contributor guild on Monad: a wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.
 </p>
 
 <p align="center">
-  <a href="https://choguild.vercel.app"><img alt="Live" src="https://img.shields.io/badge/live-choguild.vercel.app-0a0a0b?style=flat-square&logo=vercel" /></a>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0a0a0b?style=flat-square" /></a>
-  <img alt="Node 22+" src="https://img.shields.io/badge/node-%E2%89%A522-0a0a0b?style=flat-square&logo=node.js" />
+  <a href="https://choguild.vercel.app"><b>choguild.vercel.app</b></a> ·
+  <a href="https://choguild.vercel.app/docs">Docs / whitepaper</a> ·
+  <a href="#for-chogathon-judges">For judges</a>
 </p>
 
 <p align="center">
-  <img src="docs/images/home.png" alt="Choguild home page" width="820" />
+  <a href="https://choguild.vercel.app"><img alt="Live" src="https://img.shields.io/badge/live-choguild.vercel.app-836EF9?style=flat-square&logo=vercel" /></a>
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0a0a0a?style=flat-square" /></a>
+  <img alt="Node 22+" src="https://img.shields.io/badge/node-%E2%89%A522-0a0a0a?style=flat-square&logo=node.js" />
+  <img alt="Monad mainnet" src="https://img.shields.io/badge/Monad-mainnet%20(143)-836EF9?style=flat-square" />
 </p>
 
 <p align="center">
-  <img src="docs/images/discover.png" alt="Opportunity board" width="560" />
+  <img src="docs/media/home-desktop-dark.svg" alt="Choguild home, dark theme, desktop" width="820" />
+</p>
+<p align="center">
+  <img src="docs/media/home-mobile-dark.svg" alt="Home on mobile, dark" width="190" />
   &nbsp;
-  <img src="docs/images/ranking-mobile.png" alt="Ranking on mobile" width="200" />
+  <img src="docs/media/home-mobile-light.svg" alt="Home on mobile, light" width="190" />
+  &nbsp;
+  <img src="docs/media/home-desktop-light.svg" alt="Home on desktop, light" width="420" />
 </p>
 
-Everything on the site is real: listings, passports, and XP come straight from the database and Monad mainnet. There is no seeded or demo content; an empty board means nobody has published yet.
+Everything on the site is real. Listings, passports, XP and onchain counts come straight from Postgres and Monad mainnet. Nothing is seeded, and an empty state means nobody has done that yet.
 
----
+## What it is
 
-## For Chogathon judges
+Contributors in an ecosystem do real work across chats, docs and repos, but there is no shared record of what was asked for, who did it, and whether it was accepted. Choguild is that record:
 
-**Try it in 60 seconds:** open [choguild.vercel.app](https://choguild.vercel.app), browse [Discover](https://choguild.vercel.app/discover) and the [Ranking](https://choguild.vercel.app/ranking), then open a passport such as [/passport/octoberry](https://choguild.vercel.app/passport/octoberry). To try the full loop, click **Connect wallet** (any EIP-6963 browser wallet on Monad mainnet), sign once (a message, not a transaction), save a passport, and apply to a listing.
+1. **Passport:** an identity anchored to a Monad wallet. Editing it takes a signed message, never a transaction.
+2. **Board:** passport holders publish listings with terms, deadline, positions and skills.
+3. **Review loop:** publishers accept applications, then review the evidence contributors submit.
+4. **Ladder:** XP is computed from accepted events plus Monad activity, with rules that make farming unprofitable.
 
-| What to look at | Where | Why it matters |
-| --- | --- | --- |
-| Wallet-signed identity | `/passport` | SIWE session, no seed phrase, no gas. The avatar is an uploaded image or a Chog you own. |
-| Real work loop | `/discover` → apply → `/submissions` | A publisher accepts the application, then reviews submitted evidence. Only accepted work earns XP. |
-| Honest ranking | `/ranking`, `/how-it-works` | XP is computed live from the database plus the Monad tx count, with anti-farming rules. |
-| Chog Genesis perks | badge, +XP, gated listings | Every check reads the official contract on Monad mainnet (details below). |
+## Features
 
-**Verify the Chog perks yourself:** `node scripts/chog-live-check.mjs` reads `name`, `totalSupply`, `ownerOf` and `balanceOf` from the official contract over the public RPC. It also checks `/api/chog/:id` on the live site. `npm run test:chog-live` runs the server-side holder checks against a real holder and a non-holder.
-
-Nothing is seeded. Every listing, passport and XP value is real, and an empty state means nobody has done that yet.
-
-## What it does
-
-| Area | What you can do |
+| | |
 | --- | --- |
-| **Passport** | Connect a browser wallet (or open the site in your wallet app on a phone), sign a message (Sign-In with Ethereum, never a transaction), and save a public profile with your skills and links. |
-| **Discover** | Browse the opportunity board. Search and filter by skill, category, compensation, and status. |
-| **Opportunities** | Publish open work, edit your listings, and review the applications they receive. |
-| **Applications** | Track what you applied to and where each application stands. |
-| **Submissions** | Once accepted, submit evidence of the work. Reviewed submissions build your contribution history. |
-| **Ranking** | The Chog ladder: every public passport ranked by guild XP and onchain Monad activity, with Overall / Guild work / Onchain views and a top-3 podium. |
-| **How it works** | The full loop, the XP table, the five ranks, and an FAQ. |
-| **Network** | Live Monad mainnet status for the RPC the app uses. |
+| **Passport** | Single **Connect wallet** button (EIP-6963 injected wallets). Sign-In with Ethereum, 7-day session, no gas. Profile with display name, username, bio, skills, interests and links. **Avatar upload with live preview** (PNG/JPEG/WebP/GIF up to 10 MB, resized in the browser to 512×512, stored under 300 KB) or one of your Chogs. |
+| **Open work** | `/discover`: search and filter by skill, category, compensation and status. Holders-only listings are marked. |
+| **Applications & submissions** | Apply with a pitch, track status (Submitted → Under review → Shortlisted → Accepted / Rejected / Withdrawn). Once accepted, submit versioned evidence links; publishers accept, request changes or reject. |
+| **XP & ranking** | `/ranking`: Overall, Guild work or Onchain views, five tiers, live XP bars. |
+| **Chog Genesis perks** | Contract [`0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763`](https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763). Holder badge, **+10% guild XP (rounded, max +50)**, access to holders-only listings, Chog as avatar. |
+| **Onchain proofs** | Each passport wallet's Monad transaction count becomes onchain XP. `/network` shows live Monad mainnet status. |
+| **Publish** | `/opportunities/new`: drafts, holders-only gating, review queue per listing. |
+| **Docs / whitepaper** | `/docs`: whitepaper, how it works, passport, listings, XP, onchain proofs, Chog perks, FAQ. Sidebar, mobile menu, on-page table of contents. |
+| **Light / dark** | Header toggle, remembers your choice, follows the OS by default, no flash on load. |
+| **Fast jumps** | Header links jump to each home section (active section highlighted). ⌘K / Ctrl+K opens a page and action palette. |
 
-A connected wallet is only an address. Nothing is treated as an account until you sign and save a passport, and Choguild never asks for a seed phrase or private key.
+## How it works
 
-## XP and ranks
-
-XP is calculated live from the database, so it can't drift out of sync with the board.
+```mermaid
+flowchart LR
+  W[Browser wallet] -->|sign message, no gas| P[Passport<br/>+10 XP once]
+  P --> D[Discover open work]
+  D -->|apply| A[Application]
+  A -->|publisher accepts<br/>+25 XP| S[Submit evidence]
+  S -->|publisher accepts<br/>+100 XP| X[(Guild XP)]
+  M[Monad tx count] -->|10 × √txs, max 150| O[(Onchain XP)]
+  C[Chog Genesis holder] -->|+10% guild XP, max +50| X
+  X --> R[Ranking<br/>Hatchling → Legend]
+  O --> R
+  P -.->|publish a listing<br/>+15 XP when it counts| D
+```
 
 | Action | XP |
 | --- | --- |
 | Accepted submission | +100 |
 | Accepted application | +25 |
-| Published opportunity: counts once another wallet's work is accepted on it or it stays open 3 days (max 4 per 30 days) | +15 |
-| Saved public passport | +10 |
-| Onchain activity on Monad mainnet | 10 × √(transactions sent), up to +150 |
+| Published listing (counts once another wallet's work is accepted on it or it stays open 72 h; max 4 per 30 days) | +15 |
+| Saved public passport | +10 (once) |
+| Onchain activity on Monad mainnet | 10 × √(transactions sent), max +150 |
 
-Anti-farming (`src/lib/ranking/farming.ts`): self-dealing earns nothing; jobs between the same two wallets (either direction) earn full XP the first time, half the second, nothing after; guild XP from work and listings is capped at 400 per wallet per 30 days.
+Anti-farming (`src/lib/ranking/farming.ts`): self-dealing earns nothing; jobs between the same two wallets (either direction) earn full, then half, then nothing; guild XP is capped at **400 per wallet per 30 days**. Tiers (`src/lib/ranking/xp.ts`): **Hatchling** 0 · **Apprentice** 50 · **Artisan** 150 · **Guildmaster** 400 · **Legend** 1000.
 
-Onchain XP reads each passport wallet's transaction count from the public Monad RPC (batched for every wallet, cached for 10 minutes in memory and in Postgres; pages never wait more than ~1.5 s on the RPC and show "unavailable" rather than 0 when it is down). The square root and the cap mean steady activity counts, but spamming transactions can't outrank reviewed guild work, and balances are never used. The Ranking page can sort by **Overall**, **Guild work**, or **Onchain**.
+<p align="center">
+  <img src="docs/media/section-ladder-dark.svg" alt="XP and ranking section with animated bars" width="720" />
+</p>
 
-Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Guildmaster** (400) → **Legend** (1000). The rules live in `src/lib/ranking/xp.ts`.
+## For Chogathon judges
 
-## Getting around
+**60-second tour:** open [choguild.vercel.app](https://choguild.vercel.app) and scroll the home page; each numbered section is one feature, animated with real data. Then [Discover](https://choguild.vercel.app/discover), [Ranking](https://choguild.vercel.app/ranking), a passport such as [/passport/octoberry](https://choguild.vercel.app/passport/octoberry), and the [Docs](https://choguild.vercel.app/docs). For the full loop: **Connect wallet** → sign once → save a passport → apply to a listing.
 
-- The floating glass header holds the main pages. On a phone it collapses into a menu.
-- **⌘K / Ctrl+K** opens a jump menu for every page and common action.
-- **Wallet** shows a single **Connect wallet** button. Deep links to wallet apps appear only when no browser wallet is found.
+| Look at | Where | Why it matters |
+| --- | --- | --- |
+| Wallet-signed identity | `/passport` | SIWE session, no seed phrase, no gas. Avatar is an upload or a Chog you own (checked live with `ownerOf`). |
+| Real work loop | `/discover` → apply → `/submissions` | Only accepted work earns XP. |
+| Honest ranking | `/ranking`, `/docs/xp` | XP is recomputed from the database plus Monad tx counts, with anti-farming rules. |
+| Chog Genesis perks | badge, +XP, gated listings | Every check reads the official contract on Monad mainnet. |
+| Craft | the whole site | Own design system (flat neutrals + Monad purple, no gradients), light/dark, scroll-triggered diagrams that only animate transform/opacity. |
+
+**Verify the Chog perks yourself:** `node scripts/chog-live-check.mjs` reads `name`, `totalSupply`, `ownerOf` and `balanceOf` from the contract over the public RPC and checks `/api/chog/:id` on the live site. `npm run test:chog-live` runs the server-side holder checks against a real holder and a non-holder.
 
 ## Tech stack
 
-- [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions)
-- Tailwind CSS v4 (black canvas, frosted purple glass, no gradients), Radix UI primitives, Motion, `cmdk`, `lucide-react`, and the Geist typeface
-- Upstream Monad RPC reads are cached in-process (stale-while-revalidate, with a failure backoff) so a slow RPC never blocks a page render
-- `wagmi` + `viem` for wallets and Monad; SIWE for passport sessions
-- Postgres via `pg` when `DATABASE_URL` is set, otherwise an in-memory [PGLite](https://pglite.dev) database
-- Deployed on Vercel through Nitro
+- [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions), deployed on Vercel through Nitro
+- Tailwind CSS v4, Radix UI primitives, `cmdk`, `lucide-react`
+- Type: Geist Sans (headings, UI), DM Sans (body), Geist Mono (labels), all self-hosted via Fontsource
+- `wagmi` (injected connector only) + `viem` on Monad mainnet (chain id 143); SIWE sessions
+- Postgres via `pg` (Neon in production) or in-memory [PGLite](https://pglite.dev) locally
+- `zod` validation on every server function; per-client rate limits
+
+## Architecture
+
+```
+Browser (React 19, wagmi injected)
+   │  server functions (zod-validated, rate-limited)
+   ▼
+TanStack Start on Vercel (Nitro) ──► Postgres (Neon) / PGLite locally
+   │
+   ├─► Monad RPC: tx counts (batched, cached 10 min in memory + Postgres, ≤1.5 s budget)
+   └─► Chog Genesis contract: ownerOf snapshot via Multicall3 (5 min cache), live balanceOf / ownerOf on gated actions
+```
+
+```
+src/
+  routes/          pages (file-based): /, discover, passport, ranking, submissions, applications, opportunities, network, how-it-works, docs, api
+  components/      layout shell, home sections, docs, board, passport, work, ranking, chog
+  lib/board/       listings and applications
+  lib/work/        submissions and reviews
+  lib/passport/    profiles, SIWE sessions, avatars, wallet config
+  lib/ranking/     XP rules, anti-farming, tiers, ranking query
+  lib/chog/        Chog Genesis holdings, boost, avatar checks
+  lib/monad/       network status and onchain activity
+migrations/        SQL schema, applied in order
+scripts/           migrations, Chog live check, brand renderer
+docs/media/        README screenshots
+```
 
 ## Run it locally
 
-Requires Node 22 (see `.nvmrc`).
+Requires **Node 22** (`.nvmrc`).
 
 ```bash
 npm install
 npm run dev        # http://localhost:8080
 ```
 
-No database is needed for local work: PGLite starts in memory and applies `migrations/` on boot.
+No database is needed locally: PGLite starts in memory and applies `migrations/` on boot.
 
-### Checks
+| Variable | Required | Purpose |
+| --- | --- | --- |
+| `DATABASE_URL` | For persistent data | Postgres connection string (Neon works). Without it data lives in memory. |
+| `CHOG_SESSION_SECRET` | Yes, on deployed builds | ≥32 random characters (`openssl rand -hex 32`). Signs passport sessions. |
+| `VITE_MONAD_RPC_URL` | No | Preferred Monad RPC (https). Add a custom host to `connect-src` in `vercel.json`. |
+| `CHOG_RUN_MIGRATIONS` | No | Local/CI: `1` lets `npm run db:migrate` run outside Vercel. |
+
+On Vercel, migrations run during `npm run build` only for production deploys with `DATABASE_URL` set.
+
+## Tests and checks
 
 ```bash
 npm run typecheck
 npm run lint
-npm test
+npm test               # script tests + unit tests (ranking, farming, board, passport, chog, wallets…)
+npm run test:chog-live # live Chog Genesis holder checks against Monad mainnet
 npm run build
 ```
 
-## Configuration
-
-Copy `.env.example` into your host's environment settings. Do not commit real values.
-
-| Variable | Required | Purpose |
-| --- | --- | --- |
-| `DATABASE_URL` | For persistent data | Postgres connection string (Neon works well). Without it, data lives in memory and resets when the server restarts. |
-| `CHOG_SESSION_SECRET` | Yes, on every deployed build | At least 32 random characters (`openssl rand -hex 32`). Signs passport sessions. |
-| `VITE_MONAD_RPC_URL` | No | Preferred Monad RPC (https only). The app falls back through rpc1–3.monad.xyz, monadinfra, dRPC and Ankr automatically. A custom host must also be added to `connect-src` in `vercel.json` (the CSP is enforced). |
-| `CHOG_RUN_MIGRATIONS` | No | Local/CI only: `1` lets `npm run db:migrate` run outside Vercel. |
-
-## Deploy to Vercel
-
-1. Import the repository in Vercel. The framework preset can stay on **Other**; `vercel.json` and the Nitro build output handle the rest.
-2. Add `CHOG_SESSION_SECRET` and `DATABASE_URL`. Without `DATABASE_URL` the deployed app runs on in-memory PGLite and every cold start wipes the data.
-3. Deploy. `npm run build` runs the database migrations only on **production** deploys (`VERCEL_ENV=production`) with `DATABASE_URL` set. Preview and development builds never touch the schema. Run them by hand with `CHOG_RUN_MIGRATIONS=1 npm run db:migrate`.
-4. Without `CHOG_SESSION_SECRET` every public page still renders; only sign-in is unavailable.
+CI (`.github/workflows/ci.yml`) runs typecheck, lint, tests and build on Node 22 for every push and pull request.
 
 ## Wallets
 
-Browser wallets only (EIP-6963 injected: MetaMask, Rabby…). There is no WalletConnect, no Coinbase SDK, and no Phantom. On a phone with no injected wallet, the Wallet panel offers buttons that reopen the current page inside MetaMask or Trust Wallet, and a copy-link button for Rabby and Rainbow (they publish no open-URL link). Phantom is filtered out of the connector picker (name / id / `app.phantom` rdns) and is not offered as a deep link.
+Injected browser wallets only (MetaMask, Rabby…). No Coinbase SDK, no WalletConnect, no Phantom. On a phone with no injected wallet, tapping **Connect wallet** offers deep links that reopen the page inside a wallet app.
 
-## CI
+## Security
 
-`.github/workflows/ci.yml` runs typecheck, lint, tests and a build on Node 22 for every push and pull request. Vercel installs production dependencies only, so lint and tests are gated by CI rather than the Vercel build.
-
-## Chog Genesis holders
-
-- Contract: [`0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763`](https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763) (Chog Genesis, CHOG, ERC-721, 1,969 tokens), as used by the official mint site mint.chog.xyz.
-- Holdings are read onchain: `ownerOf(1..totalSupply)` through Multicall3 builds an owner snapshot, cached server-side for 5 minutes (`src/lib/chog/holders.server.ts`). Images come from each token's `tokenURI` on IPFS via `/api/chog/:id` (edge-cached).
-- Holders get a "Chog holder" badge and their Chog on the passport and in ranking rows, plus **+10% guild XP, rounded, capped at +50** (onchain XP is not boosted). Documented in the XP table on How it works.
-- Publishers can mark a listing "Chog holders only". The server checks `balanceOf` live when someone applies, not just the UI. If Monad can't be reached, the application is refused rather than let through.
-- **Use my Chog** avatar: on save, the server checks `ownerOf(tokenId)` live, so a Chog sold minutes ago is rejected. If the RPC is down, it falls back to the full holder snapshot.
-- Tests: `src/lib/chog/*.test.ts` and `src/lib/board/board.test.ts` cover the boost math, the gate and the avatar check offline. `npm run test:chog-live` covers the same checks against Monad mainnet.
-
-## Security and operations
-
-- Security headers (`nosniff`, frame denial, referrer and permissions policy, an enforced CSP with violations sent to `/api/csp-report`) and long cache headers for static assets live in `vercel.json`.
-- Every server function validates its input with zod (`src/lib/schemas.ts`) and writes are rate limited per client (`src/lib/rate-limit.ts`, in-memory per instance).
-- Client errors are reported to `/api/client-error` and show up in the Vercel function logs as `[client-error]`. No source maps are shipped.
-- `robots.txt` is static; `/sitemap.xml` is generated from public listings and passports.
-
-## Project layout
-
-```
-src/
-  routes/          pages (file-based routing)
-  components/      UI: layout shell, board, passport, work
-  lib/board/       opportunities and applications
-  lib/work/        submissions and reviews
-  lib/passport/    profiles, SIWE sessions, wallet config
-  lib/monad/       network status and onchain activity (tx counts)
-  lib/ranking/     XP rules, tiers, and the ranking query
-migrations/        SQL schema, applied in order
-public/brand/      Choguild mark (SVG)
-scripts/           migrations runner, brand renderer (og.jpg, touch icon)
-```
+Enforced CSP and security headers in `vercel.json` (violations reported to `/api/csp-report`), zod-validated inputs, per-client rate limits, client errors logged via `/api/client-error`, no source maps shipped.
 
 ## License
 
