@@ -109,7 +109,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
 
   return (
     <article className="mx-auto grid w-full max-w-3xl gap-6 pb-28 sm:gap-8 sm:pb-10 lg:max-w-6xl 2xl:max-w-7xl lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-x-8">
-      <section className="relative pt-2 lg:col-span-2">
+      <section className="stage rise relative px-5 pt-10 pb-6 sm:px-10 sm:pt-12 lg:col-span-2">
         <div className="relative flex flex-col gap-5">
           <div className="flex flex-wrap items-center gap-2">
             <span
