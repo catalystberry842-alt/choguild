@@ -1,10 +1,6 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
-import type { ReactNode } from "react";
-import { AnimatedMark } from "@/components/brand/animated-mark";
-import { Reveal, WordReveal } from "@/components/fx/reveal";
 import { PosterMark } from "@/components/board/opportunity-card";
-import { Avatar, RankMedal } from "@/components/ranking/bits";
-import { CountUp } from "@/components/ranking/count-up";
+import { Avatar } from "@/components/ranking/bits";
 import { listBoard } from "@/lib/board/functions";
 import { COMPENSATION_LABEL, type CompensationType } from "@/lib/board/copy";
 import { projectLabel } from "@/lib/board/display";
@@ -33,285 +29,185 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-const STEPS: { label: string; body: string; to: "/passport" | "/discover" | "/submissions" | "/ranking" }[] = [
-  { label: "Identity", body: "Sign once and save a public passport.", to: "/passport" },
-  { label: "Opportunities", body: "Browse open work from passport holders.", to: "/discover" },
-  { label: "Submissions", body: "Deliver and submit evidence for review.", to: "/submissions" },
-  { label: "Reputation", body: "Accepted work earns XP and rank.", to: "/ranking" },
+const STEPS: { n: string; label: string; body: string; to: "/passport" | "/discover" | "/submissions" | "/ranking" }[] = [
+  { n: "01", label: "Claim a passport", body: "Sign one message with your wallet. No gas, no seed phrase.", to: "/passport" },
+  { n: "02", label: "Pick up work", body: "Apply to open listings published by other passport holders.", to: "/discover" },
+  { n: "03", label: "Submit evidence", body: "Send links to what you shipped. The publisher reviews it.", to: "/submissions" },
+  { n: "04", label: "Earn rank", body: "Accepted work turns into XP and moves you up the ladder.", to: "/ranking" },
 ];
+
+const fmt = (n: number | null) => (n === null ? "—" : n.toLocaleString("en-US"));
 
 function HomePage() {
   return (
-    <div className="mx-auto w-full max-w-6xl 2xl:max-w-7xl px-4 sm:px-6">
+    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 2xl:max-w-7xl">
       <Hero />
-      <Bento />
+      <Steps />
+      <Boards />
+      <Closing />
     </div>
   );
 }
 
 function Hero() {
-  const { profile } = Route.useLoaderData();
-
+  const { profile, stats } = Route.useLoaderData();
+  const rows = [
+    ["Open listings", stats.openOpportunities],
+    ["Public passports", stats.passports],
+    ["Accepted submissions", stats.acceptedWork],
+    ["Onchain txs by members", stats.onchainTxs],
+  ] as const;
   return (
-    <section aria-labelledby="hero-title" className="relative flex flex-col items-center pt-20 pb-20 text-center sm:pt-28 lg:pt-32">
-      <HeroBackdrop />
-      <div className="hero-parallax-text relative flex flex-col items-center">
-        <div className="mark-spin-in">
-          <MarkOrbit />
-        </div>
-        <p
-          style={{ animationDelay: "100ms" }}
-          className="fade-up mt-8 inline-flex items-center gap-2 rounded-full border border-line-strong bg-elevated/70 px-3.5 py-1.5 text-label text-body"
-        >
-          <span className="pulse-dot" aria-hidden="true" />
-          The contributor guild on Monad
+    <section aria-labelledby="hero-title" className="grid gap-12 border-b border-line pt-16 pb-16 sm:pt-24 lg:grid-cols-[minmax(0,1fr)_24rem] lg:items-end lg:gap-16 lg:pt-28 lg:pb-24">
+      <div className="fade-up">
+        <p className="t-kicker flex items-center gap-2">
+          <span className="size-1.5 rounded-full bg-success" aria-hidden="true" />
+          Contributor guild · Monad mainnet
         </p>
-        <h1 id="hero-title" className="t-display mt-7 max-w-[12ch] text-balance">
-          <WordReveal
-            delay={0.1}
-            wrap
-            lines={[["Get", "work", "and", "earn", "your", <em key="r">rank.</em>]]}
-          />
+        <h1 id="hero-title" className="t-display mt-6 max-w-[13ch] text-ink">
+          Get work and earn your <em>rank.</em>
         </h1>
-        <p className="fade-up mt-6 text-lead text-body" style={{ animationDelay: "350ms" }}>
-          Find work, prove it, climb the ladder.
+        <p className="t-lead mt-6 max-w-lg">
+          A wallet-signed passport, a board of open work, and a public record of everything that got accepted.
         </p>
-        <div
-          style={{ animationDelay: "450ms" }}
-          className="fade-up mt-9 flex w-full flex-col gap-2.5 min-[420px]:w-auto min-[420px]:flex-row"
-        >
-          <Link
-            to="/discover"
-            search={emptyBoardSearch()}
-            className="sheen btn-glass group inline-flex h-12 items-center justify-center gap-3 rounded-full px-7 text-base font-medium text-on-accent"
-          >
-            Explore opportunities
-            <span aria-hidden="true" className="arrow-slide">→</span>
+        <div className="mt-9 flex flex-col gap-2.5 min-[420px]:flex-row">
+          <Link to="/discover" search={emptyBoardSearch()} className="btn-glass group inline-flex h-11 items-center justify-center gap-2.5 rounded-full px-6 text-small font-medium">
+            Browse open work <span aria-hidden="true" className="arrow-slide">→</span>
           </Link>
-          <Link
-            to="/passport"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-line-strong bg-elevated/60 px-7 text-base text-ink transition-colors hover:border-ink/30"
-          >
+          <Link to="/passport" className="inline-flex h-11 items-center justify-center rounded-full border border-line-strong px-6 text-small text-ink transition-colors hover:border-muted">
             {profile ? "Open your passport" : "Create your passport"}
           </Link>
         </div>
       </div>
+      <aside aria-label="Guild right now" className="surface fade-up p-5 sm:p-6" style={{ animationDelay: "120ms" }}>
+        <div className="flex items-center justify-between">
+          <p className="t-kicker">Right now</p>
+          <span className="flex items-center gap-1.5 text-label text-muted">
+            <span className="size-1.5 rounded-full bg-success" aria-hidden="true" /> Live
+          </span>
+        </div>
+        <dl className="mt-4 divide-y divide-line">
+          {rows.map(([label, value]) => (
+            <div key={label} className="flex items-baseline justify-between gap-4 py-3.5">
+              <dt className="text-small text-body">{label}</dt>
+              <dd className="text-2xl font-medium tracking-[-0.04em] tabular-nums text-ink">{fmt(value)}</dd>
+            </div>
+          ))}
+        </dl>
+      </aside>
     </section>
   );
 }
 
-/** The logo mark with two slow orbits and a satellite: the hero's visual. */
-function MarkOrbit() {
+function Steps() {
   return (
-    <div className="float-y relative size-28 sm:size-32" aria-hidden="true">
-      <svg viewBox="0 0 100 100" className="orbit absolute inset-0 size-full">
-        <circle cx="50" cy="50" r="48" fill="none" stroke="rgb(228 222 255 / 0.12)" strokeDasharray="1 5" />
-        <circle cx="50" cy="2" r="2" fill="#836ef9" />
-      </svg>
-      <svg viewBox="0 0 100 100" className="orbit-rev absolute inset-3 size-[calc(100%-1.5rem)]">
-        <circle cx="50" cy="50" r="47" fill="none" stroke="rgb(228 222 255 / 0.08)" />
-        <circle cx="97" cy="50" r="1.6" fill="rgb(228 222 255 / 0.6)" />
-      </svg>
-      <div className="absolute inset-7 flex items-center justify-center rounded-full border border-line-strong bg-elevated/80 sm:inset-8">
-        <AnimatedMark size={40} className="text-ink" />
+    <section aria-labelledby="steps-title" className="py-16 sm:py-24">
+      <div className="flex flex-wrap items-end justify-between gap-4">
+        <h2 id="steps-title" className="t-h2 max-w-md">Four steps, one <em>record.</em></h2>
+        <Link to="/how-it-works" className="group text-small text-body hover:text-ink">
+          How XP works <span aria-hidden="true" className="arrow-slide inline-block">→</span>
+        </Link>
       </div>
-    </div>
+      <ol className="mt-8 grid gap-x-6 gap-y-6 sm:mt-10 sm:grid-cols-2 sm:gap-y-8 lg:grid-cols-4">
+        {STEPS.map((step) => (
+          <li key={step.n}>
+            <Link
+              to={step.to}
+              search={step.to === "/discover" ? emptyBoardSearch() : step.to === "/submissions" ? { view: "mine", status: "all" } : undefined}
+              className="group rule-top block"
+            >
+              <span className="text-label tabular-nums text-muted">{step.n}</span>
+              <span className="t-h3 mt-3 block text-ink sm:mt-6">{step.label}</span>
+              <span className="t-body mt-2 block text-pretty">{step.body}</span>
+              <span aria-hidden="true" className="arrow-slide mt-4 hidden text-muted group-hover:text-ink sm:inline-block">→</span>
+            </Link>
+          </li>
+        ))}
+      </ol>
+    </section>
   );
 }
 
-/** Full-bleed topographic image behind the hero: slow drift, scroll parallax, drifting light, a scrim. */
-function HeroBackdrop() {
+function Boards() {
+  const { leaders, featured } = Route.useLoaderData();
   return (
-    <div aria-hidden="true" className="pointer-events-none absolute -top-24 bottom-0 left-1/2 w-screen -translate-x-1/2 overflow-hidden">
-      <div className="hero-parallax-bg absolute inset-0">
-        <picture>
-          <source media="(min-width: 768px)" type="image/avif" srcSet="/bg/hero-desktop.avif" />
-          <source media="(min-width: 768px)" type="image/webp" srcSet="/bg/hero-desktop.webp" />
-          <source type="image/avif" srcSet="/bg/hero-mobile.avif" />
-          <img src="/bg/hero-mobile.webp" alt="" fetchPriority="high" decoding="async" className="hero-img absolute inset-0 size-full object-cover object-[60%_30%] md:object-[72%_45%]" />
-        </picture>
-        <div className="hero-light absolute top-[5%] left-1/2 size-[50vmax] -translate-x-1/2 rounded-full" />
-        <div className="hero-light-2 absolute top-[30%] left-[5%] size-[40vmax] rounded-full" />
-      </div>
-      <div className="absolute inset-0 bg-[radial-gradient(60%_55%_at_50%_45%,rgb(5_5_7/0.7),rgb(5_5_7/0.25)_70%,rgb(5_5_7/0.1))]" />
-      <div className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,#050507,transparent)]" />
-    </div>
-  );
-}
-
-function Bento() {
-  const { stats, leaders, featured } = Route.useLoaderData();
-  const cells = [
-    ["Open work", stats.openOpportunities],
-    ["Passports", stats.passports],
-    ["Accepted", stats.acceptedWork],
-    ["Onchain txs", stats.onchainTxs],
-  ] as const;
-
-  return (
-    <section aria-label="Inside the guild" className="grid grid-cols-1 gap-3 md:grid-cols-6 lg:grid-cols-12">
-      {/* Live stats */}
-      <Reveal className="bento flex flex-col p-6 sm:p-8 md:col-span-6 lg:col-span-7">
-        <CardHead label="Live" title="The guild, right now." />
-        <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          {cells.map(([label, value]) => (
-            <div key={label} className="rounded-2xl border border-line bg-canvas/50 p-4">
-              <dt className="text-label text-muted">{label}</dt>
-              <dd className="t-stat mt-3 tabular-nums">
-                {value === null ? <span className="text-body text-base">unavailable</span> : <CountUp value={Number(value)} />}
-              </dd>
-            </div>
-          ))}
-        </dl>
-        <div className="mt-auto pt-6">
-          <Ticker stats={stats} titles={featured.map((item) => item.title)} />
-        </div>
-      </Reveal>
-
-      {/* How it works */}
-      <Reveal delay={0.06} className="bento p-6 sm:p-8 md:col-span-6 lg:col-span-5">
-        <CardHead label="The loop" title={<>Four steps to <em>rank.</em></>} to="/how-it-works" cta="Details" />
-        <ol className="mt-6 flex flex-col gap-1.5">
-          {STEPS.map((step, index) => (
-            <li key={step.label}>
-              <Link
-                to={step.to}
-                search={step.to === "/discover" ? emptyBoardSearch() : step.to === "/submissions" ? { view: "mine", status: "all" } : undefined}
-                className="group flex items-center gap-4 rounded-2xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]"
-              >
-                <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-line-strong text-small font-semibold text-ink transition-colors group-hover:border-signal group-hover:bg-signal-solid group-hover:text-on-accent">
-                  {index + 1}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block text-base font-medium text-ink">{step.label}</span>
-                  <span className="block text-small text-pretty text-muted">{step.body}</span>
-                </span>
-                <span aria-hidden="true" className="arrow-slide text-muted">→</span>
-              </Link>
-            </li>
-          ))}
-        </ol>
-      </Reveal>
-
-      {/* Ladder preview */}
-      <Reveal delay={0.04} className="bento p-6 sm:p-8 md:col-span-3 lg:col-span-5">
-        <CardHead label="Ranking" title="Top of the ladder." to="/ranking" cta="Full ranking" />
-        {leaders.length > 0 ? (
-          <ol className="mt-6 flex flex-col gap-1">
-            {leaders.map((person) => (
-              <li key={person.username}>
-                <Link to="/passport/$username" params={{ username: person.username }} className="flex items-center gap-3 rounded-2xl px-3 py-2.5 transition-colors hover:bg-white/[0.04]">
-                  <RankMedal rank={person.rank} />
-                  <Avatar name={person.displayName} url={person.avatarUrl} />
-                  <span className="min-w-0 flex-1 truncate text-base text-ink">{person.displayName}</span>
-                  <span className="text-small font-medium tabular-nums text-body">{formatXp(person.xp)} XP</span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        ) : (
-          <EmptyPreview body="Nobody has claimed first place yet." to="/passport" cta="Claim your spot" />
-        )}
-      </Reveal>
-
-      {/* Open work preview */}
-      <Reveal delay={0.08} className="bento p-6 sm:p-8 md:col-span-3 lg:col-span-7">
-        <CardHead label="The board" title="Open work." to="/discover" cta="All work" />
+    <section aria-label="Open work and ladder" className="grid gap-6 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]">
+      <div className="surface flex flex-col">
+        <ListHead title="Open work" to="/discover" cta="All listings" />
         {featured.length > 0 ? (
-          <ul className={"mt-6 grid gap-2" + (featured.length > 1 ? " sm:grid-cols-2" : "")}>
+          <ul className="divide-y divide-line">
             {featured.map((item) => (
               <li key={item.id}>
-                <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="group flex h-full flex-col gap-4 rounded-2xl border border-line bg-canvas/50 p-4 transition-colors hover:border-line-strong">
-                  <span className="flex items-center gap-2.5">
-                    <PosterMark name={item.poster.displayName || item.poster.username || projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} avatarUrl={item.poster.avatarUrl} />
-                    <span className="truncate text-label text-muted">{projectLabel(item.projectName)}</span>
+                <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="group flex items-center gap-4 px-5 py-4 transition-colors hover:bg-white/[0.02] sm:px-6">
+                  <PosterMark name={item.poster.displayName || item.poster.username || projectLabel(item.projectName)} logoUrl={item.projectLogoUrl} avatarUrl={item.poster.avatarUrl} />
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-base font-medium text-ink">{item.title}</span>
+                    <span className="block truncate text-small text-muted">
+                      {projectLabel(item.projectName)} · {COMPENSATION_LABEL[item.compensationType as CompensationType] ?? item.compensationType}
+                    </span>
                   </span>
-                  <span className="t-h3 text-ink group-hover:text-signal">{item.title}</span>
-                  <span className="mt-auto text-label text-body">
-                    {COMPENSATION_LABEL[item.compensationType as CompensationType] ?? item.compensationType}
-                  </span>
+                  <span aria-hidden="true" className="arrow-slide text-muted group-hover:text-ink">→</span>
                 </Link>
               </li>
             ))}
           </ul>
         ) : (
-          <EmptyPreview body="Listings appear the moment a passport holder publishes one." to="/opportunities/new" cta="Publish the first listing" />
+          <Empty body="Nobody has published a listing yet." to="/opportunities/new" cta="Publish the first one" />
         )}
-      </Reveal>
-
-      {/* CTA */}
-      <Reveal className="bento flex flex-col items-start justify-between gap-6 p-6 sm:p-8 md:col-span-6 md:flex-row md:items-center lg:col-span-12">
-        <p className="t-h2 max-w-xl">
-          One passport. Every piece of work, <em>on the record.</em>
-        </p>
-        <Link to="/passport" className="sheen btn-glass group inline-flex h-12 shrink-0 items-center gap-3 rounded-full px-7 text-base font-medium text-on-accent">
-          Get your passport <span aria-hidden="true" className="arrow-slide">→</span>
-        </Link>
-      </Reveal>
+      </div>
+      <div className="surface flex flex-col">
+        <ListHead title="Top of the ladder" to="/ranking" cta="Full ranking" />
+        {leaders.length > 0 ? (
+          <ol className="divide-y divide-line">
+            {leaders.map((person) => (
+              <li key={person.username}>
+                <Link to="/passport/$username" params={{ username: person.username }} className="group flex items-center gap-4 px-5 py-3.5 transition-colors hover:bg-white/[0.02] sm:px-6">
+                  <span className="w-5 text-small tabular-nums text-muted">{person.rank}</span>
+                  <Avatar name={person.displayName} url={person.avatarUrl} />
+                  <span className="min-w-0 flex-1 truncate text-base text-ink">{person.displayName}</span>
+                  <span className="text-small font-medium tabular-nums text-ink">
+                    {formatXp(person.xp)} <span className="text-muted">XP</span>
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ol>
+        ) : (
+          <Empty body="Nobody is ranked yet." to="/passport" cta="Claim the first spot" />
+        )}
+      </div>
     </section>
   );
 }
 
-function CardHead({ label, title, to, cta }: { label: string; title: ReactNode; to?: "/ranking" | "/discover" | "/how-it-works"; cta?: string }) {
+function ListHead({ title, to, cta }: { title: string; to: "/discover" | "/ranking"; cta: string }) {
   return (
-    <div className="flex items-start justify-between gap-4">
-      <div>
-        <p className="flex items-center gap-2 text-label text-muted">
-          <span className="size-1.5 rounded-full bg-signal" aria-hidden="true" />
-          {label}
-        </p>
-        <h2 className="t-h2 mt-3">{title}</h2>
-      </div>
-      {to && cta ? (
-        <Link to={to} search={to === "/discover" ? emptyBoardSearch() : undefined} className="shrink-0 rounded-full border border-line px-3 py-1.5 text-label text-body transition-colors hover:border-line-strong hover:text-ink">
-          {cta}
-        </Link>
-      ) : null}
-    </div>
-  );
-}
-
-function EmptyPreview({ body, to, cta }: { body: string; to: "/passport" | "/opportunities/new"; cta: string }) {
-  return (
-    <div className="mt-6 flex flex-col items-start gap-4 rounded-2xl border border-dashed border-line-strong p-5 sm:p-6">
-      <AnimatedMark size={36} className="text-ink" />
-      <p className="text-base text-body">{body}</p>
-      <Link to={to} className="rounded-full bg-white/[0.06] px-4 py-2 text-small text-ink transition-colors hover:bg-white/[0.1]">
-        {cta} →
+    <div className="flex items-center justify-between border-b border-line px-5 py-4 sm:px-6">
+      <h2 className="t-h3">{title}</h2>
+      <Link to={to} search={to === "/discover" ? emptyBoardSearch() : undefined} className="group text-small text-muted hover:text-ink">
+        {cta} <span aria-hidden="true" className="arrow-slide inline-block">→</span>
       </Link>
     </div>
   );
 }
 
-function Ticker({ stats, titles }: { stats: { openOpportunities: number; passports: number; acceptedWork: number; onchainTxs: number | null }; titles: string[] }) {
-  const empty =
-    titles.length === 0 && stats.openOpportunities + stats.passports + stats.acceptedWork + (stats.onchainTxs ?? 0) === 0;
-  // Nothing real to show yet: no ticker rather than a reel of zeros.
-  if (empty) return null;
-  const items = [
-    `${formatXp(stats.openOpportunities)} open`,
-    `${formatXp(stats.passports)} passports`,
-    `${formatXp(stats.acceptedWork)} accepted`,
-    stats.onchainTxs === null ? "Onchain txs unavailable" : `${formatXp(stats.onchainTxs)} onchain txs`,
-    ...titles.map((title) => `Open: ${title}`),
-    "Live from the database and Monad mainnet",
-  ];
-  const row = (hidden: boolean) => (
-    <ul className="flex shrink-0 items-center" aria-hidden={hidden || undefined}>
-      {items.map((item, index) => (
-        <li key={index} className="flex items-center gap-5 pr-5 text-label whitespace-nowrap text-body">
-          <span className="text-signal" aria-hidden="true">◆</span>
-          {item}
-        </li>
-      ))}
-    </ul>
-  );
+function Empty({ body, to, cta }: { body: string; to: "/passport" | "/opportunities/new"; cta: string }) {
   return (
-    <div className="ticker relative mt-4 overflow-hidden rounded-full py-2.5">
-      <div className="ticker-track">
-        {row(false)}
-        {row(true)}
-      </div>
+    <div className="flex flex-1 flex-col items-start gap-3 px-5 py-8 sm:px-6">
+      <p className="t-body">{body}</p>
+      <Link to={to} className="t-link text-small">{cta}</Link>
     </div>
+  );
+}
+
+function Closing() {
+  const { profile } = Route.useLoaderData();
+  return (
+    <section className="mt-16 flex flex-col items-start justify-between gap-6 border-t border-line pt-10 sm:mt-24 md:flex-row md:items-end">
+      <h2 className="t-h2 max-w-xl">One passport. Every piece of work, <em>on the record.</em></h2>
+      <Link to="/passport" className="btn-glass group inline-flex h-11 shrink-0 items-center gap-2.5 rounded-full px-6 text-small font-medium">
+        {profile ? "Open your passport" : "Get your passport"} <span aria-hidden="true" className="arrow-slide">→</span>
+      </Link>
+    </section>
   );
 }

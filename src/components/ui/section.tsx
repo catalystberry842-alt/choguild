@@ -1,5 +1,4 @@
 import type { ReactNode } from "react";
-import { Reveal } from "@/components/fx/reveal";
 
 /** A titled block rendered as a rounded card: title and context on top, content below. */
 export function Section({
@@ -18,15 +17,13 @@ export function Section({
   className?: string;
 }) {
   return (
-    <Reveal as="section" id={id} className={"bento scroll-mt-24 p-6 sm:p-8 " + className}>
-      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
-        <div className="max-w-xl">
-          <h2 className="t-h2">{title}</h2>
-          {description ? <p className="t-meta mt-2">{description}</p> : null}
-        </div>
-        {action}
+    <section id={id} className={"grid scroll-mt-24 gap-6 border-t border-line pt-8 lg:grid-cols-[16rem_minmax(0,1fr)] lg:gap-12 " + className}>
+      <div className="max-w-xl">
+        <h2 className="t-h2">{title}</h2>
+        {description ? <p className="t-meta mt-2">{description}</p> : null}
+        {action ? <div className="mt-4">{action}</div> : null}
       </div>
       <div className="min-w-0">{children}</div>
-    </Reveal>
+    </section>
   );
 }
