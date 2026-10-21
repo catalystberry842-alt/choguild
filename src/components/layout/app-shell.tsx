@@ -40,7 +40,7 @@ export function AppShell({ children }: { children: ReactNode }) {
           className={
             home
               ? "relative z-10 scroll-mt-16"
-              : "relative z-10 mx-auto w-full max-w-6xl 2xl:max-w-7xl scroll-mt-16 px-4 pt-10 sm:px-6 md:pt-16"
+              : "relative z-10 mx-auto w-full max-w-6xl 2xl:max-w-7xl scroll-mt-16 px-4 pt-6 sm:px-6 md:pt-10"
           }
         >
           {/* CSS fade (no JS animation loop) so navigation commits immediately. */}

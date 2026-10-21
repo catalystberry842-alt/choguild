@@ -7,9 +7,9 @@ const link = "text-small text-body transition-colors hover:text-ink";
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 mx-2.5 mt-24 mb-2.5 sm:mx-4 sm:mt-32 sm:mb-4">
+    <footer className="relative z-10 mx-2.5 mt-16 mb-2.5 sm:mx-4 sm:mt-24 sm:mb-4">
       <div className="stage stage-soft mx-auto max-w-[1400px]">
-      <div className="mx-auto grid max-w-6xl grid-cols-3 gap-x-6 gap-y-10 px-4 py-14 sm:px-8 md:grid-cols-[minmax(0,1fr)_auto_auto_auto] md:gap-16 2xl:max-w-7xl">
+      <div className="mx-auto grid max-w-6xl grid-cols-3 gap-x-6 gap-y-10 px-4 py-10 sm:px-8 md:grid-cols-[minmax(0,1fr)_auto_auto_auto] md:gap-16 2xl:max-w-7xl">
         <div className="col-span-3 max-w-xs md:col-span-1">
           <Link to="/" className="flex items-center gap-2 text-ink">
             <LogoMark className="size-5" />

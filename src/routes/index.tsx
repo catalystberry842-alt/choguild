@@ -43,7 +43,7 @@ function HomePage() {
   return (
     <div className={wrap}>
       <Hero />
-      <div className="spine mt-24 flex flex-col gap-28 sm:mt-32 sm:gap-40">
+      <div className="spine mt-16 flex flex-col gap-20 sm:mt-20 sm:gap-28">
         <PassportEntry />
         <WorkEntry />
         <ReviewEntry />
@@ -63,12 +63,12 @@ function Entry({ id, n, kicker, title, body, children, cta }: { id: string; n: s
   return (
     <InView as="section" id={id} aria-labelledby={`${id}-t`} className="entry scroll-mt-24">
       <span className="entry-dot sq hidden lg:block" aria-hidden="true" />
-      <div className="grid gap-10 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-16">
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
         <div className="lg:sticky lg:top-28 lg:self-start">
           <p className="ix flex items-center gap-3"><span className="text-purple-ink">{n}</span><span className="h-px w-8 bg-line-strong" />{kicker}</p>
           <h2 id={`${id}-t`} className="t-h2 mt-4 text-ink">{title}</h2>
           <div className="t-body mt-4 max-w-md">{body}</div>
-          {cta ? <div className="mt-8 flex flex-wrap gap-2.5">{cta}</div> : null}
+          {cta ? <div className="mt-6 flex flex-wrap gap-2">{cta}</div> : null}
         </div>
         <div className="min-w-0">{children}</div>
       </div>
@@ -82,7 +82,7 @@ function Go({ to, children, primary, hash }: { to: string; children: ReactNode; 
       to={to as "/"}
       hash={hash}
       search={to === "/discover" ? (emptyBoardSearch() as never) : to === "/submissions" || to === "/applications" ? ({ view: "mine", status: "all" } as never) : undefined}
-      className={(primary ? "btn-glass" : "btn-ghost") + " group inline-flex h-11 items-center gap-2 rounded-full px-5 text-small font-medium"}
+      className={(primary ? "btn-glass" : "btn-ghost") + " group inline-flex h-10 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium"}
     >
       {children} <span aria-hidden="true" className="arrow-slide">→</span>
     </Link>
@@ -100,7 +100,7 @@ function Hero() {
     ["Rank", "you move up the ladder", true],
   ];
   return (
-    <InView as="section" aria-labelledby="hero-title" className="pt-14 sm:pt-20 lg:pt-24">
+    <InView as="section" aria-labelledby="hero-title" className="pt-10 sm:pt-14 lg:pt-20">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16">
         <div>
           <p className="ix rise flex items-center gap-3"><span className="sq a-blink" aria-hidden="true" />CONTRIBUTOR LEDGER · MONAD MAINNET</p>
@@ -108,7 +108,7 @@ function Hero() {
             Ship work.<br />Earn your <em>rank.</em>
           </h1>
           <p className="t-body rise rise-2 mt-6 max-w-md">A wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.</p>
-          <div className="rise rise-3 mt-8 flex flex-col gap-2.5 min-[420px]:flex-row">
+          <div className="rise rise-3 mt-6 flex flex-wrap gap-2">
             <Go to="/discover" primary>Browse open work</Go>
             <Go to="/passport">{profile ? "Open your passport" : "Claim a passport"}</Go>
           </div>
@@ -129,9 +129,9 @@ function Hero() {
           ))}
         </ol>
       </div>
-      <dl className="mt-16 grid grid-cols-2 border-y border-line sm:grid-cols-4">
+      <dl className="mt-12 grid grid-cols-2 border-y border-line sm:grid-cols-4">
         {([["Open listings", stats.openOpportunities], ["Passports", stats.passports], ["Accepted work", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value], i) => (
-          <div key={label} className={"py-6 pr-4 " + (i > 0 ? "sm:border-l sm:border-line sm:pl-6" : "") + (i % 2 === 1 ? " border-l border-line pl-4 sm:pl-6" : "") + (i > 1 ? " border-t border-line sm:border-t-0" : "")}>
+          <div key={label} className={"py-5 pr-4 " + (i > 0 ? "sm:border-l sm:border-line sm:pl-6" : "") + (i % 2 === 1 ? " border-l border-line pl-4 sm:pl-6" : "") + (i > 1 ? " border-t border-line sm:border-t-0" : "")}>
             <dt className="ix">{label}</dt>
             <dd className="t-stat-num mt-2 text-ink">{fmt(value)}</dd>
           </div>
@@ -147,7 +147,7 @@ function PassportEntry() {
   return (
     <Entry
       id="passport" n="01" kicker="PASSPORT"
-      title={<>One signature. <em>Your</em> passport.</>}
+      title={<>Sign once. Own your <em>passport.</em></>}
       body={<>Connect a browser wallet and sign one message. No gas, no seed phrase. Upload an avatar, add skills and links, and your public passport is live. <span className="text-ink">{fmt(stats.passports)} passports</span> so far.</>}
       cta={<Go to="/passport" primary>{profile ? "Open your passport" : "Claim yours"}</Go>}
     >
@@ -195,7 +195,7 @@ function WorkEntry() {
   return (
     <Entry
       id="work" n="02" kicker="OPEN WORK"
-      title={<>A board of <em>real</em> work.</>}
+      title={<>Open listings from Monad <em>builders.</em></>}
       body={<>Passport holders publish listings with terms, deadline and skills. Filter by category, compensation or holders-only. <span className="text-ink">{fmt(stats.openOpportunities)} open</span> right now.</>}
       cta={<Go to="/discover" primary>Browse the board</Go>}
     >
@@ -228,7 +228,7 @@ function ReviewEntry() {
   return (
     <Entry
       id="review" n="03" kicker="APPLICATIONS & SUBMISSIONS"
-      title={<>Apply, ship, get <em>accepted.</em></>}
+      title={<>Ship it. Get it <em>accepted.</em></>}
       body={<>Apply to a listing, then submit evidence links for what you shipped. The publisher reviews it; acceptance writes XP to your passport. <span className="text-ink">{fmt(stats.acceptedWork)} accepted</span> to date.</>}
       cta={<><Go to="/applications" primary>Your applications</Go><Go to="/submissions">Submissions</Go></>}
     >
@@ -263,7 +263,7 @@ function LadderEntry() {
   return (
     <Entry
       id="ladder" n="04" kicker="XP & RANKING"
-      title={<>XP fills. Ranks <em>climb.</em></>}
+      title={<>Accepted work moves you <em>up.</em></>}
       body={<>Guild XP comes from accepted work, applications, listings and your passport; onchain activity on Monad adds more. Five tiers, from {TIERS[0].name} to {TIERS[TIERS.length - 1].name}.</>}
       cta={<Go to="/ranking" primary>Full ranking</Go>}
     >
@@ -309,9 +309,9 @@ function ChogEntry() {
   return (
     <Entry
       id="chog" n="05" kicker="CHOG GENESIS PERKS"
-      title={<>Hold a Chog, get the <em>boost.</em></>}
+      title={<>Chog holders earn <em>10%</em> more XP.</>}
       body={<>Holding a Chog Genesis NFT is read live from the contract. Holders get a badge, +{Math.round(CHOG_BOOST_RATE * 100)}% guild XP (up to +{CHOG_BOOST_CAP}) and access to holders-only listings. <span className="text-ink">{holders.length} of {people.length}</span> ranked passports hold one.</>}
-      cta={<a href={CHOG_EXPLORER_URL} target="_blank" rel="noreferrer" className="btn-ghost group inline-flex h-11 items-center gap-2 rounded-full px-5 text-small font-medium">View contract <span aria-hidden="true" className="arrow-slide">↗</span></a>}
+      cta={<a href={CHOG_EXPLORER_URL} target="_blank" rel="noreferrer" className="btn-ghost group inline-flex h-10 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium">View contract <span aria-hidden="true" className="arrow-slide">↗</span></a>}
     >
       <div className="diagram p-5 sm:p-8">
         <div className="flex items-center gap-4">
@@ -350,7 +350,7 @@ function NetworkEntry() {
   return (
     <Entry
       id="network" n="06" kicker="ONCHAIN PROOFS"
-      title={<>Proof lives <em>onchain.</em></>}
+      title={<>Your Monad activity <em>counts.</em></>}
       body={<>Each passport is tied to a Monad wallet. We read its transaction count from the chain and turn it into onchain XP. Members have <span className="text-ink">{fmt(stats.onchainTxs)} transactions</span> on Monad.</>}
       cta={<Go to="/network" primary>Network stats</Go>}
     >
@@ -377,7 +377,7 @@ function PublishEntry() {
   return (
     <Entry
       id="publish" n="07" kicker="PUBLISH WORK"
-      title={<>Need help? <em>Post</em> it.</>}
+      title={<>Post work. Pick your <em>contributors.</em></>}
       body={<>Any passport holder can publish a listing: title, terms, deadline, positions and skills, optionally gated to Chog holders. Then review applicants and submissions. Published listings earn {XP_RULES[2].points} XP once they count.</>}
       cta={<Go to="/opportunities/new" primary>Publish a listing</Go>}
     >
@@ -412,7 +412,7 @@ function HowEntry() {
   return (
     <Entry
       id="how" n="08" kicker="HOW IT WORKS"
-      title={<>Four steps, one <em>record.</em></>}
+      title={<>Four steps from wallet to <em>rank.</em></>}
       body={<>Every XP value is computed from the database and the chain, never typed in. Monthly caps keep it fair.</>}
       cta={<><Go to="/how-it-works" primary>How it works</Go><Go to="/docs">Read the docs</Go></>}
     >
@@ -433,12 +433,12 @@ function HowEntry() {
 function Cta() {
   const { profile } = Route.useLoaderData();
   return (
-    <section id="start" className="mt-28 grid gap-8 rounded-[1.25rem] bg-purple px-6 py-12 text-white sm:mt-40 sm:px-12 sm:py-16 md:grid-cols-[1fr_auto] md:items-end">
+    <section id="start" className="mt-20 grid gap-6 rounded-[1.25rem] bg-purple px-6 py-10 text-white sm:mt-28 sm:px-10 sm:py-12 md:grid-cols-[1fr_auto] md:items-end">
       <div>
         <p className="font-mono text-label text-white/70">09 · START</p>
-        <h2 className="t-h2 mt-4 max-w-2xl !text-white [&_em]:!text-white/65">Your work deserves a <em className="italic">record.</em></h2>
+        <h2 className="t-h2 mt-4 max-w-2xl !text-white [&_em]:!text-white/65">Claim your passport in one <em className="italic">signature.</em></h2>
       </div>
-      <Link to="/passport" className="btn-white group inline-flex h-12 shrink-0 items-center gap-2.5 rounded-full px-6 text-small font-medium">
+      <Link to="/passport" className="btn-white group inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium">
         {profile ? "Open your passport" : "Claim your passport"} <span aria-hidden="true" className="arrow-slide">→</span>
       </Link>
     </section>
