@@ -19,12 +19,13 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
 
   return (
     <header className="pill-nav sticky top-0 z-40 pt-[env(safe-area-inset-top)]">
-      <div className="mx-auto flex h-14 max-w-6xl items-center gap-2 px-4 sm:px-6 2xl:max-w-7xl">
+      <div className="mx-auto flex h-16 max-w-6xl items-center gap-2 px-4 sm:px-6 2xl:max-w-7xl">
         <Link to="/" aria-label="Choguild home" className="mr-4 flex items-center gap-2 text-ink">
           <LogoMark className="size-5" />
           <span className="text-base font-medium tracking-[-0.03em]">Choguild</span>
         </Link>
-        <nav aria-label="Main" className="hidden items-center gap-0.5 lg:flex">
+        <nav aria-label="Main" className="mx-auto hidden items-center gap-0.5 lg:flex">
+
           {PRIMARY.map((item) => {
             const active = isNavActive(pathname, item.to);
             return (
@@ -35,7 +36,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "rounded-full px-3 py-1.5 text-small transition-colors",
-                  active ? "bg-white/[0.07] text-ink" : "text-muted hover:text-ink",
+                  active ? "pill-glass text-ink" : "border border-transparent text-body hover:text-ink",
                 )}
               >
                 {item.label}
@@ -43,13 +44,13 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
             );
           })}
         </nav>
-        <span className="ml-auto" />
+                <span className="ml-auto lg:hidden" />
         <button
           type="button"
           onClick={onOpenPalette}
           aria-keyshortcuts="Meta+K Control+K"
           title="Search pages and actions"
-          className="mr-1 hidden h-8 items-center gap-2 rounded-full border border-line px-3 text-label text-muted transition-colors hover:border-line-strong hover:text-ink md:flex"
+          className="mr-1 hidden h-8 items-center gap-2 btn-ghost rounded-full px-3 text-label text-body transition-colors hover:border-line-strong hover:text-ink md:flex"
         >
           <span>Search</span>
           <kbd className="text-[10px] text-faint">⌘K</kbd>

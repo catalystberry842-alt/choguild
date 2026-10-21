@@ -7,8 +7,9 @@ const link = "text-small text-body transition-colors hover:text-ink";
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 mt-24 border-t border-line sm:mt-32">
-      <div className="mx-auto grid max-w-6xl grid-cols-3 gap-x-6 gap-y-10 px-4 py-12 sm:px-6 md:grid-cols-[minmax(0,1fr)_auto_auto_auto] md:gap-16 2xl:max-w-7xl">
+    <footer className="relative z-10 mx-2.5 mt-24 mb-2.5 sm:mx-4 sm:mt-32 sm:mb-4">
+      <div className="stage stage-soft mx-auto max-w-[1400px]">
+      <div className="mx-auto grid max-w-6xl grid-cols-3 gap-x-6 gap-y-10 px-4 py-14 sm:px-8 md:grid-cols-[minmax(0,1fr)_auto_auto_auto] md:gap-16 2xl:max-w-7xl">
         <div className="col-span-3 max-w-xs md:col-span-1">
           <Link to="/" className="flex items-center gap-2 text-ink">
             <LogoMark className="size-5" />
@@ -32,9 +33,10 @@ export function SiteFooter() {
           <a href="https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763" className={link}>Chog Genesis</a>
         </FooterCol>
       </div>
-      <div className="mx-auto flex max-w-6xl items-center justify-between border-t border-line px-4 py-5 text-label text-muted sm:px-6 2xl:max-w-7xl">
+      <div className="mx-auto flex max-w-6xl items-center justify-between border-t border-line px-4 py-5 sm:px-8 text-label text-muted sm:px-6 2xl:max-w-7xl">
         <span>Built on Monad</span>
         <span>MIT licensed</span>
+      </div>
       </div>
     </footer>
   );
