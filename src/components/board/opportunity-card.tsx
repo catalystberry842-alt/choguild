@@ -24,9 +24,10 @@ function label<T extends string>(map: Record<T, string>, value: string): string 
 /** A rich listing card: project, status, title, summary, skills, and terms in a footer strip. */
 export function OpportunityCardView({ item, animate = true }: { item: OpportunityCard; index?: number; animate?: boolean }) {
   const project = projectLabel(item.projectName);
-  const open = item.status === "open";
-  const posterName = item.poster.displayName || item.poster.username || project;
   const due = deadlineCountdown(item.deadline);
+  const pastDue = due === "Past due";
+  const open = item.status === "open" && !pastDue;
+  const posterName = item.poster.displayName || item.poster.username || project;
 
   return (
     <Reveal as="li" y={14} className="h-full" animate={animate}>
@@ -48,7 +49,7 @@ export function OpportunityCardView({ item, animate = true }: { item: Opportunit
             </span>
             <span className={"inline-flex shrink-0 items-center gap-1.5 rounded-full px-2.5 py-1 text-label " + (open ? "bg-success/10 text-success" : "bg-white/[0.05] text-muted")}>
               <span className={"size-1.5 rounded-full " + (open ? "bg-success" : "bg-muted")} aria-hidden="true" />
-              {label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}
+              {item.status === "open" && pastDue ? "Past due" : label(OPPORTUNITY_STATUS_LABEL, item.status as OpportunityStatus)}
             </span>
           </div>
           {item.holdersOnly ? <HoldersOnlyPill className="mt-4" /> : null}

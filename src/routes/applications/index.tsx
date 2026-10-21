@@ -29,9 +29,10 @@ function ApplicationsPage() {
         {!result.ok ? (
           <EmptyState
             title="Sign in to see your applications"
+            body="Connect your wallet and sign once on your passport to track the work you applied for."
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open passport</Link>
+                <Link to="/passport">Sign in on passport</Link>
               </Button>
             }
           />

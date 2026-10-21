@@ -60,9 +60,10 @@ function SubmissionsPage() {
         <div className="mt-10">
           <EmptyState
             title="Sign in to see submissions"
+            body="Connect your wallet and sign once on your passport. Your sent work and work to review show up here."
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open passport</Link>
+                <Link to="/passport">Sign in on passport</Link>
               </Button>
             }
           />

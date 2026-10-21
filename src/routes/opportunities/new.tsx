@@ -25,7 +25,7 @@ function NewOpportunityPage() {
             title="Save your passport to publish"
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open passport</Link>
+                <Link to="/passport">Sign in on passport</Link>
               </Button>
             }
           />

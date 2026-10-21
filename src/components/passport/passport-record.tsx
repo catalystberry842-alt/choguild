@@ -42,7 +42,7 @@ export function PassportRecord({ profile, address }: { profile: PublicProfile | 
               {profile && profile.skills.length > 0 ? ` · ${profile.skills.slice(0, 3).join(", ")}` : ""}
             </p>
           </div>
-          <div className="flex items-end justify-between font-mono text-label text-muted">
+          <div className="flex items-end justify-between text-label tabular-nums text-muted">
             <span>{wallet ? shortAddress(wallet) : "0x···· ····"}</span>
             <span>{profile ? `Since ${formatDay(profile.createdAt)}` : "Monad"}</span>
           </div>

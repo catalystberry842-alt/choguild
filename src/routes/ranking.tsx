@@ -132,7 +132,7 @@ function RankingPage() {
                         </span>
                       </span>
                       <span className="hidden sm:block"><TierBadge tier={person.tier} /></span>
-                      <span className="text-right font-mono text-small tabular-nums text-ink">{formatXp(person.xp)}</span>
+                      <span className="text-right font-medium text-small tabular-nums text-ink">{formatXp(person.xp)}</span>
                     </Link>
                   </Reveal>
                 ))}
@@ -154,30 +154,32 @@ function PodiumCard({ person, by }: { person: RankedContributor; by: RankBy }) {
       <Link
         to="/passport/$username"
         params={{ username: person.username }}
-        className={cn("bento group flex flex-col items-center gap-4 px-6 py-8 text-center", first && "signal-glow border-signal/30")}
+        className={cn("bento group flex items-center gap-4 px-5 py-5 text-left md:flex-col md:px-6 md:py-8 md:text-center", first && "signal-glow border-signal/30")}
       >
-        <span className={cn("t-stat-lg", first ? "text-signal" : "text-faint")}>{person.rank}</span>
+        <span className={cn("w-8 shrink-0 text-center text-3xl font-semibold leading-none tracking-[-0.05em] tabular-nums md:w-auto md:text-7xl", first ? "text-signal" : "text-faint")}>{person.rank}</span>
         {person.chog?.tokenIds[0] ? (
-          <ChogImage tokenId={person.chog.tokenIds[0]} size="md" className="size-16 rounded-full" />
+          <ChogImage tokenId={person.chog.tokenIds[0]} size="md" className="size-12 shrink-0 rounded-full md:size-16" />
         ) : (
           <Avatar name={person.displayName} url={person.avatarUrl} size="lg" />
         )}
-        <span>
-          <span className="t-h3 block text-ink">{person.displayName}</span>
-          <span className="block text-label text-muted">@{person.username}</span>
+        <span className="flex min-w-0 flex-1 flex-col gap-2 md:flex-none md:items-center md:gap-4">
+          <span className="min-w-0">
+            <span className="t-h3 block truncate text-ink">{person.displayName}</span>
+            <span className="block truncate text-label text-muted">@{person.username}</span>
+          </span>
+          <span className="flex flex-wrap gap-1.5 md:justify-center">
+            <TierBadge tier={person.tier} />
+            <ChogBadge count={person.chog?.count ?? 0} />
+          </span>
+          <span className="hidden text-label text-muted md:block">
+            Guild {formatXp(person.guildXp)}
+            {person.chogBonus ? ` (incl. +${person.chogBonus} Chog)` : ""} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
+          </span>
         </span>
-        <span className="flex flex-wrap justify-center gap-1.5">
-          <TierBadge tier={person.tier} />
-          <ChogBadge count={person.chog?.count ?? 0} />
-        </span>
-        <span className="t-stat tabular-nums">
+        <span className="shrink-0 text-2xl font-semibold leading-none tracking-[-0.045em] tabular-nums text-ink md:text-[2.5rem]">
           <CountUp value={person.xp} /> <span className="font-sans text-label text-muted">XP</span>
         </span>
-        <span className="text-label text-muted">
-          Guild {formatXp(person.guildXp)}
-          {person.chogBonus ? ` (incl. +${person.chogBonus} Chog)` : ""} · Onchain {person.onchainXp === null ? "—" : formatXp(person.onchainXp)}
-        </span>
-        {by === "overall" ? <span className="w-full"><XpBar xp={person.xp} /></span> : null}
+        {by === "overall" ? <span className="hidden w-full md:block"><XpBar xp={person.xp} /></span> : null}
       </Link>
     </Reveal>
   );

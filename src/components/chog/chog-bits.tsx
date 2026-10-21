@@ -49,7 +49,7 @@ export function ChogGallery({ holding }: { holding: ChogHolding | null | undefin
         {shown.map((id) => (
           <li key={id} className="flex flex-col items-center gap-1.5">
             <ChogImage tokenId={id} size="lg" />
-            <span className="font-mono text-label text-muted">#{id}</span>
+            <span className="text-label tabular-nums text-muted">#{id}</span>
           </li>
         ))}
       </ul>

@@ -6,8 +6,8 @@ const pill = "rounded-full border border-line px-4 py-2 text-small text-body tra
 
 export function SiteFooter() {
   return (
-    <footer className="relative z-10 mx-auto mt-32 max-w-6xl px-3 pb-6 sm:px-6">
-      <div className="bento flex flex-col items-center px-6 py-16 text-center sm:py-20">
+    <footer className="relative z-10 mx-auto mt-20 max-w-6xl sm:mt-24 px-3 pb-6 sm:px-6">
+      <div className="bento flex flex-col items-center px-6 py-12 text-center sm:py-16">
         <LogoMark className="size-9 text-ink" />
         <p className="t-h1 mt-6">
           Get work and earn your <em>rank.</em>

@@ -220,7 +220,7 @@ function DiscoverPage() {
         ) : null}
       </form>
 
-      <p className="t-meta mt-12 mb-4 text-center" aria-live="polite">
+      <p className="t-meta mt-10 mb-4 px-1" aria-live="polite">
         {result.total} {result.total === 1 ? "opportunity" : "opportunities"}
       </p>
 

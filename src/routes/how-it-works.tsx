@@ -85,7 +85,7 @@ function HowItWorksPage() {
                     <span className="mt-0.5 block text-label font-normal text-muted sm:hidden">{rule.detail}</span>
                   </td>
                   <td className="hidden py-3 pr-4 text-body sm:table-cell">{rule.detail}</td>
-                  <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">+{rule.points}</td>
+                  <td className="py-3 pr-4 text-right font-medium tabular-nums text-signal">+{rule.points}</td>
                 </tr>
               ))}
               <tr className="transition-colors hover:text-ink">
@@ -98,7 +98,7 @@ function HowItWorksPage() {
                 <td className="hidden py-3 pr-4 text-body sm:table-cell">
                   10 × √(transactions your wallet sent on Monad mainnet), up to {ONCHAIN_XP_CAP}. 25 txs = 50 XP.
                 </td>
-                <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">≤{ONCHAIN_XP_CAP}</td>
+                <td className="py-3 pr-4 text-right font-medium tabular-nums text-signal">≤{ONCHAIN_XP_CAP}</td>
               </tr>
               <tr className="transition-colors hover:text-ink">
                 <td className="py-3 pr-4 font-medium text-ink">
@@ -113,7 +113,7 @@ function HowItWorksPage() {
                   NFT in your passport wallet: +{CHOG_BOOST_PCT}% of guild XP (rounded), up to +{CHOG_BOOST_CAP}. Onchain XP is not
                   boosted. Holdings are read from Monad every few minutes.
                 </td>
-                <td className="py-3 pr-4 text-right font-mono tabular-nums text-signal">≤{CHOG_BOOST_CAP}</td>
+                <td className="py-3 pr-4 text-right font-medium tabular-nums text-signal">≤{CHOG_BOOST_CAP}</td>
               </tr>
             </tbody>
           </table>
@@ -126,7 +126,7 @@ function HowItWorksPage() {
             <li key={tier.name} className="border-b border-line py-5 sm:odd:pr-6 sm:even:border-l sm:even:pl-6">
               <div className="flex items-center justify-between gap-2">
                 <TierBadge tier={tier.name} />
-                <span className="font-mono text-label tabular-nums text-muted">{tier.min}+ XP</span>
+                <span className="font-medium text-label tabular-nums text-muted">{tier.min}+ XP</span>
               </div>
               <div className="mt-3 flex gap-1" aria-hidden="true">
                 {TIERS.map((_, dot) => (

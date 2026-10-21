@@ -29,6 +29,21 @@ Everything on the site is real: listings, passports, and XP come straight from t
 
 ---
 
+## For Chogathon judges
+
+**Try it in 60 seconds:** open [choguild.vercel.app](https://choguild.vercel.app), browse [Discover](https://choguild.vercel.app/discover) and the [Ranking](https://choguild.vercel.app/ranking), then open a passport such as [/passport/octoberry](https://choguild.vercel.app/passport/octoberry). To try the full loop, click **Connect wallet** (any EIP-6963 browser wallet on Monad mainnet), sign once (a message, not a transaction), save a passport, and apply to a listing.
+
+| What to look at | Where | Why it matters |
+| --- | --- | --- |
+| Wallet-signed identity | `/passport` | SIWE session, no seed phrase, no gas. The avatar is an uploaded image or a Chog you own. |
+| Real work loop | `/discover` → apply → `/submissions` | A publisher accepts the application, then reviews submitted evidence. Only accepted work earns XP. |
+| Honest ranking | `/ranking`, `/how-it-works` | XP is computed live from the database plus the Monad tx count, with anti-farming rules. |
+| Chog Genesis perks | badge, +XP, gated listings | Every check reads the official contract on Monad mainnet (details below). |
+
+**Verify the Chog perks yourself:** `node scripts/chog-live-check.mjs` reads `name`, `totalSupply`, `ownerOf` and `balanceOf` from the official contract over the public RPC. It also checks `/api/chog/:id` on the live site. `npm run test:chog-live` runs the server-side holder checks against a real holder and a non-holder.
+
+Nothing is seeded. Every listing, passport and XP value is real, and an empty state means nobody has done that yet.
+
 ## What it does
 
 | Area | What you can do |
@@ -64,14 +79,14 @@ Ranks: **Hatchling** (0) → **Apprentice** (50) → **Artisan** (150) → **Gui
 
 ## Getting around
 
-- A **floating dock** at the bottom of every screen holds the main pages (Home, Discover, Ranking, Passport). Its **More** and **Account** buttons morph it open into panels for the remaining pages, quick actions, what's new, and your passport status.
+- The floating glass header holds the main pages. On a phone it collapses into a menu.
 - **⌘K / Ctrl+K** opens a jump menu for every page and common action.
-- The header has search, a **light/dark toggle**, and Wallet. Detail pages show a **Back** control.
+- **Wallet** shows a single **Connect wallet** button. Deep links to wallet apps appear only when no browser wallet is found.
 
 ## Tech stack
 
 - [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions)
-- Tailwind CSS v4, Radix UI primitives, Motion, `cmdk`, `lucide-react`; Geist and Geist Mono
+- Tailwind CSS v4 (black canvas, frosted purple glass, no gradients), Radix UI primitives, Motion, `cmdk`, `lucide-react`, and the Geist typeface
 - Upstream Monad RPC reads are cached in-process (stale-while-revalidate, with a failure backoff) so a slow RPC never blocks a page render
 - `wagmi` + `viem` for wallets and Monad; SIWE for passport sessions
 - Postgres via `pg` when `DATABASE_URL` is set, otherwise an in-memory [PGLite](https://pglite.dev) database
@@ -128,7 +143,9 @@ Browser wallets only (EIP-6963 injected: MetaMask, Rabby…). There is no Wallet
 - Contract: [`0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763`](https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763) (Chog Genesis, CHOG, ERC-721, 1,969 tokens), as used by the official mint site mint.chog.xyz.
 - Holdings are read onchain: `ownerOf(1..totalSupply)` through Multicall3 builds an owner snapshot, cached server-side for 5 minutes (`src/lib/chog/holders.server.ts`). Images come from each token's `tokenURI` on IPFS via `/api/chog/:id` (edge-cached).
 - Holders get a "Chog holder" badge and their Chog on the passport and in ranking rows, plus **+10% guild XP, rounded, capped at +50** (onchain XP is not boosted). Documented in the XP table on How it works.
-- Publishers can mark a listing "Chog holders only". The server re-checks `balanceOf` live when someone applies; if Monad can't be reached the application is refused rather than let through.
+- Publishers can mark a listing "Chog holders only". The server checks `balanceOf` live when someone applies, not just the UI. If Monad can't be reached, the application is refused rather than let through.
+- **Use my Chog** avatar: on save, the server checks `ownerOf(tokenId)` live, so a Chog sold minutes ago is rejected. If the RPC is down, it falls back to the full holder snapshot.
+- Tests: `src/lib/chog/*.test.ts` and `src/lib/board/board.test.ts` cover the boost math, the gate and the avatar check offline. `npm run test:chog-live` covers the same checks against Monad mainnet.
 
 ## Security and operations
 

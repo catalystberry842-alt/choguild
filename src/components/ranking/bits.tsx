@@ -45,7 +45,7 @@ export function XpBar({ xp }: { xp: number }) {
       <div className="h-px flex-1 overflow-hidden bg-line-strong">
         <div className="h-full bg-signal transition-[width] duration-1000" style={{ width: `${Math.round(progress * 100)}%` }} />
       </div>
-      <span className="font-mono text-label tabular-nums text-muted">{next ? `${next.min - xp} to ${next.name}` : "Max tier"}</span>
+      <span className="font-medium text-label tabular-nums text-muted">{next ? `${next.min - xp} to ${next.name}` : "Max tier"}</span>
     </div>
   );
 }

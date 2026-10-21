@@ -25,28 +25,29 @@ function NetworkPage() {
 
       <dl className="mt-10 grid gap-4 sm:grid-cols-3">
         <Fact label="Chain">
-          <span className="font-mono">Monad · {MONAD_CHAIN_ID}</span>
+          <span className="text-lead font-semibold tracking-tight">Monad mainnet</span>
+          <span className="t-meta mt-1 block tabular-nums">Chain ID {MONAD_CHAIN_ID}</span>
         </Fact>
         <Fact label="Public RPC">
           <span className="flex items-center gap-2">
             <span className={probe.ok ? "size-2 rounded-full bg-success" : "size-2 rounded-full bg-warning"} aria-hidden="true" />
-            {probe.ok ? "Online" : "Not responding"}
+            <span className="text-lead font-semibold tracking-tight">{probe.ok ? "Online" : "Not responding"}</span>
           </span>
-          <span className="t-meta mt-1 block font-mono">{probe.ok ? `Block ${probe.blockNumber}` : probe.rpcHost}</span>
+          <span className="t-meta mt-1 block tabular-nums">{probe.ok ? `Block ${Number(probe.blockNumber).toLocaleString("en-US")}` : probe.rpcHost}</span>
         </Fact>
         <Fact label="Your wallet">
           <Badge tone={wallet.onMonad ? "olive" : "neutral"}>{isConnected ? wallet.label : "Not connected"}</Badge>
         </Fact>
       </dl>
 
-      <div className="mt-10 flex flex-wrap gap-x-6 gap-y-3">
+      <div className="mt-6 flex flex-wrap gap-2">
         {MONAD_EXPLORERS.map((explorer) => (
-          <a key={explorer.url} className="t-link text-base" href={explorer.url} target="_blank" rel="noreferrer">
-            {explorer.name}
+          <a key={explorer.url} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-line px-4 text-small text-body transition-colors hover:border-line-strong hover:text-ink" href={explorer.url} target="_blank" rel="noreferrer">
+            {explorer.name} <span aria-hidden="true">↗</span>
           </a>
         ))}
-        <a className="t-link text-base" href="https://docs.monad.xyz/developer-essentials/network-information" target="_blank" rel="noreferrer">
-          Monad docs
+        <a className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-line px-4 text-small text-body transition-colors hover:border-line-strong hover:text-ink" href="https://docs.monad.xyz/developer-essentials/network-information" target="_blank" rel="noreferrer">
+          Monad docs <span aria-hidden="true">↗</span>
         </a>
       </div>
     </div>
@@ -57,7 +58,7 @@ function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
     <div className="surface p-6">
       <dt className="t-meta">{label}</dt>
-      <dd className="t-body mt-2 text-ink">{children}</dd>
+      <dd className="t-body mt-3 text-ink">{children}</dd>
     </div>
   );
 }

@@ -25,10 +25,11 @@ export const Route = createFileRoute("/passport/$username")({
   head: ({ loaderData, params }) =>
     seo({
       title: loaderData ? `${loaderData.profile.displayName} · Choguild` : "Passport · Choguild",
-      description: loaderData?.profile.biography || "A Chog Passport on Choguild.",
+      description: loaderData?.profile.biography || (loaderData ? `${loaderData.profile.displayName}'s Chog Passport: reviewed work and rank on Choguild.` : "A Chog Passport on Choguild."),
       path: loaderData ? `/passport/${params.username}` : undefined,
       // Unlisted passports and missing usernames stay out of search engines.
       noindex: !loaderData || loaderData.profile.visibility === "unlisted",
+      type: loaderData ? "profile" : undefined,
     }),
   component: PublicPassportPage,
   notFoundComponent: PassportNotFound,

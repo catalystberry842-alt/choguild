@@ -6,11 +6,14 @@ export function seo({
   description,
   path,
   noindex = false,
+  type,
 }: {
   title: string;
   description?: string;
   path?: string;
   noindex?: boolean;
+  /** og:type override, e.g. "profile" for passports. */
+  type?: string;
 }) {
   const url = path ? `${SITE_ORIGIN}${path}` : undefined;
   const desc = description?.replace(/\s+/g, " ").trim().slice(0, 200);
@@ -27,6 +30,7 @@ export function seo({
           ]
         : []),
       ...(url ? [{ property: "og:url", content: url }] : []),
+      ...(type ? [{ property: "og:type", content: type }] : []),
       ...(noindex ? [{ name: "robots", content: "noindex" }] : []),
     ],
     links: url ? [{ rel: "canonical", href: url }] : [],

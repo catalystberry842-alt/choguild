@@ -151,7 +151,7 @@ function Bento() {
   return (
     <section aria-label="Inside the guild" className="grid grid-cols-1 gap-3 md:grid-cols-6 lg:grid-cols-12">
       {/* Live stats */}
-      <Reveal className="bento p-6 sm:p-8 md:col-span-6 lg:col-span-7">
+      <Reveal className="bento flex flex-col p-6 sm:p-8 md:col-span-6 lg:col-span-7">
         <CardHead label="Live" title="The guild, right now." />
         <dl className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4">
           {cells.map(([label, value]) => (
@@ -163,7 +163,9 @@ function Bento() {
             </div>
           ))}
         </dl>
-        <Ticker stats={stats} titles={featured.map((item) => item.title)} />
+        <div className="mt-auto pt-6">
+          <Ticker stats={stats} titles={featured.map((item) => item.title)} />
+        </div>
       </Reveal>
 
       {/* How it works */}
@@ -202,7 +204,7 @@ function Bento() {
                   <RankMedal rank={person.rank} />
                   <Avatar name={person.displayName} url={person.avatarUrl} />
                   <span className="min-w-0 flex-1 truncate text-base text-ink">{person.displayName}</span>
-                  <span className="font-mono text-label tabular-nums text-body">{formatXp(person.xp)} XP</span>
+                  <span className="text-small font-medium tabular-nums text-body">{formatXp(person.xp)} XP</span>
                 </Link>
               </li>
             ))}
@@ -216,7 +218,7 @@ function Bento() {
       <Reveal delay={0.08} className="bento p-6 sm:p-8 md:col-span-3 lg:col-span-7">
         <CardHead label="The board" title="Open work." to="/discover" cta="All work" />
         {featured.length > 0 ? (
-          <ul className="mt-6 grid gap-2 sm:grid-cols-2">
+          <ul className={"mt-6 grid gap-2" + (featured.length > 1 ? " sm:grid-cols-2" : "")}>
             {featured.map((item) => (
               <li key={item.id}>
                 <Link to="/discover/$opportunityId" params={{ opportunityId: item.id }} className="group flex h-full flex-col gap-4 rounded-2xl border border-line bg-canvas/50 p-4 transition-colors hover:border-line-strong">

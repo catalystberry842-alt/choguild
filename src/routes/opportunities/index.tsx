@@ -36,9 +36,10 @@ function OwnedPage() {
         {!result.ok ? (
           <EmptyState
             title="Sign in to see your listings"
+            body="Connect your wallet and sign once on your passport to publish and manage listings."
             action={
               <Button asChild size="compact">
-                <Link to="/passport">Open passport</Link>
+                <Link to="/passport">Sign in on passport</Link>
               </Button>
             }
           />

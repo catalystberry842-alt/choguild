@@ -134,7 +134,7 @@ export function PublicPassport({
             {standing ? (
               <div className="mt-4 space-y-2">
                 <div className="flex flex-wrap items-baseline justify-center gap-x-3 gap-y-1 sm:justify-start">
-                  <span className="font-mono text-small tabular-nums text-ink">
+                  <span className="text-small font-semibold tabular-nums text-ink">
                     {formatXp(standing.xp)} XP
                   </span>
                   <span className="t-meta">
@@ -190,52 +190,50 @@ export function PublicPassport({
         </section>
       ) : null}
 
-      <section className="surface rounded-[1.5rem] p-6 sm:p-7">
-        <h2 className="t-meta">Skills</h2>
-        {profile.skills.length > 0 ? (
-          <div className="mt-4 flex flex-wrap gap-2">
-            {profile.skills.map((skill) => (
-              <span key={skill} className="glass-chip rounded-full px-3 py-1 text-small text-ink">
-                {skill}
-              </span>
-            ))}
-          </div>
-        ) : (
-          <p className="t-body mt-3 text-muted">No skills added yet.</p>
-        )}
-      </section>
-
-      <section className="surface rounded-[1.5rem] p-6 sm:p-7">
-        <h2 className="t-meta">Interests</h2>
-        <p className="t-body mt-3 text-pretty text-ink">
-          {profile.interests?.trim() ? profile.interests : "No interests added yet."}
-        </p>
-      </section>
-
-      <section className="surface rounded-[1.5rem] p-6 sm:p-7">
-        <h2 className="t-meta">Links</h2>
-        {links.length > 0 ? (
-          <ul className="mt-4 flex flex-wrap gap-2">
-            {links.map((link) => (
-              <li key={link.url}>
-                <a
-                  href={link.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-white/[0.03] px-4 text-small text-ink transition-colors hover:border-signal/50 hover:bg-signal/10"
-                  aria-label={link.label}
-                  title={link.label}
-                >
-                  <LinkIcon kind={link.kind} />
-                  <span>{link.kind === "x" ? "X" : link.label}</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        ) : (
-          <p className="t-body mt-3 text-muted">No links added yet.</p>
-        )}
-      </section>
+      {profile.skills.length > 0 || profile.interests?.trim() || links.length > 0 ? (
+        <section className="surface divide-y divide-line rounded-[1.5rem] px-6 sm:px-7">
+          {profile.skills.length > 0 ? (
+            <div className="py-6">
+              <h2 className="t-meta">Skills</h2>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {profile.skills.map((skill) => (
+                  <span key={skill} className="glass-chip rounded-full px-3 py-1 text-small text-ink">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            </div>
+          ) : null}
+          {profile.interests?.trim() ? (
+            <div className="py-6">
+              <h2 className="t-meta">Interests</h2>
+              <p className="t-body mt-3 text-pretty text-ink">{profile.interests}</p>
+            </div>
+          ) : null}
+          {links.length > 0 ? (
+            <div className="py-6">
+              <h2 className="t-meta">Links</h2>
+              <ul className="mt-3 flex flex-wrap gap-2">
+                {links.map((link) => (
+                  <li key={link.url}>
+                    <a
+                      href={link.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex min-h-11 items-center gap-2 rounded-full border border-line-strong bg-white/[0.03] px-4 text-small text-ink transition-colors hover:border-signal/50 hover:bg-signal/10"
+                      aria-label={link.label}
+                      title={link.label}
+                    >
+                      <LinkIcon kind={link.kind} />
+                      <span>{link.kind === "x" ? "X" : link.label}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : null}
+        </section>
+      ) : null}
 
       {chog && chog.count > 0 ? <ChogGallery holding={chog} /> : null}
 
@@ -318,7 +316,7 @@ function Stat({ label, value, muted }: { label: string; value: string; muted?: b
   return (
     <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 sm:px-4">
       <dt className="t-meta">{label}</dt>
-      <dd className={cn("mt-1 font-mono text-base tabular-nums text-ink sm:text-lead", muted && "text-muted")}>
+      <dd className={cn("mt-1.5 text-lead font-semibold tracking-tight tabular-nums text-ink sm:text-xl", muted && "text-muted")}>
         {value}
       </dd>
     </div>
