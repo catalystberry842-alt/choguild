@@ -9,6 +9,8 @@ import { installErrorReporting } from "@/lib/report-error";
 import appCss from "../styles.css?url";
 
 const APP_NAME = "Choguild";
+/** Runs before paint: stored choice, else the OS preference. Prevents a theme flash. */
+const THEME_BOOT = `try{var t=localStorage.getItem("cg-theme");if(t!=="light"&&t!=="dark")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";document.documentElement.dataset.theme=t;document.documentElement.style.colorScheme=t}catch(e){}`;
 
 export const Route = createRootRoute({
   head: () => ({
@@ -21,7 +23,7 @@ export const Route = createRootRoute({
         content:
           "Choguild helps Monad contributors keep an identity, find opportunities, and build a record of reviewed work.",
       },
-      { name: "theme-color", content: "#050507" },
+      { name: "theme-color", content: "#0a0a0a" },
       { property: "og:title", content: "Choguild" },
       { property: "og:description", content: "The contributor guild on Monad: a passport, open work, and a record of reviewed contributions." },
       { property: "og:image", content: "https://choguild.vercel.app/og.jpg" },
@@ -52,6 +54,7 @@ function RootComponent() {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_BOOT }} />
         <HeadContent />
       </head>
       <body>
