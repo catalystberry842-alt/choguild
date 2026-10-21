@@ -20,7 +20,8 @@
     "typecheck": "tsc --noEmit",
     "test": "node --test scripts/*.test.mjs && node --experimental-strip-types --import ./scripts/test-alias.mjs --test 'src/**/*.test.ts'",
     "lint": "eslint .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:chog-live": "CHOG_LIVE=1 node --experimental-strip-types --import ./scripts/test-alias.mjs --test --test-force-exit src/lib/chog/holders.live.test.ts"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.4",

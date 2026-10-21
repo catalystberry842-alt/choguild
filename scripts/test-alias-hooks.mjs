@@ -11,5 +11,11 @@ export async function resolve(specifier, context, nextResolve) {
       if (existsSync(candidate)) return nextResolve(pathToFileURL(candidate).href, context);
     }
   }
+  if (specifier.startsWith(".") && context.parentURL?.startsWith("file:") && !/\.[cm]?[jt]sx?$/.test(specifier)) {
+    const base = fileURLToPath(new URL(specifier, context.parentURL));
+    for (const suffix of [".ts", ".tsx"]) {
+      if (existsSync(base + suffix)) return nextResolve(pathToFileURL(base + suffix).href, context);
+    }
+  }
   return nextResolve(specifier, context);
 }

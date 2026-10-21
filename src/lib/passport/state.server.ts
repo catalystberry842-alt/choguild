@@ -14,7 +14,6 @@ import {
 } from "@/lib/passport/repo.server";
 import { clearSessionRecord, readSessionRecord, writeSessionRecord } from "@/lib/passport/session.server";
 import type { ProfileInput } from "@/lib/passport/validate";
-import { parseAvatarRef } from "@/lib/passport/avatar";
 
 export async function loadPassportState() {
   const sql = await getSql();
@@ -85,14 +84,14 @@ export async function finishSave(input: { mode: "create" | "update"; profile: Pr
   return updateProfile(sql, live, input.profile);
 }
 
-/** A Chog avatar must be a token this wallet holds (skipped when the chain is unreachable). */
+/** A Chog avatar must be a token this wallet holds right now (live ownerOf; snapshot fallback). */
 async function checkChogAvatar(wallet: string, avatarUrl: string): Promise<string | null> {
-  const ref = parseAvatarRef(avatarUrl);
-  if (ref.kind !== "chog") return null;
-  const { chogSnapshot, holdingFrom } = await import("@/lib/chog/holders.server");
-  const holding = holdingFrom(await chogSnapshot({ budgetMs: 2_500 }).catch(() => null), wallet);
-  if (holding && !holding.tokenIds.includes(ref.tokenId)) return "That Chog is not held by this wallet.";
-  return null;
+  const { chogAvatarError } = await import("@/lib/chog/avatar-check");
+  const { ownsChogNow, chogSnapshot } = await import("@/lib/chog/holders.server");
+  return chogAvatarError(wallet, avatarUrl, ownsChogNow, async (w, id) => {
+    const snap = await chogSnapshot({ budgetMs: 2_500 }).catch(() => null);
+    return snap ? (snap.owners.get(w.toLowerCase()) ?? []).includes(id) : null;
+  });
 }
 
 /** Signed-in wallet for a raw API route, or null. Same-origin + rate limits apply. */

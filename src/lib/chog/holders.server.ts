@@ -139,6 +139,16 @@ export async function isChogHolderNow(wallet: string): Promise<boolean | null> {
   }
 }
 
+/** Authoritative live owner check for one token: true/false, or null when the chain can't be read. */
+export async function ownsChogNow(wallet: string, tokenId: number): Promise<boolean | null> {
+  try {
+    const owner = await rpc().readContract({ address: CHOG_CONTRACT, abi, functionName: "ownerOf", args: [BigInt(tokenId)] });
+    return owner.toLowerCase() === wallet.toLowerCase();
+  } catch {
+    return null;
+  }
+}
+
 /** IPFS path of a token's image (tokenURI is immutable per token, so cached forever). */
 export async function chogImagePath(tokenId: number): Promise<string | null> {
   holder.__chogUris ??= new Map();
