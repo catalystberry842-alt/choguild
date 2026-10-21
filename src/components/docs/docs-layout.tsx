@@ -47,8 +47,7 @@ export function DocsLayout({ page }: { page: DocPage }) {
         </details>
       </aside>
       <article className="min-w-0">
-        <p className="ix flex items-center gap-3"><span className="text-purple-ink">0{index + 1}</span><span className="h-px w-8 bg-line-strong" />DOCUMENTATION</p>
-        <h1 className="t-title mt-4 text-ink">{page.title}</h1>
+        <h1 className="t-title text-ink">{page.title}</h1>
         <p className="t-body mt-4 max-w-2xl">{page.lead}</p>
         <div className="mt-8 flex flex-col gap-8">
           {page.sections.map((s) => (

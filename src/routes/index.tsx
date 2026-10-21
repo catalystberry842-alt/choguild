@@ -59,14 +59,12 @@ function HomePage() {
 }
 
 /* ── shared ─────────────────────────────────────────────── */
-function Entry({ id, n, kicker, title, body, children, cta }: { id: string; n: string; kicker: string; title: ReactNode; body: ReactNode; children: ReactNode; cta?: ReactNode }) {
+function Entry({ id, title, body, children, cta }: { id: string; title: ReactNode; body: ReactNode; children: ReactNode; cta?: ReactNode }) {
   return (
     <InView as="section" id={id} aria-labelledby={`${id}-t`} className="entry scroll-mt-24">
-      <span className="entry-dot sq hidden lg:block" aria-hidden="true" />
       <div className="grid gap-8 lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)] lg:gap-14">
         <div className="lg:sticky lg:top-28 lg:self-start">
-          <p className="ix flex items-center gap-3"><span className="text-purple-ink">{n}</span><span className="h-px w-8 bg-line-strong" />{kicker}</p>
-          <h2 id={`${id}-t`} className="t-h2 mt-4 text-ink">{title}</h2>
+          <h2 id={`${id}-t`} className="t-h2 text-ink">{title}</h2>
           <div className="t-body mt-4 max-w-md">{body}</div>
           {cta ? <div className="mt-6 flex flex-wrap gap-2">{cta}</div> : null}
         </div>
@@ -103,8 +101,7 @@ function Hero() {
     <InView as="section" aria-labelledby="hero-title" className="pt-10 sm:pt-14 lg:pt-20">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16">
         <div>
-          <p className="ix rise flex items-center gap-3"><span className="sq a-blink" aria-hidden="true" />CONTRIBUTOR LEDGER · MONAD MAINNET</p>
-          <h1 id="hero-title" className="t-display rise rise-1 mt-6 text-ink">
+          <h1 id="hero-title" className="t-display rise text-ink">
             Ship work.<br />Earn your <em>rank.</em>
           </h1>
           <p className="t-body rise rise-2 mt-6 max-w-md">A wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.</p>
@@ -146,7 +143,7 @@ function PassportEntry() {
   const { stats, profile } = Route.useLoaderData();
   return (
     <Entry
-      id="passport" n="01" kicker="PASSPORT"
+      id="passport"
       title={<>Sign once. Own your <em>passport.</em></>}
       body={<>Connect a browser wallet and sign one message. No gas, no seed phrase. Upload an avatar, add skills and links, and your public passport is live. <span className="text-ink">{fmt(stats.passports)} passports</span> so far.</>}
       cta={<Go to="/passport" primary>{profile ? "Open your passport" : "Claim yours"}</Go>}
@@ -194,7 +191,7 @@ function WorkEntry() {
   const { featured, stats } = Route.useLoaderData();
   return (
     <Entry
-      id="work" n="02" kicker="OPEN WORK"
+      id="work"
       title={<>Open listings from Monad <em>builders.</em></>}
       body={<>Passport holders publish listings with terms, deadline and skills. Filter by category, compensation or holders-only. <span className="text-ink">{fmt(stats.openOpportunities)} open</span> right now.</>}
       cta={<Go to="/discover" primary>Browse the board</Go>}
@@ -227,7 +224,7 @@ function ReviewEntry() {
   const { stats } = Route.useLoaderData();
   return (
     <Entry
-      id="review" n="03" kicker="APPLICATIONS & SUBMISSIONS"
+      id="review"
       title={<>Ship it. Get it <em>accepted.</em></>}
       body={<>Apply to a listing, then submit evidence links for what you shipped. The publisher reviews it; acceptance writes XP to your passport. <span className="text-ink">{fmt(stats.acceptedWork)} accepted</span> to date.</>}
       cta={<><Go to="/applications" primary>Your applications</Go><Go to="/submissions">Submissions</Go></>}
@@ -262,7 +259,7 @@ function LadderEntry() {
   const max = Math.max(1, ...leaders.map((l) => l.xp));
   return (
     <Entry
-      id="ladder" n="04" kicker="XP & RANKING"
+      id="ladder"
       title={<>Accepted work moves you <em>up.</em></>}
       body={<>Guild XP comes from accepted work, applications, listings and your passport; onchain activity on Monad adds more. Five tiers, from {TIERS[0].name} to {TIERS[TIERS.length - 1].name}.</>}
       cta={<Go to="/ranking" primary>Full ranking</Go>}
@@ -308,7 +305,7 @@ function ChogEntry() {
   const tokenId = holders.find((h) => h.chogIds.length > 0)?.chogIds[0];
   return (
     <Entry
-      id="chog" n="05" kicker="CHOG GENESIS PERKS"
+      id="chog"
       title={<>Chog holders earn <em>10%</em> more XP.</>}
       body={<>Holding a Chog Genesis NFT is read live from the contract. Holders get a badge, +{Math.round(CHOG_BOOST_RATE * 100)}% guild XP (up to +{CHOG_BOOST_CAP}) and access to holders-only listings. <span className="text-ink">{holders.length} of {people.length}</span> ranked passports hold one.</>}
       cta={<a href={CHOG_EXPLORER_URL} target="_blank" rel="noreferrer" className="btn-ghost group inline-flex h-10 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium">View contract <span aria-hidden="true" className="arrow-slide">↗</span></a>}
@@ -349,7 +346,7 @@ function NetworkEntry() {
   const blocks = rows.length > 0 ? [...rows, ...rows, ...rows, ...rows] : [];
   return (
     <Entry
-      id="network" n="06" kicker="ONCHAIN PROOFS"
+      id="network"
       title={<>Your Monad activity <em>counts.</em></>}
       body={<>Each passport is tied to a Monad wallet. We read its transaction count from the chain and turn it into onchain XP. Members have <span className="text-ink">{fmt(stats.onchainTxs)} transactions</span> on Monad.</>}
       cta={<Go to="/network" primary>Network stats</Go>}
@@ -376,7 +373,7 @@ function NetworkEntry() {
 function PublishEntry() {
   return (
     <Entry
-      id="publish" n="07" kicker="PUBLISH WORK"
+      id="publish"
       title={<>Post work. Pick your <em>contributors.</em></>}
       body={<>Any passport holder can publish a listing: title, terms, deadline, positions and skills, optionally gated to Chog holders. Then review applicants and submissions. Published listings earn {XP_RULES[2].points} XP once they count.</>}
       cta={<Go to="/opportunities/new" primary>Publish a listing</Go>}
@@ -411,7 +408,7 @@ function HowEntry() {
   ];
   return (
     <Entry
-      id="how" n="08" kicker="HOW IT WORKS"
+      id="how"
       title={<>Four steps from wallet to <em>rank.</em></>}
       body={<>Every XP value is computed from the database and the chain, never typed in. Monthly caps keep it fair.</>}
       cta={<><Go to="/how-it-works" primary>How it works</Go><Go to="/docs">Read the docs</Go></>}
