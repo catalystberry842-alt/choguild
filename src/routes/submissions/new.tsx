@@ -38,7 +38,7 @@ function NewSubmissionPage() {
   }
   return (
     <div>
-      <PageHeader eyebrow="Submit" title="Submit work" description="Share links to what you delivered. The publisher reviews it." />
+      <PageHeader eyebrow="Submit" title={<>Show what you <em>shipped.</em></>} description="Share links to what you delivered. The publisher reviews it." />
       <div className="mt-10 flex flex-col gap-10">
         <Field label="For" htmlFor="eligible">
           <SelectInput id="eligible" value={applicationId} onChange={(event) => setApplicationId(event.target.value)}>

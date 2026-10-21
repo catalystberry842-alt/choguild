@@ -35,7 +35,7 @@ function NewOpportunityPage() {
   }
   return (
     <div>
-      <PageHeader eyebrow="Publish" title="Publish work" description="Describe the work clearly. You can save a draft and publish later." />
+      <PageHeader eyebrow="Publish" title={<>Post work for the <em>guild.</em></>} description="Describe the work clearly. You can save a draft and publish later." />
       <div className="mt-10">
         <OpportunityForm />
       </div>

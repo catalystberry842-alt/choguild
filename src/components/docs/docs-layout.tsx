@@ -48,17 +48,17 @@ export function DocsLayout({ page }: { page: DocPage }) {
       </aside>
       <article className="min-w-0">
         <p className="ix flex items-center gap-3"><span className="text-purple-ink">0{index + 1}</span><span className="h-px w-8 bg-line-strong" />DOCUMENTATION</p>
-        <h1 className="t-title mt-5 text-ink">{page.title}</h1>
+        <h1 className="t-title mt-4 text-ink">{page.title}</h1>
         <p className="t-body mt-4 max-w-2xl">{page.lead}</p>
-        <div className="mt-12 flex flex-col gap-12">
+        <div className="mt-8 flex flex-col gap-8">
           {page.sections.map((s) => (
-            <section key={s.id} id={s.id} className="scroll-mt-24 border-t border-line pt-8">
+            <section key={s.id} id={s.id} className="scroll-mt-24 border-t border-line pt-6">
               <h2 className="t-sub">{s.title}</h2>
               <div className="t-body mt-4 max-w-2xl">{s.body}</div>
             </section>
           ))}
         </div>
-        <nav aria-label="Pager" className="mt-16 grid gap-2 sm:grid-cols-2">
+        <nav aria-label="Pager" className="mt-10 grid gap-2 sm:grid-cols-2">
           {prev ? (
             <Link to="/docs/$slug" params={{ slug: prev.slug }} className="bento p-4"><span className="ix">← PREVIOUS</span><span className="mt-1 block text-ink">{prev.title}</span></Link>
           ) : <span />}
