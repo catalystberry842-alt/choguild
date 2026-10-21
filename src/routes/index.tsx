@@ -42,7 +42,7 @@ const STEPS: { label: string; body: string; to: "/passport" | "/discover" | "/su
 
 function HomePage() {
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+    <div className="mx-auto w-full max-w-6xl 2xl:max-w-7xl px-4 sm:px-6">
       <Hero />
       <Bento />
     </div>

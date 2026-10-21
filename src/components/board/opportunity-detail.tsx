@@ -107,8 +107,8 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
   });
 
   return (
-    <article className="mx-auto flex w-full max-w-3xl flex-col gap-6 pb-28 sm:gap-8 sm:pb-10">
-      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8">
+    <article className="mx-auto grid w-full max-w-3xl gap-6 pb-28 sm:gap-8 sm:pb-10 lg:max-w-6xl 2xl:max-w-7xl lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start lg:gap-x-8">
+      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8 lg:col-span-2 lg:p-10">
         <div className="relative flex flex-col gap-5">
           <div className="flex flex-wrap items-center gap-2">
             <span
@@ -187,7 +187,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
       <GlassBlock title="The work" body={plainCopy(opportunity.description)} />
       {plainCopy(opportunity.scope) ? <GlassBlock title="Requirements" body={plainCopy(opportunity.scope)} /> : null}
 
-      <section className="surface rounded-[1.5rem] p-6 sm:p-7">
+      <section className="surface rounded-[1.5rem] p-6 sm:p-7 lg:sticky lg:top-24 lg:col-start-2 lg:row-span-6 lg:row-start-2">
         <h2 className="t-meta">Required skills</h2>
         {opportunity.requiredSkills.length > 0 ? (
           <div className="mt-4 flex flex-wrap gap-2">

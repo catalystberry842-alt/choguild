@@ -225,7 +225,7 @@ function DiscoverPage() {
       </p>
 
       {result.items.length > 0 ? (
-        <ul className="grid gap-3 md:grid-cols-2">
+        <ul className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
           {result.items.map((item, index) => (
             <OpportunityCardView
               key={item.id}

@@ -20,7 +20,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
   return (
     <header className="sticky top-0 z-40 px-3 pt-[max(0.75rem,env(safe-area-inset-top))] sm:px-6">
       <div
-        className="header-drop mx-auto flex max-w-6xl items-center gap-2"
+        className="header-drop mx-auto flex max-w-6xl 2xl:max-w-7xl items-center gap-2"
       >
         <div className="pill-nav mx-auto flex h-12 min-w-0 items-center gap-1 pr-1.5 pl-4 lg:pl-5">
           <Link to="/" aria-label="Choguild home" className="logo-anim mr-2 flex items-center gap-2 text-ink">

@@ -81,9 +81,9 @@ export function PublicPassport({
         : formatXp(standing.txCount);
 
   return (
-    <article className="mx-auto flex w-full max-w-3xl flex-col gap-6 sm:gap-8">
+    <article className="mx-auto grid w-full max-w-3xl gap-6 sm:gap-8 lg:max-w-6xl 2xl:max-w-7xl lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-start lg:gap-x-8">
       {/* Hero: single passport-glass surface (blur once; no nested blur stacks). */}
-      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8">
+      <section className="passport-glass relative overflow-hidden rounded-[1.75rem] p-6 sm:p-8 lg:col-span-2 lg:p-10">
         {/* Intentional soft ring behind the avatar — replaces the odd stray circle. */}
         <div
           aria-hidden="true"
@@ -183,6 +183,7 @@ export function PublicPassport({
         </dl>
       </section>
 
+      <aside className="flex min-w-0 flex-col gap-6 sm:gap-8 lg:sticky lg:top-24 lg:col-start-2 lg:row-start-2">
       {profile.biography ? (
         <section className="surface rounded-[1.5rem] p-6 sm:p-7">
           <h2 className="t-meta">Bio</h2>
@@ -236,6 +237,9 @@ export function PublicPassport({
       ) : null}
 
       {chog && chog.count > 0 ? <ChogGallery holding={chog} /> : null}
+      </aside>
+
+      <div className="flex min-w-0 flex-col gap-6 sm:gap-8 lg:col-start-1 lg:row-start-2">
 
       <section className="flex flex-col gap-4">
         <div className="flex flex-wrap items-end justify-between gap-3">
@@ -308,6 +312,7 @@ export function PublicPassport({
         ) : null}
       </div>
       {copyError ? <p className="text-base text-danger">{copyError}</p> : null}
+      </div>
     </article>
   );
 }
