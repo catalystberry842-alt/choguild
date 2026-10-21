@@ -59,7 +59,7 @@ function Ladder() {
 function Detail() {
   return (
     <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
-      <div className="passport-glass rounded-[1.75rem] p-6 sm:p-8">
+      <div className="passport-glass rounded-2xl p-6 sm:p-8">
         <div className="flex gap-2">
           <div className="skeleton h-6 w-16 rounded-full" />
           <div className="skeleton h-6 w-24 rounded-full" />
@@ -80,7 +80,7 @@ function Detail() {
           ))}
         </div>
       </div>
-      <div className="surface flex h-40 flex-col gap-3 rounded-[1.5rem] p-6">
+      <div className="surface flex h-40 flex-col gap-3 rounded-2xl p-6">
         <div className="skeleton h-4 w-24" />
         <div className="skeleton h-4 w-full" />
         <div className="skeleton h-4 w-5/6" />

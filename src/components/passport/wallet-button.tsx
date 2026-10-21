@@ -48,19 +48,22 @@ export function WalletButton({
         <Dialog.Overlay className="fixed inset-0 z-50 bg-scrim/80" />
         <Dialog.Content
           className={cn(
-            "fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 glass glass-strong rounded-2xl p-6",
+            "fixed top-1/2 right-4 left-4 z-50 mx-auto max-w-md -translate-y-1/2 glass glass-strong rounded-2xl p-0",
           )}
         >
-          <Dialog.Title className="t-h3">Wallet</Dialog.Title>
-          <Dialog.Description className="mt-2 text-base text-body">
-            Connect a browser wallet. A connection is not a passport session until you sign.
-          </Dialog.Description>
-          <div className="mt-5">
+          <div className="border-b border-line px-6 pt-6 pb-5">
+            <p className="t-kicker">Monad mainnet</p>
+            <Dialog.Title className="t-h2 mt-2">Wallet</Dialog.Title>
+            <Dialog.Description className="mt-2 text-small text-body">
+              Connect a browser wallet. A connection is not a passport session until you sign.
+            </Dialog.Description>
+          </div>
+          <div className="px-6 py-6">
             <LazyWalletPanel />
           </div>
-          <div className="mt-5 flex justify-end">
+          <div className="flex justify-end border-t border-line px-6 py-4">
             <Dialog.Close asChild>
-              <Button variant="secondary">Close</Button>
+              <Button variant="secondary" size="compact">Close</Button>
             </Dialog.Close>
           </div>
         </Dialog.Content>

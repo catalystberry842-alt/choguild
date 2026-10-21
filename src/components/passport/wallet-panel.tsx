@@ -175,7 +175,7 @@ export function WalletPanel() {
             <Badge tone={onMonad ? "olive" : "warning"}>{isConnected ? network.label : "Not connected"}</Badge>
           </>
         ) : (
-          <p className="text-base text-body">No wallet connected</p>
+          <p className="text-small text-body">No wallet connected</p>
         )}
         {sessionAddress ? <Badge tone="sand">Session {shortAddress(sessionAddress)}</Badge> : null}
       </div>
@@ -183,12 +183,12 @@ export function WalletPanel() {
       <p className="t-meta">Choguild never asks for your seed phrase or private key.</p>
 
       {isConnected && !onMonad ? (
-        <p className="text-base text-warning">
+        <p className="text-small text-warning">
           Your wallet is on {network.label}. Switch to Monad (chain {MONAD_CHAIN_ID}) to continue.
         </p>
       ) : null}
       {sessionAddress && address && !sameWallet ? (
-        <p className="text-base text-warning">
+        <p className="text-small text-warning">
           You're signed in as {shortAddress(sessionAddress)}, not this wallet. Verify to switch, and each passport stays on its own address.
         </p>
       ) : null}
@@ -196,7 +196,7 @@ export function WalletPanel() {
       {!isConnected ? (
         stage === "picker" ? (
           <div className="flex flex-col gap-2" data-testid="wallet-picker">
-            <p className="t-meta">Choose a wallet</p>
+            <p className="t-kicker">Choose a wallet</p>
             {(readyConnectors.some((c) => c.id !== "injected")
               ? readyConnectors.filter((c) => c.id !== "injected")
               : readyConnectors
@@ -206,8 +206,10 @@ export function WalletPanel() {
                 variant="secondary"
                 onClick={() => void connect(connector.uid)}
                 disabled={connecting || status === "connecting" || status === "reconnecting"}
+                className="w-full justify-between rounded-xl"
               >
                 {connector.name}
+                <span aria-hidden="true" className="text-muted">→</span>
               </Button>
             ))}
           </div>
@@ -215,6 +217,7 @@ export function WalletPanel() {
           <WalletFallback mobile={isMobileUserAgent(navigator.userAgent, navigator.maxTouchPoints)} onRetry={() => void startConnect()} />
         ) : (
           <Button
+            className="w-full"
             data-testid="connect-wallet"
             onClick={() => void startConnect()}
             disabled={connecting || status === "connecting" || status === "reconnecting"}
@@ -258,7 +261,7 @@ export function WalletPanel() {
         </Button>
       ) : null}
 
-      {message ? <p className="text-base text-body">{message}</p> : null}
+      {message ? <p className="text-small text-body">{message}</p> : null}
       {error ? <ErrorMessage title="Wallet">{error}</ErrorMessage> : null}
     </div>
   );
@@ -271,7 +274,7 @@ function WalletFallback({ mobile, onRetry }: { mobile: boolean; onRetry: () => v
   const links = walletDeepLinks(url);
   return (
     <div className="flex flex-col gap-3" data-testid="mobile-wallet-links">
-      <p className="text-base text-body">
+      <p className="text-small text-body">
         {mobile
           ? "No wallet found in this browser. Open this page inside your wallet app to connect."
           : "No browser wallet found. Install MetaMask or Rabby and reload, or open this page in a wallet app."}
