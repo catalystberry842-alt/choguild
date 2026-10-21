@@ -37,7 +37,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
           <span>Search</span>
           <kbd className="text-[10px] text-faint">⌘K</kbd>
         </button>
-        <Link to="/docs" className={cn("mr-1 hidden h-8 items-center rounded-full px-3 text-small transition-colors md:flex", pathname.startsWith("/docs") ? "text-ink" : "text-body hover:text-ink")}>Docs</Link>
+        <Link to="/docs" className={cn("mr-1 hidden h-8 items-center rounded-full px-3 text-[0.8125rem] transition-colors md:flex", pathname.startsWith("/docs") ? "text-ink" : "text-body hover:text-ink")}>Docs</Link>
         <ThemeToggle />
         <WalletButton />
         <MobileMenu />

@@ -23,7 +23,7 @@ export function DocsLayout({ page }: { page: DocPage }) {
           <Link
             to="/docs/$slug"
             params={{ slug: d.slug }}
-            className={cn("flex items-center gap-3 rounded-lg px-3 py-2 text-small transition-colors", d.slug === page.slug ? "bg-purple text-white" : "text-body hover:bg-line/60 hover:text-ink")}
+            className={cn("flex items-center gap-3 rounded-lg px-3 py-2 text-[0.8125rem] transition-colors", d.slug === page.slug ? "bg-purple text-white" : "text-body hover:bg-line/60 hover:text-ink")}
           >
             <span className={cn("font-mono text-label", d.slug === page.slug ? "text-white/70" : "text-muted")}>0{i + 1}</span>
             {d.title}
@@ -72,7 +72,7 @@ export function DocsLayout({ page }: { page: DocPage }) {
         <ul className="flex flex-col gap-1 border-l border-line">
           {page.sections.map((s) => (
             <li key={s.id}>
-              <a href={`#${s.id}`} className={cn("-ml-px block border-l py-1 pl-3 text-small transition-colors", active === s.id ? "border-purple text-ink" : "border-transparent text-muted hover:text-ink")}>{s.title}</a>
+              <a href={`#${s.id}`} className={cn("-ml-px block border-l py-1 pl-3 text-[0.8125rem] transition-colors", active === s.id ? "border-purple text-ink" : "border-transparent text-muted hover:text-ink")}>{s.title}</a>
             </li>
           ))}
         </ul>
