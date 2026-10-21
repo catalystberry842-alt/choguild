@@ -190,7 +190,7 @@ function ApplicationPage() {
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-[rgb(8_7_12/0.92)] px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
         {canDecide ? (
-          <Button className="w-full" disabled={pending} onClick={() => void onDecide()}>
+          <Button disabled={pending} onClick={() => void onDecide()}>
             {pending ? "Saving…" : "Save decision"}
           </Button>
         ) : canWithdraw ? (
@@ -205,7 +205,7 @@ function ApplicationPage() {
             </Button>
           </div>
         ) : (
-          <Button asChild className="w-full">
+          <Button asChild>
             <Link to="/discover/$opportunityId" params={{ opportunityId: application.opportunityId }}>
               View opportunity
             </Link>

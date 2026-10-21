@@ -361,11 +361,11 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
       {/* Mobile sticky primary CTA — one glass bar, no nested blur. */}
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-[rgb(10_10_10/0.95)] px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
         {cta.kind === "link" ? (
-          <Button asChild className="w-full">
+          <Button asChild>
             <Link to={cta.to}>{cta.label}</Link>
           </Button>
         ) : cta.kind === "anchor" ? (
-          <Button className="w-full" onClick={() => document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" })}>
+          <Button onClick={() => document.getElementById("apply")?.scrollIntoView({ behavior: "smooth" })}>
             {cta.label}
           </Button>
         ) : cta.kind === "submit" ? (
@@ -380,7 +380,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
             {pending ? "Sending…" : cta.label}
           </Button>
         ) : (
-          <Button className="w-full" disabled>
+          <Button disabled>
             {cta.label}
           </Button>
         )}

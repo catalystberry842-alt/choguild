@@ -194,7 +194,7 @@ function SubmissionPage() {
 
       <div className="fixed inset-x-0 bottom-0 z-30 border-t border-line bg-[rgb(8_7_12/0.92)] px-3 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:hidden">
         {canReview ? (
-          <Button className="w-full" disabled={pending} onClick={() => void onReview()}>
+          <Button disabled={pending} onClick={() => void onReview()}>
             {pending ? "Saving…" : confirm ? `Confirm: ${WORK_STATUS_LABEL[action]}` : "Save review"}
           </Button>
         ) : editable ? (
@@ -205,7 +205,7 @@ function SubmissionPage() {
             {work.status === "draft" ? "Continue draft" : "Revise submission"}
           </Button>
         ) : (
-          <Button asChild className="w-full" variant="secondary">
+          <Button asChild variant="secondary">
             <Link to="/discover/$opportunityId" params={{ opportunityId: work.opportunityId }}>
               View opportunity
             </Link>
