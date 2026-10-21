@@ -21,6 +21,8 @@ import { Route as ApplicationsIndexRouteImport } from './routes/applications/ind
 import { Route as ApplicationsApplicationIdRouteImport } from './routes/applications/$applicationId'
 import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
 import { Route as DiscoverOpportunityIdRouteImport } from './routes/discover/$opportunityId'
+import { Route as DocsIndexRouteImport } from './routes/docs/index'
+import { Route as DocsSlugRouteImport } from './routes/docs/$slug'
 import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities/index'
 import { Route as OpportunitiesNewRouteImport } from './routes/opportunities/new'
 import { Route as PassportIndexRouteImport } from './routes/passport/index'
@@ -94,6 +96,16 @@ const DiscoverOpportunityIdRoute = DiscoverOpportunityIdRouteImport.update({
   path: '/discover/$opportunityId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DocsIndexRoute = DocsIndexRouteImport.update({
+  id: '/docs/',
+  path: '/docs/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DocsSlugRoute = DocsSlugRouteImport.update({
+  id: '/docs/$slug',
+  path: '/docs/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
   id: '/opportunities/',
   path: '/opportunities/',
@@ -163,12 +175,14 @@ export interface FileRoutesByFullPath {
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
+  '/docs/$slug': typeof DocsSlugRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
   '/passport/$username': typeof PassportUsernameRoute
   '/submissions/$submissionId': typeof SubmissionsSubmissionIdRoute
   '/submissions/new': typeof SubmissionsNewRoute
   '/applications/': typeof ApplicationsIndexRoute
   '/discover/': typeof DiscoverIndexRoute
+  '/docs/': typeof DocsIndexRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/passport/': typeof PassportIndexRoute
   '/submissions/': typeof SubmissionsIndexRoute
@@ -188,12 +202,14 @@ export interface FileRoutesByTo {
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
+  '/docs/$slug': typeof DocsSlugRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
   '/passport/$username': typeof PassportUsernameRoute
   '/submissions/$submissionId': typeof SubmissionsSubmissionIdRoute
   '/submissions/new': typeof SubmissionsNewRoute
   '/applications': typeof ApplicationsIndexRoute
   '/discover': typeof DiscoverIndexRoute
+  '/docs': typeof DocsIndexRoute
   '/opportunities': typeof OpportunitiesIndexRoute
   '/passport': typeof PassportIndexRoute
   '/submissions': typeof SubmissionsIndexRoute
@@ -214,12 +230,14 @@ export interface FileRoutesById {
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
+  '/docs/$slug': typeof DocsSlugRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
   '/passport/$username': typeof PassportUsernameRoute
   '/submissions/$submissionId': typeof SubmissionsSubmissionIdRoute
   '/submissions/new': typeof SubmissionsNewRoute
   '/applications/': typeof ApplicationsIndexRoute
   '/discover/': typeof DiscoverIndexRoute
+  '/docs/': typeof DocsIndexRoute
   '/opportunities/': typeof OpportunitiesIndexRoute
   '/passport/': typeof PassportIndexRoute
   '/submissions/': typeof SubmissionsIndexRoute
@@ -241,12 +259,14 @@ export interface FileRouteTypes {
     | '/api/csp-report'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
+    | '/docs/$slug'
     | '/opportunities/new'
     | '/passport/$username'
     | '/submissions/$submissionId'
     | '/submissions/new'
     | '/applications/'
     | '/discover/'
+    | '/docs/'
     | '/opportunities/'
     | '/passport/'
     | '/submissions/'
@@ -266,12 +286,14 @@ export interface FileRouteTypes {
     | '/api/csp-report'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
+    | '/docs/$slug'
     | '/opportunities/new'
     | '/passport/$username'
     | '/submissions/$submissionId'
     | '/submissions/new'
     | '/applications'
     | '/discover'
+    | '/docs'
     | '/opportunities'
     | '/passport'
     | '/submissions'
@@ -291,12 +313,14 @@ export interface FileRouteTypes {
     | '/api/csp-report'
     | '/applications/$applicationId'
     | '/discover/$opportunityId'
+    | '/docs/$slug'
     | '/opportunities/new'
     | '/passport/$username'
     | '/submissions/$submissionId'
     | '/submissions/new'
     | '/applications/'
     | '/discover/'
+    | '/docs/'
     | '/opportunities/'
     | '/passport/'
     | '/submissions/'
@@ -317,12 +341,14 @@ export interface RootRouteChildren {
   ApiCspReportRoute: typeof ApiCspReportRoute
   ApplicationsApplicationIdRoute: typeof ApplicationsApplicationIdRoute
   DiscoverOpportunityIdRoute: typeof DiscoverOpportunityIdRoute
+  DocsSlugRoute: typeof DocsSlugRoute
   OpportunitiesNewRoute: typeof OpportunitiesNewRoute
   PassportUsernameRoute: typeof PassportUsernameRoute
   SubmissionsSubmissionIdRoute: typeof SubmissionsSubmissionIdRoute
   SubmissionsNewRoute: typeof SubmissionsNewRoute
   ApplicationsIndexRoute: typeof ApplicationsIndexRoute
   DiscoverIndexRoute: typeof DiscoverIndexRoute
+  DocsIndexRoute: typeof DocsIndexRoute
   OpportunitiesIndexRoute: typeof OpportunitiesIndexRoute
   PassportIndexRoute: typeof PassportIndexRoute
   SubmissionsIndexRoute: typeof SubmissionsIndexRoute
@@ -418,6 +444,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DiscoverOpportunityIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/docs/': {
+      id: '/docs/'
+      path: '/docs'
+      fullPath: '/docs/'
+      preLoaderRoute: typeof DocsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/docs/$slug': {
+      id: '/docs/$slug'
+      path: '/docs/$slug'
+      fullPath: '/docs/$slug'
+      preLoaderRoute: typeof DocsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities/': {
       id: '/opportunities/'
       path: '/opportunities'
@@ -509,12 +549,14 @@ const rootRouteChildren: RootRouteChildren = {
   ApiCspReportRoute: ApiCspReportRoute,
   ApplicationsApplicationIdRoute: ApplicationsApplicationIdRoute,
   DiscoverOpportunityIdRoute: DiscoverOpportunityIdRoute,
+  DocsSlugRoute: DocsSlugRoute,
   OpportunitiesNewRoute: OpportunitiesNewRoute,
   PassportUsernameRoute: PassportUsernameRoute,
   SubmissionsSubmissionIdRoute: SubmissionsSubmissionIdRoute,
   SubmissionsNewRoute: SubmissionsNewRoute,
   ApplicationsIndexRoute: ApplicationsIndexRoute,
   DiscoverIndexRoute: DiscoverIndexRoute,
+  DocsIndexRoute: DocsIndexRoute,
   OpportunitiesIndexRoute: OpportunitiesIndexRoute,
   PassportIndexRoute: PassportIndexRoute,
   SubmissionsIndexRoute: SubmissionsIndexRoute,

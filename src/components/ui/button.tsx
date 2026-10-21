@@ -9,7 +9,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         primary: "sheen btn-glass",
-        secondary: "border border-line-strong bg-transparent text-ink hover:border-muted hover:bg-white/[0.03]",
+        secondary: "border border-line-strong bg-transparent text-ink hover:border-muted hover:bg-line/50",
         ghost: "bg-transparent text-body hover:bg-elevated hover:text-ink",
       },
       size: {
