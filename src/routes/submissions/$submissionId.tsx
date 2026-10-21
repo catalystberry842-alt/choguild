@@ -38,7 +38,7 @@ function statusTone(status: string): string {
   if (status === "accepted") return "bg-success/10 text-success";
   if (status === "rejected") return "bg-danger/10 text-danger";
   if (status === "changes_requested") return "bg-warning/10 text-warning";
-  return "bg-white/[0.06] text-body";
+  return "bg-line/50 text-body";
 }
 
 function SubmissionPage() {
@@ -180,7 +180,7 @@ function SubmissionPage() {
               .slice(0, -1)
               .reverse()
               .map((version) => (
-                <li key={version.version} className="rounded-2xl border border-white/10 bg-black/20 p-4 sm:p-5">
+                <li key={version.version} className="rounded-2xl border border-line bg-canvas/60 p-4 sm:p-5">
                   <p className="t-meta">
                     Version {version.version} · {formatStamp(version.createdAt)}
                   </p>
@@ -218,7 +218,7 @@ function SubmissionPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 sm:px-4">
+    <div className="rounded-2xl border border-line bg-canvas/60 px-3 py-3 sm:px-4">
       <dt className="t-meta">{label}</dt>
       <dd className="mt-1 text-base font-medium text-ink">{value}</dd>
     </div>
@@ -249,7 +249,7 @@ function EvidenceSection({
           {items.map((item) => (
             <li key={item.url}>
               <a
-                className="inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-line-strong bg-white/[0.03] px-4 text-small text-ink transition-colors hover:border-signal/50 hover:bg-signal/10"
+                className="inline-flex min-h-11 max-w-full items-center gap-2 rounded-full border border-line-strong bg-line/50 px-4 text-small text-ink transition-colors hover:border-signal/50 hover:bg-signal/10"
                 href={item.url}
                 target="_blank"
                 rel="noreferrer"

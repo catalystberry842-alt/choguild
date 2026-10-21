@@ -100,7 +100,7 @@ function RankingPage() {
                 <Link
                   to="/passport/$username"
                   params={{ username: person.username }}
-                  className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-white/[0.02] sm:px-6 md:grid-cols-[3rem_minmax(0,1fr)_8rem_6rem_6rem_9rem] md:gap-6"
+                  className="group grid grid-cols-[2rem_minmax(0,1fr)_auto] items-center gap-4 px-5 py-4 transition-colors hover:bg-line/50 sm:px-6 md:grid-cols-[3rem_minmax(0,1fr)_8rem_6rem_6rem_9rem] md:gap-6"
                 >
                   <span className={cn("tabular-nums tracking-[-0.04em]", person.rank <= 3 ? "text-2xl font-medium text-ink" : "text-lead text-muted")}>{person.rank}</span>
                   <span className="flex min-w-0 items-center gap-3">

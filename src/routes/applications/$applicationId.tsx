@@ -32,7 +32,7 @@ export const Route = createFileRoute("/applications/$applicationId")({
 function statusTone(status: string): string {
   if (status === "accepted") return "bg-success/10 text-success";
   if (status === "rejected" || status === "withdrawn") return "bg-danger/10 text-danger";
-  return "bg-white/[0.06] text-body";
+  return "bg-line/50 text-body";
 }
 
 function ApplicationPage() {
@@ -218,7 +218,7 @@ function ApplicationPage() {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 px-3 py-3 sm:px-4">
+    <div className="rounded-2xl border border-line bg-canvas/60 px-3 py-3 sm:px-4">
       <dt className="t-meta">{label}</dt>
       <dd className="mt-1 text-base font-medium text-ink">{value}</dd>
     </div>

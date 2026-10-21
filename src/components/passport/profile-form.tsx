@@ -190,7 +190,7 @@ export function ProfileForm({
                   "min-h-11 rounded-full border px-3.5 text-base transition-colors",
                   selected
                     ? "border-signal/60 bg-signal/15 text-ink"
-                    : "border-line bg-black/20 text-body hover:border-signal/40 hover:text-ink",
+                    : "border-line bg-canvas/60 text-body hover:border-signal/40 hover:text-ink",
                 )}
               >
                 {skill}
