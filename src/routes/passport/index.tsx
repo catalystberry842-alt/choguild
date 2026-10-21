@@ -60,8 +60,8 @@ function PassportPage() {
   const history = work && work.username === username ? work : null;
 
   return (
-    <div className="flex flex-col gap-3">
-      <div className="mb-10 flex flex-col items-center">
+    <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-10">
       <PageHeader
         eyebrow="Passport"
         title="Your passport"
@@ -79,10 +79,12 @@ function PassportPage() {
           ) : null
         }
       />
-        <PassportRecord profile={profile} address={sessionAddress} />
+        <div className="flex justify-center">
+          <PassportRecord profile={profile} address={sessionAddress} />
+        </div>
       </div>
 
-      <div className="grid gap-3 lg:grid-cols-2">
+      <div className="flex flex-col gap-12">
       <Section title="Wallet">
         <LazyWalletPanel />
       </Section>
