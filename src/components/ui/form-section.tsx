@@ -14,7 +14,7 @@ export function FormSection({
   className?: string;
 }) {
   return (
-    <section className={cn("surface rounded-[1.5rem] p-6 sm:p-7", className)}>
+    <section className={cn("surface rounded-2xl p-6 sm:p-7", className)}>
       <header className="mb-5">
         <h2 className="t-h3 text-ink">{title}</h2>
         {description ? <p className="t-meta mt-1.5 max-w-xl">{description}</p> : null}

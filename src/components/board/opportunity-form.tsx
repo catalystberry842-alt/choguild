@@ -107,15 +107,15 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
 
   if (step === "review") {
     return (
-      <div className="passport-glass rounded-[1.75rem] p-6 sm:p-8">
+      <div className="passport-glass rounded-2xl p-6 sm:p-8">
         <h2 className="t-h2">Review before <em>publishing</em></h2>
-        <dl className="mt-4 grid gap-3 text-base">
-          <div><dt className="text-muted">Title</dt><dd className="text-ink">{form.title}</dd></div>
-          <div><dt className="text-muted">Project</dt><dd className="text-ink">{form.projectName}</dd></div>
-          <div><dt className="text-muted">Summary</dt><dd className="text-ink">{form.summary}</dd></div>
-          <div><dt className="text-muted">Compensation</dt><dd className="text-ink">{COMPENSATION_LABEL[form.compensationType as keyof typeof COMPENSATION_LABEL]} {form.compensationDetails}</dd></div>
-          <div><dt className="text-muted">Who can apply</dt><dd className="text-ink">{form.holdersOnly ? "Chog Genesis holders only" : "Anyone with a passport"}</dd></div>
-          <div><dt className="text-muted">Required skills</dt><dd className="text-ink">{form.requiredSkills.join(", ") || "None"}</dd></div>
+        <dl className="mt-6 divide-y divide-line border-y border-line text-small">
+          <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"><dt className="t-kicker sm:pt-0.5">Title</dt><dd className="text-ink">{form.title}</dd></div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"><dt className="t-kicker sm:pt-0.5">Project</dt><dd className="text-ink">{form.projectName}</dd></div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"><dt className="t-kicker sm:pt-0.5">Summary</dt><dd className="text-ink">{form.summary}</dd></div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"><dt className="t-kicker sm:pt-0.5">Compensation</dt><dd className="text-ink">{COMPENSATION_LABEL[form.compensationType as keyof typeof COMPENSATION_LABEL]} {form.compensationDetails}</dd></div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"><dt className="t-kicker sm:pt-0.5">Who can apply</dt><dd className="text-ink">{form.holdersOnly ? "Chog Genesis holders only" : "Anyone with a passport"}</dd></div>
+          <div className="grid gap-1 py-3 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-6"><dt className="t-kicker sm:pt-0.5">Required skills</dt><dd className="text-ink">{form.requiredSkills.join(", ") || "None"}</dd></div>
         </dl>
         {formError ? <div className="mt-4"><ErrorMessage title="Could not publish">{formError}</ErrorMessage></div> : null}
         <div className="mt-5 flex flex-wrap gap-2">

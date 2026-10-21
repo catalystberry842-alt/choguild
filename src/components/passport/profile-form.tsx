@@ -309,7 +309,7 @@ export function ProfileForm({
         </Field>
       </FormSection>
 
-      <div className="surface rounded-[1.5rem] p-6 sm:p-7">
+      <div className="surface rounded-2xl p-6 sm:p-7">
         <p className="t-h3">{completionSummary(completion)}</p>
         <ul className="mt-3 flex flex-wrap gap-1.5">
           {completion.map((item) => (
