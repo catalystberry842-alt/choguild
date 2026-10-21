@@ -45,7 +45,7 @@ function RankingPage() {
           {([["Passports", stats.passports], ["Accepted", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value]) => (
             <div key={label} className="border-l border-line pl-4 first:border-l-0 first:pl-0">
               <dt className="t-kicker">{label}</dt>
-              <dd className="mt-2 text-2xl font-medium tracking-[-0.04em] tabular-nums text-ink">{value === null ? <span className="text-base text-muted">unavailable</span> : value.toLocaleString("en-US")}</dd>
+              <dd className="t-stat-num mt-2 text-ink">{value === null ? <span className="text-base text-muted">unavailable</span> : value.toLocaleString("en-US")}</dd>
             </div>
           ))}
         </dl>

@@ -312,7 +312,7 @@ function Stat({ label, value, muted }: { label: string; value: string; muted?: b
   return (
     <div className="border-l border-line pl-4 first:border-l-0 first:pl-0 max-sm:[&:nth-child(3)]:border-l-0 max-sm:[&:nth-child(3)]:pl-0">
       <dt className="t-kicker">{label}</dt>
-      <dd className={cn("mt-2 text-2xl font-medium tracking-[-0.04em] tabular-nums text-ink", muted && "text-base text-muted")}>
+      <dd className={cn("t-stat-num mt-2 text-ink", muted && "text-base text-muted")}>
         {value}
       </dd>
     </div>

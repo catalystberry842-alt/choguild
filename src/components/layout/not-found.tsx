@@ -17,7 +17,7 @@ export function NotFoundState({
     <>
       <meta name="robots" content="noindex" />
       <div className="grid gap-10 py-10 sm:py-16 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:items-end">
-        <p aria-hidden="true" className="text-[clamp(6rem,4rem+10vw,13rem)] leading-[0.8] font-medium tracking-[-0.07em] text-line-strong">404</p>
+        <p aria-hidden="true" className="t-display leading-none font-medium tracking-[-0.07em] text-line-strong">404</p>
         <div className="max-w-md">
           <p className="t-kicker">Not found</p>
           <h1 className="t-title mt-4">{title}</h1>
