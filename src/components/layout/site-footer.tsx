@@ -26,6 +26,7 @@ export function SiteFooter() {
           <Link to="/passport" className={link}>Passport</Link>
           <Link to="/ranking" className={link}>Ranking</Link>
           <Link to="/how-it-works" className={link}>How it works</Link>
+          <Link to="/docs" className={link}>Docs</Link>
         </FooterCol>
         <FooterCol title="Project">
           <Link to="/network" className={link}>Network</Link>

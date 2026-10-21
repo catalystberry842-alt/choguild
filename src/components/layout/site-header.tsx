@@ -1,6 +1,8 @@
 import * as Dialog from "@radix-ui/react-dialog";
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { HOME_SECTIONS } from "@/components/home/in-view";
+import { ThemeToggle } from "@/components/layout/theme-toggle";
 import { useWalletState } from "@/components/passport/wallet-state";
 import { LogoMark } from "@/components/brand/logo";
 import { usePassport } from "@/components/passport/passport-provider";
@@ -11,7 +13,6 @@ import { NAV_ITEMS, isNavActive } from "@/lib/navigation";
 import { monadChainLabel } from "@/lib/passport/chain";
 import { shortAddress } from "@/lib/passport/format";
 
-const PRIMARY = NAV_ITEMS.filter((item) => item.primary);
 
 /** Floating, centred pill navigation. Logo and links in the middle pill, wallet to the right. */
 export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
@@ -24,26 +25,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
           <LogoMark className="size-5" />
           <span className="text-base font-medium tracking-[-0.03em]">Choguild</span>
         </Link>
-        <nav aria-label="Main" className="mx-auto hidden items-center gap-0.5 lg:flex">
-
-          {PRIMARY.map((item) => {
-            const active = isNavActive(pathname, item.to);
-            return (
-              <Link
-                key={item.to}
-                to={item.to}
-                search={item.to === "/discover" ? emptyBoardSearch() : undefined}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "rounded-full px-3 py-1.5 text-small transition-colors",
-                  active ? "pill-glass text-ink" : "border border-transparent text-body hover:text-ink",
-                )}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+        <JumpNav pathname={pathname} />
                 <span className="ml-auto lg:hidden" />
         <button
           type="button"
@@ -55,6 +37,8 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
           <span>Search</span>
           <kbd className="text-[10px] text-faint">⌘K</kbd>
         </button>
+        <Link to="/docs" className={cn("mr-1 hidden h-8 items-center rounded-full px-3 text-small transition-colors md:flex", pathname.startsWith("/docs") ? "text-ink" : "text-body hover:text-ink")}>Docs</Link>
+        <ThemeToggle />
         <WalletButton />
         <MobileMenu />
       </div>
@@ -74,7 +58,7 @@ function MobileMenu() {
   return (
     <Dialog.Root open={open} onOpenChange={setOpen}>
       <Dialog.Trigger asChild>
-        <button type="button" aria-label="Open menu" className="ml-1 flex size-9 flex-col items-center justify-center gap-[5px] rounded-full bg-white/[0.06] lg:hidden">
+        <button type="button" aria-label="Open menu" className="ml-1 flex size-9 flex-col items-center justify-center gap-[5px] rounded-full bg-line/50 lg:hidden">
           <span className="h-px w-3.5 bg-ink" />
           <span className="h-px w-3.5 bg-ink" />
         </button>
@@ -93,7 +77,7 @@ function MobileMenu() {
                 <span className="t-h3">Choguild</span>
               </span>
               <Dialog.Close asChild>
-                <button type="button" aria-label="Close menu" className="flex size-9 items-center justify-center rounded-full bg-white/[0.06]">
+                <button type="button" aria-label="Close menu" className="flex size-9 items-center justify-center rounded-full bg-line/50">
                   <span className="relative block size-3.5">
                     <span className="absolute top-1/2 left-0 h-px w-3.5 rotate-45 bg-ink" />
                     <span className="absolute top-1/2 left-0 h-px w-3.5 -rotate-45 bg-ink" />
@@ -112,7 +96,7 @@ function MobileMenu() {
                       search={item.to === "/discover" ? emptyBoardSearch() : undefined}
                       className={cn(
                         "flex flex-row items-center gap-3 rounded-2xl border px-4 py-3 transition-colors min-[360px]:flex-col min-[360px]:items-start min-[360px]:gap-6 min-[360px]:p-4",
-                        active ? "border-signal/40 bg-signal/10" : "border-line bg-white/[0.02] hover:border-line-strong",
+                        active ? "border-signal/40 bg-signal/10" : "border-line bg-line/50 hover:border-line-strong",
                       )}
                     >
                       <Icon className={cn("size-4", active ? "text-signal" : "text-muted")} aria-hidden="true" />
@@ -122,7 +106,7 @@ function MobileMenu() {
                 );
               })}
             </nav>
-            <div className="mt-2 flex flex-col items-start gap-1 rounded-2xl bg-white/[0.03] px-4 py-3 text-small min-[360px]:flex-row min-[360px]:items-center min-[360px]:justify-between">
+            <div className="mt-2 flex flex-col items-start gap-1 rounded-2xl bg-line/50 px-4 py-3 text-small min-[360px]:flex-row min-[360px]:items-center min-[360px]:justify-between">
               <span className="truncate text-ink">{profile ? `@${profile.username}` : sessionAddress ? "Signed in" : "Not signed in"}</span>
               <span className="truncate font-mono text-label text-muted">
                 {isConnected && address ? `${shortAddress(address)} · ${network.label}` : "No wallet"}
@@ -132,5 +116,41 @@ function MobileMenu() {
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
+  );
+}
+
+/** Quick jumps to home sections; on home the visible section is highlighted while scrolling. */
+function JumpNav({ pathname }: { pathname: string }) {
+  const home = pathname === "/";
+  const [active, setActive] = useState<string | null>(null);
+  useEffect(() => {
+    if (!home || typeof IntersectionObserver === "undefined") return setActive(null);
+    const els = HOME_SECTIONS.map((s) => document.getElementById(s.id)).filter((el): el is HTMLElement => !!el);
+    const io = new IntersectionObserver(
+      (entries) => {
+        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
+      },
+      { rootMargin: "-45% 0px -50% 0px" },
+    );
+    els.forEach((el) => io.observe(el));
+    const onTop = () => window.scrollY < 300 && setActive(null);
+    window.addEventListener("scroll", onTop, { passive: true });
+    return () => { io.disconnect(); window.removeEventListener("scroll", onTop); };
+  }, [home]);
+  return (
+    <nav aria-label="Sections" className="mx-auto hidden items-center gap-0.5 lg:flex">
+      {HOME_SECTIONS.map((s) => (
+        <Link
+          key={s.id}
+          to="/"
+          hash={s.id}
+          data-active={active === s.id ? "true" : undefined}
+          aria-current={active === s.id ? "location" : undefined}
+          className="nav-jump rounded-full px-2.5 py-1 text-small text-body transition-colors duration-150 hover:text-ink xl:px-3"
+        >
+          {s.label}
+        </Link>
+      ))}
+    </nav>
   );
 }

@@ -1,7 +1,7 @@
-import { Activity, BookOpen, Compass, House, IdCard, Inbox, ScrollText, Trophy, type LucideIcon } from "lucide-react";
+import { Activity, BookOpen, FileText, Compass, House, IdCard, Inbox, ScrollText, Trophy, type LucideIcon } from "lucide-react";
 
 export type NavItem = {
-  to: "/" | "/passport" | "/discover" | "/submissions" | "/applications" | "/network" | "/ranking" | "/how-it-works";
+  to: "/" | "/passport" | "/discover" | "/submissions" | "/applications" | "/network" | "/ranking" | "/how-it-works" | "/docs";
   label: string;
   icon: LucideIcon;
   /** Shown in the desktop header; everything else lives in the menu and footer. */
@@ -17,6 +17,7 @@ export const NAV_ITEMS: NavItem[] = [
   { to: "/applications", label: "Applications", icon: Inbox, primary: true },
   { to: "/how-it-works", label: "How it works", icon: BookOpen, primary: true },
   { to: "/network", label: "Network", icon: Activity },
+  { to: "/docs", label: "Docs", icon: FileText },
 ];
 
 /** Active when on the item's page or anything below it (`/discover/abc` → Discover). */
