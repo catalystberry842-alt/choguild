@@ -64,7 +64,7 @@ function PassportPage() {
       <div className="flex flex-col gap-10">
       <PageHeader
         eyebrow="Passport"
-        title="Your passport"
+        title={<>Your identity in the <em>guild.</em></>}
         description="The public profile people see when they review your work. Sign once with your wallet to create or edit it."
         actions={
           profile ? (

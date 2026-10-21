@@ -23,7 +23,7 @@ function ApplicationsPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Applications" title="Applications" description="Everything you've applied to and where it stands." />
+      <PageHeader eyebrow="Applications" title={<>Every listing you <em>applied</em> to.</>} description="Everything you've applied to and where it stands." />
 
       <div className="mt-10">
         {!result.ok ? (

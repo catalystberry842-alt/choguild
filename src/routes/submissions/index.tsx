@@ -45,7 +45,7 @@ function SubmissionsPage() {
     <div>
       <PageHeader
         eyebrow="Submissions"
-        title="Submissions"
+        title={<>Your work, under <em>review.</em></>}
         description="Send evidence for accepted work, and review work sent to your listings."
         actions={
           data.ok && data.eligible.length > 0 ? (

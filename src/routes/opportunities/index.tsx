@@ -21,7 +21,7 @@ function OwnedPage() {
     <div>
       <PageHeader
         eyebrow="Listings"
-        title="Your listings"
+        title={<>Work you <em>posted.</em></>}
         description="Work you've published. Drafts stay off the board until you publish them."
         actions={
           result.ok ? (
