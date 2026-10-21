@@ -705,6 +705,7 @@
     isolation: auto;
   }
   .passport-glass { border-color: var(--color-line-strong); }
+  .glass-strong { background: #111111; border-color: var(--color-line-strong); }
   .bento, .surface, .panel { border-radius: 1rem; }
   :is(.glass, .bento, .panel, .surface, .passport-glass, .pill-nav) :is(.glass, .bento, .panel, .surface, .ticker) {
     background: #161616;

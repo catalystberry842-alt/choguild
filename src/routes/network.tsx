@@ -21,9 +21,9 @@ function NetworkPage() {
 
   return (
     <div>
-      <PageHeader eyebrow="Network" title="Network" description="Choguild runs on Monad mainnet. Testnet isn't used." />
+      <PageHeader eyebrow="Network" title={<>Monad <em>mainnet.</em></>} description="Choguild runs on Monad mainnet. Testnet isn't used." />
 
-      <dl className="mt-10 grid gap-4 sm:grid-cols-3">
+      <dl className="grid gap-y-8 sm:grid-cols-3">
         <Fact label="Chain">
           <span className="text-lead font-semibold tracking-tight">Monad mainnet</span>
           <span className="t-meta mt-1 block tabular-nums">Chain ID {MONAD_CHAIN_ID}</span>
@@ -40,7 +40,7 @@ function NetworkPage() {
         </Fact>
       </dl>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-12 flex flex-wrap gap-2 border-t border-line pt-8">
         {MONAD_EXPLORERS.map((explorer) => (
           <a key={explorer.url} className="inline-flex min-h-10 items-center gap-1.5 rounded-full border border-line px-4 text-small text-body transition-colors hover:border-line-strong hover:text-ink" href={explorer.url} target="_blank" rel="noreferrer">
             {explorer.name} <span aria-hidden="true">↗</span>
@@ -56,8 +56,8 @@ function NetworkPage() {
 
 function Fact({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="surface p-6">
-      <dt className="t-meta">{label}</dt>
+    <div className="border-line sm:border-l sm:pl-6 sm:first:border-l-0 sm:first:pl-0">
+      <dt className="t-kicker">{label}</dt>
       <dd className="t-body mt-3 text-ink">{children}</dd>
     </div>
   );
