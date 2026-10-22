@@ -90,6 +90,7 @@ describe("collaboration board", () => {
     await pg.exec(readFileSync(new URL("../../../migrations/0007_chog_gate.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0008_audit_v15.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0012_chog_rewards.sql", import.meta.url), "utf8"));
+    await pg.exec("alter table opportunities add column if not exists orphaned_at timestamptz");
   });
 
   it("stores and returns a $CHOG reward", async () => {

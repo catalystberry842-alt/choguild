@@ -30,12 +30,12 @@ function seasonLeft(end: number): string {
 }
 
 function RankingPage() {
-  const { contributors, stats, season } = Route.useLoaderData();
+  const { contributors, stats, season, prize } = Route.useLoaderData();
   const by: RankBy = Route.useSearch().by ?? "overall";
   const { chogId: mine } = usePassport();
   const ranking = rankContributors(contributors, by).filter((p) => by !== "season" || p.xp > 0);
   const BLURB: Record<RankBy, string> = {
-    overall: "All-time XP from accepted work, listings and daily quests.",
+    overall: "All-time XP from accepted work, listings, daily quests and duels.",
     season: `Season ${season.number} · resets Monday 00:00 UTC · ${seasonLeft(season.end)}.`,
   };
 
@@ -52,6 +52,12 @@ function RankingPage() {
         </dl>
       </PageHeader>
 
+      {by === "season" && prize ? (
+        <p className="surface mb-4 flex items-center gap-2 px-4 py-3 text-small text-ink">
+          <span aria-hidden="true" className="size-1.5 rounded-full bg-[#836ef9]" />
+          <span><span className="font-semibold">Season {season.number} prize:</span> {prize}</span>
+        </p>
+      ) : null}
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div role="tablist" aria-label="Rank by" className="inline-flex self-start rounded-full border border-line p-1">
           {RANK_BY.map((option) => {

@@ -148,7 +148,7 @@ export async function listOpportunities(
   search: BoardSearch,
   viewer: string | null,
 ): Promise<{ items: OpportunityCard[]; total: number; page: number; pageSize: number }> {
-  const where: string[] = ["o.status <> 'draft'"];
+  const where: string[] = ["o.status <> 'draft'", "o.orphaned_at is null"];
   const params: unknown[] = [];
   const add = (value: unknown) => {
     params.push(value);

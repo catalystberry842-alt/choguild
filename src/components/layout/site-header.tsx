@@ -3,6 +3,7 @@ import { Link, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { HOME_SECTIONS } from "@/components/home/in-view";
 import { ThemeToggle } from "@/components/layout/theme-toggle";
+import { NoticeBell } from "@/components/layout/notice-bell";
 import { useWalletState } from "@/components/passport/wallet-state";
 import { LogoMark } from "@/components/brand/logo";
 import { usePassport } from "@/components/passport/passport-provider";
@@ -38,6 +39,7 @@ export function SiteHeader({ onOpenPalette }: { onOpenPalette: () => void }) {
           <kbd className="text-[10px] text-faint">⌘K</kbd>
         </button>
         <Link to="/docs" className={cn("mr-1 hidden h-8 items-center rounded-full px-3 text-[0.8125rem] transition-colors md:flex", pathname.startsWith("/docs") ? "text-ink" : "text-body hover:text-ink")}>Docs</Link>
+        <NoticeBell />
         <ThemeToggle />
         <WalletButton />
         <MobileMenu />

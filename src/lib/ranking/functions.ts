@@ -7,6 +7,8 @@ export async function loadRanking(): Promise<{
   contributors: Contributor[];
   stats: { passports: number; openOpportunities: number; acceptedWork: number; questsToday: number };
   season: { number: number; start: number; end: number };
+  /** Season prize text, only when configured (SEASON_PRIZE). Default none: no prize is promised. */
+  prize: string | null;
 }> {
   const { getSql } = await import("@/lib/db");
   const { listContributors, loadGuildStats } = await import("./repo.server");
@@ -21,7 +23,7 @@ export async function loadRanking(): Promise<{
     listContributors(sql, { holderOf: (id) => byToken.get(id) ?? null }),
     loadGuildStats(sql),
   ]);
-  return { contributors, stats, season: seasonFor() };
+  return { contributors, stats, season: seasonFor(), prize: process.env.SEASON_PRIZE?.trim().slice(0, 200) || null };
 }
 
 export const getRanking = createServerFn({ method: "GET" }).handler(async () => loadRanking());
