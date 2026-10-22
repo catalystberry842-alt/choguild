@@ -72,3 +72,12 @@ export function HoldersOnlyPill({ className }: { className?: string }) {
     </span>
   );
 }
+
+export function RewardPill({ amount, className }: { amount: string; className?: string }) {
+  return (
+    <span className={cn("inline-flex w-fit items-center gap-1 rounded-full px-2.5 py-0.5 text-label font-medium text-ink ring-1 ring-line-strong", className)}>
+      <span aria-hidden="true" className="text-signal">●</span>
+      {Number(amount).toLocaleString("en-US", { maximumFractionDigits: 4 })} $CHOG reward
+    </span>
+  );
+}

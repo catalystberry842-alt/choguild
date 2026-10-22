@@ -2,7 +2,7 @@ import { Link, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState } from "react";
 import { PosterMark } from "@/components/board/opportunity-card";
-import { HoldersOnlyPill } from "@/components/chog/chog-bits";
+import { HoldersOnlyPill, RewardPill } from "@/components/chog/chog-bits";
 import { usePassport } from "@/components/passport/passport-provider";
 import { useQuestPing } from "@/components/chog/quest-panel";
 import { Button } from "@/components/ui/button";
@@ -127,6 +127,7 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
               {statusLabel}
             </span>
             <span className="glass-chip rounded-full px-2.5 py-1 text-label text-ink">{categoryLabel}</span>
+            {opportunity.rewardChog ? <RewardPill amount={opportunity.rewardChog} /> : null}
             {opportunity.holdersOnly ? <HoldersOnlyPill /> : null}
           </div>
 

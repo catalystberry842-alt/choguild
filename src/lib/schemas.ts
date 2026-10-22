@@ -17,7 +17,7 @@ export const opportunitySchema = z.object({
   requiredSkills: z.array(text(60)).max(30), preferredSkills: z.array(text(60)).max(30),
   category: text(60), compensationType: text(60), compensationDetails: text(1_000),
   timeCommitment: text(200), deadline: text(40), instructions: text(5_000), question: text(1_000),
-  positions: text(10), publish: z.boolean(), holdersOnly: z.boolean().optional(),
+  positions: text(10), publish: z.boolean(), holdersOnly: z.boolean().optional(), rewardChog: text(40).optional(),
 });
 
 export const applicationSchema = z.object({

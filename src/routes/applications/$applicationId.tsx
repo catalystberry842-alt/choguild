@@ -1,3 +1,4 @@
+import { RewardPanel } from "@/components/chog/reward-panel";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
@@ -101,6 +102,7 @@ function ApplicationPage() {
           <Stat label="Skills" value={application.skills.length ? String(application.skills.length) : "—"} />
         </dl>
       </section>
+      <RewardPanel kind="application" id={application.id} />
 
       {answers.map(([label, text]) => (
         <FormSection key={label} title={label}>

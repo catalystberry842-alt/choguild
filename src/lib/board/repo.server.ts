@@ -40,6 +40,7 @@ type OppRow = {
   question: string | null;
   positions: number | string | null;
   holders_only?: boolean | null;
+  reward_chog?: string | null;
   status: string;
   created_at: string;
   updated_at: string;
@@ -93,6 +94,7 @@ function toCard(row: OppRow, viewer: string | null): OpportunityCard {
     myApplicationId: mine ? null : row.my_application_id,
     createdAt: row.created_at,
     holdersOnly: row.holders_only === true,
+    rewardChog: row.reward_chog == null ? null : String(Number(row.reward_chog)),
     poster: {
       username: row.poster_username,
       displayName: row.poster_display_name,
@@ -125,7 +127,7 @@ const CARD_COLUMNS = `
   o.scope, o.deliverables, o.required_skills, o.preferred_skills, o.category, o.compensation_type,
   o.compensation_details, o.time_commitment,
   to_char(o.deadline at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as deadline,
-  o.instructions, o.question, o.positions, o.holders_only, o.status,
+  o.instructions, o.question, o.positions, o.holders_only, o.reward_chog::text as reward_chog, o.status,
   to_char(o.created_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as created_at,
   to_char(o.updated_at at time zone 'UTC', 'YYYY-MM-DD"T"HH24:MI:SS"Z"') as updated_at,
   a.status as my_status,
@@ -251,16 +253,16 @@ export async function createOpportunity(
     `insert into opportunities (
       id, owner_wallet, project_name, project_logo_url, title, summary, description, scope, deliverables,
       required_skills, preferred_skills, category, compensation_type, compensation_details, time_commitment,
-      deadline, instructions, question, positions, status, holders_only, published_at
+      deadline, instructions, question, positions, status, holders_only, reward_chog, published_at
     ) values (
-      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,
+      $1,$2,$3,$4,$5,$6,$7,$8,$9,$10::jsonb,$11::jsonb,$12,$13,$14,$15,$16,$17,$18,$19,$20,$21,$22::numeric,
       case when $20 = 'open' then now() else null end
     )`,
     [
       id, owner, value.projectName, value.projectLogoUrl, value.title, value.summary, value.description,
       value.scope, value.deliverables, JSON.stringify(value.requiredSkills), JSON.stringify(value.preferredSkills),
       value.category, value.compensationType, value.compensationDetails, value.timeCommitment, value.deadline,
-      value.instructions, value.question, value.positions, value.status, value.holdersOnly,
+      value.instructions, value.question, value.positions, value.status, value.holdersOnly, value.rewardChog,
     ],
   );
   const opportunity = await readDetail(sql, id, owner);
@@ -285,7 +287,7 @@ export async function updateOpportunity(
       project_name = $3, project_logo_url = $4, title = $5, summary = $6, description = $7, scope = $8,
       deliverables = $9, required_skills = $10::jsonb, preferred_skills = $11::jsonb, category = $12,
       compensation_type = $13, compensation_details = $14, time_commitment = $15, deadline = $16,
-      instructions = $17, question = $18, positions = $19, status = $20, holders_only = $21, updated_at = now(),
+      instructions = $17, question = $18, positions = $19, status = $20, holders_only = $21, reward_chog = $22::numeric, updated_at = now(),
       published_at = coalesce(published_at, case when $20 = 'open' then now() else null end)
      where id = $1 and owner_wallet = $2
      returning id`,
@@ -293,7 +295,7 @@ export async function updateOpportunity(
       id, owner, value.projectName, value.projectLogoUrl, value.title, value.summary, value.description,
       value.scope, value.deliverables, JSON.stringify(value.requiredSkills), JSON.stringify(value.preferredSkills),
       value.category, value.compensationType, value.compensationDetails, value.timeCommitment, value.deadline,
-      value.instructions, value.question, value.positions, status, value.holdersOnly,
+      value.instructions, value.question, value.positions, status, value.holdersOnly, value.rewardChog,
     ],
   );
   if (!updated[0]) return { ok: false, error: "You can only edit an opportunity you published." };

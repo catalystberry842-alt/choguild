@@ -48,6 +48,8 @@ export type OpportunityInput = {
   positions: string;
   publish: boolean;
   holdersOnly?: boolean;
+  /** Optional $CHOG reward, whole or decimal tokens. Empty = none. */
+  rewardChog?: string;
 };
 
 export type OpportunityRecord = {
@@ -69,6 +71,7 @@ export type OpportunityRecord = {
   question: string | null;
   positions: number | null;
   holdersOnly: boolean;
+  rewardChog: string | null;
   status: Extract<OpportunityStatus, "draft" | "open">;
 };
 
@@ -209,6 +212,13 @@ export function validateOpportunity(
     else positions = parsed;
   }
 
+  let rewardChog: string | null = null;
+  const rawReward = (input.rewardChog ?? "").trim().replace(/,/g, "");
+  if (rawReward) {
+    if (!/^\d{1,12}(\.\d{1,4})?$/.test(rawReward) || Number(rawReward) <= 0) errors.rewardChog = "Enter a $CHOG amount above 0 (up to 4 decimals).";
+    else rewardChog = rawReward.replace(/^0+(?=\d)/, "");
+  }
+
   if (Object.keys(errors).length > 0 || !category || !compensationType) return { ok: false, errors };
   return {
     ok: true,
@@ -231,6 +241,7 @@ export function validateOpportunity(
       question,
       positions,
       holdersOnly: input.holdersOnly === true,
+      rewardChog,
       status: input.publish ? "open" : "draft",
     },
   };

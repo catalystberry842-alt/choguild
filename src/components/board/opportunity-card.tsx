@@ -12,7 +12,7 @@ import {
 } from "@/lib/board/copy";
 import { cardSummary, deadlineCountdown, projectLabel, usableImageUrl } from "@/lib/board/display";
 import type { OpportunityCard } from "@/lib/board/types";
-import { HoldersOnlyPill } from "@/components/chog/chog-bits";
+import { HoldersOnlyPill, RewardPill } from "@/components/chog/chog-bits";
 import { cn } from "@/lib/cn";
 import { formatDay } from "@/lib/passport/format";
 
@@ -44,8 +44,9 @@ export function OpportunityCardView({ item }: { item: OpportunityCard; index?: n
               {project}
               {item.poster.username ? ` · @${item.poster.username}` : ""} · {label(CATEGORY_LABEL, item.category as Category)}
             </span>
-            {item.requiredSkills.length > 0 || item.holdersOnly ? (
+            {item.requiredSkills.length > 0 || item.holdersOnly || item.rewardChog ? (
               <span className="mt-2.5 flex flex-wrap gap-1.5">
+                {item.rewardChog ? <RewardPill amount={item.rewardChog} /> : null}
                 {item.holdersOnly ? <HoldersOnlyPill /> : null}
                 {item.requiredSkills.slice(0, 3).map((skill) => (
                   <span key={skill} className="rounded-full border border-line-strong px-2 py-0.5 text-label text-body">{skill}</span>

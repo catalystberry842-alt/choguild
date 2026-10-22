@@ -24,6 +24,8 @@ export type OpportunityCard = {
   createdAt: string;
   /** Only Chog Genesis holders may apply (checked onchain at apply time). */
   holdersOnly: boolean;
+  /** $CHOG reward the publisher pays each accepted Chog's holder, or null. */
+  rewardChog: string | null;
   /** Publisher passport, when they have one. */
   poster: PosterInfo;
   /** Applications received (any status). */

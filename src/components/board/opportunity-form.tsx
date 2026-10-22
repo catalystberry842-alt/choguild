@@ -39,6 +39,7 @@ function emptyInput(): OpportunityInput {
     positions: "",
     publish: false,
     holdersOnly: false,
+    rewardChog: "",
   };
 }
 
@@ -63,6 +64,7 @@ function fromOpportunity(opportunity: OpportunityDetail): OpportunityInput {
     positions: opportunity.positions ? String(opportunity.positions) : "",
     publish: opportunity.status === "open",
     holdersOnly: opportunity.holdersOnly,
+    rewardChog: opportunity.rewardChog ?? "",
   };
 }
 
@@ -192,6 +194,9 @@ export function OpportunityForm({ opportunity }: { opportunity?: OpportunityDeta
         </div>
         <Field label="Positions" htmlFor="opp-positions" hint="Optional. 1–20." error={errors.positions}>
           <TextInput id="opp-positions" inputMode="numeric" value={form.positions} onChange={(event) => set("positions", event.target.value)} />
+        </Field>
+        <Field label="$CHOG reward" htmlFor="opp-reward" hint="Optional. You pay each accepted Chog's current holder from your own wallet; Choguild verifies the transfer onchain. Nothing is escrowed." error={errors.rewardChog}>
+          <TextInput id="opp-reward" inputMode="decimal" placeholder="e.g. 500" value={form.rewardChog ?? ""} onChange={(event) => set("rewardChog", event.target.value.replace(/[^\d.]/g, ""))} />
         </Field>
         <label htmlFor="opp-holders-only" className="flex cursor-pointer items-start gap-3 rounded-2xl border border-line-strong bg-canvas/60 p-4 transition-colors hover:border-signal/40">
           <input

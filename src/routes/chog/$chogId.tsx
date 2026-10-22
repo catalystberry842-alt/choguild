@@ -9,6 +9,7 @@ import { RankCardActions } from "@/components/chog/rank-card";
 import { ChogTip } from "@/components/chog/chog-tip";
 import { DuelChallenge, DuelHistory } from "@/components/chog/duel";
 import { getDuelBoard } from "@/lib/duels/functions";
+import { getChogPaid } from "@/lib/rewards/functions";
 import { NotFoundState } from "@/components/layout/not-found";
 import { usePassport } from "@/components/passport/passport-provider";
 import { Button } from "@/components/ui/button";
@@ -27,8 +28,8 @@ export const Route = createFileRoute("/chog/$chogId")({
   loader: async ({ params }) => {
     const id = Number(params.chogId);
     if (!isChogTokenId(id)) throw notFound();
-    const [record, duels] = await Promise.all([getChogRecord({ data: id }), getDuelBoard({ data: id })]);
-    return { ...record, duels };
+    const [record, duels, paid] = await Promise.all([getChogRecord({ data: id }), getDuelBoard({ data: id }), getChogPaid({ data: id }).catch(() => ({ total: "0", count: 0 }))]);
+    return { ...record, duels, paid };
   },
   staticData: { title: "Chog record", crumb: "Chog" },
   pendingComponent: () => <LoadingState label="Loading Chog" layout="detail" />,
@@ -161,11 +162,12 @@ function ChogPage() {
           <p className="t-meta">Keyed to the token, not the wallet. A new owner inherits it.</p>
         </div>
         {standing ? (
-          <ul className="grid grid-cols-3 gap-3">
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-4">
             {([
               ["Accepted work", standing.counts.acceptedSubmissions],
               ["Accepted applications", standing.counts.acceptedApplications],
               ["Listings credited", standing.counts.publishedOpportunities],
+              ["$CHOG rewards paid", record.paid.total],
             ] as const).map(([label, n]) => (
               <li key={label} className="surface p-3">
                 <p className="text-lead font-semibold tabular-nums text-ink">{n}</p>

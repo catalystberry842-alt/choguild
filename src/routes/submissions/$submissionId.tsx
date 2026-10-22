@@ -1,3 +1,4 @@
+import { RewardPanel } from "@/components/chog/reward-panel";
 import { createFileRoute, Link, notFound, useRouter } from "@tanstack/react-router";
 import { ExternalLink } from "lucide-react";
 import { useState } from "react";
@@ -92,6 +93,7 @@ function SubmissionPage() {
           <Stat label="Evidence" value={work.publicEvidence ? "Public" : "Private"} />
         </dl>
       </section>
+      <RewardPanel kind="submission" id={work.id} />
 
       {latest?.description ? (
         <FormSection title="What was delivered">

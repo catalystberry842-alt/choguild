@@ -14,7 +14,7 @@ const g = globalThis as typeof globalThis & {
   __chogOwners?: Map<number, { owner: string | null; at: number }>;
 };
 
-function client() {
+export function monadClient() {
   g.__chogOwnerClient ??= createPublicClient({
     chain: monad,
     transport: fallback(monadRpcUrls(process.env.VITE_MONAD_RPC_URL).slice(0, 5).map((url) => http(url, { timeout: 6_000, retryCount: 0 }))),
@@ -29,7 +29,7 @@ export async function liveOwnerOf(tokenId: number, options: { fresh?: boolean } 
   const hit = g.__chogOwners.get(tokenId);
   if (!options.fresh && hit && Date.now() - hit.at < OWNER_TTL_MS) return hit.owner;
   try {
-    const owner = (await client().readContract({ address: CHOG_CONTRACT, abi, functionName: "ownerOf", args: [BigInt(tokenId)] })).toLowerCase();
+    const owner = (await monadClient().readContract({ address: CHOG_CONTRACT, abi, functionName: "ownerOf", args: [BigInt(tokenId)] })).toLowerCase();
     g.__chogOwners.set(tokenId, { owner, at: Date.now() });
     return owner;
   } catch (error) {

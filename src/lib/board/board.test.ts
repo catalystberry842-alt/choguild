@@ -89,6 +89,13 @@ describe("collaboration board", () => {
     await pg.exec(readFileSync(new URL("../../../migrations/0006_remove_demo_data.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0007_chog_gate.sql", import.meta.url), "utf8"));
     await pg.exec(readFileSync(new URL("../../../migrations/0008_audit_v15.sql", import.meta.url), "utf8"));
+    await pg.exec(readFileSync(new URL("../../../migrations/0012_chog_rewards.sql", import.meta.url), "utf8"));
+  });
+
+  it("stores and returns a $CHOG reward", async () => {
+    const created = await createOpportunity(sql, OWNER, input({ title: "Rewarded listing title", rewardChog: "250.5" }));
+    assert.equal(created.ok, true);
+    if (created.ok) assert.equal(created.opportunity.rewardChog, "250.5");
   });
 
   it("publishes, hides drafts, and blocks edits from another wallet", async () => {
