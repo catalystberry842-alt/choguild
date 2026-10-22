@@ -5,139 +5,157 @@
 <h1 align="center">Choguild</h1>
 
 <p align="center">
-  <strong>Your Chog is the <em>member.</em></strong><br />
-  A work guild on Monad where each Chog Genesis NFT carries its own passport, XP, rank and work history, and takes them along when it changes hands.
+  <strong>Your Chog is the member.</strong><br />
+  A work guild on Monad where every Chog Genesis NFT carries its own passport, XP, rank and work history, and takes all of it along when it changes hands.
 </p>
 
 <p align="center">
-  <a href="https://choguild.vercel.app"><b>choguild.vercel.app</b></a> ·
+  <a href="https://choguild.vercel.app"><b>Live app</b></a> ·
+  <a href="#try-it-in-60-seconds">Try it in 60s</a> ·
   <a href="https://choguild.vercel.app/docs">Docs / whitepaper</a> ·
-  <a href="#for-chogathon-judges">For judges</a>
+  <a href="https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763">Chog Genesis contract</a>
 </p>
 
 <p align="center">
-  <a href="https://choguild.vercel.app"><img alt="Live" src="https://img.shields.io/badge/live-choguild.vercel.app-836EF9?style=flat-square&logo=vercel" /></a>
-  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0a0a0a?style=flat-square" /></a>
-  <img alt="Node 22+" src="https://img.shields.io/badge/node-%E2%89%A522-0a0a0a?style=flat-square&logo=node.js" />
   <img alt="Monad mainnet" src="https://img.shields.io/badge/Monad-mainnet%20(143)-836EF9?style=flat-square" />
+  <img alt="Node 22+" src="https://img.shields.io/badge/node-%E2%89%A522-0a0a0a?style=flat-square&logo=node.js" />
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/license-MIT-0a0a0a?style=flat-square" /></a>
 </p>
 
 <p align="center">
-  <img src="docs/media/home-desktop-dark.svg" alt="Choguild home, dark theme, desktop" width="820" />
+  <img src="docs/screens/home.jpg" alt="Choguild home page: Your Chog is the member" width="860" />
 </p>
+
+## The idea: the NFT is the member
+
+Most NFT utility is a badge or a discount. Take the NFT away and the product still works. Choguild turns that around: **a wallet is just a key, and the member is the Chog.**
+
+- **Records live on the token.** Every passport, listing, application, submission and XP event is stored against `chog:<tokenId>`, never a wallet address.
+- **Ownership is live.** Whoever holds the Chog right now (`ownerOf` on Monad mainnet) acts as it, and every write re-checks it.
+- **Reputation travels.** Sell or send a Chog and the new holder inherits its rank, tier, streak and history. Each Chog has a public record at [`/chog/:id`](https://choguild.vercel.app/chog/12).
+- **One Chog at a time.** A wallet holding several Chogs picks which one to act as.
+
+### Why removing the NFT breaks it
+
+With no Chog, a wallet can sign in and browse, but it **cannot** save a passport, post a listing, apply, review work, do quests or appear on the leaderboard. There is no wallet-level account to fall back on, so if you removed the NFT, Choguild would have no members at all.
+
 <p align="center">
-  <img src="docs/media/home-mobile-dark.svg" alt="Home on mobile, dark" width="190" />
-  &nbsp;
-  <img src="docs/media/home-mobile-light.svg" alt="Home on mobile, light" width="190" />
-  &nbsp;
-  <img src="docs/media/home-desktop-light.svg" alt="Home on desktop, light" width="420" />
+  <img src="docs/screens/chog-page.jpg" alt="A Chog's public record page with its live holder, tier card, $CHOG tip and record" width="860" />
 </p>
 
-Everything on the site is real. Listings, passports, XP, quests and ownership come straight from Postgres and Monad mainnet. Nothing is seeded, and an empty state means nobody has done that yet.
-
-## What it is
-
-**Remove the NFT and Choguild stops working, by design.** The member is a [Chog Genesis](https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763) token, not a wallet:
-
-1. **Chog passport:** every profile, listing, application, submission and XP event is keyed to `chog:<tokenId>`. The card always shows the Chog's real art.
-2. **Live ownership:** whoever holds the token right now (`ownerOf` on Monad) acts as it. Every write re-checks it. A wallet with several Chogs picks one; a wallet with none can only view.
-3. **Reputation travels:** transfer a Chog and the new holder inherits its rank, tier, streak and history. Each Chog has a public record at `/chog/:id`.
-4. **Chog-to-Chog work:** Chogs post listings, other Chogs take them, the poster's Chog reviews the evidence. The leaderboard ranks Chogs.
-5. **Daily layer:** quests and streaks, level-up moments with tier frames, a weekly season leaderboard, and a shareable rank card for X.
-
-## Features
+## What a Chog does
 
 | | |
 | --- | --- |
-| **Act as a Chog** | `/passport`: sign in once (SIWE, no gas), pick which Chog you hold to act as. Ownership checked live with `ownerOf`; transfers drop the Chog from the old holder's session. |
-| **Chog card** | Real token image with a frame, title and glow that evolve by tier (Hatchling → Legend). |
-| **Chog record** | `/chog/:id`: live holder, rank, season rank, XP split (work / quests), streak, accepted work. |
-| **Daily quests + streaks** | Check in, scout an open listing, size up a rival Chog. Check-ins add +1 XP per streak day (max +10). One Chog per wallet per quest per day. |
-| **Level-up moments** | When a Chog reaches a new tier its holder gets confetti and the new tier card. |
-| **Weekly seasons** | `/ranking?by=season`: Monday-to-Monday (UTC) leaderboard; Season 1 began 19 Oct 2026. |
-| **Rank card for X** | 1200×675 PNG drawn in the browser (art, tier frame, rank, season, XP, streak), download or share sheet, plus a prefilled X post linking the record. |
-| **$CHOG tips** | On any Chog's record, tip its live holder in [$CHOG](https://monadscan.com/token/0x350035555E10d9AfAF1566AaebfCeD5BA6C27777) (address from chog.xyz, verified onchain: name "Chog", symbol "CHOG", 18 decimals). Plain ERC-20 transfer from your wallet, no escrow. |
-| **Listings & reviews** | `/discover`, `/opportunities/new`, `/applications`, `/submissions`: the full post → apply → submit → accept loop, all as Chogs. |
-| **Docs / whitepaper** | `/docs`: the Chog-as-member model, quests and seasons, XP and anti-farming, FAQ. |
-| **Light / dark** | Header toggle, remembers your choice, no flash on load. |
+| **Chog passport** | Name, bio, skills and links, saved on the token. Its face is always the Chog's own art. |
+| **Chog-to-Chog work** | Chogs post listings with terms, a deadline, positions and skills. Other Chogs apply and submit evidence. The poster's Chog accepts it, asks for changes, or rejects it. |
+| **Leaderboard of Chogs** | [`/ranking`](https://choguild.vercel.app/ranking) ranks tokens, not people, both all-time and for the current season. |
+| **Evolving card** | The card's frame, title and glow change with tier: Hatchling → Apprentice → Artisan → Guildmaster → Legend. |
+| **$CHOG tips** | From any Chog's page, tip its current holder in [$CHOG](https://monadscan.com/token/0x350035555E10d9AfAF1566AaebfCeD5BA6C27777). This is a direct ERC-20 transfer from your wallet, with no escrow. The address comes from chog.xyz and was checked onchain (name "Chog", symbol "CHOG", 18 decimals). |
 
-## How it works
+<p align="center">
+  <img src="docs/screens/tier-1-hatchling.png" alt="Hatchling tier card" width="220" />
+  <img src="docs/screens/tier-5-legend.png" alt="Legend tier card" width="220" />
+</p>
 
-```mermaid
-flowchart LR
-  W[Wallet] -->|SIWE, no gas| H{ownerOf Chog #id<br/>== wallet?}
-  H -->|no Chog| V[View only]
-  H -->|yes| C[Act as Chog #id]
-  C --> Q[Daily quests<br/>+5 each, streak bonus]
-  C --> A[Apply / post listings]
-  A -->|accepted by another wallet's Chog| X[(XP on chog:id)]
-  Q --> X
-  X --> R[Leaderboard + weekly season<br/>Hatchling → Legend]
-  T[Transfer the NFT] -->|new holder inherits| X
-```
+## The fun layer
+
+- **Daily quests and streaks:** check in, scout an open listing, size up a rival Chog. Each quest is worth +5 XP. Check-ins also add +1 XP for every day of the streak, up to +10.
+- **Level-up moments:** when a Chog reaches a new tier, its holder gets confetti and the new tier card.
+- **Weekly seasons:** every Monday at 00:00 UTC the season leaderboard resets, while all-time XP keeps counting. Season 1 started on 19 Oct 2026.
+- **Shareable rank card:** a 1200×675 PNG drawn in the browser (art, tier frame, rank, season rank, XP, streak). You can download it or share it, and a prefilled X post links to the Chog's record.
+
+<p align="center">
+  <img src="docs/screens/quests.jpg" alt="Daily quests and the Chog leaderboard on the home page" width="860" />
+</p>
+<p align="center">
+  <img src="docs/screens/season.jpg" alt="Season leaderboard" width="560" />
+  <img src="docs/screens/mobile-chog.jpg" alt="A Chog page on a 390px phone" width="200" />
+</p>
+<p align="center">
+  <img src="docs/screens/rank-card-example.png" alt="Rank card (example numbers)" width="560" /><br />
+  <sub>Rank card layout, filled with example numbers.</sub>
+</p>
+
+## Try it in 60 seconds
+
+1. Open **[choguild.vercel.app](https://choguild.vercel.app)** and scroll the home page.
+2. Open the **[leaderboard](https://choguild.vercel.app/ranking)** and the **[current season](https://choguild.vercel.app/ranking?by=season)**.
+3. Open any Chog's record, for example **[/chog/12](https://choguild.vercel.app/chog/12)**. Its holder is read live from the chain.
+4. With a wallet that holds a Chog: **Connect wallet** → sign the free message → pick your Chog on `/passport` → **Check in** → save its passport → open a listing → share the rank card.
+
+Without a Chog, the same wallet stays view-only, which is the point.
+
+## XP and anti-farming
 
 | Action | XP |
 | --- | --- |
 | Accepted submission | +100 |
 | Accepted application | +25 |
-| Published listing (counts once another Chog's work is accepted on it or it stays open 72 h; max 4 per 30 days) | +15 |
-| Saved public passport | +10 (once) |
-| Daily check-in | +5, +1 per streak day (max +10 bonus) |
-| Scout an open listing / visit a rival Chog | +5 each, once a day |
+| Published listing (counts once another Chog's work is accepted on it, or it stays open 72 h; max 4 per 30 days) | +15 |
+| Saved public passport | +10, once |
+| Daily check-in | +5, plus +1 per streak day (bonus max +10) |
+| Scout a listing, visit a rival | +5 each, once a day |
 
-Anti-farming (`src/lib/ranking/farming.ts`, `src/lib/chog/actor.server.ts`, `migrations/0010_chog_is_member.sql`): a Chog can't accept its own work; **Chogs held by the same wallet can't apply to, accept or review each other and earn no XP from each other**; jobs between the same two Chogs earn full, then half, then nothing; work XP is capped at **400 per Chog per 30 days**; each daily quest counts once per wallet per day, however many Chogs it holds.
+The farming rules live in `src/lib/ranking/farming.ts`, `src/lib/chog/actor.server.ts` and `src/lib/quests`:
 
-**Migration from wallet passports:** passports whose wallet held a Chog in the last ownerOf snapshot moved, with their history, onto that wallet's lowest-numbered Chog. The rest were copied to `archived_wallet_passports` and hidden; if such a wallet later acts as a Chog with no passport, its old record moves onto that Chog.
+- A Chog can't accept its own work.
+- **Chogs held by the same wallet** can't apply to, shortlist, accept or review each other, and earn no XP from each other.
+- Repeat jobs between the same two Chogs earn full XP, then half, then nothing (A→B and B→A count together).
+- Work and listing XP is capped at **400 per Chog per 30 days**.
+- Each daily quest counts once per Chog **and** once per wallet per day, so holding ten Chogs doesn't mean ten times the quest XP.
+- Scouting your own listing, or visiting a Chog in your own wallet, doesn't count.
 
-## For Chogathon judges
+Tiers start at Hatchling 0 · Apprentice 50 · Artisan 150 · Guildmaster 400 · Legend 1000.
 
-**60-second tour:** open [choguild.vercel.app](https://choguild.vercel.app), then the [leaderboard](https://choguild.vercel.app/ranking), the [season](https://choguild.vercel.app/ranking?by=season), any Chog's record such as [/chog/12](https://choguild.vercel.app/chog/12), and the [docs](https://choguild.vercel.app/docs). With a wallet holding a Chog: **Connect wallet** → sign → pick your Chog → check in → save its passport → share the rank card.
-
-| Look at | Where | Why it matters |
-| --- | --- | --- |
-| NFT is the core | `/passport`, `/chog/:id` | No Chog, no membership. Records are keyed to the token, ownership is live `ownerOf`. |
-| Reputation travels | `/chog/:id` "Held by" | Transfer the Chog and its rank goes with it. |
-| Fun and retention | quests, streak, level-up, season | A reason to come back daily and weekly. |
-| Honest ranking | `/ranking`, `/docs/xp` | XP recomputed from events, with per-Chog and same-wallet anti-farming. |
-
-**Verify the chain reads yourself:** `node scripts/chog-live-check.mjs` reads `name`, `totalSupply`, `ownerOf` and `balanceOf` from the contract over the public RPC. `npm run test:chog-live` runs the server-side ownership checks against a real holder and a non-holder.
-
-## Tech stack
-
-- [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions), deployed on Vercel through Nitro
-- Tailwind CSS v4, Radix UI primitives, `cmdk`, `lucide-react`
-- Type: Geist Sans (headings, UI), DM Sans (body), Geist Mono (labels), all self-hosted via Fontsource
-- `wagmi` (injected connector only) + `viem` on Monad mainnet (chain id 143); SIWE sessions
-- Postgres via `pg` (Neon in production) or in-memory [PGLite](https://pglite.dev) locally
-- `zod` validation on every server function; per-client rate limits
+**Migration from v2:** passports that used to be tied to a wallet moved, with their history, onto that wallet's lowest-numbered Chog (based on the last saved list of holders). Passports from wallets with no Chog were archived. If such a wallet later acts as a Chog that has no passport yet, its old record moves onto that Chog (`migrations/0010_chog_is_member.sql`).
 
 ## Architecture
 
+```mermaid
+flowchart LR
+  W[Browser wallet] -->|SIWE, no gas| S[Session: wallet + acting Chog]
+  S -->|every write| O{ownerOf Chog #id<br/>== wallet?}
+  O -->|no| V[View only / Chog dropped]
+  O -->|yes| A[Actor chog:id]
+  A --> P[(Postgres: passports, listings,<br/>applications, submissions, quests)]
+  P --> X[XP engine<br/>anti-farming + seasons]
+  X --> L[Leaderboard · /chog/:id · rank card]
+  M[Monad mainnet] -->|ownerOf, holder list via Multicall3| O
 ```
-Browser (React 19, wagmi injected)
+
+```
+Browser (React 19, wagmi injected connector)
    │  server functions (zod-validated, rate-limited)
    ▼
 TanStack Start on Vercel (Nitro) ──► Postgres (Neon) / PGLite locally
    │
-   ├─► Monad RPC: tx counts (batched, cached 10 min in memory + Postgres, ≤1.5 s budget)
-   └─► Chog Genesis contract: live ownerOf before every write (30 s cache for reads), holder snapshot via Multicall3 (5 min)
+   └─► Chog Genesis 0xc96d…3763: live ownerOf before every write (30 s cache for reads),
+       wallet → Chogs holder list via Multicall3 (5 min cache)
 ```
 
 ```
 src/
-  routes/          pages (file-based): /, discover, passport, ranking, submissions, applications, opportunities, network, how-it-works, docs, api
-  components/      layout shell, home sections, docs, board, passport, work, ranking, chog
+  routes/          /, chog/$chogId, ranking, passport, discover, opportunities, applications, submissions, docs, api
+  components/chog/ chog card, act-as picker, quests, level-up + confetti, rank card, $CHOG tip
+  lib/chog/        actor keys (chog:<id>), live ownerOf, holder list, legacy adoption
+  lib/quests/      daily quests, streaks, weekly seasons
+  lib/ranking/     XP rules, anti-farming, tiers, leaderboard
   lib/board/       listings and applications
   lib/work/        submissions and reviews
-  lib/passport/    profiles, SIWE sessions, avatars, wallet config
-  lib/ranking/     XP rules, anti-farming, tiers, ranking query
-  lib/chog/        Chog-as-member actor keys, live ownerOf, holdings, legacy adoption
-  lib/quests/      daily quests, streaks, weekly seasons
-  lib/monad/       network status and onchain activity
-migrations/        SQL schema, applied in order
-scripts/           migrations, Chog live check, brand renderer
-docs/media/        README screenshots
+  lib/passport/    profiles, SIWE sessions, wallet config
+migrations/        SQL schema, applied in order (0010 = Chog is the member)
+docs/screens/      README screenshots
 ```
+
+## Tech stack
+
+- [TanStack Start](https://tanstack.com/start) (React 19, file-based routing, server functions) on Vercel via Nitro
+- Tailwind CSS v4, Radix UI, `cmdk`, `lucide-react`; own design system with neutrals and one solid purple (#836EF9), plus light/dark
+- Type: Geist Sans (headings, UI), DM Sans (body), Geist Mono (labels), self-hosted via Fontsource
+- `wagmi` (injected connector only) + `viem` on Monad mainnet (chain 143); Sign-In with Ethereum sessions
+- Postgres via `pg` (Neon in production), in-memory [PGLite](https://pglite.dev) locally
+- `zod` on every server function, per-client rate limits, enforced CSP
 
 ## Run it locally
 
@@ -164,8 +182,8 @@ On Vercel, migrations run during `npm run build` only for production deploys wit
 ```bash
 npm run typecheck
 npm run lint
-npm test               # script tests + unit tests (ranking, farming, board, passport, chog, wallets…)
-npm run test:chog-live # live Chog Genesis holder checks against Monad mainnet
+npm test               # script + unit tests (ranking, farming, quests, seasons, board, passport, chog)
+npm run test:chog-live # live Chog Genesis ownership checks against Monad mainnet
 npm run build
 ```
 
@@ -178,6 +196,13 @@ Injected browser wallets only (MetaMask, Rabby…). No Coinbase SDK, no WalletCo
 ## Security
 
 Enforced CSP and security headers in `vercel.json` (violations reported to `/api/csp-report`), zod-validated inputs, per-client rate limits, client errors logged via `/api/client-error`, no source maps shipped.
+
+## Links
+
+- Live app: https://choguild.vercel.app
+- Docs / whitepaper: https://choguild.vercel.app/docs
+- Chog Genesis: https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763
+- $CHOG: https://monadscan.com/token/0x350035555E10d9AfAF1566AaebfCeD5BA6C27777
 
 ## License
 
