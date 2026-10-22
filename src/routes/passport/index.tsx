@@ -46,8 +46,8 @@ function PassportPage() {
   const username = profile?.username ?? null;
 
   return (
-    <div className="flex flex-col gap-12">
-      <div className="flex flex-col gap-10">
+    <div className="flex flex-col gap-8">
+      <div className="flex flex-col">
       <PageHeader
         title={<>Act as your <em>Chog.</em></>}
         description="Your Chog is the member. Sign once with your wallet, pick a Chog you hold, and everything you do is written to that token."
@@ -77,7 +77,7 @@ function PassportPage() {
         ) : null}
       </div>
 
-      <div className="flex flex-col gap-12">
+      <div className="flex flex-col gap-8">
       <Section title="Wallet">
         <LazyWalletPanel />
       </Section>
