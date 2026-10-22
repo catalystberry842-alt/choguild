@@ -24,6 +24,7 @@ import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
 import { Route as DiscoverOpportunityIdRouteImport } from './routes/discover/$opportunityId'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
 import { Route as DocsSlugRouteImport } from './routes/docs/$slug'
+import { Route as DuelDuelIdRouteImport } from './routes/duel/$duelId'
 import { Route as OpportunitiesIndexRouteImport } from './routes/opportunities/index'
 import { Route as OpportunitiesNewRouteImport } from './routes/opportunities/new'
 import { Route as PassportIndexRouteImport } from './routes/passport/index'
@@ -112,6 +113,11 @@ const DocsSlugRoute = DocsSlugRouteImport.update({
   path: '/docs/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DuelDuelIdRoute = DuelDuelIdRouteImport.update({
+  id: '/duel/$duelId',
+  path: '/duel/$duelId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OpportunitiesIndexRoute = OpportunitiesIndexRouteImport.update({
   id: '/opportunities/',
   path: '/opportunities/',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/chog/$chogId': typeof ChogChogIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/docs/$slug': typeof DocsSlugRoute
+  '/duel/$duelId': typeof DuelDuelIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
   '/passport/$username': typeof PassportUsernameRoute
   '/submissions/$submissionId': typeof SubmissionsSubmissionIdRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/chog/$chogId': typeof ChogChogIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/docs/$slug': typeof DocsSlugRoute
+  '/duel/$duelId': typeof DuelDuelIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
   '/passport/$username': typeof PassportUsernameRoute
   '/submissions/$submissionId': typeof SubmissionsSubmissionIdRoute
@@ -240,6 +248,7 @@ export interface FileRoutesById {
   '/chog/$chogId': typeof ChogChogIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/docs/$slug': typeof DocsSlugRoute
+  '/duel/$duelId': typeof DuelDuelIdRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
   '/passport/$username': typeof PassportUsernameRoute
   '/submissions/$submissionId': typeof SubmissionsSubmissionIdRoute
@@ -270,6 +279,7 @@ export interface FileRouteTypes {
     | '/chog/$chogId'
     | '/discover/$opportunityId'
     | '/docs/$slug'
+    | '/duel/$duelId'
     | '/opportunities/new'
     | '/passport/$username'
     | '/submissions/$submissionId'
@@ -298,6 +308,7 @@ export interface FileRouteTypes {
     | '/chog/$chogId'
     | '/discover/$opportunityId'
     | '/docs/$slug'
+    | '/duel/$duelId'
     | '/opportunities/new'
     | '/passport/$username'
     | '/submissions/$submissionId'
@@ -326,6 +337,7 @@ export interface FileRouteTypes {
     | '/chog/$chogId'
     | '/discover/$opportunityId'
     | '/docs/$slug'
+    | '/duel/$duelId'
     | '/opportunities/new'
     | '/passport/$username'
     | '/submissions/$submissionId'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   ChogChogIdRoute: typeof ChogChogIdRoute
   DiscoverOpportunityIdRoute: typeof DiscoverOpportunityIdRoute
   DocsSlugRoute: typeof DocsSlugRoute
+  DuelDuelIdRoute: typeof DuelDuelIdRoute
   OpportunitiesNewRoute: typeof OpportunitiesNewRoute
   PassportUsernameRoute: typeof PassportUsernameRoute
   SubmissionsSubmissionIdRoute: typeof SubmissionsSubmissionIdRoute
@@ -478,6 +491,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DocsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/duel/$duelId': {
+      id: '/duel/$duelId'
+      path: '/duel/$duelId'
+      fullPath: '/duel/$duelId'
+      preLoaderRoute: typeof DuelDuelIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/opportunities/': {
       id: '/opportunities/'
       path: '/opportunities'
@@ -571,6 +591,7 @@ const rootRouteChildren: RootRouteChildren = {
   ChogChogIdRoute: ChogChogIdRoute,
   DiscoverOpportunityIdRoute: DiscoverOpportunityIdRoute,
   DocsSlugRoute: DocsSlugRoute,
+  DuelDuelIdRoute: DuelDuelIdRoute,
   OpportunitiesNewRoute: OpportunitiesNewRoute,
   PassportUsernameRoute: PassportUsernameRoute,
   SubmissionsSubmissionIdRoute: SubmissionsSubmissionIdRoute,

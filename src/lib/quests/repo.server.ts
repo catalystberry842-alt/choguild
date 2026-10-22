@@ -66,6 +66,12 @@ export async function questTotals(sql: Sql, now = Date.now()): Promise<Map<numbe
     const days = (typeof r.days === "string" ? JSON.parse(r.days) : r.days) as string[];
     out.set(Number(r.chog_id), { total: Number(r.total), season: Number(r.season), streak: streakFrom(days, now) });
   }
+  // Duel XP (already diminished and capped per season at insert time) counts with quest XP.
+  const { duelTotals } = await import("@/lib/duels/repo.server");
+  for (const [id, d] of await duelTotals(sql, now)) {
+    const q = out.get(id) ?? { total: 0, season: 0, streak: 0 };
+    out.set(id, { total: q.total + d.total, season: q.season + d.season, streak: q.streak });
+  }
   return out;
 }
 

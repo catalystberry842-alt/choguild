@@ -3,7 +3,7 @@ import { z } from "zod";
 import * as S from "@/lib/schemas";
 import type { Contributor } from "./xp";
 
-async function loadRanking(): Promise<{
+export async function loadRanking(): Promise<{
   contributors: Contributor[];
   stats: { passports: number; openOpportunities: number; acceptedWork: number; questsToday: number };
   season: { number: number; start: number; end: number };

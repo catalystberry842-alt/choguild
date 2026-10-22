@@ -7,6 +7,8 @@ import { LevelUpWatcher } from "@/components/chog/level-up";
 import { useQuestPing } from "@/components/chog/quest-panel";
 import { RankCardActions } from "@/components/chog/rank-card";
 import { ChogTip } from "@/components/chog/chog-tip";
+import { DuelChallenge, DuelHistory } from "@/components/chog/duel";
+import { getDuelBoard } from "@/lib/duels/functions";
 import { NotFoundState } from "@/components/layout/not-found";
 import { usePassport } from "@/components/passport/passport-provider";
 import { Button } from "@/components/ui/button";
@@ -25,7 +27,8 @@ export const Route = createFileRoute("/chog/$chogId")({
   loader: async ({ params }) => {
     const id = Number(params.chogId);
     if (!isChogTokenId(id)) throw notFound();
-    return getChogRecord({ data: id });
+    const [record, duels] = await Promise.all([getChogRecord({ data: id }), getDuelBoard({ data: id })]);
+    return { ...record, duels };
   },
   staticData: { title: "Chog record", crumb: "Chog" },
   pendingComponent: () => <LoadingState label="Loading Chog" layout="detail" />,
@@ -127,6 +130,15 @@ function ChogPage() {
           </div>
           {error ? <p role="alert" className="text-small text-danger">{error}</p> : null}
         </div>
+      </section>
+
+      <section aria-labelledby="duel-title" className="flex flex-col gap-3">
+        <div className="flex flex-wrap items-baseline justify-between gap-2">
+          <h2 id="duel-title" className="t-h3">Duels</h2>
+          <p className="t-meta">Capped duel XP counts toward the season.</p>
+        </div>
+        {owner && !mineNow ? <DuelChallenge defenderId={chogId} actingId={actingId ?? null} left={record.duels.left} /> : null}
+        <DuelHistory chogId={chogId} history={record.duels.history} />
       </section>
 
       {standing ? (

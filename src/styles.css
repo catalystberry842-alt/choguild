@@ -1081,3 +1081,12 @@ html[data-theme="light"] .t-link { text-decoration-color: #c4c4c4; }
 @keyframes levelup-in { from { transform: scale(0.85) translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .confetti-piece, .xp-pop, .levelup-in, .chog-card .chog-art { animation: none !important; } }
 html[data-theme="light"] .chog-card { background: #ffffff; }
+.duel-round { animation: duel-round 380ms var(--ease-out-quint) both; }
+@keyframes duel-round { from { transform: translateY(8px) scale(0.97); opacity: 0; } to { transform: none; opacity: 1; } }
+.duel-side { animation: duel-side 520ms var(--ease-out-quint) both; }
+.duel-side:last-child { animation-name: duel-side-r; }
+@keyframes duel-side { from { transform: translateX(-24px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes duel-side-r { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.duel-won img { box-shadow: 0 0 0 2px #836ef9, 0 0 28px rgba(131, 110, 249, 0.45); }
+.duel-vs { animation: levelup-in 520ms 200ms var(--ease-out-quint) both; }
+@media (prefers-reduced-motion: reduce) { .duel-round, .duel-side, .duel-vs { animation: none !important; } }

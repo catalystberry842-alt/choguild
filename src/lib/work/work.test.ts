@@ -6,6 +6,12 @@ import { createWork, getWork, publicContributions, reviewWork, updateDraft } fro
 import { validateWork } from "./validate.ts";
 import { withTransaction } from "../tx.ts";
 import { listContributors } from "../ranking/repo.server.ts";
+import { readdirSync } from "node:fs";
+
+async function applyAllMigrations(pg: PGlite) {
+  const dir = new URL("../../../migrations/", import.meta.url);
+  for (const file of readdirSync(dir).filter((f) => f.endsWith(".sql")).sort()) await pg.exec(readFileSync(new URL(file, dir), "utf8"));
+}
 
 type Sql = {
   <T = Record<string, unknown>>(strings: TemplateStringsArray, ...values: unknown[]): Promise<T[]>;
@@ -45,9 +51,7 @@ describe("work proof", () => {
   before(async () => {
     const pg = new PGlite();
     sql = toSql(pg);
-    for (const file of ["0002_passport.sql", "0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql", "0009_avatars.sql", "0010_chog_is_member.sql"]) {
-      await pg.exec(readFileSync(new URL(`../../../migrations/${file}`, import.meta.url), "utf8"));
-    }
+    await applyAllMigrations(pg);
     await sql.query(
       `insert into opportunities (id, owner_wallet, project_name, title, summary, description, scope, deliverables, required_skills, preferred_skills, category, compensation_type, instructions, status)
        values ('opp-1',$1,'Field Desk','Write the note','A summary long enough for the board.','A description long enough to be stored as a real opportunity.','Scope of the note.','One markdown note.','["Content writing"]'::jsonb,'[]'::jsonb,'content','unpaid','Send the note.','open')`,
