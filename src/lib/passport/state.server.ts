@@ -15,17 +15,31 @@ import {
 import { clearSessionRecord, readSessionRecord, writeSessionRecord } from "@/lib/passport/session.server";
 import type { ProfileInput } from "@/lib/passport/validate";
 
+async function ownedChogIds(wallet: string): Promise<number[] | null> {
+  const { chogSnapshot } = await import("@/lib/chog/holders.server");
+  const snap = await chogSnapshot({ budgetMs: 3_000 }).catch(() => null);
+  return snap ? [...(snap.owners.get(wallet.toLowerCase()) ?? [])].sort((a, b) => a - b) : null;
+}
+
 export async function loadPassportState() {
-  const sql = await getSql();
-  const record = await readSessionRecord();
-  if (!record) return { sessionAddress: null as string | null, profile: null };
-  const live = await readLiveSession(sql, record.sessionId);
-  if (!live || live !== record.address) {
-    await clearSessionRecord();
-    return { sessionAddress: null as string | null, profile: null };
+  const { resolveViewer, selectActingChog } = await import("@/lib/chog/actor.server");
+  let viewer = await resolveViewer();
+  if (!viewer.wallet) return { sessionAddress: null as string | null, chogId: null as number | null, ownedChogs: [] as number[], ownedKnown: true, profile: null };
+  const owned = await ownedChogIds(viewer.wallet);
+  if (!viewer.chogId && owned && owned.length === 1) {
+    const picked = await selectActingChog(owned[0]);
+    if (picked.ok) viewer = await resolveViewer();
   }
-  const profile = await findProfileForWallet(sql, live);
-  return { sessionAddress: getAddress(live), profile };
+  const ids = owned ?? [];
+  if (viewer.chogId && !ids.includes(viewer.chogId)) ids.push(viewer.chogId);
+  const profile = viewer.actor ? await findProfileForWallet(viewer.sql, viewer.actor) : null;
+  return { sessionAddress: getAddress(viewer.wallet!), chogId: viewer.chogId, ownedChogs: ids.sort((a, b) => a - b), ownedKnown: owned !== null, profile };
+}
+
+export async function chooseChog(chogId: number | null) {
+  assertSameOrigin();
+  const { selectActingChog } = await import("@/lib/chog/actor.server");
+  return selectActingChog(chogId);
 }
 
 export async function loadPublicProfile(username: string) {
@@ -55,8 +69,7 @@ export async function finishSignature(input: { message: string; signature: Hex }
     await deletePassportSession(sql, sessionId);
     throw error;
   }
-  const profile = await findProfileForWallet(sql, consumed.address);
-  return { ok: true as const, sessionAddress: getAddress(consumed.address), profile };
+  return { ok: true as const, sessionAddress: getAddress(consumed.address), profile: null };
 }
 
 export async function finishEndSession() {
@@ -70,36 +83,31 @@ export async function finishEndSession() {
 
 export async function finishSave(input: { mode: "create" | "update"; profile: ProfileInput }) {
   assertSameOrigin();
-  const sql = await getSql();
-  const record = await readSessionRecord();
-  if (!record) return { ok: false as const, error: "Verify your wallet before editing a passport." };
-  const live = await readLiveSession(sql, record.sessionId);
-  if (!live || live !== record.address) {
-    await clearSessionRecord();
-    return { ok: false as const, error: "Your passport session expired. Sign in again." };
+  const { resolveViewer } = await import("@/lib/chog/actor.server");
+  const { chogImageUrl } = await import("@/lib/chog/chog");
+  let viewer;
+  try {
+    viewer = await resolveViewer({ fresh: true });
+  } catch (error) {
+    return { ok: false as const, error: error instanceof Error ? error.message : "Chog ownership could not be checked." };
   }
-  const chogError = await checkChogAvatar(live, input.profile.avatarUrl);
-  if (chogError) return { ok: false as const, error: chogError, fieldErrors: { avatarUrl: chogError } };
-  if (input.mode === "create") return createProfile(sql, live, input.profile);
-  return updateProfile(sql, live, input.profile);
+  if (!viewer.wallet) return { ok: false as const, error: "Verify your wallet before editing a passport." };
+  if (!viewer.actor || !viewer.chogId) return { ok: false as const, error: "Pick a Chog you own to act as. Without a Chog you can view, not act." };
+  // The Chog is the member, so its passport face is always its own token image.
+  const profile = { ...input.profile, avatarUrl: chogImageUrl(viewer.chogId) };
+  if (input.mode === "create") return createProfile(viewer.sql, viewer.actor, profile);
+  return updateProfile(viewer.sql, viewer.actor, profile);
 }
 
-/** A Chog avatar must be a token this wallet holds right now (live ownerOf; snapshot fallback). */
-async function checkChogAvatar(wallet: string, avatarUrl: string): Promise<string | null> {
-  const { chogAvatarError } = await import("@/lib/chog/avatar-check");
-  const { ownsChogNow, chogSnapshot } = await import("@/lib/chog/holders.server");
-  return chogAvatarError(wallet, avatarUrl, ownsChogNow, async (w, id) => {
-    const snap = await chogSnapshot({ budgetMs: 2_500 }).catch(() => null);
-    return snap ? (snap.owners.get(w.toLowerCase()) ?? []).includes(id) : null;
-  });
-}
-
-/** Signed-in wallet for a raw API route, or null. Same-origin + rate limits apply. */
+/** Signed-in actor (chog:<id>) for a raw API route, or null. Same-origin + rate limits apply. */
 export async function liveSessionWallet(): Promise<string | null> {
   assertSameOrigin();
   const sql = await getSql();
   const record = await readSessionRecord();
   if (!record) return null;
   const live = await readLiveSession(sql, record.sessionId);
-  return live && live === record.address ? live : null;
+  if (!live || live !== record.address) return null;
+  const { resolveViewer } = await import("@/lib/chog/actor.server");
+  const viewer = await resolveViewer();
+  return viewer.actor;
 }

@@ -1,21 +1,20 @@
-import type { ChogHolding } from "@/lib/chog/chog";
 
 /** How XP is earned. Shared by the ranking query and the How it works page. */
 export const XP_RULES = [
-  { key: "acceptedSubmissions", label: "Accepted submission", points: 100, detail: "Work you submitted was reviewed and accepted. Repeat jobs with the same wallet earn half, then nothing." },
+  { key: "acceptedSubmissions", label: "Accepted submission", points: 100, detail: "Work you submitted was reviewed and accepted. Repeat jobs between the same two Chogs earn half, then nothing. Chogs from one wallet earn nothing from each other." },
   { key: "acceptedApplications", label: "Accepted application", points: 25, detail: "A publisher accepted you onto their opportunity. Same repeat rule as submissions." },
   { key: "publishedOpportunities", label: "Published opportunity", points: 15, detail: "Counts once someone else's work is accepted on it or it stays open 3 days. Up to 4 a month." },
-  { key: "passport", label: "Saved passport", points: 10, detail: "One-time bonus for saving a public Chog Passport." },
+  { key: "passport", label: "Saved passport", points: 10, detail: "One-time bonus for saving a public passport for your Chog." },
 ] as const;
 
-/** Guild XP from work and listings is capped per wallet per 30 days. */
+/** Guild XP from work and listings is capped per Chog per 30 days. */
 export const MONTHLY_XP_CAP = 400;
 
 export type XpKey = (typeof XP_RULES)[number]["key"];
 export type XpCounts = Record<XpKey, number>;
 
 export const TIERS = [
-  { name: "Hatchling", min: 0, blurb: "Fresh out of the egg, so save a passport to start." },
+  { name: "Hatchling", min: 0, blurb: "Fresh out of the egg. Save a passport and check in." },
   { name: "Apprentice", min: 50, blurb: "On the board and getting picked." },
   { name: "Artisan", min: 150, blurb: "Shipped and accepted work, more than once." },
   { name: "Guildmaster", min: 400, blurb: "A name people look for on the board." },
@@ -41,63 +40,45 @@ export function formatXp(xp: number): string {
   return new Intl.NumberFormat("en-US").format(xp);
 }
 
-/**
- * Onchain XP: 10 × √(transactions sent on Monad), capped at 150. Heavy onchain
- * activity is worth about one accepted job, so reviewed guild work still leads.
- */
-export const ONCHAIN_XP_CAP = 150;
-
-export function onchainXpFor(txCount: number): number {
-  if (!Number.isFinite(txCount) || txCount <= 0) return 0;
-  return Math.min(ONCHAIN_XP_CAP, Math.round(10 * Math.sqrt(txCount)));
-}
-
-export type RankBy = "overall" | "guild" | "onchain";
+export type RankBy = "overall" | "season";
 
 export const RANK_BY: { id: RankBy; label: string }[] = [
-  { id: "overall", label: "Overall" },
-  { id: "guild", label: "Guild work" },
-  { id: "onchain", label: "Onchain" },
+  { id: "overall", label: "All time" },
+  { id: "season", label: "This season" },
 ];
 
+/** One Chog on the ladder. `wallet` is the actor key `chog:<id>`. */
 export type Contributor = {
+  chogId: number;
   username: string;
   displayName: string;
   avatarUrl: string | null;
   wallet: string;
   joined: string;
   counts: XpCounts;
+  /** Work + listings + passport XP (anti-farming applied). */
   guildXp: number;
-  /** Null when the Monad RPC could not be reached for this wallet. */
-  txCount: number | null;
-  onchainXp: number | null;
-  /** Chog Genesis holdings; null when the chain could not be read. guildXp already includes chogBonus. */
-  chog?: ChogHolding | null;
-  chogBonus?: number;
+  /** Lifetime daily-quest XP. */
+  questXp: number;
+  /** XP credited in the current weekly season (work + quests). */
+  seasonXp: number;
+  streak: number;
 };
 
 export type RankedContributor = Contributor & { rank: number; xp: number; tier: string };
 
-function scoreFor(person: Contributor, by: RankBy): number {
-  if (by === "guild") return person.guildXp;
-  if (by === "onchain") return person.onchainXp ?? 0;
-  return person.guildXp + (person.onchainXp ?? 0);
+export function totalXp(person: Pick<Contributor, "guildXp" | "questXp">): number {
+  return person.guildXp + person.questXp;
 }
 
-/** Sorts by the chosen score; ties go to overall XP, then whoever joined first. Tier always uses overall XP. */
+function scoreFor(person: Contributor, by: RankBy): number {
+  return by === "season" ? person.seasonXp : totalXp(person);
+}
+
+/** Sorts by the chosen score; ties go to all-time XP, then whoever joined first. Tier always uses all-time XP. */
 export function rankContributors(people: Contributor[], by: RankBy, limit = 50): RankedContributor[] {
   return [...people]
-    .sort(
-      (a, b) =>
-        scoreFor(b, by) - scoreFor(a, by) ||
-        scoreFor(b, "overall") - scoreFor(a, "overall") ||
-        a.joined.localeCompare(b.joined),
-    )
+    .sort((a, b) => scoreFor(b, by) - scoreFor(a, by) || totalXp(b) - totalXp(a) || a.joined.localeCompare(b.joined))
     .slice(0, limit)
-    .map((person, index) => ({
-      ...person,
-      rank: index + 1,
-      xp: scoreFor(person, by),
-      tier: tierFor(scoreFor(person, "overall")).tier.name,
-    }));
+    .map((person, index) => ({ ...person, rank: index + 1, xp: scoreFor(person, by), tier: tierFor(totalXp(person)).tier.name }));
 }

@@ -12,8 +12,8 @@ type Sql = {
   query<T = Record<string, unknown>>(text: string, params?: unknown[]): Promise<T[]>;
 };
 
-const OWNER = "0x1111111111111111111111111111111111111111";
-const OTHER = "0x2222222222222222222222222222222222222222";
+const OWNER = "chog:11"; // v3: actors are Chogs
+const OTHER = "chog:22";
 
 function toSql(pg: PGlite): Sql {
   const sql = (async <T = Record<string, unknown>>(strings: TemplateStringsArray, ...values: unknown[]): Promise<T[]> => {
@@ -45,7 +45,7 @@ describe("work proof", () => {
   before(async () => {
     const pg = new PGlite();
     sql = toSql(pg);
-    for (const file of ["0002_passport.sql", "0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql"]) {
+    for (const file of ["0002_passport.sql", "0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql", "0009_avatars.sql", "0010_chog_is_member.sql"]) {
       await pg.exec(readFileSync(new URL(`../../../migrations/${file}`, import.meta.url), "utf8"));
     }
     await sql.query(

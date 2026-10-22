@@ -47,3 +47,10 @@ export const saveProfile = createServerFn({ method: "POST" })
     const { finishSave } = await import("./state.server");
     return finishSave(data);
   });
+
+export const setActingChog = createServerFn({ method: "POST" })
+  .validator((input: { chogId: number | null }) => S.parseInput(z.object({ chogId: z.number().int().min(1).max(10_000).nullable() }), input))
+  .handler(async ({ data }) => {
+    const { chooseChog } = await import("./state.server");
+    return chooseChog(data.chogId);
+  });

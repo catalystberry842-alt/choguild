@@ -7,6 +7,10 @@ import type { PublicProfile } from "@/lib/passport/types";
 type PassportContextValue = {
   status: "loading" | "ready" | "error";
   sessionAddress: string | null;
+  /** The Chog this wallet acts as (verified live), or null = view only. */
+  chogId: number | null;
+  ownedChogs: number[];
+  ownedKnown: boolean;
   profile: PublicProfile | null;
   error: string | null;
   refresh: () => Promise<void>;
@@ -26,6 +30,9 @@ function PassportState({ children }: { children: ReactNode }) {
   const load = useServerFn(getPassportState);
   const [status, setStatus] = useState<PassportContextValue["status"]>("loading");
   const [sessionAddress, setSessionAddress] = useState<string | null>(null);
+  const [chogId, setChogId] = useState<number | null>(null);
+  const [ownedChogs, setOwnedChogs] = useState<number[]>([]);
+  const [ownedKnown, setOwnedKnown] = useState(true);
   const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -34,6 +41,9 @@ function PassportState({ children }: { children: ReactNode }) {
       const next = await load();
       setSessionAddress(next.sessionAddress);
       setProfile(next.profile);
+      setChogId(next.chogId);
+      setOwnedChogs(next.ownedChogs);
+      setOwnedKnown(next.ownedKnown);
       setError(null);
       setStatus("ready");
     } catch (caught) {
@@ -47,8 +57,8 @@ function PassportState({ children }: { children: ReactNode }) {
   }, [refresh]);
 
   const value = useMemo(
-    () => ({ status, sessionAddress, profile, error, refresh }),
-    [status, sessionAddress, profile, error, refresh],
+    () => ({ status, sessionAddress, chogId, ownedChogs, ownedKnown, profile, error, refresh }),
+    [status, sessionAddress, chogId, ownedChogs, ownedKnown, profile, error, refresh],
   );
 
   return <PassportContext.Provider value={value}>{children}</PassportContext.Provider>;

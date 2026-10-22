@@ -70,6 +70,7 @@ export function normalizeAddress(value: string): `0x${string}` | null {
 }
 
 export function storedAddress(value: string): string | null {
+  if (/^chog:\d{1,5}$/.test(value)) return value;
   const checksum = normalizeAddress(value);
   return checksum ? checksum.toLowerCase() : null;
 }

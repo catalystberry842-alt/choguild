@@ -6,54 +6,52 @@ import { Section } from "@/components/ui/section";
 import { TierBadge } from "@/components/ranking/bits";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/ui/page-header";
-import { ONCHAIN_XP_CAP, TIERS, XP_RULES } from "@/lib/ranking/xp";
-import { CHOG_BOOST_CAP, CHOG_BOOST_RATE, CHOG_EXPLORER_URL } from "@/lib/chog/chog";
-
-const CHOG_BOOST_PCT = Math.round(CHOG_BOOST_RATE * 100);
+import { TIERS, XP_RULES } from "@/lib/ranking/xp";
+import { QUESTS, STREAK_BONUS_CAP } from "@/lib/quests/quests";
 import { seo } from "@/lib/seo";
 
 export const Route = createFileRoute("/how-it-works")({
   staticData: { title: "How it works", crumb: "How it works" },
-  head: () => seo({ title: "How it works · Choguild", description: "Four steps to rank: claim a passport, find open work, submit proof, and climb the ladder on Monad.", path: "/how-it-works" }),
+  head: () => seo({ title: "How it works · Choguild", description: "Your Chog Genesis NFT is the member: act as it, quest daily, take work and climb. The record travels with the token.", path: "/how-it-works" }),
   component: HowItWorksPage,
 });
 
 const FLOW = [
-  { title: "Connect a wallet", body: "Any browser wallet works. Connecting only shares an address, nothing else." },
-  { title: "Sign and save a passport", body: "Sign one message (free, not a transaction). Add a username, bio, skills and links." },
-  { title: "Find work on the board", body: "Filter opportunities by skill, category and pay. Apply with a short pitch." },
-  { title: "Get accepted", body: "The publisher reviews applications and accepts the people they want to work with." },
-  { title: "Submit the evidence", body: "Send links to the repo, doc or post. The publisher accepts it or asks for changes." },
-  { title: "Climb the ranking", body: "Accepted work turns into XP on your passport and moves you up the ladder." },
+  { title: "Hold a Chog Genesis", body: "The Chog is the membership. A wallet with no Chog can browse everything but can't act." },
+  { title: "Sign in and pick a Chog", body: "Sign one free message, then choose which Chog you hold to act as. Ownership is read live with ownerOf." },
+  { title: "Save its passport", body: "Name, bio, skills and links, saved on the token. The face is always the Chog's own art." },
+  { title: "Quest daily", body: "Check in, scout a listing, visit a rival. Check-ins build a streak with bonus XP." },
+  { title: "Take and post work", body: "Chogs post listings, other Chogs apply and submit evidence. The poster accepts or asks for changes." },
+  { title: "Climb, and pass it on", body: "XP, tier and history live on the Chog. Transfer it and the new holder inherits the record." },
 ] as const;
 
 const FAQ = [
   {
-    q: "Does connecting a wallet cost anything?",
+    q: "Why is the NFT the member and not my wallet?",
+    a: "Because a Chog's record should be worth something. Rank, tier and accepted work are keyed to the token id, so a seasoned Chog carries its history to whoever holds it next.",
+  },
+  {
+    q: "What happens when I sell or send my Chog?",
+    a: "Every action re-checks ownerOf on Monad. The moment the token leaves your wallet you stop acting as it, and the new holder can act as it with its full record, passport text included (they can edit it).",
+  },
+  {
+    q: "I hold several Chogs. Can I farm with them?",
+    a: "Chogs held by the same wallet can't hire, accept or review each other, earn no XP from each other, and only one of them can do each daily quest per day.",
+  },
+  {
+    q: "I had a wallet passport before. Where did it go?",
+    a: "If the wallet held a Chog when we migrated, the passport and its history moved onto that wallet's lowest-numbered Chog. Otherwise it was archived; act as a Chog from that wallet and it is moved onto that Chog.",
+  },
+  {
+    q: "Does signing cost anything?",
     a: "No. Signing the Choguild message is not a transaction and never spends gas. Choguild never asks for a seed phrase or private key.",
-  },
-  {
-    q: "Is a wallet address the same as a passport?",
-    a: "No. An address is only an identifier. You become a guild member when you sign in and save a passport.",
-  },
-  {
-    q: "Can I game the ranking?",
-    a: "The big points come from submissions a publisher accepted. Publishing an opportunity only counts once it leaves draft.",
-  },
-  {
-    q: "How does onchain XP work?",
-    a: "We read how many transactions your passport wallet has sent on Monad mainnet. The score grows with the square root of that count and caps at 150 XP, about one accepted job, so steady activity counts but spamming transactions cannot outrank reviewed guild work. Your balance is never used.",
-  },
-  {
-    q: "Who verifies the work?",
-    a: "The person who published the opportunity reviews your submission. Links you provide stay marked as unverified until they accept them.",
   },
 ] as const;
 
 function HowItWorksPage() {
   return (
     <div className="flex flex-col gap-16">
-      <PageHeader eyebrow="How it works" title={<>From wallet to <em>rank</em> in four steps.</>} description="From wallet to accepted work, and how that becomes rank." />
+      <PageHeader title={<>Your Chog is the <em>member.</em></>} description="How a Chog joins, earns XP and carries its record to its next holder." />
 
       <Section title="The loop" description="Six steps, one record.">
         <ol className="flex flex-col">
@@ -67,7 +65,7 @@ function HowItWorksPage() {
         </ol>
       </Section>
 
-      <Section id="xp" title="XP" description="Recalculated live for every public passport.">
+      <Section id="xp" title="XP" description="Recalculated live for every Chog with a public passport.">
         <div className="scroll-mt-24 border-t border-line-strong">
           <table className="w-full text-left text-base">
             <thead className="t-label">
@@ -88,33 +86,19 @@ function HowItWorksPage() {
                   <td className="py-3 pr-4 text-right font-medium tabular-nums text-signal">+{rule.points}</td>
                 </tr>
               ))}
-              <tr className="transition-colors hover:text-ink">
-                <td className="py-3 pr-4 font-medium text-ink">
-                  Onchain activity
-                  <span className="mt-0.5 block text-label font-normal text-muted sm:hidden">
-                    10 × √(transactions your wallet sent on Monad), up to {ONCHAIN_XP_CAP}.
-                  </span>
-                </td>
-                <td className="hidden py-3 pr-4 text-body sm:table-cell">
-                  10 × √(transactions your wallet sent on Monad mainnet), up to {ONCHAIN_XP_CAP}. 25 txs = 50 XP.
-                </td>
-                <td className="py-3 pr-4 text-right font-medium tabular-nums text-signal">≤{ONCHAIN_XP_CAP}</td>
-              </tr>
-              <tr className="transition-colors hover:text-ink">
-                <td className="py-3 pr-4 font-medium text-ink">
-                  Chog holder boost
-                  <span className="mt-0.5 block text-label font-normal text-muted sm:hidden">
-                    Hold a Chog Genesis NFT: +{CHOG_BOOST_PCT}% of guild XP, up to +{CHOG_BOOST_CAP}.
-                  </span>
-                </td>
-                <td className="hidden py-3 pr-4 text-body sm:table-cell">
-                  Hold at least one{" "}
-                  <a href={CHOG_EXPLORER_URL} target="_blank" rel="noreferrer" className="t-link">Chog Genesis</a>{" "}
-                  NFT in your passport wallet: +{CHOG_BOOST_PCT}% of guild XP (rounded), up to +{CHOG_BOOST_CAP}. Onchain XP is not
-                  boosted. Holdings are read from Monad every few minutes.
-                </td>
-                <td className="py-3 pr-4 text-right font-medium tabular-nums text-signal">≤{CHOG_BOOST_CAP}</td>
-              </tr>
+              {QUESTS.map((q) => (
+                <tr key={q.id} className="transition-colors hover:text-ink">
+                  <td className="py-3 pr-4 font-medium text-ink">
+                    Daily quest: {q.label}
+                    <span className="mt-0.5 block text-label font-normal text-muted sm:hidden">{q.detail}</span>
+                  </td>
+                  <td className="hidden py-3 pr-4 text-body sm:table-cell">
+                    {q.detail} Once per Chog per UTC day, and one Chog per wallet per quest.
+                    {q.id === "checkin" ? ` Streak bonus +1 XP per consecutive day, up to +${STREAK_BONUS_CAP}.` : ""}
+                  </td>
+                  <td className="py-3 pr-4 text-right font-medium tabular-nums text-signal">+{q.xp}{q.id === "checkin" ? "+" : ""}</td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

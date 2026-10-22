@@ -50,7 +50,7 @@ function MobileMenu() {
   const [open, setOpen] = useState(false);
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const { address, isConnected, chainId } = useWalletState();
-  const { profile, sessionAddress } = usePassport();
+  const { profile, sessionAddress, chogId } = usePassport();
   const network = monadChainLabel(isConnected ? chainId : undefined);
 
   useEffect(() => setOpen(false), [pathname]);
@@ -107,7 +107,7 @@ function MobileMenu() {
               })}
             </nav>
             <div className="mt-2 flex flex-col items-start gap-1 rounded-2xl bg-line/50 px-4 py-3 text-small min-[360px]:flex-row min-[360px]:items-center min-[360px]:justify-between">
-              <span className="truncate text-ink">{profile ? `@${profile.username}` : sessionAddress ? "Signed in" : "Not signed in"}</span>
+              <span className="truncate text-ink">{chogId ? `Acting as Chog #${chogId}` : sessionAddress ? "Signed in · view only" : "Not signed in"}</span>
               <span className="truncate font-mono text-label text-muted">
                 {isConnected && address ? `${shortAddress(address)} · ${network.label}` : "No wallet"}
               </span>

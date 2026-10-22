@@ -334,7 +334,7 @@ describe("passport database", { concurrency: 1 }, () => {
     const pg = new PGlite();
     await pg.waitReady;
     await pg.exec(readFileSync(new URL("../../../migrations/0002_passport.sql", import.meta.url), "utf8"));
-    for (const file of ["0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql", "0009_avatars.sql"]) {
+    for (const file of ["0003_board.sql", "0004_work.sql", "0005_indexes.sql", "0006_remove_demo_data.sql", "0007_chog_gate.sql", "0008_audit_v15.sql", "0009_avatars.sql", "0010_chog_is_member.sql"]) {
       await pg.exec(readFileSync(new URL(`../../../migrations/${file}`, import.meta.url), "utf8"));
     }
     sql = toSql(pg);

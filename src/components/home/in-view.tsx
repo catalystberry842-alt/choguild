@@ -20,12 +20,11 @@ export function InView({ as: Tag = "div", className, children, id, ...rest }: { 
 }
 
 export const HOME_SECTIONS = [
-  { id: "passport", label: "Passport" },
+  { id: "chog", label: "Chog" },
+  { id: "quests", label: "Quests" },
+  { id: "ladder", label: "Leaderboard" },
   { id: "work", label: "Work" },
   { id: "review", label: "Review" },
-  { id: "ladder", label: "Ladder" },
-  { id: "chog", label: "Chog" },
-  { id: "network", label: "Network" },
   { id: "publish", label: "Publish" },
   { id: "how", label: "How" },
 ] as const;

@@ -63,7 +63,8 @@ function toPublic(row: ProfileRow): PublicProfile {
     otherLinks: asArray<{ label: string; url: string }>(row.other_links),
     interests: row.interests,
     visibility: row.visibility,
-    walletAddress: getAddress(row.wallet_address),
+    walletAddress: row.wallet_address.startsWith("chog:") ? row.wallet_address : getAddress(row.wallet_address),
+    chogId: row.wallet_address.startsWith("chog:") ? Number(row.wallet_address.slice(5)) : null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };
@@ -150,8 +151,8 @@ async function writeProfile(
       if (existing) {
         return {
           ok: false,
-          error: "This wallet already has a passport. Edit that profile instead.",
-          fieldErrors: { form: "This wallet already has a passport." },
+          error: "This Chog already has a passport. Edit that profile instead.",
+          fieldErrors: { form: "This Chog already has a passport." },
         };
       }
       const id = crypto.randomUUID();
@@ -183,7 +184,7 @@ async function writeProfile(
         returning id
       `;
       if (!updated[0]) {
-        return { ok: false, error: "You can only edit the passport owned by this verified wallet." };
+        return { ok: false, error: "You can only edit the passport of the Chog you are acting as." };
       }
     }
   } catch (error) {
@@ -196,7 +197,7 @@ async function writeProfile(
       };
     }
     if (field === "wallet") {
-      return { ok: false, error: "This wallet already has a passport." };
+      return { ok: false, error: "This Chog already has a passport." };
     }
     throw error;
   }

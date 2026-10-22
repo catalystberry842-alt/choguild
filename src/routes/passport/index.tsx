@@ -1,5 +1,4 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { PassportRecord } from "@/components/passport/passport-record";
 import { ProfileForm } from "@/components/passport/profile-form";
 import { usePassport } from "@/components/passport/passport-provider";
 import { LazyWalletPanel } from "@/components/passport/lazy-wallet-panel";
@@ -13,64 +12,50 @@ import { emptyBoardSearch } from "@/lib/board/search";
 import { seo } from "@/lib/seo";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
-import { ChogGallery } from "@/components/chog/chog-bits";
-import { getChogHolding } from "@/lib/chog/functions";
-import type { ChogHolding } from "@/lib/chog/chog";
-import { getPublicContributions } from "@/lib/work/functions";
-import type { ContributionSummary } from "@/lib/work/types";
+import { ActingChogPicker } from "@/components/chog/acting-chog";
+import { ChogCard } from "@/components/chog/chog-card";
+import { LevelUpWatcher } from "@/components/chog/level-up";
+import { QuestPanel } from "@/components/chog/quest-panel";
+import { getChogRecord, type ChogRecord } from "@/lib/ranking/functions";
 import { formatStamp } from "@/lib/passport/format";
 
 export const Route = createFileRoute("/passport/")({
   staticData: { title: "Contributor Passport", crumb: "Passport" },
-  head: () => seo({ title: "Passport · Choguild", description: "Claim your Chog Passport: one wallet-signed identity for your Monad contributions.", path: "/passport" }),
+  head: () => seo({ title: "Passport · Choguild", description: "Act as your Chog Genesis NFT: pick a Chog you hold, take daily quests and build a record that lives on the token.", path: "/passport" }),
   component: PassportPage,
 });
 
 function PassportPage() {
-  const { status, error, sessionAddress, profile } = usePassport();
+  const { status, error, sessionAddress, profile, chogId } = usePassport();
   const verified = Boolean(sessionAddress);
-  const loadChog = useServerFn(getChogHolding);
-  const [chog, setChog] = useState<{ wallet: string; holding: ChogHolding | null } | null>(null);
+  const loadRecord = useServerFn(getChogRecord);
+  const [record, setRecord] = useState<ChogRecord | null>(null);
+  const [bump, setBump] = useState(0);
   useEffect(() => {
-    if (!sessionAddress) return;
+    if (!chogId) return;
     let live = true;
-    loadChog({ data: sessionAddress })
-      .then((holding) => live && setChog({ wallet: sessionAddress, holding }))
+    loadRecord({ data: chogId })
+      .then((r) => live && setRecord(r))
       .catch(() => undefined);
     return () => {
       live = false;
     };
-  }, [sessionAddress, loadChog]);
-  const holding = chog && chog.wallet === sessionAddress ? chog.holding : null;
-
-  // Contribution history: the signed-in passport's real accepted work.
-  const loadWork = useServerFn(getPublicContributions);
+  }, [chogId, loadRecord, bump, profile?.updatedAt]);
+  const standing = record && record.chogId === chogId ? record.standing : null;
+  const history = record && record.chogId === chogId ? { summary: record.work, failed: false } : null;
   const username = profile?.username ?? null;
-  const [work, setWork] = useState<{ username: string; summary: ContributionSummary | null; failed: boolean } | null>(null);
-  useEffect(() => {
-    if (!username) return;
-    let live = true;
-    loadWork({ data: username })
-      .then((summary) => live && setWork({ username, summary, failed: false }))
-      .catch(() => live && setWork({ username, summary: null, failed: true }));
-    return () => {
-      live = false;
-    };
-  }, [username, loadWork]);
-  const history = work && work.username === username ? work : null;
 
   return (
     <div className="flex flex-col gap-12">
       <div className="flex flex-col gap-10">
       <PageHeader
-        eyebrow="Passport"
-        title={<>Your identity in the <em>guild.</em></>}
-        description="The public profile people see when they review your work. Sign once with your wallet to create or edit it."
+        title={<>Act as your <em>Chog.</em></>}
+        description="Your Chog is the member. Sign once with your wallet, pick a Chog you hold, and everything you do is written to that token."
         actions={
           profile ? (
             <>
               <Button asChild variant="secondary" size="compact">
-                <Link to="/passport/$username" params={{ username: profile.username }}>View public page</Link>
+                <Link to="/chog/$chogId" params={{ chogId: String(profile.chogId ?? chogId ?? 0) }}>View Chog record</Link>
               </Button>
               <Button asChild variant="ghost" size="compact">
                 <Link to="/applications">Your applications</Link>
@@ -79,9 +64,17 @@ function PassportPage() {
           ) : null
         }
       />
-        <div className="flex justify-center">
-          <PassportRecord profile={profile} address={sessionAddress} />
-        </div>
+        {chogId ? (
+          <div className="grid gap-5 md:grid-cols-[18rem_minmax(0,1fr)] md:items-start">
+            <ChogCard chogId={chogId} name={profile?.displayName} xp={standing?.xp ?? 0} rank={standing?.rank} streak={standing?.streak} className="mx-auto md:mx-0" />
+            <div className="flex min-w-0 flex-col gap-3">
+              <h2 className="t-h3">Today's quests</h2>
+              <QuestPanel onXp={() => setBump((n) => n + 1)} />
+              {!profile ? <p className="t-meta">Quest XP is saved on Chog #{chogId} now and shows on the leaderboard once you save its passport below.</p> : null}
+            </div>
+            {standing ? <LevelUpWatcher chogId={chogId} xp={standing.xp} name={profile?.displayName} /> : null}
+          </div>
+        ) : null}
       </div>
 
       <div className="flex flex-col gap-12">
@@ -89,7 +82,13 @@ function PassportPage() {
         <LazyWalletPanel />
       </Section>
 
-      <Section title="Profile" description={profile ? undefined : "Username, display name and a short bio are required."}>
+      {sessionAddress ? (
+        <Section title="Your Chogs" description="Pick the Chog you act as. Listings, applications, reviews and quests are all done as that Chog.">
+          <ActingChogPicker />
+        </Section>
+      ) : null}
+
+      <Section title={chogId ? `Chog #${chogId} passport` : "Passport"} description={profile ? undefined : "Username, display name and a short bio are required. The face is always the Chog's own art."}>
         {status === "loading" ? <LoadingState label="Loading passport" layout="list" rows={2} /> : null}
         {status === "error" ? <ErrorMessage title="Passport unavailable">{error}</ErrorMessage> : null}
         {status !== "loading" && status !== "error" && !verified ? (
@@ -99,21 +98,19 @@ function PassportPage() {
             body={sessionAddress ? "Sign the Choguild message to prove the wallet is yours. Signing is free." : "Connect a wallet in the Wallet panel, then sign the Choguild message. Signing is free and nothing is sent onchain."}
           />
         ) : null}
-        {status === "ready" && verified ? (
+        {status === "ready" && verified && !chogId ? (
+          <EmptyState compact title="Pick a Chog to act as" body="Passports belong to Chogs. Without a Chog this wallet can view the guild but not act in it." />
+        ) : null}
+        {status === "ready" && verified && chogId ? (
           <div>
-            <ProfileForm key={profile?.updatedAt ?? "new"} mode={profile ? "update" : "create"} profile={profile} chogTokenIds={holding?.tokenIds ?? []} />
+            <ProfileForm key={`${chogId}-${profile?.updatedAt ?? "new"}`} mode={profile ? "update" : "create"} profile={profile} chogTokenIds={[chogId]} />
           </div>
         ) : null}
       </Section>
 
-      {holding && holding.count > 0 ? (
-        <div className="lg:col-span-2">
-          <ChogGallery holding={holding} />
-        </div>
-      ) : null}
 
       <Section title="Contribution history" className="lg:col-span-2">
-        {username && !history ? <LoadingState label="Loading accepted work" layout="list" rows={2} /> : null}
+        {username && chogId && !history ? <LoadingState label="Loading accepted work" layout="list" rows={2} /> : null}
         {history?.failed ? <ErrorMessage title="History unavailable">Accepted work could not be loaded. Reload to try again.</ErrorMessage> : null}
         {history?.summary && history.summary.items.length > 0 ? (
           <ul className="grid gap-3">
@@ -131,7 +128,7 @@ function PassportPage() {
           <EmptyState
             compact
             title="No accepted work yet"
-            body="Work a publisher accepts shows up here and on your public page."
+            body="Work a poster accepts is written to this Chog and shows on its record."
             action={
               <Button asChild variant="secondary" size="compact">
                 <Link to="/discover" search={emptyBoardSearch()}>Find work</Link>

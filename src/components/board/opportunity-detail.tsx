@@ -4,6 +4,7 @@ import { useState } from "react";
 import { PosterMark } from "@/components/board/opportunity-card";
 import { HoldersOnlyPill } from "@/components/chog/chog-bits";
 import { usePassport } from "@/components/passport/passport-provider";
+import { useQuestPing } from "@/components/chog/quest-panel";
 import { Button } from "@/components/ui/button";
 import { ErrorMessage } from "@/components/ui/error-message";
 import { Field, TextArea } from "@/components/ui/input";
@@ -27,7 +28,8 @@ import { formatDay, formatStamp } from "@/lib/passport/format";
 
 export function OpportunityDetailView({ opportunity }: { opportunity: OpportunityDetail }) {
   const router = useRouter();
-  const { profile, sessionAddress } = usePassport();
+  const { profile, sessionAddress, chogId } = usePassport();
+  useQuestPing("scout", opportunity.id, Boolean(chogId) && !opportunity.mine && opportunity.status === "open");
   const apply = useServerFn(sendApplication);
   const withdraw = useServerFn(withdrawBoardApplication);
   const setStatus = useServerFn(updateBoardStatus);
@@ -158,6 +160,14 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
                 )}
                 <span aria-hidden="true">·</span>
                 <span>{project}</span>
+                {opportunity.ownerWallet.startsWith("chog:") ? (
+                  <>
+                    <span aria-hidden="true">·</span>
+                    <Link to="/chog/$chogId" params={{ chogId: opportunity.ownerWallet.slice(5) }} className="t-link">
+                      Posted by Chog #{opportunity.ownerWallet.slice(5)}
+                    </Link>
+                  </>
+                ) : null}
               </p>
             </div>
           </div>
@@ -283,9 +293,18 @@ export function OpportunityDetailView({ opportunity }: { opportunity: Opportunit
             to apply.
           </p>
         ) : null}
-        {!opportunity.mine && opportunity.accepting && sessionAddress && !profile ? (
+        {!opportunity.mine && opportunity.accepting && sessionAddress && !chogId ? (
           <p className="t-body mt-3">
-            Save your{" "}
+            Only a Chog can take a listing. Pick a Chog you own on your{" "}
+            <Link to="/passport" className="t-link">
+              Passport
+            </Link>
+            . Without one you can view, not apply.
+          </p>
+        ) : null}
+        {!opportunity.mine && opportunity.accepting && sessionAddress && chogId && !profile ? (
+          <p className="t-body mt-3">
+            Save Chog #{chogId}'s{" "}
             <Link to="/passport" className="t-link">
               Passport
             </Link>{" "}
@@ -442,6 +461,6 @@ function stickyCta({
     };
   }
   if (!sessionAddress) return { kind: "link", to: "/passport", label: "Connect wallet" };
-  if (!hasProfile) return { kind: "link", to: "/passport", label: "Save passport to apply" };
+  if (!hasProfile) return { kind: "link", to: "/passport", label: "Act as a Chog to apply" };
   return { kind: "submit", label: pending ? "Sending…" : "Apply" };
 }

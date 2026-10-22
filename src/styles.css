@@ -1056,3 +1056,28 @@ html[data-theme="light"] .t-link { text-decoration-color: #c4c4c4; }
 @layer components {
   .t-body, .t-lead, .t-body-lg, .t-meta, .t-small { font-family: var(--font-text); }
 }
+
+/* ── v3 Chog card: frame, title and glow evolve with the Chog's tier ─────── */
+.chog-card { position: relative; border-radius: 1.25rem; border: 1px solid var(--color-line-strong); background: var(--color-elevated); overflow: hidden; }
+.chog-card .chog-art { border-radius: 0.875rem; outline: 1px solid var(--color-line-strong); outline-offset: 0; }
+.chog-card[data-tier="Apprentice"] { border-color: rgb(131 110 249 / 0.35); }
+.chog-card[data-tier="Artisan"] { border: 2px solid rgb(131 110 249 / 0.6); }
+.chog-card[data-tier="Artisan"] .chog-art { outline: 2px solid rgb(131 110 249 / 0.5); }
+.chog-card[data-tier="Guildmaster"] { border: 2px solid #836ef9; box-shadow: 0 0 0 4px rgb(131 110 249 / 0.12), 0 18px 50px -18px rgb(131 110 249 / 0.6); }
+.chog-card[data-tier="Guildmaster"] .chog-art { outline: 2px solid #836ef9; }
+.chog-card[data-tier="Legend"] { border: 3px solid #836ef9; box-shadow: 0 0 0 6px rgb(131 110 249 / 0.18), 0 24px 70px -16px rgb(131 110 249 / 0.85); }
+.chog-card[data-tier="Legend"] .chog-art { outline: 3px solid #836ef9; animation: chog-pulse 2.6s ease-in-out infinite; }
+@keyframes chog-pulse { 0%,100% { box-shadow: 0 0 0 0 rgb(131 110 249 / 0.0); } 50% { box-shadow: 0 0 28px 2px rgb(131 110 249 / 0.55); } }
+.tier-title { font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-muted); }
+.chog-card:is([data-tier="Guildmaster"], [data-tier="Legend"]) .tier-title { color: #836ef9; }
+.quest-row[data-done="true"] { opacity: 0.7; }
+.quest-check { display: inline-flex; width: 1.25rem; height: 1.25rem; align-items: center; justify-content: center; border-radius: 999px; border: 1px solid var(--color-line-strong); flex-shrink: 0; }
+.quest-row[data-done="true"] .quest-check { background: #836ef9; border-color: #836ef9; color: #fff; }
+.xp-pop { animation: xp-pop 900ms var(--ease-out-quint) both; }
+@keyframes xp-pop { 0% { transform: translateY(6px) scale(0.9); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(-14px) scale(1); opacity: 0; } }
+.confetti-piece { position: fixed; top: -12px; width: 8px; height: 12px; border-radius: 2px; z-index: 80; pointer-events: none; animation: confetti-fall linear forwards; }
+@keyframes confetti-fall { to { transform: translate3d(var(--dx), 105vh, 0) rotate(var(--rot)); opacity: 0.9; } }
+.levelup-in { animation: levelup-in 520ms var(--ease-out-quint) both; }
+@keyframes levelup-in { from { transform: scale(0.85) translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .confetti-piece, .xp-pop, .levelup-in, .chog-card .chog-art { animation: none !important; } }
+html[data-theme="light"] .chog-card { background: #ffffff; }

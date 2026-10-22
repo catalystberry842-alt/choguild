@@ -1,11 +1,13 @@
 import type { Sql } from "@/lib/db";
 import type { Contributor, XpCounts } from "@/lib/ranking/xp";
 import { computeGuildXp, type ListingEvent, type WorkEvent } from "@/lib/ranking/farming";
+import { seasonFor } from "@/lib/quests/quests";
 
 export type GuildStats = {
   passports: number;
   openOpportunities: number;
   acceptedWork: number;
+  questsToday: number;
 };
 
 type Row = {
@@ -18,7 +20,7 @@ type Row = {
 
 const ISO = `'YYYY-MM-DD"T"HH24:MI:SS"Z"'`;
 
-/** Accepted work events and published listings involving the given wallets (lowercase, indexed columns). */
+/** Accepted work events and published listings involving the given actors (indexed columns). */
 export async function loadXpEvents(sql: Sql, wallets: string[]): Promise<{ work: WorkEvent[]; listings: ListingEvent[] }> {
   if (wallets.length === 0) return { work: [], listings: [] };
   const [subs, apps, listings] = await Promise.all([
@@ -53,45 +55,68 @@ export async function loadXpEvents(sql: Sql, wallets: string[]): Promise<{ work:
   };
 }
 
-/** Every public passport with its anti-farming guild XP; onchain data is filled in later. */
-export async function listContributors(sql: Sql, now = Date.now()): Promise<Contributor[]> {
+/**
+ * Every public Chog passport with anti-farming XP, quest XP and season XP.
+ * `holderOf` maps a token id to its current owner (snapshot) so Chogs in one wallet can't farm each other.
+ */
+export async function listContributors(
+  sql: Sql,
+  options: { now?: number; holderOf?: (chogId: number) => string | null } = {},
+): Promise<Contributor[]> {
+  const now = options.now ?? Date.now();
   const rows = await sql<Row>`
     select p.username, p.display_name, p.avatar_url, p.wallet_address, p.created_at::text as created_at
     from contributor_profiles p
-    where p.visibility = 'public'
+    where p.visibility = 'public' and p.wallet_address like 'chog:%'
   `;
-  const wallets = rows.map((row) => row.wallet_address.toLowerCase());
-  const { work, listings } = await loadXpEvents(sql, wallets);
-  const xp = computeGuildXp(wallets, work, listings, now);
+  const actors = rows.map((row) => row.wallet_address);
+  const { work, listings } = await loadXpEvents(sql, actors);
+  const holderOf = options.holderOf;
+  const sameHolder = holderOf
+    ? (a: string, b: string) => {
+        if (!a.startsWith("chog:") || !b.startsWith("chog:")) return false;
+        const ha = holderOf(Number(a.slice(5)));
+        return Boolean(ha && ha === holderOf(Number(b.slice(5))));
+      }
+    : undefined;
+  const season = seasonFor(now);
+  const xp = computeGuildXp(actors, work, listings, now, { sameHolder, seasonStart: season.start });
+  const { questTotals } = await import("@/lib/quests/repo.server");
+  const quests = await questTotals(sql, now);
   return rows.map((row) => {
-    const wallet = row.wallet_address.toLowerCase();
-    const result = xp.get(wallet)!;
+    const chogId = Number(row.wallet_address.slice(5));
+    const result = xp.get(row.wallet_address)!;
+    const q = quests.get(chogId) ?? { total: 0, season: 0, streak: 0 };
     const counts: XpCounts = result.counts;
     return {
+      chogId,
       username: row.username,
       displayName: row.display_name,
       avatarUrl: row.avatar_url,
-      wallet,
+      wallet: row.wallet_address,
       joined: row.created_at,
       counts,
       guildXp: result.xp,
-      txCount: null,
-      onchainXp: null,
+      questXp: q.total,
+      seasonXp: result.seasonXp + q.season,
+      streak: q.streak,
     };
   });
 }
 
 export async function loadGuildStats(sql: Sql): Promise<GuildStats> {
-  const rows = await sql<{ passports: unknown; open_opportunities: unknown; accepted_work: unknown }>`
+  const rows = await sql<{ passports: unknown; open_opportunities: unknown; accepted_work: unknown; quests_today: unknown }>`
     select
-      (select count(*) from contributor_profiles where visibility = 'public') as passports,
+      (select count(*) from contributor_profiles where visibility = 'public' and wallet_address like 'chog:%') as passports,
       (select count(*) from opportunities where status = 'open') as open_opportunities,
-      (select count(*) from work_submissions where status = 'accepted') as accepted_work
+      (select count(*) from work_submissions where status = 'accepted') as accepted_work,
+      (select count(*) from chog_quests where day = (now() at time zone 'UTC')::date) as quests_today
   `;
   const row = rows[0];
   return {
     passports: Number(row?.passports ?? 0),
     openOpportunities: Number(row?.open_opportunities ?? 0),
     acceptedWork: Number(row?.accepted_work ?? 0),
+    questsToday: Number(row?.quests_today ?? 0),
   };
 }

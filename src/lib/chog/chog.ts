@@ -39,3 +39,11 @@ export function imagePathFromTokenUri(uri: string): string | null {
   if (!match) return null;
   return `${CHOG_IMAGE_CID}/${Number(match[1])}.webp`;
 }
+
+/**
+ * $CHOG, the Chog memecoin on Monad. Verified 22 Oct 2026: listed on the official site chog.xyz,
+ * and onchain name() "Chog", symbol() "CHOG", decimals() 18 via the public Monad RPC.
+ */
+export const CHOG_TOKEN = "0x350035555E10d9AfAF1566AaebfCeD5BA6C27777" as const;
+export const CHOG_TOKEN_DECIMALS = 18;
+export const CHOG_TOKEN_URL = `https://monadscan.com/token/${CHOG_TOKEN}`;

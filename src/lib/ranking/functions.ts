@@ -1,67 +1,79 @@
 import { createServerFn } from "@tanstack/react-start";
+import { z } from "zod";
 import * as S from "@/lib/schemas";
 import type { Contributor } from "./xp";
 
 async function loadRanking(): Promise<{
   contributors: Contributor[];
-  stats: { passports: number; openOpportunities: number; acceptedWork: number; onchainTxs: number | null };
-  onchainAvailable: boolean;
+  stats: { passports: number; openOpportunities: number; acceptedWork: number; questsToday: number };
+  season: { number: number; start: number; end: number };
 }> {
   const { getSql } = await import("@/lib/db");
   const { listContributors, loadGuildStats } = await import("./repo.server");
-  const { loadTxCounts, txCountStore } = await import("@/lib/monad/activity.server");
-  const { onchainXpFor } = await import("./xp");
-  const { holdingsFor } = await import("@/lib/chog/holders.server");
-  const { chogBonusFor } = await import("@/lib/chog/chog");
+  const { chogSnapshot } = await import("@/lib/chog/holders.server");
+  const { seasonFor } = await import("@/lib/quests/quests");
   const sql = await getSql();
-  const [people, stats] = await Promise.all([listContributors(sql), loadGuildStats(sql)]);
-
-  const wallets = people.map((person) => person.wallet);
-  const [txCounts, holdings] =
-    people.length > 0
-      ? await Promise.all([
-          // Never block the page on the chain: persisted counts/snapshot first, short budget for the rest.
-          loadTxCounts(wallets, { store: txCountStore(sql), budgetMs: 1_500 }),
-          holdingsFor(wallets, { budgetMs: 1_500 }),
-        ])
-      : [new Map<string, number>(), new Map()];
-  const contributors = people.map((person) => {
-    const chog = holdings?.get(person.wallet) ?? null;
-    const chogBonus = chogBonusFor(person.guildXp, (chog?.count ?? 0) > 0);
-    const boosted = { ...person, chog, chogBonus, guildXp: person.guildXp + chogBonus };
-    const txCount = txCounts.get(person.wallet);
-    return txCount === undefined ? boosted : { ...boosted, txCount, onchainXp: onchainXpFor(txCount) };
-  });
-  const onchainAvailable = people.length === 0 || contributors.some((person) => person.txCount !== null);
-  // Null (rendered "unavailable") when the RPC could not answer, never a misleading 0.
-  const onchainTxs = onchainAvailable ? contributors.reduce((total, person) => total + (person.txCount ?? 0), 0) : null;
-
-  return { contributors, stats: { ...stats, onchainTxs }, onchainAvailable };
+  // Snapshot of current owners (cached; never blocks long) for the same-wallet self-dealing rule.
+  const snap = await chogSnapshot({ budgetMs: 1_500 }).catch(() => null);
+  const byToken = new Map<number, string>();
+  if (snap) for (const [owner, ids] of snap.owners) for (const id of ids) byToken.set(id, owner);
+  const [contributors, stats] = await Promise.all([
+    listContributors(sql, { holderOf: (id) => byToken.get(id) ?? null }),
+    loadGuildStats(sql),
+  ]);
+  return { contributors, stats, season: seasonFor() };
 }
 
 export const getRanking = createServerFn({ method: "GET" }).handler(async () => loadRanking());
 
-/** Rank, XP and activity for one public passport username. Null when the username is not on the ladder. */
-export const getPassportStanding = createServerFn({ method: "GET" })
-  .validator((username: unknown) => S.parseInput(S.usernameSchema, username))
-  .handler(async ({ data }) => {
-    const { contributors, onchainAvailable } = await loadRanking();
-    const { rankContributors, tierFor } = await import("./xp");
-    const ranked = rankContributors(contributors, "overall", Math.max(contributors.length, 1));
-    const person = ranked.find((row) => row.username.toLowerCase() === data.toLowerCase());
-    if (!person) return null;
-    const overallXp = person.guildXp + (person.onchainXp ?? 0);
-    const { tier, next, progress } = tierFor(overallXp);
-    return {
-      rank: person.rank,
-      xp: overallXp,
-      tier: tier.name,
-      nextTier: next?.name ?? null,
-      progress,
-      guildXp: person.guildXp,
-      onchainXp: person.onchainXp,
-      txCount: onchainAvailable ? person.txCount : null,
-      acceptedSubmissions: person.counts.acceptedSubmissions,
-      publishedOpportunities: person.counts.publishedOpportunities,
-    };
-  });
+export type ChogRecord = Awaited<ReturnType<typeof loadChogRecord>>;
+
+async function loadChogRecord(chogId: number) {
+  const { getSql } = await import("@/lib/db");
+  const { liveOwnerOf } = await import("@/lib/chog/actor.server");
+  const { findProfileForWallet } = await import("@/lib/passport/repo.server");
+  const { publicContributions } = await import("@/lib/work/repo.server");
+  const { rankContributors, tierFor, totalXp } = await import("./xp");
+  const sql = await getSql();
+  const [owner, profile, ranking] = await Promise.all([
+    liveOwnerOf(chogId).catch(() => undefined),
+    findProfileForWallet(sql, `chog:${chogId}`),
+    loadRanking(),
+  ]);
+  const all = rankContributors(ranking.contributors, "overall", Math.max(ranking.contributors.length, 1));
+  const season = rankContributors(ranking.contributors, "season", Math.max(ranking.contributors.length, 1));
+  const person = all.find((row) => row.chogId === chogId) ?? null;
+  const work = profile ? await publicContributions(sql, profile.username).catch(() => null) : null;
+  const xp = person ? totalXp(person) : 0;
+  const { tier, next, progress } = tierFor(xp);
+  return {
+    chogId,
+    /** Live ownerOf; null = unminted/burned, undefined = RPC unreachable. */
+    owner: owner === undefined ? null : owner,
+    ownerKnown: owner !== undefined,
+    profile,
+    standing: person
+      ? {
+          rank: person.rank,
+          of: all.length,
+          seasonRank: season.find((row) => row.chogId === chogId)?.rank ?? null,
+          xp,
+          guildXp: person.guildXp,
+          questXp: person.questXp,
+          seasonXp: person.seasonXp,
+          streak: person.streak,
+          counts: person.counts,
+        }
+      : null,
+    tier: tier.name,
+    nextTier: next?.name ?? null,
+    nextAt: next?.min ?? null,
+    progress,
+    work,
+    season: ranking.season,
+  };
+}
+
+export const getChogRecord = createServerFn({ method: "GET" })
+  .validator((id: unknown) => S.parseInput(z.coerce.number().int().min(1).max(10_000), id))
+  .handler(async ({ data }) => loadChogRecord(data));

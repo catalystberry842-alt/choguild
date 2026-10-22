@@ -5,8 +5,8 @@
 <h1 align="center">Choguild</h1>
 
 <p align="center">
-  <strong>Ship work. Earn your <em>rank.</em></strong><br />
-  The contributor guild on Monad: a wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.
+  <strong>Your Chog is the <em>member.</em></strong><br />
+  A work guild on Monad where each Chog Genesis NFT carries its own passport, XP, rank and work history, and takes them along when it changes hands.
 </p>
 
 <p align="center">
@@ -33,75 +33,74 @@
   <img src="docs/media/home-desktop-light.svg" alt="Home on desktop, light" width="420" />
 </p>
 
-Everything on the site is real. Listings, passports, XP and onchain counts come straight from Postgres and Monad mainnet. Nothing is seeded, and an empty state means nobody has done that yet.
+Everything on the site is real. Listings, passports, XP, quests and ownership come straight from Postgres and Monad mainnet. Nothing is seeded, and an empty state means nobody has done that yet.
 
 ## What it is
 
-Contributors in an ecosystem do real work across chats, docs and repos, but there is no shared record of what was asked for, who did it, and whether it was accepted. Choguild is that record:
+**Remove the NFT and Choguild stops working, by design.** The member is a [Chog Genesis](https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763) token, not a wallet:
 
-1. **Passport:** an identity anchored to a Monad wallet. Editing it takes a signed message, never a transaction.
-2. **Board:** passport holders publish listings with terms, deadline, positions and skills.
-3. **Review loop:** publishers accept applications, then review the evidence contributors submit.
-4. **Ladder:** XP is computed from accepted events plus Monad activity, with rules that make farming unprofitable.
+1. **Chog passport:** every profile, listing, application, submission and XP event is keyed to `chog:<tokenId>`. The card always shows the Chog's real art.
+2. **Live ownership:** whoever holds the token right now (`ownerOf` on Monad) acts as it. Every write re-checks it. A wallet with several Chogs picks one; a wallet with none can only view.
+3. **Reputation travels:** transfer a Chog and the new holder inherits its rank, tier, streak and history. Each Chog has a public record at `/chog/:id`.
+4. **Chog-to-Chog work:** Chogs post listings, other Chogs take them, the poster's Chog reviews the evidence. The leaderboard ranks Chogs.
+5. **Daily layer:** quests and streaks, level-up moments with tier frames, a weekly season leaderboard, and a shareable rank card for X.
 
 ## Features
 
 | | |
 | --- | --- |
-| **Passport** | Single **Connect wallet** button (EIP-6963 injected wallets). Sign-In with Ethereum, 7-day session, no gas. Profile with display name, username, bio, skills, interests and links. **Avatar upload with live preview** (PNG/JPEG/WebP/GIF up to 10 MB, resized in the browser to 512×512, stored under 300 KB) or one of your Chogs. |
-| **Open work** | `/discover`: search and filter by skill, category, compensation and status. Holders-only listings are marked. |
-| **Applications & submissions** | Apply with a pitch, track status (Submitted → Under review → Shortlisted → Accepted / Rejected / Withdrawn). Once accepted, submit versioned evidence links; publishers accept, request changes or reject. |
-| **XP & ranking** | `/ranking`: Overall, Guild work or Onchain views, five tiers, live XP bars. |
-| **Chog Genesis perks** | Contract [`0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763`](https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763). Holder badge, **+10% guild XP (rounded, max +50)**, access to holders-only listings, Chog as avatar. |
-| **Onchain proofs** | Each passport wallet's Monad transaction count becomes onchain XP. `/network` shows live Monad mainnet status. |
-| **Publish** | `/opportunities/new`: drafts, holders-only gating, review queue per listing. |
-| **Docs / whitepaper** | `/docs`: whitepaper, how it works, passport, listings, XP, onchain proofs, Chog perks, FAQ. Sidebar, mobile menu, on-page table of contents. |
-| **Light / dark** | Header toggle, remembers your choice, follows the OS by default, no flash on load. |
-| **Fast jumps** | Header links jump to each home section (active section highlighted). ⌘K / Ctrl+K opens a page and action palette. |
+| **Act as a Chog** | `/passport`: sign in once (SIWE, no gas), pick which Chog you hold to act as. Ownership checked live with `ownerOf`; transfers drop the Chog from the old holder's session. |
+| **Chog card** | Real token image with a frame, title and glow that evolve by tier (Hatchling → Legend). |
+| **Chog record** | `/chog/:id`: live holder, rank, season rank, XP split (work / quests), streak, accepted work. |
+| **Daily quests + streaks** | Check in, scout an open listing, size up a rival Chog. Check-ins add +1 XP per streak day (max +10). One Chog per wallet per quest per day. |
+| **Level-up moments** | When a Chog reaches a new tier its holder gets confetti and the new tier card. |
+| **Weekly seasons** | `/ranking?by=season`: Monday-to-Monday (UTC) leaderboard; Season 1 began 19 Oct 2026. |
+| **Rank card for X** | 1200×675 PNG drawn in the browser (art, tier frame, rank, season, XP, streak), download or share sheet, plus a prefilled X post linking the record. |
+| **$CHOG tips** | On any Chog's record, tip its live holder in [$CHOG](https://monadscan.com/token/0x350035555E10d9AfAF1566AaebfCeD5BA6C27777) (address from chog.xyz, verified onchain: name "Chog", symbol "CHOG", 18 decimals). Plain ERC-20 transfer from your wallet, no escrow. |
+| **Listings & reviews** | `/discover`, `/opportunities/new`, `/applications`, `/submissions`: the full post → apply → submit → accept loop, all as Chogs. |
+| **Docs / whitepaper** | `/docs`: the Chog-as-member model, quests and seasons, XP and anti-farming, FAQ. |
+| **Light / dark** | Header toggle, remembers your choice, no flash on load. |
 
 ## How it works
 
 ```mermaid
 flowchart LR
-  W[Browser wallet] -->|sign message, no gas| P[Passport<br/>+10 XP once]
-  P --> D[Discover open work]
-  D -->|apply| A[Application]
-  A -->|publisher accepts<br/>+25 XP| S[Submit evidence]
-  S -->|publisher accepts<br/>+100 XP| X[(Guild XP)]
-  M[Monad tx count] -->|10 × √txs, max 150| O[(Onchain XP)]
-  C[Chog Genesis holder] -->|+10% guild XP, max +50| X
-  X --> R[Ranking<br/>Hatchling → Legend]
-  O --> R
-  P -.->|publish a listing<br/>+15 XP when it counts| D
+  W[Wallet] -->|SIWE, no gas| H{ownerOf Chog #id<br/>== wallet?}
+  H -->|no Chog| V[View only]
+  H -->|yes| C[Act as Chog #id]
+  C --> Q[Daily quests<br/>+5 each, streak bonus]
+  C --> A[Apply / post listings]
+  A -->|accepted by another wallet's Chog| X[(XP on chog:id)]
+  Q --> X
+  X --> R[Leaderboard + weekly season<br/>Hatchling → Legend]
+  T[Transfer the NFT] -->|new holder inherits| X
 ```
 
 | Action | XP |
 | --- | --- |
 | Accepted submission | +100 |
 | Accepted application | +25 |
-| Published listing (counts once another wallet's work is accepted on it or it stays open 72 h; max 4 per 30 days) | +15 |
+| Published listing (counts once another Chog's work is accepted on it or it stays open 72 h; max 4 per 30 days) | +15 |
 | Saved public passport | +10 (once) |
-| Onchain activity on Monad mainnet | 10 × √(transactions sent), max +150 |
+| Daily check-in | +5, +1 per streak day (max +10 bonus) |
+| Scout an open listing / visit a rival Chog | +5 each, once a day |
 
-Anti-farming (`src/lib/ranking/farming.ts`): self-dealing earns nothing; jobs between the same two wallets (either direction) earn full, then half, then nothing; guild XP is capped at **400 per wallet per 30 days**. Tiers (`src/lib/ranking/xp.ts`): **Hatchling** 0 · **Apprentice** 50 · **Artisan** 150 · **Guildmaster** 400 · **Legend** 1000.
+Anti-farming (`src/lib/ranking/farming.ts`, `src/lib/chog/actor.server.ts`, `migrations/0010_chog_is_member.sql`): a Chog can't accept its own work; **Chogs held by the same wallet can't apply to, accept or review each other and earn no XP from each other**; jobs between the same two Chogs earn full, then half, then nothing; work XP is capped at **400 per Chog per 30 days**; each daily quest counts once per wallet per day, however many Chogs it holds.
 
-<p align="center">
-  <img src="docs/media/section-ladder-dark.svg" alt="XP and ranking section with animated bars" width="720" />
-</p>
+**Migration from wallet passports:** passports whose wallet held a Chog in the last ownerOf snapshot moved, with their history, onto that wallet's lowest-numbered Chog. The rest were copied to `archived_wallet_passports` and hidden; if such a wallet later acts as a Chog with no passport, its old record moves onto that Chog.
 
 ## For Chogathon judges
 
-**60-second tour:** open [choguild.vercel.app](https://choguild.vercel.app) and scroll the home page; each numbered section is one feature, animated with real data. Then [Discover](https://choguild.vercel.app/discover), [Ranking](https://choguild.vercel.app/ranking), a passport such as [/passport/octoberry](https://choguild.vercel.app/passport/octoberry), and the [Docs](https://choguild.vercel.app/docs). For the full loop: **Connect wallet** → sign once → save a passport → apply to a listing.
+**60-second tour:** open [choguild.vercel.app](https://choguild.vercel.app), then the [leaderboard](https://choguild.vercel.app/ranking), the [season](https://choguild.vercel.app/ranking?by=season), any Chog's record such as [/chog/12](https://choguild.vercel.app/chog/12), and the [docs](https://choguild.vercel.app/docs). With a wallet holding a Chog: **Connect wallet** → sign → pick your Chog → check in → save its passport → share the rank card.
 
 | Look at | Where | Why it matters |
 | --- | --- | --- |
-| Wallet-signed identity | `/passport` | SIWE session, no seed phrase, no gas. Avatar is an upload or a Chog you own (checked live with `ownerOf`). |
-| Real work loop | `/discover` → apply → `/submissions` | Only accepted work earns XP. |
-| Honest ranking | `/ranking`, `/docs/xp` | XP is recomputed from the database plus Monad tx counts, with anti-farming rules. |
-| Chog Genesis perks | badge, +XP, gated listings | Every check reads the official contract on Monad mainnet. |
-| Craft | the whole site | Own design system (flat neutrals + Monad purple, no gradients), light/dark, scroll-triggered diagrams that only animate transform/opacity. |
+| NFT is the core | `/passport`, `/chog/:id` | No Chog, no membership. Records are keyed to the token, ownership is live `ownerOf`. |
+| Reputation travels | `/chog/:id` "Held by" | Transfer the Chog and its rank goes with it. |
+| Fun and retention | quests, streak, level-up, season | A reason to come back daily and weekly. |
+| Honest ranking | `/ranking`, `/docs/xp` | XP recomputed from events, with per-Chog and same-wallet anti-farming. |
 
-**Verify the Chog perks yourself:** `node scripts/chog-live-check.mjs` reads `name`, `totalSupply`, `ownerOf` and `balanceOf` from the contract over the public RPC and checks `/api/chog/:id` on the live site. `npm run test:chog-live` runs the server-side holder checks against a real holder and a non-holder.
+**Verify the chain reads yourself:** `node scripts/chog-live-check.mjs` reads `name`, `totalSupply`, `ownerOf` and `balanceOf` from the contract over the public RPC. `npm run test:chog-live` runs the server-side ownership checks against a real holder and a non-holder.
 
 ## Tech stack
 
@@ -121,7 +120,7 @@ Browser (React 19, wagmi injected)
 TanStack Start on Vercel (Nitro) ──► Postgres (Neon) / PGLite locally
    │
    ├─► Monad RPC: tx counts (batched, cached 10 min in memory + Postgres, ≤1.5 s budget)
-   └─► Chog Genesis contract: ownerOf snapshot via Multicall3 (5 min cache), live balanceOf / ownerOf on gated actions
+   └─► Chog Genesis contract: live ownerOf before every write (30 s cache for reads), holder snapshot via Multicall3 (5 min)
 ```
 
 ```
@@ -132,7 +131,8 @@ src/
   lib/work/        submissions and reviews
   lib/passport/    profiles, SIWE sessions, avatars, wallet config
   lib/ranking/     XP rules, anti-farming, tiers, ranking query
-  lib/chog/        Chog Genesis holdings, boost, avatar checks
+  lib/chog/        Chog-as-member actor keys, live ownerOf, holdings, legacy adoption
+  lib/quests/      daily quests, streaks, weekly seasons
   lib/monad/       network status and onchain activity
 migrations/        SQL schema, applied in order
 scripts/           migrations, Chog live check, brand renderer

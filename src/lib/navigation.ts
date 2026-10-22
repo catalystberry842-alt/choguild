@@ -11,8 +11,8 @@ export type NavItem = {
 export const NAV_ITEMS: NavItem[] = [
   { to: "/", label: "Home", icon: House },
   { to: "/discover", label: "Discover", icon: Compass, primary: true },
-  { to: "/ranking", label: "Ranking", icon: Trophy, primary: true },
-  { to: "/passport", label: "Passport", icon: IdCard },
+  { to: "/ranking", label: "Leaderboard", icon: Trophy, primary: true },
+  { to: "/passport", label: "My Chog", icon: IdCard },
   { to: "/submissions", label: "Submissions", icon: ScrollText, primary: true },
   { to: "/applications", label: "Applications", icon: Inbox, primary: true },
   { to: "/how-it-works", label: "How it works", icon: BookOpen, primary: true },

@@ -19,6 +19,7 @@ import { Route as ApiClientErrorRouteImport } from './routes/api/client-error'
 import { Route as ApiCspReportRouteImport } from './routes/api/csp-report'
 import { Route as ApplicationsIndexRouteImport } from './routes/applications/index'
 import { Route as ApplicationsApplicationIdRouteImport } from './routes/applications/$applicationId'
+import { Route as ChogChogIdRouteImport } from './routes/chog/$chogId'
 import { Route as DiscoverIndexRouteImport } from './routes/discover/index'
 import { Route as DiscoverOpportunityIdRouteImport } from './routes/discover/$opportunityId'
 import { Route as DocsIndexRouteImport } from './routes/docs/index'
@@ -86,6 +87,11 @@ const ApplicationsApplicationIdRoute =
     path: '/applications/$applicationId',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ChogChogIdRoute = ChogChogIdRouteImport.update({
+  id: '/chog/$chogId',
+  path: '/chog/$chogId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DiscoverIndexRoute = DiscoverIndexRouteImport.update({
   id: '/discover/',
   path: '/discover/',
@@ -174,6 +180,7 @@ export interface FileRoutesByFullPath {
   '/api/client-error': typeof ApiClientErrorRoute
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
+  '/chog/$chogId': typeof ChogChogIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/docs/$slug': typeof DocsSlugRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -201,6 +208,7 @@ export interface FileRoutesByTo {
   '/api/client-error': typeof ApiClientErrorRoute
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
+  '/chog/$chogId': typeof ChogChogIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/docs/$slug': typeof DocsSlugRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -229,6 +237,7 @@ export interface FileRoutesById {
   '/api/client-error': typeof ApiClientErrorRoute
   '/api/csp-report': typeof ApiCspReportRoute
   '/applications/$applicationId': typeof ApplicationsApplicationIdRoute
+  '/chog/$chogId': typeof ChogChogIdRoute
   '/discover/$opportunityId': typeof DiscoverOpportunityIdRoute
   '/docs/$slug': typeof DocsSlugRoute
   '/opportunities/new': typeof OpportunitiesNewRoute
@@ -258,6 +267,7 @@ export interface FileRouteTypes {
     | '/api/client-error'
     | '/api/csp-report'
     | '/applications/$applicationId'
+    | '/chog/$chogId'
     | '/discover/$opportunityId'
     | '/docs/$slug'
     | '/opportunities/new'
@@ -285,6 +295,7 @@ export interface FileRouteTypes {
     | '/api/client-error'
     | '/api/csp-report'
     | '/applications/$applicationId'
+    | '/chog/$chogId'
     | '/discover/$opportunityId'
     | '/docs/$slug'
     | '/opportunities/new'
@@ -312,6 +323,7 @@ export interface FileRouteTypes {
     | '/api/client-error'
     | '/api/csp-report'
     | '/applications/$applicationId'
+    | '/chog/$chogId'
     | '/discover/$opportunityId'
     | '/docs/$slug'
     | '/opportunities/new'
@@ -340,6 +352,7 @@ export interface RootRouteChildren {
   ApiClientErrorRoute: typeof ApiClientErrorRoute
   ApiCspReportRoute: typeof ApiCspReportRoute
   ApplicationsApplicationIdRoute: typeof ApplicationsApplicationIdRoute
+  ChogChogIdRoute: typeof ChogChogIdRoute
   DiscoverOpportunityIdRoute: typeof DiscoverOpportunityIdRoute
   DocsSlugRoute: typeof DocsSlugRoute
   OpportunitiesNewRoute: typeof OpportunitiesNewRoute
@@ -428,6 +441,13 @@ declare module '@tanstack/react-router' {
       path: '/applications/$applicationId'
       fullPath: '/applications/$applicationId'
       preLoaderRoute: typeof ApplicationsApplicationIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/chog/$chogId': {
+      id: '/chog/$chogId'
+      path: '/chog/$chogId'
+      fullPath: '/chog/$chogId'
+      preLoaderRoute: typeof ChogChogIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/discover/': {
@@ -548,6 +568,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiClientErrorRoute: ApiClientErrorRoute,
   ApiCspReportRoute: ApiCspReportRoute,
   ApplicationsApplicationIdRoute: ApplicationsApplicationIdRoute,
+  ChogChogIdRoute: ChogChogIdRoute,
   DiscoverOpportunityIdRoute: DiscoverOpportunityIdRoute,
   DocsSlugRoute: DocsSlugRoute,
   OpportunitiesNewRoute: OpportunitiesNewRoute,

@@ -1,7 +1,6 @@
 import { getSql } from "@/lib/db";
 import { assertSameOrigin } from "@/lib/passport/origin.server";
-import { findProfileForWallet, readLiveSession } from "@/lib/passport/repo.server";
-import { clearSessionRecord, readSessionRecord } from "@/lib/passport/session.server";
+import { findProfileForWallet } from "@/lib/passport/repo.server";
 import type { ReviewAction } from "@/lib/work/copy";
 import {
   createWork,
@@ -17,17 +16,18 @@ import type { WorkInput } from "@/lib/work/validate";
 
 async function requireProfile() {
   assertSameOrigin();
-  const sql = await getSql();
-  const record = await readSessionRecord();
-  if (!record) return { ok: false as const, error: "Sign in with your passport before continuing." };
-  const live = await readLiveSession(sql, record.sessionId);
-  if (!live || live !== record.address) {
-    await clearSessionRecord();
-    return { ok: false as const, error: "Your passport session expired. Sign in again." };
+  const { resolveViewer } = await import("@/lib/chog/actor.server");
+  let viewer;
+  try {
+    viewer = await resolveViewer({ fresh: true });
+  } catch (error) {
+    return { ok: false as const, error: error instanceof Error ? error.message : "Chog ownership could not be checked." };
   }
-  const profile = await findProfileForWallet(sql, live);
-  if (!profile) return { ok: false as const, error: "Save a Chog Passport before you submit work." };
-  return { ok: true as const, sql, wallet: live };
+  if (!viewer.wallet) return { ok: false as const, error: "Sign in with your wallet before continuing." };
+  if (!viewer.actor) return { ok: false as const, error: "Act as a Chog you own first. Without a Chog you can view, not act." };
+  const profile = await findProfileForWallet(viewer.sql, viewer.actor);
+  if (!profile) return { ok: false as const, error: "Save this Chog's passport before you submit work." };
+  return { ok: true as const, sql: viewer.sql, wallet: viewer.actor };
 }
 
 export async function loadWorkHome() {
@@ -62,6 +62,16 @@ export async function reviseWork(input: { id: string; work: WorkInput }) {
 export async function decideWork(input: { id: string; action: ReviewAction; comment: string; privateNote: string }) {
   const auth = await requireProfile();
   if (!auth.ok) return auth;
+  if (input.action === "accepted") {
+    const row = await auth.sql<{ contributor_wallet: string }>`select contributor_wallet from work_submissions where id = ${input.id}`;
+    const other = row[0]?.contributor_wallet;
+    if (other && other !== auth.wallet) {
+      const { sameOwner } = await import("@/lib/chog/actor.server");
+      if (await sameOwner(other, auth.wallet).catch(() => true)) {
+        return { ok: false as const, error: "Both Chogs are held by the same wallet, so this review can't accept the work." };
+      }
+    }
+  }
   return reviewWork(auth.sql, auth.wallet, input.id, input.action, input.comment, input.privateNote);
 }
 

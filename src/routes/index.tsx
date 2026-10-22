@@ -1,6 +1,5 @@
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { PosterMark } from "@/components/board/opportunity-card";
-import { Avatar } from "@/components/ranking/bits";
 import { listBoard } from "@/lib/board/functions";
 import { COMPENSATION_LABEL, type CompensationType } from "@/lib/board/copy";
 import { projectLabel } from "@/lib/board/display";
@@ -12,7 +11,9 @@ import { deadlineCountdown } from "@/lib/board/display";
 import { seo } from "@/lib/seo";
 import { InView } from "@/components/home/in-view";
 import { XP_RULES, TIERS } from "@/lib/ranking/xp";
-import { CHOG_BOOST_CAP, CHOG_BOOST_RATE, chogImageUrl, CHOG_EXPLORER_URL } from "@/lib/chog/chog";
+import { chogImageUrl, CHOG_EXPLORER_URL } from "@/lib/chog/chog";
+import { ChogCard } from "@/components/chog/chog-card";
+import { QUESTS, STREAK_BONUS_CAP } from "@/lib/quests/quests";
 import type { ReactNode } from "react";
 
 export const Route = createFileRoute("/")({
@@ -26,13 +27,14 @@ export const Route = createFileRoute("/")({
       ...passport,
       featured: board.items.slice(0, 4),
       stream: board.items.slice(0, 10),
-      people: ranking.contributors.map((c) => ({ username: c.username, txCount: c.txCount ?? null, chogCount: c.chog?.count ?? 0, chogIds: c.chog?.tokenIds?.slice(0, 1) ?? [], chogBonus: c.chogBonus ?? 0 })),
       leaders: rankContributors(ranking.contributors, "overall", 5),
+      seasonLeaders: rankContributors(ranking.contributors, "season", 5).filter((p) => p.xp > 0),
+      season: ranking.season,
       stats: ranking.stats,
     };
   },
   staticData: { title: "Home" },
-  head: () => seo({ title: "Choguild · Ship work, earn your rank", description: "Find work, prove it, climb the ladder. The contributor guild on Monad.", path: "/" }),
+  head: () => seo({ title: "Choguild · Your Chog is the member", description: "A work guild where each Chog Genesis NFT is the member: its passport, XP, rank and history live on the token and travel with it.", path: "/" }),
   component: HomePage,
 });
 
@@ -44,12 +46,11 @@ function HomePage() {
     <div className={wrap}>
       <Hero />
       <div className="spine mt-16 flex flex-col gap-20 sm:mt-20 sm:gap-28">
-        <PassportEntry />
+        <ChogEntry />
+        <QuestEntry />
+        <LadderEntry />
         <WorkEntry />
         <ReviewEntry />
-        <LadderEntry />
-        <ChogEntry />
-        <NetworkEntry />
         <PublishEntry />
         <HowEntry />
       </div>
@@ -91,23 +92,23 @@ function Go({ to, children, primary, hash }: { to: string; children: ReactNode; 
 function Hero() {
   const { profile, stats } = Route.useLoaderData();
   const chain: [string, string, boolean][] = [
-    ["Passport", "wallet signs once", false],
-    ["Apply", "to an open listing", false],
-    ["Accepted", "publisher reviews your evidence", false],
-    ["+100 XP", "written to your passport", true],
-    ["Rank", "you move up the ladder", true],
+    ["Hold a Chog", "ownerOf checked live", false],
+    ["Act as it", "wallet signs once, picks a Chog", false],
+    ["Quest & ship", "daily quests, accepted work", false],
+    ["+XP on the token", "written to Chog #id", true],
+    ["Transfer", "the record goes with the NFT", true],
   ];
   return (
     <InView as="section" aria-labelledby="hero-title" className="pt-10 sm:pt-14 lg:pt-20">
       <div className="grid gap-12 lg:grid-cols-[minmax(0,1fr)_22rem] lg:items-end lg:gap-16">
         <div>
           <h1 id="hero-title" className="t-display rise text-ink">
-            Ship work.<br />Earn your <em>rank.</em>
+            Your Chog<br />is the <em>member.</em>
           </h1>
-          <p className="t-body rise rise-2 mt-6 max-w-md">A wallet-signed passport, a board of open work, and a public ladder of everything that got accepted.</p>
+          <p className="t-body rise rise-2 mt-6 max-w-md">Each Chog Genesis NFT carries its own passport, XP, rank and work history. Hold one to act as it; send it and the record goes too. No Chog, no membership.</p>
           <div className="rise rise-3 mt-6 flex flex-wrap gap-2">
             <Go to="/discover" primary>Browse open work</Go>
-            <Go to="/passport">{profile ? "Open your passport" : "Claim a passport"}</Go>
+            <Go to="/passport">{profile ? "Open your Chog" : "Act as your Chog"}</Go>
           </div>
         </div>
         {/* the loop, drawn: each step lights up in turn */}
@@ -127,7 +128,7 @@ function Hero() {
         </ol>
       </div>
       <dl className="mt-12 grid grid-cols-2 border-y border-line sm:grid-cols-4">
-        {([["Open listings", stats.openOpportunities], ["Passports", stats.passports], ["Accepted work", stats.acceptedWork], ["Onchain txs", stats.onchainTxs]] as const).map(([label, value], i) => (
+        {([["Chog members", stats.passports], ["Open listings", stats.openOpportunities], ["Accepted work", stats.acceptedWork], ["Quests today", stats.questsToday]] as const).map(([label, value], i) => (
           <div key={label} className={"py-5 pr-4 " + (i > 0 ? "sm:border-l sm:border-line sm:pl-6" : "") + (i % 2 === 1 ? " border-l border-line pl-4 sm:pl-6" : "") + (i > 1 ? " border-t border-line sm:border-t-0" : "")}>
             <dt className="ix">{label}</dt>
             <dd className="t-stat-num mt-2 text-ink">{fmt(value)}</dd>
@@ -138,62 +139,78 @@ function Hero() {
   );
 }
 
-/* ── 01 passport ────────────────────────────────────────── */
-function PassportEntry() {
-  const { stats, profile } = Route.useLoaderData();
+/* ── chog is the member ─────────────────────────────────── */
+function ChogEntry() {
+  const { leaders, stats } = Route.useLoaderData();
+  const top = leaders[0];
   return (
     <Entry
-      id="passport"
-      title={<>Sign once. Own your <em>passport.</em></>}
-      body={<>Connect a browser wallet and sign one message. No gas, no seed phrase. Upload an avatar, add skills and links, and your public passport is live. <span className="text-ink">{fmt(stats.passports)} passports</span> so far.</>}
-      cta={<Go to="/passport" primary>{profile ? "Open your passport" : "Claim yours"}</Go>}
+      id="chog"
+      title={<>The NFT holds the <em>record.</em></>}
+      body={<>Passports, XP, tier and accepted work are keyed to a Chog token id, not a wallet. Whoever owns the Chog right now (live <span className="font-mono text-small">ownerOf</span> on Monad) acts as it. Sell or send it and the new holder inherits its rank. A wallet with several Chogs picks which one to act as; one with none can only look. <span className="text-ink">{fmt(stats.passports)} Chogs</span> have joined.</>}
+      cta={<><Go to="/passport" primary>Act as your Chog</Go><a href={CHOG_EXPLORER_URL} target="_blank" rel="noreferrer" className="btn-ghost group inline-flex h-10 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium">Collection <span aria-hidden="true" className="arrow-slide">↗</span></a></>}
     >
-      <div className="diagram p-5 sm:p-8">
-        <div className="grid items-center gap-4 sm:grid-cols-[auto_1fr_auto]">
-          <div className="cell anim a-pop p-4">
-            <p className="ix">WALLET</p>
-            <p className="mt-2 font-mono text-small text-ink">0x…your wallet</p>
-            <span className="tag tag-p mt-3">Sign message</span>
-          </div>
-          <div className="relative hidden h-px bg-line-strong sm:block" aria-hidden="true">
-            <span className="anim a-line d1 absolute inset-0 block bg-purple" />
-            <span className="anim a-fly d1 absolute -top-3 left-0 tag tag-p" style={{ ["--dx" as string]: "90px" }}>✓ sig</span>
-          </div>
-          <div className="cell anim a-pop d2 w-full p-4 sm:w-60">
-            <div className="flex items-center gap-3">
-              <span className="relative flex size-12 items-center justify-center rounded-full border border-dashed border-line-strong text-muted">
-                <span className="text-lg">+</span>
-                <span className="anim a-pop d3 absolute inset-0 rounded-full bg-purple" />
-              </span>
-              <div className="min-w-0">
-                <p className="truncate text-small font-medium text-ink">Your name</p>
-                <p className="ix">@handle · Hatchling</p>
-              </div>
-            </div>
-            <div className="mt-4 h-1 overflow-hidden rounded-full bg-line-strong">
-              <div className="anim a-fill d3 h-full rounded-full bg-purple" style={{ ["--from" as string]: "0", ["--to" as string]: "0.2" }} />
-            </div>
-            <p className="ix mt-2">+10 XP · saved passport</p>
-          </div>
-        </div>
-        <ul className="mt-8 grid gap-2 text-small text-body sm:grid-cols-3">
-          {["Wallet-signed session", "Avatar upload with preview", "Skills, bio & links"].map((t) => (
-            <li key={t} className="flex items-center gap-2"><span className="sq" aria-hidden="true" />{t}</li>
+      <div className="diagram grid gap-5 p-5 sm:grid-cols-[13rem_minmax(0,1fr)] sm:p-6">
+        {top ? (
+          <Link to="/chog/$chogId" params={{ chogId: String(top.chogId) }} className="mx-auto w-full max-w-[13rem]">
+            <ChogCard chogId={top.chogId} name={top.displayName} xp={top.xp} rank={top.rank} streak={top.streak} size="sm" />
+          </Link>
+        ) : (
+          <div className="chog-card mx-auto flex aspect-[3/4] w-full max-w-[13rem] items-center justify-center p-4 text-center text-small text-muted">The first Chog to save a passport takes this card.</div>
+        )}
+        <ol className="flex flex-col justify-center gap-3 text-small">
+          {[
+            ["Tier frames", "Hatchling to Legend. The card's frame, title and glow change as the Chog climbs."],
+            ["Live ownership", "Every write re-checks ownerOf. Transferred Chogs drop out of the old wallet's session."],
+            ["No self-dealing", "Chogs held by the same wallet can't hire, accept or review each other, and earn no XP from each other."],
+          ].map(([t, b]) => (
+            <li key={t} className="cell p-3">
+              <p className="font-medium text-ink">{t}</p>
+              <p className="mt-0.5 text-body">{b}</p>
+            </li>
           ))}
-        </ul>
+        </ol>
       </div>
     </Entry>
   );
 }
 
-/* ── 02 open work ───────────────────────────────────────── */
+/* ── daily quests ───────────────────────────────────────── */
+function QuestEntry() {
+  return (
+    <Entry
+      id="quests"
+      title={<>Show up daily. Keep the <em>streak.</em></>}
+      body={<>Three quick quests a day: check in, scout an open listing, size up a rival Chog. Check-ins stack a streak bonus. Hit a new tier and the card levels up with confetti. One Chog per wallet per quest per day, so a bag of Chogs can't farm it.</>}
+      cta={<Go to="/passport" primary>Today's quests</Go>}
+    >
+      <div className="diagram p-5 sm:p-6">
+        <ul className="divide-y divide-line">
+          {QUESTS.map((q, i) => (
+            <li key={q.id} data-done={i === 0 ? "true" : undefined} className="quest-row anim a-in flex items-center gap-3 py-3" style={{ animationDelay: `${i * 0.15}s` }}>
+              <span className="quest-check" aria-hidden="true">{i === 0 ? "✓" : null}</span>
+              <span className="min-w-0 flex-1">
+                <span className="block text-small font-medium text-ink">{q.label}</span>
+                <span className="block text-label text-muted">{q.detail}</span>
+              </span>
+              <span className="text-small tabular-nums text-muted">+{q.xp}{q.id === "checkin" ? "+streak" : ""}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="ix mt-3">streak bonus +1 XP a day, up to +{STREAK_BONUS_CAP} · resets 00:00 UTC</p>
+      </div>
+    </Entry>
+  );
+}
+
+/* ── open work ───────────────────────────────────────── */
 function WorkEntry() {
   const { featured, stats } = Route.useLoaderData();
   return (
     <Entry
       id="work"
-      title={<>Open listings from Monad <em>builders.</em></>}
-      body={<>Passport holders publish listings with terms, deadline and skills. Filter by category, compensation or holders-only. <span className="text-ink">{fmt(stats.openOpportunities)} open</span> right now.</>}
+      title={<>Listings posted by Chogs, taken by <em>Chogs.</em></>}
+      body={<>A Chog publishes a listing with terms, deadline and skills; other Chogs apply. Filter by category or compensation. <span className="text-ink">{fmt(stats.openOpportunities)} open</span> right now.</>}
       cta={<Go to="/discover" primary>Browse the board</Go>}
     >
       <ul className="flex flex-col gap-2">
@@ -226,7 +243,7 @@ function ReviewEntry() {
     <Entry
       id="review"
       title={<>Ship it. Get it <em>accepted.</em></>}
-      body={<>Apply to a listing, then submit evidence links for what you shipped. The publisher reviews it; acceptance writes XP to your passport. <span className="text-ink">{fmt(stats.acceptedWork)} accepted</span> to date.</>}
+      body={<>Apply to a listing, then submit evidence links for what you shipped. The poster's Chog reviews it; acceptance writes XP to your Chog. <span className="text-ink">{fmt(stats.acceptedWork)} accepted</span> to date.</>}
       cta={<><Go to="/applications" primary>Your applications</Go><Go to="/submissions">Submissions</Go></>}
     >
       <div className="diagram p-5 sm:p-8">
@@ -244,7 +261,7 @@ function ReviewEntry() {
           ))}
         </div>
         <div className="relative mt-6 flex items-center justify-between rounded-xl border border-line-strong px-4 py-3">
-          <span className="ix">PASSPORT XP</span>
+          <span className="ix">CHOG XP</span>
           <span className="anim a-flyv d4 absolute left-1/2 -top-12 tag tag-p" style={{ ["--dy" as string]: "44px" }}>+100 XP</span>
           <span className="text-small tabular-nums text-ink">accepted submission = 100 · application = 25</span>
         </div>
@@ -253,117 +270,49 @@ function ReviewEntry() {
   );
 }
 
-/* ── 04 ladder ──────────────────────────────────────────── */
+/* ── leaderboard + season ───────────────────────────────── */
 function LadderEntry() {
-  const { leaders } = Route.useLoaderData();
+  const { leaders, seasonLeaders, season } = Route.useLoaderData();
   const max = Math.max(1, ...leaders.map((l) => l.xp));
   return (
     <Entry
       id="ladder"
-      title={<>Accepted work moves you <em>up.</em></>}
-      body={<>Guild XP comes from accepted work, applications, listings and your passport; onchain activity on Monad adds more. Five tiers, from {TIERS[0].name} to {TIERS[TIERS.length - 1].name}.</>}
-      cta={<Go to="/ranking" primary>Full ranking</Go>}
+      title={<>A leaderboard of <em>Chogs.</em></>}
+      body={<>All-time XP from accepted work, listings and quests, plus a weekly season where every Chog starts at zero on Monday. Five tiers, from {TIERS[0].name} to {TIERS[TIERS.length - 1].name}. Share a rank card on X straight from a Chog's page.</>}
+      cta={<><Go to="/ranking" primary>Leaderboard</Go><Link to="/ranking" search={{ by: "season" }} className="btn-ghost group inline-flex h-10 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium">Season {season.number}</Link></>}
     >
-      <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_9rem]">
-        <ol className="bento divide-y divide-line overflow-hidden">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <ol className="bento divide-y divide-line overflow-hidden" aria-label="All time">
+          <li className="ix px-4 py-2.5">ALL TIME</li>
           {leaders.length > 0 ? leaders.map((p, i) => (
-            <li key={p.username}>
-              <Link to="/passport/$username" params={{ username: p.username }} className="flex items-center gap-3 px-4 py-3.5 transition-colors hover:bg-line/40">
+            <li key={p.chogId}>
+              <Link to="/chog/$chogId" params={{ chogId: String(p.chogId) }} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-line/40">
                 <span className={"flex size-6 items-center justify-center rounded-md text-label tabular-nums " + (i === 0 ? "bg-purple text-white" : "text-muted")}>{p.rank}</span>
-                <Avatar name={p.displayName} url={p.avatarUrl} />
+                <img src={chogImageUrl(p.chogId)} alt="" width={32} height={32} loading="lazy" className="size-8 rounded-lg bg-secondary object-cover" />
                 <span className="min-w-0 flex-1">
-                  <span className="block truncate text-small text-ink">{p.displayName}</span>
+                  <span className="block truncate text-small text-ink">{p.displayName} <span className="text-muted">#{p.chogId}</span></span>
                   <span className="mt-1.5 block h-1 overflow-hidden rounded-full bg-line-strong">
                     <span className="anim a-fill block h-full rounded-full bg-purple" style={{ ["--from" as string]: "0.02", ["--to" as string]: String(p.xp / max), animationDelay: `${i * 0.15}s` }} />
                   </span>
                 </span>
-                <span className="w-16 text-right text-small tabular-nums text-ink">{formatXp(p.xp)} <span className="text-muted">XP</span></span>
+                <span className="text-right text-small tabular-nums text-ink">{formatXp(p.xp)}</span>
               </Link>
             </li>
-          )) : <li className="p-6 text-body">Nobody is ranked yet.</li>}
+          )) : <li className="p-4 text-small text-body">No Chog is ranked yet.</li>}
         </ol>
-        {/* tier rungs with a climbing token */}
-        <div className="bento relative hidden overflow-hidden p-3 sm:block" aria-label="Tiers">
-          <ol className="flex h-full flex-col-reverse justify-between">
-            {TIERS.map((t) => (
-              <li key={t.name} className="flex items-center justify-between border-t border-line py-2 text-label first:border-t-0">
-                <span className="text-body">{t.name}</span><span className="ix">{t.min}</span>
-              </li>
-            ))}
-          </ol>
-          <span className="anim a-climb absolute bottom-3 right-3 left-3 h-7 rounded-md border border-purple" style={{ ["--up" as string]: "-200%" }} aria-hidden="true" />
-        </div>
-      </div>
-    </Entry>
-  );
-}
-
-/* ── 05 chog ────────────────────────────────────────────── */
-function ChogEntry() {
-  const { people } = Route.useLoaderData();
-  const holders = people.filter((p) => p.chogCount > 0);
-  const tokenId = holders.find((h) => h.chogIds.length > 0)?.chogIds[0];
-  return (
-    <Entry
-      id="chog"
-      title={<>Chog holders earn <em>10%</em> more XP.</>}
-      body={<>Holding a Chog Genesis NFT is read live from the contract. Holders get a badge, +{Math.round(CHOG_BOOST_RATE * 100)}% guild XP (up to +{CHOG_BOOST_CAP}) and access to holders-only listings. <span className="text-ink">{holders.length} of {people.length}</span> ranked passports hold one.</>}
-      cta={<a href={CHOG_EXPLORER_URL} target="_blank" rel="noreferrer" className="btn-ghost group inline-flex h-10 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium">View contract <span aria-hidden="true" className="arrow-slide">↗</span></a>}
-    >
-      <div className="diagram p-5 sm:p-8">
-        <div className="flex items-center gap-4">
-          {tokenId !== undefined ? (
-            <img src={chogImageUrl(tokenId)} alt={`Chog Genesis #${tokenId}`} loading="lazy" width={64} height={64} className="anim a-pop size-16 rounded-2xl object-cover ring-1 ring-purple" />
-          ) : (
-            <span className="anim a-pop flex size-16 items-center justify-center rounded-2xl bg-purple text-2xl text-white">◆</span>
-          )}
-          <div>
-            <span className="anim a-pop d1 tag chip-purple">◆ Chog holder</span>
-            <p className="ix mt-2">ownerOf · 0xc96d…3763</p>
-          </div>
-        </div>
-        <div className="mt-8">
-          <div className="flex justify-between ix"><span>GUILD XP</span><span className="text-purple-ink">+10% boost</span></div>
-          <div className="mt-2 flex h-3 overflow-hidden rounded-full bg-line-strong">
-            <span className="block h-full w-[60%] bg-ink" />
-            <span className="anim a-boost block h-full w-[6%] bg-purple" />
-          </div>
-          <p className="ix mt-2">capped at +{CHOG_BOOST_CAP} XP · onchain XP is never boosted</p>
-        </div>
-        <div className="mt-6 flex flex-wrap gap-2">
-          <span className="anim a-pop d2 tag chip-purple">◆ Chog holders only</span>
-          <span className="anim a-pop d3 tag">listing gated by wallet</span>
-        </div>
-      </div>
-    </Entry>
-  );
-}
-
-/* ── 06 network ─────────────────────────────────────────── */
-function NetworkEntry() {
-  const { people, stats } = Route.useLoaderData();
-  const rows = people.filter((p) => (p.txCount ?? 0) > 0);
-  const blocks = rows.length > 0 ? [...rows, ...rows, ...rows, ...rows] : [];
-  return (
-    <Entry
-      id="network"
-      title={<>Your Monad activity <em>counts.</em></>}
-      body={<>Each passport is tied to a Monad wallet. We read its transaction count from the chain and turn it into onchain XP. Members have <span className="text-ink">{fmt(stats.onchainTxs)} transactions</span> on Monad.</>}
-      cta={<Go to="/network" primary>Network stats</Go>}
-    >
-      <div className="diagram overflow-hidden py-8">
-        {blocks.length > 0 ? (
-          <ul className="anim a-blocks flex w-max gap-2 px-2">
-            {blocks.map((p, i) => (
-              <li key={`${p.username}-${i}`} aria-hidden={i >= rows.length ? true : undefined} className="cell w-40 shrink-0 p-3">
-                <p className="ix">BLOCK · TX</p>
-                <p className="mt-2 truncate text-small text-ink">@{p.username}</p>
-                <p className="t-h3 mt-1 tabular-nums text-ink">{fmt(p.txCount)}</p>
-                <span className="mt-2 block h-1 w-8 rounded-full bg-purple" />
-              </li>
-            ))}
-          </ul>
-        ) : <p className="px-6 text-body">Onchain counts are loading from the Monad RPC.</p>}
+        <ol className="bento divide-y divide-line overflow-hidden" aria-label={`Season ${season.number}`}>
+          <li className="ix px-4 py-2.5">SEASON {season.number} · THIS WEEK</li>
+          {seasonLeaders.length > 0 ? seasonLeaders.map((p) => (
+            <li key={p.chogId}>
+              <Link to="/chog/$chogId" params={{ chogId: String(p.chogId) }} className="flex items-center gap-3 px-4 py-3 transition-colors hover:bg-line/40">
+                <span className="w-6 text-center text-label tabular-nums text-muted">{p.rank}</span>
+                <img src={chogImageUrl(p.chogId)} alt="" width={32} height={32} loading="lazy" className="size-8 rounded-lg bg-secondary object-cover" />
+                <span className="min-w-0 flex-1 truncate text-small text-ink">{p.displayName}</span>
+                <span className="text-small tabular-nums text-ink">+{formatXp(p.xp)}</span>
+              </Link>
+            </li>
+          )) : <li className="p-4 text-small text-body">Nobody has scored this week. Check in to lead Season {season.number}.</li>}
+        </ol>
       </div>
     </Entry>
   );
@@ -375,7 +324,7 @@ function PublishEntry() {
     <Entry
       id="publish"
       title={<>Post work. Pick your <em>contributors.</em></>}
-      body={<>Any passport holder can publish a listing: title, terms, deadline, positions and skills, optionally gated to Chog holders. Then review applicants and submissions. Published listings earn {XP_RULES[2].points} XP once they count.</>}
+      body={<>Act as your Chog to publish a listing: title, terms, deadline, positions and skills. Then review the Chogs that apply and the work they submit. Published listings earn {XP_RULES[2].points} XP once they count.</>}
       cta={<Go to="/opportunities/new" primary>Publish a listing</Go>}
     >
       <div className="diagram p-5 sm:p-8">
@@ -401,23 +350,22 @@ function PublishEntry() {
 /* ── 08 how ─────────────────────────────────────────────── */
 function HowEntry() {
   const steps = [
-    ["Claim a passport", "Sign once with your wallet."],
-    ["Pick up work", "Apply to an open listing."],
-    ["Submit evidence", "Links to what you shipped."],
-    ["Earn rank", "Accepted work becomes XP."],
+    ["Act as your Chog", "Sign once, pick a Chog you hold."],
+    ["Quest daily", "Check in, scout, keep the streak."],
+    ["Take work", "Apply and submit evidence."],
+    ["Climb", "XP and tier live on the token."],
   ];
   return (
     <Entry
       id="how"
-      title={<>Four steps from wallet to <em>rank.</em></>}
-      body={<>Every XP value is computed from the database and the chain, never typed in. Monthly caps keep it fair.</>}
+      title={<>Four steps from Chog to <em>rank.</em></>}
+      body={<>Every XP value is computed from recorded events and live chain reads, never typed in. Pair rules and monthly caps keep it fair.</>}
       cta={<><Go to="/how-it-works" primary>How it works</Go><Go to="/docs">Read the docs</Go></>}
     >
       <ol className="grid gap-2 sm:grid-cols-2">
         {steps.map(([t, b], i) => (
           <li key={t} className="bento anim a-in p-5" style={{ animationDelay: `${i * 0.12}s` }}>
-            <p className="ix text-purple-ink">0{i + 1}</p>
-            <p className="t-h3 mt-6 text-ink">{t}</p>
+            <p className="t-h3 text-ink">{t}</p>
             <p className="mt-1 text-small text-body">{b}</p>
           </li>
         ))}
@@ -432,11 +380,10 @@ function Cta() {
   return (
     <section id="start" className="mt-20 grid gap-6 rounded-[1.25rem] bg-purple px-6 py-10 text-white sm:mt-28 sm:px-10 sm:py-12 md:grid-cols-[1fr_auto] md:items-end">
       <div>
-        <p className="font-mono text-label text-white/70">09 · START</p>
-        <h2 className="t-h2 mt-4 max-w-2xl !text-white [&_em]:!text-white/65">Claim your passport in one <em className="italic">signature.</em></h2>
+        <h2 className="t-h2 max-w-2xl !text-white [&_em]:!text-white/65">Bring your Chog. Its record starts <em className="italic">today.</em></h2>
       </div>
       <Link to="/passport" className="btn-white group inline-flex h-10 shrink-0 items-center gap-2 rounded-full px-4 text-[0.875rem] font-medium">
-        {profile ? "Open your passport" : "Claim your passport"} <span aria-hidden="true" className="arrow-slide">→</span>
+        {profile ? "Open your Chog" : "Act as your Chog"} <span aria-hidden="true" className="arrow-slide">→</span>
       </Link>
     </section>
   );

@@ -6,6 +6,8 @@ import { resolveSessionSecret } from "@/lib/passport/session-secret";
 type PassportSessionData = {
   sessionId: string;
   address: string;
+  /** The Chog this wallet is acting as (re-verified with live ownerOf on every action). */
+  chogId?: number | null;
 };
 
 function sessionPassword(): string {
@@ -54,7 +56,7 @@ export async function readSessionRecord(): Promise<PassportSessionData | null> {
   if (!sessionsConfigured()) return null;
   const session = await requestSession<PassportSessionData>(sessionConfig());
   if (!session.data.sessionId || !session.data.address) return null;
-  return { sessionId: session.data.sessionId, address: session.data.address };
+  return { sessionId: session.data.sessionId, address: session.data.address, chogId: session.data.chogId ?? null };
 }
 
 export async function writeSessionRecord(data: PassportSessionData): Promise<void> {

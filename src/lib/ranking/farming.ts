@@ -8,7 +8,7 @@
  * - Accepted work/applications are grouped by counterparty pair (unordered, so
  *   A→B and B→A share one counter). The nth job between the same two wallets
  *   earns PAIR_MULTIPLIERS[n] of its value; repeats beyond that earn nothing.
- * - Self-dealing (contributor == owner) earns nothing.
+ * - Self-dealing (contributor == owner, or two Chogs held by the same wallet) earns nothing.
  * - Guild XP per wallet per PERIOD_MS window is capped at PERIOD_XP_CAP.
  */
 export const PERIOD_MS = 30 * 24 * 60 * 60 * 1000;
@@ -42,7 +42,14 @@ export type CreditedCounts = {
   passport: number;
 };
 
-export type GuildXpResult = { xp: number; counts: CreditedCounts };
+export type GuildXpResult = { xp: number; counts: CreditedCounts; seasonXp: number };
+
+export type XpOptions = {
+  /** True when two actors are held by the same wallet right now (Chog self-dealing). */
+  sameHolder?: (a: string, b: string) => boolean;
+  /** Start (ms) of the current season; XP credited at or after it also counts as season XP. */
+  seasonStart?: number;
+};
 
 const pairKey = (a: string, b: string) => (a < b ? `${a}|${b}` : `${b}|${a}`);
 const periodOf = (iso: string) => Math.floor(Date.parse(iso) / PERIOD_MS);
@@ -53,14 +60,17 @@ export function computeGuildXp(
   work: WorkEvent[],
   listings: ListingEvent[],
   now = Date.now(),
+  options: XpOptions = {},
 ): Map<string, GuildXpResult> {
+  const sameHolder = options.sameHolder ?? (() => false);
+  const seasonStart = options.seasonStart ?? Infinity;
   const out = new Map<string, GuildXpResult>();
-  const items = new Map<string, { period: number; points: number; kind: keyof CreditedCounts }[]>();
+  const items = new Map<string, { period: number; points: number; kind: keyof CreditedCounts; at: number }[]>();
   for (const wallet of wallets) items.set(wallet, []);
 
   const clean = work
     .map((event) => ({ ...event, contributor: event.contributor.toLowerCase(), owner: event.owner.toLowerCase() }))
-    .filter((event) => event.contributor !== event.owner && Number.isFinite(Date.parse(event.at)))
+    .filter((event) => event.contributor !== event.owner && !sameHolder(event.contributor, event.owner) && Number.isFinite(Date.parse(event.at)))
     .sort((a, b) => a.at.localeCompare(b.at));
 
   // One "job" = an opportunity between a contributor and an owner (application + its submission).
@@ -83,6 +93,7 @@ export function computeGuildXp(
       period: periodOf(event.at),
       points: Math.round(POINTS[event.kind] * multiplier),
       kind: event.kind === "submission" ? "acceptedSubmissions" : "acceptedApplications",
+      at: Date.parse(event.at),
     });
   }
 
@@ -97,22 +108,24 @@ export function computeGuildXp(
     const used = perPeriodListings.get(key) ?? 0;
     if (used >= LISTING_CAP_PER_PERIOD) continue;
     perPeriodListings.set(key, used + 1);
-    items.get(owner)?.push({ period, points: POINTS.listing, kind: "publishedOpportunities" });
+    items.get(owner)?.push({ period, points: POINTS.listing, kind: "publishedOpportunities", at: Date.parse(listing.publishedAt) });
   }
 
   for (const wallet of wallets) {
     const counts: CreditedCounts = { acceptedSubmissions: 0, acceptedApplications: 0, publishedOpportunities: 0, passport: 1 };
     const byPeriod = new Map<number, number>();
     let xp = POINTS.passport;
+    let seasonXp = 0;
     for (const item of items.get(wallet) ?? []) {
       const used = byPeriod.get(item.period) ?? 0;
       const add = Math.min(item.points, PERIOD_XP_CAP - used);
       if (add <= 0) continue;
       byPeriod.set(item.period, used + add);
       xp += add;
+      if (item.at >= seasonStart) seasonXp += add;
       counts[item.kind] += 1;
     }
-    out.set(wallet, { xp, counts });
+    out.set(wallet, { xp, counts, seasonXp });
   }
   return out;
 }
