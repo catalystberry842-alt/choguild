@@ -22,6 +22,7 @@ export function InView({ as: Tag = "div", className, children, id, ...rest }: { 
 export const HOME_SECTIONS = [
   { id: "chog", label: "Chog" },
   { id: "quests", label: "Quests" },
+  { id: "duels", label: "Duels" },
   { id: "ladder", label: "Leaderboard" },
   { id: "work", label: "Work" },
   { id: "review", label: "Review" },

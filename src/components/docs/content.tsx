@@ -3,6 +3,7 @@ import { CHOG_CONTRACT, CHOG_SUPPLY, CHOG_TOKEN } from "@/lib/chog/chog";
 import { LISTING_CAP_PER_PERIOD, PERIOD_XP_CAP, POINTS } from "@/lib/ranking/farming";
 import { TIERS } from "@/lib/ranking/xp";
 import { QUESTS, STREAK_BONUS_CAP } from "@/lib/quests/quests";
+import { BASE_XP, DAILY_DUELS, DEFENDER_WIN_XP, PAIR_XP_DUELS, SEASON_DUEL_CAP } from "@/lib/duels/duels";
 
 export type DocSection = { id: string; title: string; body: ReactNode };
 export type DocPage = { slug: string; title: string; lead: string; sections: DocSection[] };
@@ -74,8 +75,36 @@ export const DOCS: DocPage[] = [
       { id: "quests", title: "Daily quests", body: <Ul items={QUESTS.map((q) => <><b className="text-ink">{q.label}</b> (+{q.xp} XP): {q.detail}</>)} /> },
       { id: "streak", title: "Streaks", body: <p>Consecutive daily check-ins build a streak. Each check-in earns +1 XP per streak day on top of the base, up to +{STREAK_BONUS_CAP}. Days reset at 00:00 UTC.</p> },
       { id: "limits", title: "Limits", body: <p>Each quest counts once per Chog per day, and once per wallet per day, so holding many Chogs doesn't multiply quest XP. Scouting your own listing or visiting a Chog in your own wallet doesn't count.</p> },
-      { id: "seasons", title: "Weekly seasons", body: <p>Seasons run Monday 00:00 UTC to the next Monday; Season 1 began 19 Oct 2026. Season XP is everything credited that week (work, listings, quests). The season leaderboard starts from zero each week; all-time XP keeps counting.</p> },
+      { id: "seasons", title: "Weekly seasons", body: <p>Seasons run Monday 00:00 UTC to the next Monday; Season 1 began 19 Oct 2026. Season XP is everything credited that week (work, listings, quests, duels). The season leaderboard starts from zero each week; all-time XP keeps counting.</p> },
       { id: "share", title: "Rank cards", body: <p>Every ranked Chog's page draws a 1200×675 rank card (art, tier frame, rank, season rank, XP, streak) to download or share, and opens a prefilled post on X linking the Chog's record.</p> },
+    ],
+  },
+  {
+    slug: "duels",
+    title: "Duels & $CHOG rewards",
+    lead: "Chog-vs-Chog head-to-heads, and paying the Chog that did the work.",
+    sections: [
+      { id: "duel-rules", title: "How a duel works", body: <Ul items={[
+        "Open another Chog's page while acting as your Chog and pick three moves: Charge, Guard or Trick.",
+        "Charge beats Trick, Trick beats Guard, Guard beats Charge. A tied round goes to the higher-tier Chog (tier edge); equal tiers stay tied.",
+        "The defender auto-plays, so duels work even when its holder is offline. Each round it throws its signature move (shown on its page) about half the time, otherwise a random move.",
+        "Results are resolved on the server after your picks are locked in, and stored with both move lists. Every duel has a shareable result page.",
+      ]} /> },
+      { id: "duel-xp", title: "Duel XP and limits", body: <Ul items={[
+        <>Win <b className="text-ink">+{BASE_XP.win}</b>, draw <b className="text-ink">+{BASE_XP.draw}</b>, loss <b className="text-ink">+{BASE_XP.loss}</b>. A defender that holds earns <b className="text-ink">+{DEFENDER_WIN_XP}</b>.</>,
+        <>{DAILY_DUELS} duels per wallet per UTC day, across all its Chogs.</>,
+        "Two Chogs in the same wallet can't duel each other.",
+        <>The same pair earns full XP, then half, then a quarter; after {PAIR_XP_DUELS} duels in a season it earns nothing. A→B and B→A count together.</>,
+        <>Duel XP is capped at {SEASON_DUEL_CAP} per Chog per season. It counts toward the season and all-time leaderboard.</>,
+      ]} /> },
+      { id: "rewards", title: "$CHOG rewards on listings", body: <Ul items={[
+        "A publisher can set an optional $CHOG reward on a listing. It shows on the listing card and page.",
+        "When an application or submission is accepted, the publisher pays from their own wallet with a plain $CHOG transfer to the accepted Chog's current holder (live ownerOf). There is no escrow contract; Choguild never holds funds.",
+        "The publisher submits the transaction hash. The server reads the receipt and only marks it Paid if it finds a $CHOG Transfer from the publisher's wallet to that holder for at least the reward. One payment per listing per Chog.",
+        "Each Chog's page shows the total $CHOG it has been paid through rewards.",
+      ]} /> },
+      { id: "bell", title: "Notifications", body: <p>The bell in the header shows new applications and submissions on your listings, reviews of your work, and duels against your Chog. It is in-app only; read state is kept in your browser.</p> },
+      { id: "prizes", title: "Season prizes", body: <p>No season prize is promised. If a prize is ever configured for a season, it is shown on the season leaderboard; otherwise nothing is shown.</p> },
     ],
   },
   {
@@ -88,7 +117,7 @@ export const DOCS: DocPage[] = [
         <>Accepted application: <b className="text-ink">{POINTS.application} XP</b></>,
         <>Published listing: <b className="text-ink">{POINTS.listing} XP</b>, once another Chog's work is accepted on it or it stays open 72 hours; up to {LISTING_CAP_PER_PERIOD} per 30 days.</>,
         <>Saved passport: <b className="text-ink">{POINTS.passport} XP</b>, once.</>,
-        <>Daily quests: see Quests.</>,
+        <>Daily quests: see Quests. Duels: see Duels.</>,
       ]} /> },
       { id: "anti-farming", title: "Anti-farming rules", body: <Ul items={[
         "Self-dealing earns nothing: a Chog can't accept its own work.",
@@ -97,7 +126,7 @@ export const DOCS: DocPage[] = [
         <>Work and listing XP is capped at {PERIOD_XP_CAP} per Chog per 30 days.</>,
       ]} /> },
       { id: "tiers", title: "Tiers", body: <Ul items={TIERS.map((t) => <><b className="text-ink">{t.name}</b> from {t.min} XP: {t.blurb}</>)} /> },
-      { id: "views", title: "Leaderboard views", body: <p>All time (work + quests) or This season (this week only).</p> },
+      { id: "views", title: "Leaderboard views", body: <p>All time (work + quests + duels) or This season (this week only).</p> },
     ],
   },
   {
@@ -106,7 +135,7 @@ export const DOCS: DocPage[] = [
     lead: "Short answers to common questions.",
     sections: [
       { id: "gas", title: "Does signing in cost gas?", body: <p>No. It is a signed message, not a transaction.</p> },
-      { id: "custody", title: "Does Choguild hold funds?", body: <p>No. Payment terms are agreed between the Chogs' holders; Choguild records the work, not the money.</p> },
+      { id: "custody", title: "Does Choguild hold funds?", body: <p>No. Payment terms are agreed between the Chogs' holders. Optional $CHOG rewards and tips go wallet to wallet; Choguild only verifies the transfer onchain.</p> },
       { id: "wallets", title: "Which wallets work?", body: <p>Any injected browser wallet such as MetaMask or Rabby.</p> },
       { id: "xp-edit", title: "Can XP be edited by hand?", body: <p>No. XP is recomputed from recorded events and the chain.</p> },
       { id: "source", title: "Is it open source?", body: <p>Yes, under the MIT license on GitHub.</p> },

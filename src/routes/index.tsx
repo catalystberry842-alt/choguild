@@ -14,6 +14,7 @@ import { XP_RULES, TIERS } from "@/lib/ranking/xp";
 import { chogImageUrl, CHOG_EXPLORER_URL } from "@/lib/chog/chog";
 import { ChogCard } from "@/components/chog/chog-card";
 import { QUESTS, STREAK_BONUS_CAP } from "@/lib/quests/quests";
+import { BASE_XP, DAILY_DUELS, MOVES, SEASON_DUEL_CAP } from "@/lib/duels/duels";
 import type { ReactNode } from "react";
 
 export const Route = createFileRoute("/")({
@@ -48,6 +49,7 @@ function HomePage() {
       <div className="spine mt-16 flex flex-col gap-20 sm:mt-20 sm:gap-28">
         <ChogEntry />
         <QuestEntry />
+        <DuelEntry />
         <LadderEntry />
         <WorkEntry />
         <ReviewEntry />
@@ -203,6 +205,30 @@ function QuestEntry() {
   );
 }
 
+/* ── duels ─────────────────────────────────────────────── */
+function DuelEntry() {
+  return (
+    <Entry
+      id="duels"
+      title={<>Chog vs Chog. <em>Pick your moves.</em></>}
+      body={<>Challenge any Chog from its page: three rounds of Charge, Guard or Trick. The defender auto-plays from its signature move and tier, so it works while its holder sleeps. Read the rival, win the round. {DAILY_DUELS} duels a day per wallet, no duels inside one wallet, and repeat pairs earn less, so duel XP stays honest.</>}
+      cta={<Go to="/ranking">Find a rival</Go>}
+    >
+      <div className="diagram p-5 sm:p-6">
+        <ul className="divide-y divide-line">
+          {MOVES.map((m, i) => (
+            <li key={m.id} className="anim a-in flex items-center gap-3 py-3" style={{ animationDelay: `${i * 0.15}s` }}>
+              <span className="min-w-0 flex-1 text-small font-medium text-ink">{m.label}</span>
+              <span className="text-small text-muted">beats {MOVES.find((x) => x.id === m.beats)!.label}</span>
+            </li>
+          ))}
+        </ul>
+        <p className="ix mt-3">tied round → higher tier wins · win +{BASE_XP.win} · cap {SEASON_DUEL_CAP} XP a season</p>
+      </div>
+    </Entry>
+  );
+}
+
 /* ── open work ───────────────────────────────────────── */
 function WorkEntry() {
   const { featured, stats } = Route.useLoaderData();
@@ -210,7 +236,7 @@ function WorkEntry() {
     <Entry
       id="work"
       title={<>Listings posted by Chogs, taken by <em>Chogs.</em></>}
-      body={<>A Chog publishes a listing with terms, deadline and skills; other Chogs apply. Filter by category or compensation. <span className="text-ink">{fmt(stats.openOpportunities)} open</span> right now.</>}
+      body={<>A Chog publishes a listing with terms, deadline and skills, plus an optional $CHOG reward paid wallet to wallet to the accepted Chog's holder and verified onchain. Other Chogs apply. <span className="text-ink">{fmt(stats.openOpportunities)} open</span> right now.</>}
       cta={<Go to="/discover" primary>Browse the board</Go>}
     >
       <ul className="flex flex-col gap-2">
@@ -224,6 +250,7 @@ function WorkEntry() {
                   <span className="block truncate text-base font-medium text-ink">{item.title}</span>
                   <span className="ix block truncate">{projectLabel(item.projectName)} · {COMPENSATION_LABEL[item.compensationType as CompensationType] ?? item.compensationType}</span>
                 </span>
+                {item.rewardChog ? <span className="tag hidden sm:inline-flex">{Number(item.rewardChog).toLocaleString("en-US")} $CHOG</span> : null}
                 {item.holdersOnly ? <span className="tag chip-purple hidden sm:inline-flex">◆ Chog</span> : null}
                 <span className="tag hidden sm:inline-flex">{due ?? "No deadline"}</span>
                 <span aria-hidden="true" className="arrow-slide text-muted group-hover:text-ink">→</span>

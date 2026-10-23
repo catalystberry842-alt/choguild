@@ -63,6 +63,10 @@ With no Chog, a wallet can sign in and browse, but it **cannot** save a passport
 - **Daily quests and streaks:** check in, scout an open listing, size up a rival Chog. Each quest is worth +5 XP. Check-ins also add +1 XP for every day of the streak, up to +10.
 - **Level-up moments:** when a Chog reaches a new tier, its holder gets confetti and the new tier card.
 - **Weekly seasons:** every Monday at 00:00 UTC the season leaderboard resets, while all-time XP keeps counting. Season 1 started on 19 Oct 2026.
+- **Chog-vs-Chog duels:** challenge any Chog from its page. Three rounds of Charge / Guard / Trick (Charge beats Trick, Trick beats Guard, Guard beats Charge); a tied round goes to the higher tier. The defender auto-plays its signature move about half the time, so knowing a rival is the skill and it works with few users online. Resolved on the server after your picks are locked, with an animated duel screen, confetti on a win, history on `/chog/:id` and a shareable `/duel/:id` result page.
+- **$CHOG rewards on listings:** a publisher can set an optional $CHOG reward. On acceptance they pay the accepted Chog's current holder straight from their wallet (plain ERC-20 transfer, no escrow). The server reads the receipt and marks it **Paid** only if it finds `Transfer(publisher → holder, amount ≥ reward)` from the $CHOG contract. Each Chog page shows its total rewards paid.
+- **Notifications bell:** new applications and submissions on your listings, reviews of your work, and duels against your Chog.
+- **Season prizes:** none are promised. A prize is only shown if one is configured (`SEASON_PRIZE`).
 - **Shareable rank card:** a 1200×675 PNG drawn in the browser (art, tier frame, rank, season rank, XP, streak). You can download it or share it, and a prefilled X post links to the Chog's record.
 
 <p align="center">
@@ -82,7 +86,7 @@ With no Chog, a wallet can sign in and browse, but it **cannot** save a passport
 1. Open **[choguild.vercel.app](https://choguild.vercel.app)** and scroll the home page.
 2. Open the **[leaderboard](https://choguild.vercel.app/ranking)** and the **[current season](https://choguild.vercel.app/ranking?by=season)**.
 3. Open any Chog's record, for example **[/chog/12](https://choguild.vercel.app/chog/12)**. Its holder is read live from the chain.
-4. With a wallet that holds a Chog: **Connect wallet** → sign the free message → pick your Chog on `/passport` → **Check in** → save its passport → open a listing → share the rank card.
+4. With a wallet that holds a Chog: **Connect wallet** → sign the free message → pick your Chog on `/passport` → **Check in** → save its passport → duel a rival Chog from its page → open a listing → share the rank card.
 
 Without a Chog, the same wallet stays view-only, which is the point.
 
@@ -96,6 +100,8 @@ Without a Chog, the same wallet stays view-only, which is the point.
 | Saved public passport | +10, once |
 | Daily check-in | +5, plus +1 per streak day (bonus max +10) |
 | Scout a listing, visit a rival | +5 each, once a day |
+| Duel (challenger) | win +6 · draw +3 · loss +1 |
+| Duel (defender holds) | +3 |
 
 The farming rules live in `src/lib/ranking/farming.ts`, `src/lib/chog/actor.server.ts` and `src/lib/quests`:
 
@@ -105,6 +111,8 @@ The farming rules live in `src/lib/ranking/farming.ts`, `src/lib/chog/actor.serv
 - Work and listing XP is capped at **400 per Chog per 30 days**.
 - Each daily quest counts once per Chog **and** once per wallet per day, so holding ten Chogs doesn't mean ten times the quest XP.
 - Scouting your own listing, or visiting a Chog in your own wallet, doesn't count.
+- Duels: 5 per wallet per UTC day across all its Chogs, no duels between Chogs in the same wallet, the same pair earns full → half → quarter → nothing per season, and duel XP is capped at 60 per Chog per season (`src/lib/duels`).
+- Wallet-keyed listings whose publisher had no Chog are closed and hidden (rows kept, `orphaned_at`, `migrations/0013_orphan_listings.sql`).
 
 Tiers start at Hatchling 0 · Apprentice 50 · Artisan 150 · Guildmaster 400 · Legend 1000.
 
