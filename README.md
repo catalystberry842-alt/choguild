@@ -207,6 +207,8 @@ Enforced CSP and security headers in `vercel.json` (violations reported to `/api
 
 ## Links
 
+- **Judges: start with [JUDGES.md](JUDGES.md)** (tours, onchain checks, known limitations)
+
 - Live app: https://choguild.vercel.app
 - Docs / whitepaper: https://choguild.vercel.app/docs
 - Chog Genesis: https://monadscan.com/token/0xc96d31F8626c6D03Fae5dCD3d61e3FB9F4a73763
